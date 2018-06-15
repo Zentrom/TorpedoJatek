@@ -13,6 +13,8 @@
 *.userprefs
 
 # Build results
+[Bb]uilds/
+VSgenerated/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -300,3 +302,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+OGLPack/include/close_code.h
