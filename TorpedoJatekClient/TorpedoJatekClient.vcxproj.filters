@@ -25,6 +25,21 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{7a2fe49e-e828-4268-843b-5ead85c5a3e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\Logs">
+      <UniqueIdentifier>{d90950cf-451c-447b-ab51-694cbc622e08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Backend">
+      <UniqueIdentifier>{71c41310-1c2c-48f8-995f-48fcd7dd236a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frontend">
+      <UniqueIdentifier>{50e4e5d2-9476-4e20-a520-d93fb459fbb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend">
+      <UniqueIdentifier>{f9735ab0-c48f-41ac-8d21-3ddd32d4ea5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frontend">
+      <UniqueIdentifier>{4d2ea9ae-299a-43df-b767-71521301d820}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -48,11 +63,17 @@
     <ClCompile Include="Utils\ObjParser_OGL3.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="GameInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Mountain.cpp">
+      <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\PlayTile.cpp">
+      <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TorpedoJatekClient.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\gCamera.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -70,6 +91,18 @@
     </ClInclude>
     <ClInclude Include="Utils\ObjParser_OGL3.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="TorpedoJatekClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameInstance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Mountain.h">
+      <Filter>Header Files\Frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\PlayTile.h">
+      <Filter>Header Files\Frontend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -111,5 +144,13 @@
     <Image Include="Resources\Textures\top_texture.bmp">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Utils\Logs\temp.txt">
+      <Filter>Utils\Logs</Filter>
+    </Text>
+    <Text Include="Utils\Logs\todo.txt">
+      <Filter>Utils\Logs</Filter>
+    </Text>
   </ItemGroup>
 </Project>

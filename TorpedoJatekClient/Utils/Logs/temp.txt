@@ -1,0 +1,353 @@
+gameinstance.h
+------------------------------------
+
+// gömb parametrikus leírása
+	glm::vec3 GetUV(float u, float v);
+
+	// a rajzoló metódusaink
+	void DrawGround();
+	void DrawCone(); // a csonkakúpnak külön van palástja...
+	void DrawConeTop(); // ...és teteje
+	void DrawSuzanne();
+	void DrawEarth();
+	void DrawSun(glm::vec3 light_pos); // a "napot" mindig máshova rajzoljuk; a paraméter a pozíció
+
+									   // Textúra erõforrás azonosítók
+	GLuint m_coneTextureID;
+	GLuint m_coneNormalMapID;
+	GLuint m_groundTextureID;
+	GLuint m_groundNormalMapID;
+	GLuint m_topTextureID;
+	GLuint m_topNormalMapID;
+	GLuint m_suzanneTextureID;
+	GLuint m_suzanneNormalMapID;
+	GLuint m_earthTextureID;
+	GLuint m_earthNormalMapID;
+
+
+
+
+gVertexBuffer	m_vb_ground; // a talaj geometriája
+	gVertexBuffer	m_vb_cone; // a csonkakkúp palást geometriája
+	gVertexBuffer	m_vb_cone_top; // a csonkakúp tetejét alkotó körlap geometriája
+	gVertexBuffer	m_vb_sphere; // egy egységsugarú gömb geometriája
+
+	Mesh			*m_mesh; // Suzanne
+
+	int N = 20; // a gömb felbontása
+	int M = 20;
+
+gameinstance.cpp
+------------------------------------
+
+
+// gömb parametrikus leírása: (u,v) -> (x,y,z)
+glm::vec3 GameInstance::GetUV(float u, float v) {
+	u *= 2 * f_PI;
+	v *= f_PI;
+	float cu = cosf(u), su = sinf(u), cv = cosf(v), sv = sinf(v);
+	return glm::vec3(cu*sv, cv, su*sv);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	// TALAJ
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+								// attribútumok
+	m_vb_ground.AddAttribute(0, 3);
+	m_vb_ground.AddAttribute(1, 3);
+	m_vb_ground.AddAttribute(2, 2);
+
+	// a 0. attribútum (pozíciók)
+	m_vb_ground.AddData(0, -10, 0, -10);
+	m_vb_ground.AddData(0, 10, 0, -10);
+	m_vb_ground.AddData(0, -10, 0, 10);
+	m_vb_ground.AddData(0, 10, 0, 10);
+
+	// az 1. attribútum (normálvektorok)
+	m_vb_ground.AddData(1, 0, 1, 0);
+	m_vb_ground.AddData(1, 0, 1, 0);
+	m_vb_ground.AddData(1, 0, 1, 0);
+	m_vb_ground.AddData(1, 0, 1, 0);
+
+	// a 2. attribútum (textúrakoordináták)
+	m_vb_ground.AddData(2, 0, 0);
+	m_vb_ground.AddData(2, 1, 0);
+	m_vb_ground.AddData(2, 0, 1);
+	m_vb_ground.AddData(2, 1, 1);
+
+	// Háromszögek indexelése
+	m_vb_ground.AddIndex(1, 0, 2);
+	m_vb_ground.AddIndex(1, 2, 3);
+
+	// Inicializáljuk a puffereket (VAO, VBO, IB)
+	m_vb_ground.InitBuffers();
+
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	// CSONKAKÚP PALÁST
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	// a csonkakúp paraméterei: alsó körvonal sugara, felsö körvonal sugara, magasság
+	// a csonkakúp az XZ síkon fog állni
+	float r_low = 4;
+	float r_high = 2;
+	float h = 6;
+
+	m_vb_cone.AddAttribute(0, 3);
+	m_vb_cone.AddAttribute(1, 3);
+	m_vb_cone.AddAttribute(2, 2);
+
+	// 2*(N+1) vertexet definiálunk egy körív mentén:
+	// felváltva rakunk egy vertexet lentre, egyet fentre
+	for (int i = 0; i <= N; ++i) {
+
+		float a = i * 2 * f_PI / N; // szög
+
+									// alsó vertexek y = 0 magasságban, r_low sugarú körír mentén,
+									// felsõ vertexek y = h magasságban, r_high sugarú körív mentén
+									// (a körívek origó középpontúak, XZ síkon fekszenek)
+		m_vb_cone.AddData(0, r_low*cosf(a), 0, r_low*sinf(a));
+		m_vb_cone.AddData(0, r_high*cosf(a), h, r_high*sinf(a));
+
+		// kiszámoljuk a kúppalástot alkotó vertexek normálisát:
+		// középponttól kifele mutatnak (X és Z), de Y irányban enyhén ferdén állnak,
+		// a csonkakúp palást ferdeségétõl függõen
+		glm::vec3 n = glm::normalize(glm::vec3(cosf(a), (r_low - r_high) / h, sinf(a)));
+		m_vb_cone.AddData(1, n.x, n.y, n.z);
+		m_vb_cone.AddData(1, n.x, n.y, n.z);
+
+		// a textúrakoordináták: a textúrát sávokra bonta húzzúk rá a palástunkra
+		m_vb_cone.AddData(2, 2 * (float)i / N, 1);
+		m_vb_cone.AddData(2, 2 * (float)i / N, 0);
+	}
+
+	// vertex indexek a háromszögekhez
+	// palást = N darab négyzet, egy négyzet = két háromszög
+	for (int i = 0; i < N; ++i) {
+		m_vb_cone.AddIndex(2 * i, 2 * i + 1, 2 * i + 2);
+		m_vb_cone.AddIndex(2 * i + 1, 2 * i + 3, 2 * i + 2);
+	}
+
+	m_vb_cone.InitBuffers();
+
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	// CSONKAKÚP TETEJE: KÖRLAP
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	m_vb_cone_top.AddAttribute(0, 3);
+	m_vb_cone_top.AddAttribute(1, 3);
+	m_vb_cone_top.AddAttribute(2, 2);
+
+	// egy vertex középre, y = h magasságba
+	m_vb_cone_top.AddData(0, 0, h, 0);
+	m_vb_cone_top.AddData(1, 0, 1, 0);
+	m_vb_cone_top.AddData(2, 0.5, 0.5);
+
+	// N+1 vertex a a körvonalon
+	for (int i = 0; i <= N; ++i) {
+
+		float a = i * 2 * f_PI / N;
+		// y = h magasságban, r_high sugarú körvonal mentén
+		m_vb_cone_top.AddData(0, r_high * cosf(a), h, r_high * sinf(a));
+		// a normálvektorok minden vextex esetén felfelé mutatnak
+		m_vb_cone_top.AddData(1, 0, 1, 0);
+		// a textúra közepébõl kivágunk egy 0.5 sugarú körlapot
+		m_vb_cone_top.AddData(2, 0.5 * cosf(a) + 0.5, 0.5 * sinf(a) + 0.5);
+	}
+	// indexek a körlap megalkotásához (N darab háromszög)
+	for (int i = 0; i < N; ++i) {
+		m_vb_cone_top.AddIndex(0, i + 2, i + 1);
+	}
+
+	m_vb_cone_top.InitBuffers();
+
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	// GÖMB
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	m_vb_sphere.AddAttribute(0, 3);
+	m_vb_sphere.AddAttribute(1, 3);
+	m_vb_sphere.AddAttribute(2, 2);
+
+	// N*M-es rács bejárása, a vertexek (x,y,z) koordinátáját a GetUV függvénnyel kapjuk
+	for (int i = 0; i <= N; ++i) {
+		for (int j = 0; j <= M; ++j) {
+			float u = i / (float)N;
+			float v = j / (float)M;
+			// pozíció: gömbi koordináták
+			m_vb_sphere.AddData(0, GetUV(u, v));
+			// szerencsékre gömb esetén ugyanaz a normálvektor:
+			// az origóból a gömbfelszín irányába mutató irányvektor
+			// de ez csak a gömbnél van így! (Lásd fentebb a csonkakúp palást, ott másképp kellett számolnunk!)
+			m_vb_sphere.AddData(1, GetUV(u, v));
+			// a textúra-koordináták megyeznek az (u,v) pont koordinátájával
+			// (kivéve, hogy a kép rossz irányba állna)
+			m_vb_sphere.AddData(2, 1 - u, v);
+		}
+	}
+	// az indexek meghatározása minden négyzethez (N*M négyzetünk van)
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < M; ++j) {
+			// az egyik háromszög a négyzet egyik fele
+			m_vb_sphere.AddIndex((i)+(j)*		(N + 1),
+				(i)+(j + 1) *	(N + 1),
+				(i + 1) + (j) *		(N + 1)
+			);
+			// a másik háromszög a négyzet másik fele
+			m_vb_sphere.AddIndex((i + 1) + (j) *		(N + 1),
+				(i)+(j + 1) *	(N + 1),
+				(i + 1) + (j + 1) *	(N + 1)
+			);
+		}
+	}
+
+	m_vb_sphere.InitBuffers();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// talaj kirajzolása
+void GameInstance::DrawGround() {
+
+	glm::mat4 matWorld = glm::mat4(1.0f); // nem változtatunk rajta
+	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
+	glm::mat4 mvp = m_camera.GetViewProj() *matWorld;
+
+	m_program.SetUniform("world", matWorld);
+	m_program.SetUniform("worldIT", matWorldIT);
+	m_program.SetUniform("MVP", mvp);
+
+	m_program.SetTexture("texImage", 0, m_groundTextureID);
+	m_program.SetTexture("texNormal", 1, m_groundNormalMapID);
+
+	m_vb_ground.On();
+	m_vb_ground.DrawIndexed(GL_TRIANGLES, 0, 6, 0);
+	m_vb_ground.Off();
+
+}
+
+// csonkakúp palást kirajzolása
+void GameInstance::DrawCone() {
+
+	glm::mat4 matWorld = glm::mat4(1.0f); // nem mozdítjuk el
+	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
+	glm::mat4 mvp = m_camera.GetViewProj() *matWorld;
+
+	m_program.SetUniform("world", matWorld);
+	m_program.SetUniform("worldIT", matWorldIT);
+	m_program.SetUniform("MVP", mvp);
+
+	m_program.SetTexture("texImage", 0, m_coneTextureID);
+	m_program.SetTexture("texNormal", 1, m_coneNormalMapID);
+
+	m_vb_cone.On();
+	m_vb_cone.DrawIndexed(GL_TRIANGLES, 0, 2 * 3 * N, 0);
+	m_vb_cone.Off();
+
+}
+
+// csonkakúp tetejének kirajzolása
+void GameInstance::DrawConeTop() {
+
+	glm::mat4 matWorld = glm::mat4(1.0f); // nem mozdítjuk el
+	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
+	glm::mat4 mvp = m_camera.GetViewProj() *matWorld;
+
+	m_program.SetUniform("world", matWorld);
+	m_program.SetUniform("worldIT", matWorldIT);
+	m_program.SetUniform("MVP", mvp);
+
+	m_program.SetTexture("texImage", 0, m_topTextureID);
+	m_program.SetTexture("texNormal", 1, m_topNormalMapID);
+
+	m_vb_cone_top.On();
+	m_vb_cone_top.DrawIndexed(GL_TRIANGLES, 0, 3 * N, 0);
+	m_vb_cone_top.Off();
+
+}
+
+void GameInstance::DrawSuzanne() {
+
+	// kétszeresére nagyítjuk és eltoljuk
+	glm::mat4 matWorld = glm::translate(glm::vec3(5.0f, 5.0f, 0.0f)) * glm::scale(glm::vec3(2.0f, 2.0f, 2.0f));
+	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
+	glm::mat4 mvp = m_camera.GetViewProj() *matWorld;
+
+	m_program.SetUniform("world", matWorld);
+	m_program.SetUniform("worldIT", matWorldIT);
+	m_program.SetUniform("MVP", mvp);
+
+	m_program.SetTexture("texImage", 0, m_suzanneTextureID);
+	m_program.SetTexture("texNormal", 1, m_suzanneNormalMapID);
+
+	m_mesh->draw();
+
+}
+
+void GameInstance::DrawEarth() {
+
+	// háromszorosára nagyítjuk és eltoljuk
+	glm::mat4 matWorld = glm::translate(glm::vec3(-6.0f, 6.0f, 0.0f)) * glm::scale(glm::vec3(3.0f, 3.0f, 3.0f));
+	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
+	glm::mat4 mvp = m_camera.GetViewProj() *matWorld;
+
+	m_program.SetUniform("world", matWorld);
+	m_program.SetUniform("worldIT", matWorldIT);
+	m_program.SetUniform("MVP", mvp);
+
+	m_program.SetTexture("texImage", 0, m_earthTextureID);
+	m_program.SetTexture("texNormal", 1, m_earthNormalMapID);
+
+	m_vb_sphere.On();
+	m_vb_sphere.DrawIndexed(GL_TRIANGLES, 0, 2 * 3 * N * M, 0);
+	m_vb_sphere.Off();
+
+}
+
+void GameInstance::DrawSun(glm::vec3 light_pos) {
+
+	// a napot jelképezõ gömböt (lekicsinyítve) oda helyezzük, ahol a fényforrásunk is van
+	glm::mat4 matWorld = glm::translate<float>(light_pos) * glm::scale(glm::vec3(0.2f, 0.2f, 0.2f));
+
+	glm::mat4 mvp = m_camera.GetViewProj() *matWorld;
+	m_program.SetUniform("MVP", mvp);
+
+	m_program.SetUniform("is_sun", true); // értesítjük a shadert, hogy a most kirajzolandó objektum a "nap":
+										  // rá ne hasson a megvilágítás, hanem legyen mindig konstans sárga (lásd a fregmens shader kódját)
+	m_vb_sphere.On();
+	m_vb_sphere.DrawIndexed(GL_TRIANGLES, 0, 2 * 3 * N * M, 0);
+	m_vb_sphere.Off();
+	m_program.SetUniform("is_sun", false); // ne felejtsük el visszaállítani...
+
+}

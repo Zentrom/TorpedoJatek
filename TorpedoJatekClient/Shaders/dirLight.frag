@@ -1,22 +1,17 @@
 #version 130
 
-// pipeline-ból bejövõ per-fragment attribútumok
 in vec3 vs_out_pos;
-in vec3 vs_out_normal;
-in vec2 vs_out_tex0;
+in vec3 vs_out_color;
+//in vec3 vs_out_normal;
+//in vec2 vs_out_tex0;
 
-// kimenõ érték - a fragment színe
 out vec4 fs_out_col;
-
-//
-// uniform változók
-//
 
 uniform bool use_texture = true;
 uniform bool use_normal_map = true;
 uniform bool use_light = false;
 
-uniform bool is_sun = false; // a "nap" kirajzolásánál járunk-e
+uniform bool is_sun = false;
 
 uniform bool is_ambient = true;
 uniform bool is_diffuse = true;
@@ -37,8 +32,8 @@ uniform vec4 Kd = vec4(1, 1, 1, 1);
 uniform vec4 Ks = vec4(0.5, 0.5, 0.5, 1);
 uniform float specular_power = 64;
 
-uniform sampler2D texImage;
-uniform sampler2D texNormal;
+//uniform sampler2D texImage;
+//uniform sampler2D texNormal;
 
 
 // Segédfüggvény: feltéve hogy a és b vektorok nem esnek egy egyenesbe,
@@ -85,19 +80,20 @@ void main()
 	// A normalmapet tartalmazó kép RGB értékei 0-tól 1-ig terjedõ számok 
 	// A normálisok XYZ értékei viszont -1-tõl 1-ig terjedõ számok
 	// szükséges transzformáció: normal = 2*color-1
-	vec3 normalFromMap = 2*( (texture(texNormal, vs_out_tex0.st)).xyz ) - 1;
+	//vec3 normalFromMap = 2*( (texture(texNormal, vs_out_tex0.st)).xyz ) - 1;
 
-	vec3 normal;
-	if(use_normal_map){
-		normal = normalTransform(vs_out_normal, normalFromMap);
-	} else {
-		normal = normalize(vs_out_normal);
-	}
+	//vec3 normal;
+	//if(use_normal_map){
+	//	normal = normalTransform(vs_out_normal, normalFromMap);
+	//} else {
+	//	normal = normalize(vs_out_normal);
+	//}
 
 	//
 	// ambiens szín számítása
 	//
-	vec4 ambient = La * Ka;
+	vec4 ambient = vec4(1.0f);
+	 //La * Ka;
 
 	//
 	// diffúz szín számítása
@@ -109,9 +105,9 @@ void main()
 	    - clamp: http://www.opengl.org/sdk/docs/manglsl/xhtml/clamp.xml
 	*/
 
-	vec3 toLight = normalize(light_pos - vs_out_pos);
-	float di = clamp( dot( toLight, normal), 0.0f, 1.0f );
-	vec4 diffuse = Ld*Kd*di;
+	//vec3 toLight = normalize(light_pos - vs_out_pos);
+	//float di = clamp( dot( toLight, normal), 0.0f, 1.0f );
+	//vec4 diffuse = Ld*Kd*di;
 
 	//
 	// fényfoltképzõ szín
@@ -121,32 +117,33 @@ void main()
 		- reflect: http://www.opengl.org/sdk/docs/manglsl/xhtml/reflect.xml
 		- power: http://www.opengl.org/sdk/docs/manglsl/xhtml/pow.xml
 	*/
-	vec4 specular = vec4(0);
+	//vec4 specular = vec4(0);
 
-	if ( di > 0 ) // spekuláris komponens csak akkor van, ha diffúz is
-	{
-		vec3 e = normalize( eye_pos - vs_out_pos );
-		vec3 r = reflect( -toLight, normal );
-		float si = pow( clamp( dot(e, r), 0.0f, 1.0f ), specular_power );
-		specular = Ls*Ks*si;
-	}
+	//if ( di > 0 ) // spekuláris komponens csak akkor van, ha diffúz is
+	//{
+	//	vec3 e = normalize( eye_pos - vs_out_pos );
+	//	vec3 r = reflect( -toLight, normal );
+	//	float si = pow( clamp( dot(e, r), 0.0f, 1.0f ), specular_power );
+	//	specular = Ls*Ks*si;
+	//}
 
 	// ha nem használunk fényeket, akkor minden (a "nap" kivételével) fehér
 	vec4 light = vec4(1,1,1,1);
 
 	// ha van fényünk, melyik komponenssel számoljunk, és melyiket nullázzuk ki?
-	if(use_light){
-		light =
-				(is_ambient ?  1 : 0) * ambient +
-				(is_diffuse ?  1 : 0) * diffuse +
-				(is_specular ? 1 : 0) * specular;
-	}
+	//if(use_light){
+	//	light =
+	//			(is_ambient ?  1 : 0) * ambient +
+	//			(is_diffuse ?  1 : 0) * diffuse +
+	//			(is_specular ? 1 : 0) * specular;
+	//}
 
-	if (is_sun){
+	//if (is_sun){
 		// a "napot" mindig ugyanolyan konstans sárgára színezzük, nem számolunk rá fényeket
-		fs_out_col = vec4(1, 1, 0.2, 1);
-	} else {
-		fs_out_col = light * ( use_texture ? texture(texImage, vs_out_tex0.st) : vec4(1.0f) );
-	}
+	//	fs_out_col = vec4(1, 1, 0.2, 1);
+	//} else {
+	//	fs_out_col = light * ( use_texture ? texture(texImage, vs_out_tex0.st) : vec4(1.0f) );
+	//}
+	fs_out_col = vec4(vs_out_color,1.0f);
 
 }

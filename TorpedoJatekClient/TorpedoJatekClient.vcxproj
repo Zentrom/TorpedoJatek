@@ -19,7 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameInstance.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Source\Frontend\Mountain.cpp" />
+    <ClCompile Include="Source\Frontend\PlayTile.cpp" />
     <ClCompile Include="TorpedoJatekClient.cpp" />
     <ClCompile Include="Utils\gCamera.cpp" />
     <ClCompile Include="Utils\gShaderProgram.cpp" />
@@ -28,6 +31,9 @@
     <ClCompile Include="Utils\ObjParser_OGL3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameInstance.h" />
+    <ClInclude Include="Source\Frontend\Mountain.h" />
+    <ClInclude Include="Source\Frontend\PlayTile.h" />
     <ClInclude Include="TorpedoJatekClient.h" />
     <ClInclude Include="Utils\gCamera.h" />
     <ClInclude Include="Utils\GLUtils.hpp" />
@@ -51,6 +57,10 @@
     <Image Include="Resources\Textures\ground_texture.bmp" />
     <Image Include="Resources\Textures\suzanne_texture.bmp" />
     <Image Include="Resources\Textures\top_texture.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Utils\Logs\temp.txt" />
+    <Text Include="Utils\Logs\todo.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F7A21611-DC56-43E4-9080-AE5095F30900}</ProjectGuid>
