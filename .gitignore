@@ -13,6 +13,7 @@
 *.userprefs
 
 # Build results
+BuildPics/
 [Bb]uilds/
 VSgenerated/
 [Dd]ebug/

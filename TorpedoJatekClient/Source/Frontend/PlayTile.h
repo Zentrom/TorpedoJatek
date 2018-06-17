@@ -18,10 +18,13 @@ public:
 	~PlayTile(void);
 
 	void Init();
-	void Draw(gCamera &m_camera, gShaderProgram &m_program);
+	void Draw(gCamera &m_camera,gShaderProgram &sh_playtile);
 
 protected:
 	gVertexBuffer	vb_playtile;
+	
+	glm::vec3 tileState = glm::vec3(0, 0, 1); //3kek,2sarga,1piros
+
 	glm::vec3 playtile_translate = glm::vec3(0, 0, 0);
 	float playtile_rotate = 0.0f;
 	glm::vec3 playtile_rotate_angle = glm::vec3(0, 1.0f, 0);

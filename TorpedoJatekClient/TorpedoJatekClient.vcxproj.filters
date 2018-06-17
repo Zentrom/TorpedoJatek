@@ -40,6 +40,9 @@
     <Filter Include="Header Files\Frontend">
       <UniqueIdentifier>{4d2ea9ae-299a-43df-b767-71521301d820}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\Logs\Info">
+      <UniqueIdentifier>{c96981f2-ffdf-4f1d-bcca-837410406d18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -71,6 +74,12 @@
     </ClCompile>
     <ClCompile Include="Source\Frontend\PlayTile.cpp">
       <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Ship.cpp">
+      <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Backend\GameLogic.cpp">
+      <Filter>Source Files\Backend</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -104,12 +113,24 @@
     <ClInclude Include="Source\Frontend\PlayTile.h">
       <Filter>Header Files\Frontend</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Frontend\Ship.h">
+      <Filter>Header Files\Frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Backend\GameLogic.h">
+      <Filter>Header Files\Backend</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\dirLight.frag">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\dirLight.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\playTile.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\playTile.frag">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -151,6 +172,12 @@
     </Text>
     <Text Include="Utils\Logs\todo.txt">
       <Filter>Utils\Logs</Filter>
+    </Text>
+    <Text Include="..\Bstuff\Info\changelog.txt">
+      <Filter>Utils\Logs\Info</Filter>
+    </Text>
+    <Text Include="..\Bstuff\Info\controls001.txt">
+      <Filter>Utils\Logs\Info</Filter>
     </Text>
   </ItemGroup>
 </Project>

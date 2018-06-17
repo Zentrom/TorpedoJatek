@@ -38,6 +38,6 @@ private:
 	const unsigned int majorVersion = 0;
 	const unsigned int betaVersion = 0;
 	const unsigned int alphaVersion = 0;
-	const char experimentalVersion = 'b';
+	const char experimentalVersion = 'c';
 };
 

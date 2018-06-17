@@ -1,3 +1,4 @@
 -Kirajzolásnál a shaderekt,kamerát ugykell átadni hogy ne csináljon duplikátumot.
--Sea,Fleet osztályok
+-Sea,Fleet,ground-terrain osztályok
 -sok beégetett érték van a playtileok létrehozásánál gameinstancebe
+-Cleanelést használni gameinstanceba.

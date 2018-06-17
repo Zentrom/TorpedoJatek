@@ -21,8 +21,10 @@
   <ItemGroup>
     <ClCompile Include="GameInstance.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Source\Backend\GameLogic.cpp" />
     <ClCompile Include="Source\Frontend\Mountain.cpp" />
     <ClCompile Include="Source\Frontend\PlayTile.cpp" />
+    <ClCompile Include="Source\Frontend\Ship.cpp" />
     <ClCompile Include="TorpedoJatekClient.cpp" />
     <ClCompile Include="Utils\gCamera.cpp" />
     <ClCompile Include="Utils\gShaderProgram.cpp" />
@@ -32,8 +34,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameInstance.h" />
+    <ClInclude Include="Source\Backend\GameLogic.h" />
     <ClInclude Include="Source\Frontend\Mountain.h" />
     <ClInclude Include="Source\Frontend\PlayTile.h" />
+    <ClInclude Include="Source\Frontend\Ship.h" />
     <ClInclude Include="TorpedoJatekClient.h" />
     <ClInclude Include="Utils\gCamera.h" />
     <ClInclude Include="Utils\GLUtils.hpp" />
@@ -45,6 +49,8 @@
   <ItemGroup>
     <None Include="Shaders\dirLight.frag" />
     <None Include="Shaders\dirLight.vert" />
+    <None Include="Shaders\playTile.frag" />
+    <None Include="Shaders\playTile.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Normals\cylinder_normal.bmp" />
@@ -59,6 +65,8 @@
     <Image Include="Resources\Textures\top_texture.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="..\Bstuff\Info\changelog.txt" />
+    <Text Include="..\Bstuff\Info\controls001.txt" />
     <Text Include="Utils\Logs\temp.txt" />
     <Text Include="Utils\Logs\todo.txt" />
   </ItemGroup>
