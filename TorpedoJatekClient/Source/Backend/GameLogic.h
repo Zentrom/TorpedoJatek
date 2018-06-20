@@ -14,6 +14,8 @@
 #include "../../Utils/gShaderProgram.h"
 #include "../../Utils/gCamera.h"
 
+#include "ClientSocket.h"
+
 class GameLogic
 {
 public:
@@ -27,6 +29,8 @@ public:
 	
 	int* getActiveTiles();
 protected:
+	ClientSocket mySocket;
+
 	int ProcessString(std::string coord);
 	bool CheckString(std::string coord);
 	bool CheckTile(int tile);
@@ -36,7 +40,7 @@ protected:
 	std::string output="Torpedo Jatek";
 	std::string ship1PlaceText = "Where do you want to place your ship?(a1-g7)";
 	std::string shipFPlaceText = "Where do you want the front of the ship to be?(a1-g7)";
-	std::string shipBPlaceText = "Where do you want the back of the ship to be?/nChoices are:";
+	std::string shipBPlaceText = "Where do you want the back of the ship to be?\nChoices are:";
 
 	std::string shipFront;
 	std::string shipBack;

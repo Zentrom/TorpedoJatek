@@ -1,4 +1,12 @@
 -Kirajzolásnál a shaderekt,kamerát ugykell átadni hogy ne csináljon duplikátumot.
 -Sea,Fleet,ground-terrain osztályok
--sok beégetett érték van a playtileok létrehozásánál gameinstancebe
+-sok beégetett érték van a playtileok létrehozásánál gameinstancebe,gamelogikot szétbontani
 -Cleanelést használni gameinstanceba.
+- this-> nemkell annyira használni
+-servernél a kivételeket lekezelni.
+-lehessen shipet leakni Place2Ship,stb-vel,grafikába tilebegin-tileend
+-std::array-t használni ahol mûködik rendesen a comparison
+
+-TileProcassable nemnézi pl a (122-2)=120 vagyis b0-t
+
+OpenAl vagy SDLAudio(havan 3d) hangoknak

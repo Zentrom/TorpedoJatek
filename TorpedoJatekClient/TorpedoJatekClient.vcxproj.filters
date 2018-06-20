@@ -81,6 +81,9 @@
     <ClCompile Include="Source\Backend\GameLogic.cpp">
       <Filter>Source Files\Backend</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Backend\ClientSocket.cpp">
+      <Filter>Source Files\Backend</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\gCamera.h">
@@ -117,6 +120,9 @@
       <Filter>Header Files\Frontend</Filter>
     </ClInclude>
     <ClInclude Include="Source\Backend\GameLogic.h">
+      <Filter>Header Files\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Backend\ClientSocket.h">
       <Filter>Header Files\Backend</Filter>
     </ClInclude>
   </ItemGroup>

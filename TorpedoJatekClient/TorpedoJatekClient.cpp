@@ -198,6 +198,6 @@ void TorpedoJatekClient::exitProgram()
 {
 	SDL_Quit();
 
-	std::cout << "Kilépéshez nyomj meg egy billentyût..." << std::endl;
+	std::cout << "Press a key to exit..." << std::endl;
 	std::cin.get();
 }

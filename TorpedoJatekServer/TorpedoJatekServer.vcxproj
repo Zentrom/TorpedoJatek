@@ -18,64 +18,10 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="GameInstance.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Source\Backend\ClientSocket.cpp" />
-    <ClCompile Include="Source\Backend\GameLogic.cpp" />
-    <ClCompile Include="Source\Frontend\Mountain.cpp" />
-    <ClCompile Include="Source\Frontend\PlayTile.cpp" />
-    <ClCompile Include="Source\Frontend\Ship.cpp" />
-    <ClCompile Include="TorpedoJatekClient.cpp" />
-    <ClCompile Include="Utils\gCamera.cpp" />
-    <ClCompile Include="Utils\gShaderProgram.cpp" />
-    <ClCompile Include="Utils\gVertexBuffer.cpp" />
-    <ClCompile Include="Utils\Mesh_OGL3.cpp" />
-    <ClCompile Include="Utils\ObjParser_OGL3.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="GameInstance.h" />
-    <ClInclude Include="Source\Backend\ClientSocket.h" />
-    <ClInclude Include="Source\Backend\GameLogic.h" />
-    <ClInclude Include="Source\Frontend\Mountain.h" />
-    <ClInclude Include="Source\Frontend\PlayTile.h" />
-    <ClInclude Include="Source\Frontend\Ship.h" />
-    <ClInclude Include="TorpedoJatekClient.h" />
-    <ClInclude Include="Utils\gCamera.h" />
-    <ClInclude Include="Utils\GLUtils.hpp" />
-    <ClInclude Include="Utils\gShaderProgram.h" />
-    <ClInclude Include="Utils\gVertexBuffer.h" />
-    <ClInclude Include="Utils\Mesh_OGL3.h" />
-    <ClInclude Include="Utils\ObjParser_OGL3.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders\dirLight.frag" />
-    <None Include="Shaders\dirLight.vert" />
-    <None Include="Shaders\playTile.frag" />
-    <None Include="Shaders\playTile.vert" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resources\Normals\cylinder_normal.bmp" />
-    <Image Include="Resources\Normals\gomb_normal.bmp" />
-    <Image Include="Resources\Normals\ground_normal.bmp" />
-    <Image Include="Resources\Normals\suzanne_normal.bmp" />
-    <Image Include="Resources\Normals\top_normal.bmp" />
-    <Image Include="Resources\Textures\cylinder_texture.bmp" />
-    <Image Include="Resources\Textures\gomb_texture.bmp" />
-    <Image Include="Resources\Textures\ground_texture.bmp" />
-    <Image Include="Resources\Textures\suzanne_texture.bmp" />
-    <Image Include="Resources\Textures\top_texture.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\Bstuff\Info\changelog.txt" />
-    <Text Include="..\Bstuff\Info\controls001.txt" />
-    <Text Include="Utils\Logs\temp.txt" />
-    <Text Include="Utils\Logs\todo.txt" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F7A21611-DC56-43E4-9080-AE5095F30900}</ProjectGuid>
+    <ProjectGuid>{60D42685-0D16-4554-A198-25A6469BF995}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>TorpedoJatekClient</RootNamespace>
+    <RootNamespace>TorpedoJatekServer</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -125,31 +71,31 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)\..\OGLPack\include;$(IncludePath);</IncludePath>
-    <LibraryPath>$(ProjectDir)\..\OGLPack\lib\x86;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\Builds\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>VSgenerated\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)\..\OGLPack\include;$(IncludePath);</IncludePath>
+    <LibraryPath>$(ProjectDir)\..\OGLPack\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)\..\OGLPack\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\..\OGLPack\lib\x64;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\Builds\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>VSgenerated\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)\..\OGLPack\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\..\OGLPack\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)\..\OGLPack\include;$(IncludePath);</IncludePath>
-    <LibraryPath>$(ProjectDir)\..\OGLPack\lib\x86;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\Builds\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>VSgenerated\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)\..\OGLPack\include;$(IncludePath);</IncludePath>
+    <LibraryPath>$(ProjectDir)\..\OGLPack\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)\..\OGLPack\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\..\OGLPack\lib\x64;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\Builds\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>VSgenerated\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)\..\OGLPack\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\..\OGLPack\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -162,7 +108,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;glew32.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -176,7 +122,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;glew32.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -194,7 +140,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;glew32.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -212,9 +158,16 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;glew32.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="TorpedoJatekServer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TorpedoJatekServer.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TorpedoJatekClient", "TorpedoJatekClient\TorpedoJatekClient.vcxproj", "{F7A21611-DC56-43E4-9080-AE5095F30900}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TorpedoJatekServer", "TorpedoJatekServer\TorpedoJatekServer.vcxproj", "{60D42685-0D16-4554-A198-25A6469BF995}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{F7A21611-DC56-43E4-9080-AE5095F30900}.Release|x64.Build.0 = Release|x64
 		{F7A21611-DC56-43E4-9080-AE5095F30900}.Release|x86.ActiveCfg = Release|Win32
 		{F7A21611-DC56-43E4-9080-AE5095F30900}.Release|x86.Build.0 = Release|Win32
+		{60D42685-0D16-4554-A198-25A6469BF995}.Debug|x64.ActiveCfg = Debug|x64
+		{60D42685-0D16-4554-A198-25A6469BF995}.Debug|x64.Build.0 = Debug|x64
+		{60D42685-0D16-4554-A198-25A6469BF995}.Debug|x86.ActiveCfg = Debug|Win32
+		{60D42685-0D16-4554-A198-25A6469BF995}.Debug|x86.Build.0 = Debug|Win32
+		{60D42685-0D16-4554-A198-25A6469BF995}.Release|x64.ActiveCfg = Release|x64
+		{60D42685-0D16-4554-A198-25A6469BF995}.Release|x64.Build.0 = Release|x64
+		{60D42685-0D16-4554-A198-25A6469BF995}.Release|x86.ActiveCfg = Release|Win32
+		{60D42685-0D16-4554-A198-25A6469BF995}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

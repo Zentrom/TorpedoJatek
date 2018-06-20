@@ -1,4 +1,5 @@
 
+
 #include "GameLogic.h"
 
 #include "../../Utils/gCamera.h"
@@ -23,11 +24,14 @@ void GameLogic::Init()
 	this->ConnectionSetup();
 
 	//this->PlaceShips();
+
+	mySocket.SendFleet(this->activeTiles);
 }
 
 
 void GameLogic::ConnectionSetup()
 {
+	
 	this->output = "Establishing connection.";
 	std::cout << this->output << std::endl;
 
@@ -38,6 +42,9 @@ void GameLogic::ConnectionSetup()
 	this->output = "Server port:";
 	std::cout << this->output << std::endl;
 	//std::cin >> this->port;
+
+	
+	mySocket.Init();
 }
 
 void GameLogic::PlaceShips()
@@ -87,47 +94,59 @@ void GameLogic::PlaceShips()
 								tmpBack[3] = ProcessTile(tmpTile - 2);
 								tmpMiddle[3] = tmpTile - 1;
 						}
+						bool arrayHasElem = false;
+						for (int i = 0; i < 4; i++) {
+							if (tmpBack[i] != " " && tmpMiddle[i]!=0) { arrayHasElem = true; break; }
+						}
+						if (arrayHasElem) {
+							bool tmpFound = false;
+							int midIndex = 0;
+							do {
+								std::cout << this->shipBPlaceText << tmpBack[0] << tmpBack[1] << tmpBack[2] << tmpBack[3] << std::endl;
+								std::cin >> this->shipBack;
 
-						bool tmpFound = false;
-						int midIndex = 0;
-						do {
-							std::cout << this->shipBPlaceText << tmpBack[0] << tmpBack[1] << tmpBack[2] << tmpBack[3] << std::endl;
-							std::cin >> this->shipBack;
 
+								for (int i = 0; i < 4; i++) {
+									if (this->shipBack == tmpBack[i]) {
+										tmpFound = true;
+										midIndex = i;
+										break;
+									}
+								}
+							} while (!tmpFound);
 
-							for (int i = 0; i < 4; i++) {
-								if (this->shipBack == tmpBack[i]) {
-									tmpFound = true;
-									midIndex = i;
+							for (int i = 0; i < this->activeTileCount; i++) {
+								if (this->activeTiles[i] == 0) {
+									this->activeTiles[i] = tmpTile;
 									break;
 								}
 							}
-						} while (!tmpFound);
-
-						for (int i = 0; i < this->activeTileCount; i++) {
-							if (this->activeTiles[i] == 0) {
-								this->activeTiles[i] = tmpTile;
-								break;
+							tmpTile = ProcessString(this->shipBack);
+							for (int i = 0; i < this->activeTileCount; i++) {
+								if (this->activeTiles[i] == 0) {
+									this->activeTiles[i] = tmpTile;
+									break;
+								}
 							}
-						}
-						tmpTile = ProcessString(this->shipBack);
-						for (int i = 0; i < this->activeTileCount; i++) {
-							if (this->activeTiles[i] == 0) {
-								this->activeTiles[i] = tmpTile;
-								break;
+							for (int i = 0; i < this->activeTileCount; i++) {
+								if (this->activeTiles[i] == 0) {
+									this->activeTiles[i] = tmpMiddle[midIndex];
+									break;
+								}
 							}
+							ship3count--;
+							std::cout << "Ship placed!" << std::endl;
 						}
-						for (int i = 0; i < this->activeTileCount; i++) {
-							if (this->activeTiles[i] == 0) {
-								this->activeTiles[i] = tmpMiddle[midIndex];
-								break;
-							}
+						else {
+							std::cout << "There aren't any free tiles for the back(middle) of this ship!" << std::endl;
 						}
-						ship3count--;
 						for (int i = 0; i < 4; i++) {
 							tmpBack[i] = " ";
 							tmpMiddle[i] = 0;
 						}
+					}
+					else {
+						std::cout << "Tile is not empty!" << std::endl;
 					}
 				}
 			}
@@ -158,39 +177,51 @@ void GameLogic::PlaceShips()
 							if (CheckTile(tmpTile - 1))
 								tmpBack[3] = ProcessTile(tmpTile - 1);
 						}
+						bool arrayHasElem = false;
+						for (int i = 0; i < 4; i++) {
+							if (tmpBack[i] != " ") { arrayHasElem = true; break; }
+						}
+						if (arrayHasElem) {
+							bool tmpFound = false;
+							do {
+								std::cout << this->shipBPlaceText << tmpBack[0] << " " << tmpBack[1] << " " << tmpBack[2] << " " << tmpBack[3] << std::endl;
+								std::cin >> this->shipBack;
 
-						bool tmpFound = false;
-						do {
-							std::cout << this->shipBPlaceText<< tmpBack[0] << tmpBack[1] << tmpBack[2] << tmpBack[3] << std::endl;
-							std::cin >> this->shipBack;
 
-						
-							for (int i = 0; i < 4; i++) {
-								if(this->shipBack==tmpBack[i]){
-									tmpFound= true;
+								for (int i = 0; i < 4; i++) {
+									if (this->shipBack == tmpBack[i]) {
+										tmpFound = true;
+										break;
+									}
+								}
+							} while (!tmpFound);
+
+							for (int i = 0; i < this->activeTileCount; i++) {
+								if (this->activeTiles[i] == 0) {
+									this->activeTiles[i] = tmpTile;
 									break;
 								}
 							}
-						} while (!tmpFound);
-
-						for (int i = 0; i < this->activeTileCount; i++) {
-							if (this->activeTiles[i] == 0) {
-								this->activeTiles[i] = tmpTile;
-								break;
+							tmpTile = ProcessString(this->shipBack);
+							for (int i = 0; i < this->activeTileCount; i++) {
+								if (this->activeTiles[i] == 0) {
+									this->activeTiles[i] = tmpTile;
+									break;
+								}
 							}
+							ship2count--;
+							std::cout << "Ship placed!" << std::endl;
 						}
-						tmpTile = ProcessString(this->shipBack);
-						for (int i = 0; i < this->activeTileCount; i++) {
-							if (this->activeTiles[i] == 0) {
-								this->activeTiles[i] = tmpTile;
-								break;
-							}
+						else {
+							std::cout << "There aren't any free tiles for the back of this ship!" << std::endl;
 						}
-						ship2count--;
 						tmpBack[0] = " ";
 						tmpBack[1] = " ";
 						tmpBack[2] = " ";
 						tmpBack[3] = " ";
+					}
+					else {
+						std::cout << "Tile is not empty!" << std::endl;
 					}
 				}
 			}
@@ -201,11 +232,10 @@ void GameLogic::PlaceShips()
 				std::cin >> this->shipFront;
 
 				this->shipBack = this->shipFront;
+
 				if (CheckString(this->shipFront)) {
 					tmpTile = ProcessString(this->shipFront);
-					
 					if (CheckTile(tmpTile)) {
-
 						for (int i = 0; i < this->activeTileCount; i++) {
 							if (this->activeTiles[i] == 0) {
 								this->activeTiles[i] = tmpTile;
@@ -213,6 +243,10 @@ void GameLogic::PlaceShips()
 							}
 						}
 						ship1count--;
+						std::cout << "Ship placed!" << std::endl;
+					}
+					else {
+						std::cout << "Tile is not empty!" << std::endl;
 					}
 				}
 			}
@@ -221,6 +255,8 @@ void GameLogic::PlaceShips()
 			std::cout << "You need to choose between 1-3!" << std::endl;
 			break;
 		}
+
+		
 
 	} while (this->ship3count!=0 ||this->ship2count!=0 || this->ship1count!=0);
 }
@@ -277,10 +313,8 @@ bool GameLogic::CheckString(std::string coord)
 		std::cout << "Incorrect length!(must be 2)" << std::endl;
 		return false;
 	}
-	char tmp[2];
+	char tmp[3];
 	strcpy(tmp,coord.c_str());
-
-	std::cout << tmp[0] << tmp[1];
 
 	if (tmp[0] != 'a' && tmp[0] != 'b' && tmp[0] != 'c' && tmp[0] != 'd' && tmp[0] != 'e' && tmp[0] != 'f' && tmp[0] != 'g') {
 		std::cout << "Incorrect column!(must be a-g)" << std::endl;
@@ -336,12 +370,12 @@ std::string GameLogic::ProcessTile(int tile)
 		break;
 	}
 
-	char rowC;
-	itoa(row, &rowC,10);
+	char rowC[10];
+	_itoa(row, rowC,10);
 
 	std::string result;
 	result.push_back(col);
-	result.push_back(row);
+	result.push_back(rowC[0]);
 
 	return result;
 }
@@ -351,6 +385,10 @@ bool GameLogic::TileProcessable(int tile)
 {
 
 	if(tile>177 || tile< 111){
+		return false;
+	}
+
+	if (tile % 10 == 0) {
 		return false;
 	}
 
