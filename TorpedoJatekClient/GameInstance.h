@@ -7,6 +7,8 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
+#include <SDL_thread.h>
+
 // GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -32,6 +34,8 @@ public:
 	bool Init();
 	void Clean();
 
+	int static threadFunction(void* ptr);
+
 	void Update();
 	void Render();
 
@@ -43,6 +47,8 @@ public:
 	void MouseWheel(SDL_MouseWheelEvent&);
 	void Resize(int, int);
 protected:
+	SDL_Thread* inputThread;
+
 	enum GameState {GAME_WAITING};
 	GameState GAME_STATE = GAME_WAITING;
 	gCamera			m_camera;

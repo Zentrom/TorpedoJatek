@@ -182,7 +182,10 @@
     <Text Include="..\Bstuff\Info\changelog.txt">
       <Filter>Utils\Logs\Info</Filter>
     </Text>
-    <Text Include="..\Bstuff\Info\controls001.txt">
+    <Text Include="Utils\Logs\versionInfo.txt">
+      <Filter>Utils\Logs</Filter>
+    </Text>
+    <Text Include="..\Bstuff\Info\controlsAlpha.txt">
       <Filter>Utils\Logs\Info</Filter>
     </Text>
   </ItemGroup>

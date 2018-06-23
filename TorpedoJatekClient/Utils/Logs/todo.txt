@@ -6,7 +6,15 @@
 -servernél a kivételeket lekezelni.
 -lehessen shipet leakni Place2Ship,stb-vel,grafikába tilebegin-tileend
 -std::array-t használni ahol mûködik rendesen a comparison
+-SDLthread-nél Waitthraed
+-Az ellenfél oldalán fükrözni kell a tileMapet
+-Testelni evolveval mivan ha egyvalaki kilep.(ugyanaz)
+-megoldani hogy server nézze ha valaki kilép,kliens se menjen tovább ha connection problemvan
+Kell szervernél SDL_INIT_EVERYTHING??
+Versioncontrolt szerverbe
 
+-GL_LIGHTS és glFog
 -TileProcassable nemnézi pl a (122-2)=120 vagyis b0-t
 
 OpenAl vagy SDLAudio(havan 3d) hangoknak
+Freetype vagy SDL rtf/ttf betuknek

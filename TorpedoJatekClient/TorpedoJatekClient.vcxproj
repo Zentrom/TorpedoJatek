@@ -68,9 +68,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Bstuff\Info\changelog.txt" />
-    <Text Include="..\Bstuff\Info\controls001.txt" />
+    <Text Include="..\Bstuff\Info\controlsAlpha.txt" />
     <Text Include="Utils\Logs\temp.txt" />
     <Text Include="Utils\Logs\todo.txt" />
+    <Text Include="Utils\Logs\versionInfo.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F7A21611-DC56-43E4-9080-AE5095F30900}</ProjectGuid>

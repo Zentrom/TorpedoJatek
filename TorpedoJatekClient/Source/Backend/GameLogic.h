@@ -15,6 +15,7 @@
 #include "../../Utils/gCamera.h"
 
 #include "ClientSocket.h"
+#include "../Frontend/PlayTile.h"
 
 class GameLogic
 {
@@ -26,8 +27,12 @@ public:
 	//int ActiveTileConverter(std::string tile);
 	void ConnectionSetup();
 	void PlaceShips();
-	
+	void StartMatch(PlayTile *myTiles,PlayTile *enemyTiles);
+
 	int* getActiveTiles();
+
+	int Shoot();
+	int GetShoot();
 protected:
 	ClientSocket mySocket;
 
@@ -36,6 +41,7 @@ protected:
 	bool CheckTile(int tile);
 	std::string ProcessTile(int tile);
 	bool TileProcessable(int tile);
+	int ConvertCoordToTileIndex(int tile);
 
 	std::string output="Torpedo Jatek";
 	std::string ship1PlaceText = "Where do you want to place your ship?(a1-g7)";
@@ -45,8 +51,8 @@ protected:
 	std::string shipFront;
 	std::string shipBack;
 
-	std::string ip;
-	std::string port;
+	std::string ip="127.0.0.1";
+	int port=27015;
 
 	const unsigned int activeTileCount = 16;
 	int activeTiles[16] = {111,163,171,113,145,146,133,143,173,174,122,123,124,135,136,137};			//beégetett!!!!
@@ -58,4 +64,9 @@ protected:
 	int choice = 0;
 
 	char coordShip[2];
+
+	int playerNum;
+	int receivedShoot=99999; //1-win 2-loose
+
+	int processableTile; //statenel 1-piros 2-sarga 3-kek 4-nyert 5-vesztett
 };

@@ -1,0 +1,7 @@
+[RAM Usage] 35 MB
+Backendes
+-Ha debugolni akarsz akkor GameLogic constructorat,ConnectionSetupjaba a ip-port beolvasast,initbe a this->PlaceShips-t kell commentelni.
+-Lehet tobbszor ugyanoda lõni.
+-Ha bármikor leállítasz bármit a vége elõtt akkor a többi nem áll le.
+-A kliens megy szerver nélkül de csak egy végtelen loopba pörög,ugyhogy szerverrel kell tesztelgetni.
+-Itt threadet használ a program input lekezelésére,szerverrel is eza thread kommunikál.

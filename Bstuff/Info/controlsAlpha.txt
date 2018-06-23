@@ -1,0 +1,4 @@
+Move with WASD
+Drag the mouse on the screen to look around.
+Hold Shift to move slower.
+Press ESC to quit.

@@ -37,7 +37,7 @@ private:
 	//jatekverzio
 	const unsigned int majorVersion = 0;
 	const unsigned int betaVersion = 0;
-	const unsigned int alphaVersion = 0;
-	const char experimentalVersion = 'd';
+	const unsigned int alphaVersion = 1;
+	const char experimentalVersion = ' ';
 };
 

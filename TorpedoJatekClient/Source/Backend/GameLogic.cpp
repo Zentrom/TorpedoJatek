@@ -8,9 +8,9 @@
 
 GameLogic::GameLogic(void)
 {
-	//for (int i = 0; i < activeTileCount; i++) {
-	//	activeTiles[i] = 0;
-	//}
+	for (int i = 0; i < activeTileCount; i++) {
+		activeTiles[i] = 0;
+	}
 }
 
 GameLogic::~GameLogic(void)
@@ -19,11 +19,14 @@ GameLogic::~GameLogic(void)
 
 void GameLogic::Init()
 {
-	std::cout << this->output << std::endl << std::endl;
+	std::cout << "-----------------------------------------------" << std::endl
+		<< this->output << std::endl
+		<< "-----------------------------------------------" << std::endl
+		<< std::endl;
 
 	this->ConnectionSetup();
 
-	//this->PlaceShips();
+	this->PlaceShips();
 
 	mySocket.SendFleet(this->activeTiles);
 }
@@ -37,14 +40,14 @@ void GameLogic::ConnectionSetup()
 
 	this->output = "Server ip:";
 	std::cout << this->output << std::endl;
-	//std::cin >> this->ip;
+	std::cin >> this->ip;
 
 	this->output = "Server port:";
 	std::cout << this->output << std::endl;
-	//std::cin >> this->port;
+	std::cin >> this->port;
 
 	
-	mySocket.Init();
+	mySocket.Init(this->ip,this->port);
 }
 
 void GameLogic::PlaceShips()
@@ -261,9 +264,75 @@ void GameLogic::PlaceShips()
 	} while (this->ship3count!=0 ||this->ship2count!=0 || this->ship1count!=0);
 }
 
+void GameLogic::StartMatch(PlayTile *myTiles, PlayTile *enemyTiles)
+{
+	playerNum=mySocket.getPlayerNum();
+	int processableTileState= 10;
+	if (playerNum == 1) {
+		processableTileState=this->Shoot();
+
+		enemyTiles[ConvertCoordToTileIndex(this->processableTile)].setState(processableTileState);
+	}
+
+	while (processableTileState != 4 && processableTileState != 5) {
+		processableTileState = this->GetShoot();
+		myTiles[ConvertCoordToTileIndex(this->processableTile)].setState(processableTileState);
+		if (processableTileState != 4 && processableTileState != 5) {
+			processableTileState = this->Shoot();
+			enemyTiles[ConvertCoordToTileIndex(this->processableTile)].setState(processableTileState);
+		}
+	}
+
+	mySocket.~ClientSocket();
+
+	if ((processableTileState == 4 && playerNum==1) || (processableTileState == 5 && playerNum == 2)) {
+		std::cout << "You've won the match!" << std::endl;
+	}
+	else if ((processableTileState == 5 && playerNum == 1)|| (processableTileState == 4 && playerNum == 2)) {
+		std::cout << "You've lost the match!" << std::endl;
+	}
+	
+
+}
+
 int* GameLogic::getActiveTiles()
 {
 	return activeTiles;
+}
+
+int GameLogic::Shoot()
+{
+	std::string shoot;
+	//int sentData;
+	int newState;
+	while (1) {
+		std::cout << "Where do you want to shoot?(a1-g7)" << std::endl;
+		std::cin >> shoot;
+		if (CheckString(shoot)) {
+			this->processableTile = ProcessString(shoot);
+			newState=mySocket.SendShot(processableTile);
+			break;
+		}
+	}
+
+	std::cout << "Your shot to " << shoot << " was a " << (newState==2? "miss." : (newState==1? "hit!" : "banger!!")) << std::endl;
+
+	return newState;
+}
+
+int GameLogic::GetShoot()
+{
+	std::string shoot;
+	int newState;
+	//int receivedShotTile;
+
+	this->processableTile = mySocket.ReceiveShot();
+	newState = mySocket.getRecShotState();
+
+	shoot = ProcessTile(this->processableTile);
+	std::cout << "Enemy's shot to " << shoot << " was a " << (newState == 2 ? "miss." : (newState == 1 ? "hit!" : "banger!!")) << std::endl;
+
+	return newState;
 }
 
 //converts errorless stringinput in tilecoords
@@ -388,9 +457,16 @@ bool GameLogic::TileProcessable(int tile)
 		return false;
 	}
 
-	if (tile % 10 == 0) {
+	if (tile % 10 == 0 || tile%10 == 8 || tile%10 == 9) {
 		return false;
 	}
 
 	return true;
+}
+
+int GameLogic::ConvertCoordToTileIndex(int tile)
+{
+	int tens= (((tile%100) / 10)-1) * 7;
+	int ones= (tile%10)-1;
+	return (tens+ones);
 }

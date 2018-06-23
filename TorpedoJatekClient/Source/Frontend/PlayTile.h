@@ -19,6 +19,7 @@ public:
 
 	void Init();
 	void Draw(gCamera &m_camera,gShaderProgram &sh_playtile);
+	void setState(int newState);
 
 protected:
 	gVertexBuffer	vb_playtile;

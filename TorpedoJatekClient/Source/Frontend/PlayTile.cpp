@@ -72,3 +72,27 @@ void PlayTile::Draw(gCamera &m_camera,gShaderProgram &sh_playtile)
 	vb_playtile.Off();
 
 }
+
+void PlayTile::setState(int newState)
+{
+	switch (newState) {
+	case 1:
+		this->tileState = glm::vec3(1, 0, 0);
+		break;
+	case 2:
+		this->tileState = glm::vec3(1, 1, 0);
+		break;
+	case 3:
+		this->tileState = glm::vec3(0, 0, 1);
+		break;
+	case 4:
+		this->tileState = glm::vec3(1, 0, 0);
+		break;
+	case 5:
+		this->tileState = glm::vec3(1, 0, 0);
+		break;
+	default:
+		this->tileState = glm::vec3(0, 0, 1);
+		break;
+	}
+}

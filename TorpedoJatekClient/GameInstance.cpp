@@ -41,6 +41,9 @@ bool GameInstance::Init()
 	gameLogic.Init();
 	actPlayTiles = gameLogic.getActiveTiles();
 
+	inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);
+
+
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 
 	//glEnable(GL_CULL_FACE);		// kapcsoljuk be a hatrafele nezo lapok eldobasat
@@ -151,6 +154,25 @@ void GameInstance::Clean()
 	glDeleteTextures(1, &m_earthNormalMapID);*/
 
 	m_program.Clean();
+}
+
+int GameInstance::threadFunction(void *ptr)
+{
+	//int cnt;
+
+	//for (cnt = 0; cnt < 200; ++cnt) {
+	//	printf("\nThread counter: %d", cnt);
+	//	SDL_Delay(50);
+	//}
+
+	GameInstance* pointr= static_cast<GameInstance *>(ptr);
+
+	pointr->gameLogic.StartMatch(pointr->myPlayTiles,pointr->enemyPlayTiles);
+
+	std::cout << "The match is over." << std::endl;
+
+	return 1;
+
 }
 
 void GameInstance::Update()

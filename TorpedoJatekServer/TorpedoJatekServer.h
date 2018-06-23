@@ -14,13 +14,16 @@ public:
 	int Start();
 
 protected:
+	int ProcessTiles(int playerNum);
 	IPaddress ip;
 	TCPsocket server;
 	TCPsocket firstClient;
 	TCPsocket secondClient;
 
-	int activeTiles[16];
-	int targetTile;
+	int activeTilesOne[16];
+	int activeTilesTwo[16];
+	int targetTile=9999;
+	int responseState=3;
 
 	bool closeConnection = false;
 
