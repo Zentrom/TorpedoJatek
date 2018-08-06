@@ -10,9 +10,9 @@ Ship::Ship(void)
 
 }
 
-Ship::Ship(glm::vec3 battleShip)
+Ship::Ship(glm::vec3 fleetTranslate)
 {
-	this->ship_translate = battleShip;
+	this->ship_translate += fleetTranslate;
 }
 
 Ship::Ship(int tilePos)

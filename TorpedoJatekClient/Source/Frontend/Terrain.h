@@ -10,23 +10,25 @@
 #include "../../Utils/gShaderProgram.h"
 #include "../../Utils/gCamera.h"
 
-class Ship
+#include "Ground.h"
+
+class Terrain
 {
 public:
-	Ship(void);
-	Ship(glm::vec3 fleetTranslate);
-	Ship(int tilePos);
-	//Ship(int relativeBegin, int relativeEnd);
-	~Ship(void);
+	Terrain(void);
+	~Terrain(void);
 
 	void Init();
 	void Draw(gCamera &m_camera, gShaderProgram &m_program);
 
 protected:
-	gVertexBuffer	vb_ship;
-	glm::vec3 ship_translate = glm::vec3(0, 0, 0);
-	float ship_rotate = 0.0f;
-	glm::vec3 ship_rotate_angle = glm::vec3(0, 1.0f, 0);
-	glm::vec3 ship_scale = glm::vec3(1.25f, 1.25f, 1.25f);
+	Ground myGrounds[49];
+
+
+	//gVertexBuffer	vb_mountain;
+	//glm::vec3 mountain_translate = glm::vec3(0, 0, 0);
+	//float mountain_rotate = 0.0f;
+	//glm::vec3 mountain_rotate_angle = glm::vec3(0, 1.0f, 0);
+	//glm::vec3 mountain_scale = glm::vec3(6.0f, 6.0f, 20.0f);
 
 };

@@ -41,7 +41,7 @@ bool GameInstance::Init()
 	gameLogic.Init();
 	actPlayTiles = gameLogic.getActiveTiles();
 
-	inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);
+	//inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);
 
 
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
@@ -50,9 +50,12 @@ bool GameInstance::Init()
 	glEnable(GL_DEPTH_TEST);	// mélységi teszt bekapcsolása (takarás)
 
 	mountain.Init();
+	terrain.Init();
+
 
 	//tile
-	float tile_transX = 0;
+	sea.Init();
+	/*float tile_transX = 0;
 	float tile_transZ = 0;
 	glm::vec3 tileResult = glm::vec3(0.0f);
 	for (int i = 0; i < (7 * 7); i++) {
@@ -69,28 +72,30 @@ bool GameInstance::Init()
 		enemyPlayTiles[i].Init();
 		myPlayTiles[i].Init();
 		tileResult = glm::vec3(0.0f);
-	}
+	}*/
 
+	//fleet = Fleet(actPlayTiles);
+	fleet.Init(actPlayTiles);
 	//ships
-	for (int i = 0; i < 16;i++) {
-		tile_transX = ((actPlayTiles[i] % 10)-1) * 2.0f;
-		tile_transZ = (((actPlayTiles[i] % 100)/10 -1) * 2.0f) - (3.0f*2.0f);
-
-		tileResult += glm::vec3(mountaincenter_border_Xoffset, 0, 0) +
-			glm::vec3(mountain_tile_offset, 0, 0) +
-			glm::vec3(tile_transX, 0, tile_transZ);
-
-		myShips[i] = Ship(glm::vec3(-1, 1, 1)*tileResult);
-
-
+	//for (int i = 0; i < 16;i++) {
+	//	tile_transX = ((actPlayTiles[i] % 10)-1) * 2.0f;
+	//	tile_transZ = (((actPlayTiles[i] % 100)/10 -1) * 2.0f) - (3.0f*2.0f);
+//
+	//	tileResult += glm::vec3(mountaincenter_border_Xoffset, 0, 0) +
+	//		glm::vec3(mountain_tile_offset, 0, 0) +
+	//		glm::vec3(tile_transX, 0, tile_transZ);
+	//
+	//	myShips[i] = Ship(glm::vec3(-1, 1, 1)*tileResult);
+	//
+	//
 		//enemyShips[i].Init();
-		myShips[i].Init();
-		tileResult = glm::vec3(0.0f);
-	}
+	//	myShips[i].Init();
+	//	tileResult = glm::vec3(0.0f);
+	//}
 
-	glm::vec3 battleShipOffset = glm::vec3(firstTile_battleShipOffset,0,0)+glm::vec3(mountaincenter_border_Xoffset+mountain_tile_offset, 0, 0);
-	myBattleShip = Ship(-battleShipOffset);
-	myBattleShip.Init();
+	//glm::vec3 battleShipOffset = glm::vec3(firstTile_battleShipOffset,0,0)+glm::vec3(mountaincenter_border_Xoffset+mountain_tile_offset, 0, 0);
+	//myBattleShip = Ship(-battleShipOffset);
+	//myBattleShip.Init();
 	
 	m_program.AttachShader(GL_VERTEX_SHADER, "Shaders/dirLight.vert");
 	m_program.AttachShader(GL_FRAGMENT_SHADER, "Shaders/dirLight.frag");
@@ -167,7 +172,7 @@ int GameInstance::threadFunction(void *ptr)
 
 	GameInstance* pointr= static_cast<GameInstance *>(ptr);
 
-	pointr->gameLogic.StartMatch(pointr->myPlayTiles,pointr->enemyPlayTiles);
+	pointr->gameLogic.StartMatch(pointr->sea.getMyTiles(),pointr->sea.getEnemyTiles());
 
 	std::cout << "The match is over." << std::endl;
 
@@ -228,19 +233,22 @@ void GameInstance::Render()
 
 
 	mountain.Draw(m_camera,m_program);
+	terrain.Draw(m_camera,m_program);
 
-	for (int i = 0; i < 16; i++) {
-		myShips[i].Draw(m_camera,m_program);
-	}
-	myBattleShip.Draw(m_camera, m_program);
+	fleet.Draw(m_camera,m_program);
+	//for (int i = 0; i < 16; i++) {
+	//	myShips[i].Draw(m_camera,m_program);
+	//}
+	//myBattleShip.Draw(m_camera, m_program);
 
 	m_program.Off(); // SHADER KIKAPCS
 
 	sh_playtile.On();
-	for (int i = 0; i < (7 * 7); i++) {
+	sea.Draw(m_camera, sh_playtile);
+	/*for (int i = 0; i < (7 * 7); i++) {
 		enemyPlayTiles[i].Draw(m_camera, sh_playtile);
 		myPlayTiles[i].Draw(m_camera, sh_playtile);
-	}
+	}*/
 	sh_playtile.Off();
 }
 

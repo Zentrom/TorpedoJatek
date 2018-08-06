@@ -23,9 +23,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Backend\ClientSocket.cpp" />
     <ClCompile Include="Source\Backend\GameLogic.cpp" />
+    <ClCompile Include="Source\Frontend\Fleet.cpp" />
+    <ClCompile Include="Source\Frontend\Ground.cpp" />
     <ClCompile Include="Source\Frontend\Mountain.cpp" />
     <ClCompile Include="Source\Frontend\PlayTile.cpp" />
+    <ClCompile Include="Source\Frontend\Sea.cpp" />
     <ClCompile Include="Source\Frontend\Ship.cpp" />
+    <ClCompile Include="Source\Frontend\Terrain.cpp" />
     <ClCompile Include="TorpedoJatekClient.cpp" />
     <ClCompile Include="Utils\gCamera.cpp" />
     <ClCompile Include="Utils\gShaderProgram.cpp" />
@@ -37,9 +41,13 @@
     <ClInclude Include="GameInstance.h" />
     <ClInclude Include="Source\Backend\ClientSocket.h" />
     <ClInclude Include="Source\Backend\GameLogic.h" />
+    <ClInclude Include="Source\Frontend\Fleet.h" />
+    <ClInclude Include="Source\Frontend\Ground.h" />
     <ClInclude Include="Source\Frontend\Mountain.h" />
     <ClInclude Include="Source\Frontend\PlayTile.h" />
+    <ClInclude Include="Source\Frontend\Sea.h" />
     <ClInclude Include="Source\Frontend\Ship.h" />
+    <ClInclude Include="Source\Frontend\Terrain.h" />
     <ClInclude Include="TorpedoJatekClient.h" />
     <ClInclude Include="Utils\gCamera.h" />
     <ClInclude Include="Utils\GLUtils.hpp" />

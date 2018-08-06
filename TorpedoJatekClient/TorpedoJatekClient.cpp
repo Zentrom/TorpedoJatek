@@ -1,8 +1,7 @@
 // GLEW
 #include <GL/glew.h>
 
-#include <iostream>
-#include <sstream>
+
 
 #include "TorpedoJatekClient.h"
 #include "GameInstance.h"
@@ -71,7 +70,7 @@ int TorpedoJatekClient::Init()
 
 int TorpedoJatekClient::CreateWindo()
 {
-	std::stringstream window_title;
+	
 	window_title << "TorpedoJatek v" << majorVersion << "." << betaVersion << "." << alphaVersion << experimentalVersion;
 
 	
@@ -142,6 +141,12 @@ int TorpedoJatekClient::StartGameInstance()
 		return 1;
 	}
 
+	int frame_count = 0;
+	int last_time = SDL_GetTicks();
+	int time_diff = 0;
+	//std::vector<int> avgs;
+	//avgs.clear();
+	
 	while (!quit)
 	{
 		while (SDL_PollEvent(&ev))
@@ -182,6 +187,23 @@ int TorpedoJatekClient::StartGameInstance()
 
 		gameInstance.Update();
 		gameInstance.Render();
+
+		++frame_count;
+
+		time_diff = SDL_GetTicks() - last_time;
+		if (time_diff >= 1000)
+		{
+			window_title.str(std::string());
+			//window_title << time_diff / (float)frame_count << " ms, " << frame_count << " FPS";
+			window_title << "TorpedoJatek v" << majorVersion << "." << betaVersion << "." << alphaVersion << experimentalVersion
+				<< " | FPS:" << frame_count;
+			SDL_SetWindowTitle(win, window_title.str().c_str());
+
+			//avgs.push_back(frame_count);
+
+			last_time = SDL_GetTicks();
+			frame_count = 0;
+		}
 
 		SDL_GL_SwapWindow(win);
 	}

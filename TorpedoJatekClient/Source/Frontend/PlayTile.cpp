@@ -22,6 +22,8 @@ void PlayTile::Init()
 {
 	vb_playtile.AddAttribute(0, 3);
 	vb_playtile.AddAttribute(1, 3);
+	vb_playtile.AddAttribute(2, 3);
+	vb_playtile.AddAttribute(3, 3);
 
 	vb_playtile.AddData(0, -0.5f, 0, -0.5f);
 	vb_playtile.AddData(0, 0.5f, 0, -0.5f);

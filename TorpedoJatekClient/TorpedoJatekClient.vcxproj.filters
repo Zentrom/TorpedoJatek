@@ -84,6 +84,18 @@
     <ClCompile Include="Source\Backend\ClientSocket.cpp">
       <Filter>Source Files\Backend</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Frontend\Terrain.cpp">
+      <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Ground.cpp">
+      <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Fleet.cpp">
+      <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Sea.cpp">
+      <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\gCamera.h">
@@ -124,6 +136,18 @@
     </ClInclude>
     <ClInclude Include="Source\Backend\ClientSocket.h">
       <Filter>Header Files\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Terrain.h">
+      <Filter>Header Files\Frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Ground.h">
+      <Filter>Header Files\Frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Fleet.h">
+      <Filter>Header Files\Frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Sea.h">
+      <Filter>Header Files\Frontend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,6 +12,7 @@
 -megoldani hogy server nézze ha valaki kilép,kliens se menjen tovább ha connection problemvan
 Kell szervernél SDL_INIT_EVERYTHING??
 Versioncontrolt szerverbe
+GLint,GLfloat hogy müködjön 32,64 bites rendszeren is
 
 -GL_LIGHTS és glFog
 -TileProcassable nemnézi pl a (122-2)=120 vagyis b0-t

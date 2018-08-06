@@ -20,8 +20,11 @@
 #include "Utils/Mesh_OGL3.h"
 
 #include "Source/Frontend/Mountain.h"
-#include "Source/Frontend/PlayTile.h"
-#include "Source/Frontend/Ship.h"
+//#include "Source/Frontend/PlayTile.h"
+#include "Source/Frontend/Fleet.h"
+//#include "Source/Frontend/Ship.h"
+#include "Source/Frontend/Terrain.h"
+#include "Source/Frontend/Sea.h"
 
 #include "Source/BackEnd/GameLogic.h"
 
@@ -58,18 +61,22 @@ protected:
 	const float mountain_tile_offset = 4.0f + 1.0f; //tilescale fele
 	const float mountaincenter_border_Xoffset = 6.0f / 2.0f; //scale2irányba megy
 	Mountain mountain;
-	PlayTile myPlayTiles[7*7];
-	PlayTile enemyPlayTiles[7*7];
+	Terrain terrain;
+	/*PlayTile myPlayTiles[7*7];
+	PlayTile enemyPlayTiles[7*7];*/
 
-	const float firstTile_battleShipOffset = 2.0f*7.0f;
-	Ship myShips[16]; //kesobb 9 lesz
-	Ship enemyShips[16];
-	Ship myBattleShip;
-	Ship enemyBattleShip;
+	Fleet fleet;
+	Sea sea;
 
+	//const float firstTile_battleShipOffset = 2.0f*7.0f;
+	//Ship myShips[16]; //kesobb 9 lesz
+	//Ship enemyShips[16];
+	//Ship myBattleShip;
+	//Ship enemyBattleShip;
 
 	GameLogic gameLogic;
 	int* actPlayTiles; //ezegy array
+	
 	
 
 	/*bool is_filled = true;

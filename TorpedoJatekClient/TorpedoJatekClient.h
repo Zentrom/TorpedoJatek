@@ -3,6 +3,9 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
+#include <iostream>
+#include <sstream>
+
 class TorpedoJatekClient
 {
 public:
@@ -29,6 +32,7 @@ private:
 	const unsigned int widthWindow = 800;
 	const unsigned int heightWindow = 600;
 	const Uint32 flagsWindow = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
+	std::stringstream window_title;
 
 	SDL_GLContext	context;
 
@@ -38,6 +42,6 @@ private:
 	const unsigned int majorVersion = 0;
 	const unsigned int betaVersion = 0;
 	const unsigned int alphaVersion = 1;
-	const char experimentalVersion = ' ';
+	const char experimentalVersion = 'a';
 };
 
