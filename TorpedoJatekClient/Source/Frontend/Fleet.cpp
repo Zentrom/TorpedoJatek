@@ -21,15 +21,15 @@ void Fleet::Init(int* actPlayTiles)
 	for (int i = 0; i < 16; i++) {
 		//std::cout << actPlayTiles[i] << "fsfa" << std::endl;
 
-		tile_transX = ((actPlayTiles[i] % 10) - 1) * 2.0f;
-		tile_transZ = (((actPlayTiles[i] % 100) / 10 - 1) * 2.0f) - (3.0f*2.0f);
+		tile_transX = ((actPlayTiles[i] % 10) - 1) * 2.0f * GLOBALScale;
+		tile_transZ = (((actPlayTiles[i] % 100) / 10 - 1) * 2.0f * GLOBALScale) - (3.0f*2.0f* GLOBALScale);
 
 		tileResult += glm::vec3(mountaincenter_border_Xoffset, 0, 0) +
 			glm::vec3(mountain_tile_offset, 0, 0) +
 			glm::vec3(tile_transX, 0, tile_transZ);
 
 		myShips[i] = Ship(glm::vec3(-1, 1, 1)*tileResult);
-		enemyShips[i] = Ship(tileResult);
+		//enemyShips[i] = Ship(tileResult);
 
 		//enemyShips[i].Init();
 		//myShips[i].Init();
@@ -41,11 +41,11 @@ void Fleet::Init(int* actPlayTiles)
 	//myBattleShip.Init();
 	enemyBattleShip = Ship(battleShipOffset);
 
-	myBattleShip.Init();
-	enemyBattleShip.Init();
+	myBattleShip.Init(false);
+	enemyBattleShip.Init(true);
 	for (int i = 0; i < 16; i++) {
-		myShips[i].Init();
-		enemyShips[i].Init();
+		myShips[i].Init(false);
+		//enemyShips[i].Init(true);
 	}
 }
 
@@ -65,7 +65,7 @@ void Fleet::Draw(gCamera &m_camera, gShaderProgram &m_program)
 
 	for (int i = 0; i < 16; i++) {
 		myShips[i].Draw(m_camera,m_program);
-		enemyShips[i].Draw(m_camera,m_program);
+		//enemyShips[i].Draw(m_camera,m_program);
 	}
 	myBattleShip.Draw(m_camera, m_program);
 	enemyBattleShip.Draw(m_camera,m_program);

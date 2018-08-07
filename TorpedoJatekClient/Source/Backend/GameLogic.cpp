@@ -8,9 +8,11 @@
 
 GameLogic::GameLogic(void)
 {
-	//for (int i = 0; i < activeTileCount; i++) {
-	//	activeTiles[i] = 0;
-	//}
+	if (!GLOBALDebug) {
+		for (int i = 0; i < activeTileCount; i++) {
+			activeTiles[i] = 0;
+		}
+	}
 }
 
 GameLogic::~GameLogic(void)
@@ -24,11 +26,11 @@ void GameLogic::Init()
 		<< "-----------------------------------------------" << std::endl
 		<< std::endl;
 
-	//this->ConnectionSetup();
-
-	//this->PlaceShips();
-
-	//mySocket.SendFleet(this->activeTiles);
+	if (!GLOBALDebug) {
+		this->ConnectionSetup();
+		this->PlaceShips();
+		mySocket.SendFleet(this->activeTiles);
+	}
 }
 
 
@@ -40,11 +42,11 @@ void GameLogic::ConnectionSetup()
 
 	this->output = "Server ip:";
 	std::cout << this->output << std::endl;
-	//std::cin >> this->ip;
+	std::cin >> this->ip;
 
 	this->output = "Server port:";
 	std::cout << this->output << std::endl;
-	//std::cin >> this->port;
+	std::cin >> this->port;
 
 	
 	mySocket.Init(this->ip,this->port);

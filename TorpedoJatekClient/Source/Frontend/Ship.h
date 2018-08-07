@@ -10,6 +10,8 @@
 #include "../../Utils/gShaderProgram.h"
 #include "../../Utils/gCamera.h"
 
+#include "../Globals.h"
+
 class Ship
 {
 public:
@@ -19,14 +21,14 @@ public:
 	//Ship(int relativeBegin, int relativeEnd);
 	~Ship(void);
 
-	void Init();
+	void Init(bool isEnemy);
 	void Draw(gCamera &m_camera, gShaderProgram &m_program);
 
 protected:
 	gVertexBuffer	vb_ship;
-	glm::vec3 ship_translate = glm::vec3(0, 0, 0);
+	glm::vec3 ship_translate = glm::vec3(0, 0, 0)* GLOBALScale;
 	float ship_rotate = 0.0f;
 	glm::vec3 ship_rotate_angle = glm::vec3(0, 1.0f, 0);
-	glm::vec3 ship_scale = glm::vec3(1.25f, 1.25f, 1.25f);
+	glm::vec3 ship_scale = glm::vec3(1.25f, 1.25f, 1.25f) * GLOBALScale;
 
 };

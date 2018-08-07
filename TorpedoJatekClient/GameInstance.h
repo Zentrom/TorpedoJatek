@@ -58,8 +58,8 @@ protected:
 	gShaderProgram	m_program;
 	gShaderProgram  sh_playtile;
 
-	const float mountain_tile_offset = 4.0f + 1.0f; //tilescale fele
-	const float mountaincenter_border_Xoffset = 6.0f / 2.0f; //scale2irányba megy
+	//const float mountain_tile_offset = 4.0f + 1.0f; //tilescale fele
+	//const float mountaincenter_border_Xoffset = 6.0f / 2.0f; //scale2irányba megy
 	Mountain mountain;
 	Terrain terrain;
 	/*PlayTile myPlayTiles[7*7];

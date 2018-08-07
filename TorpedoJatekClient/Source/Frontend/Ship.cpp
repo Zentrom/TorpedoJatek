@@ -12,7 +12,7 @@ Ship::Ship(void)
 
 Ship::Ship(glm::vec3 fleetTranslate)
 {
-	this->ship_translate += fleetTranslate;
+	this->ship_translate = fleetTranslate;
 }
 
 Ship::Ship(int tilePos)
@@ -25,7 +25,7 @@ Ship::~Ship(void)
 {
 }
 
-void Ship::Init()
+void Ship::Init(bool isEnemy)
 {
 	vb_ship.AddAttribute(0, 3);
 	vb_ship.AddAttribute(1, 3);
@@ -38,15 +38,27 @@ void Ship::Init()
 	vb_ship.AddData(0, 0.5f, -0.5f, -0.5f);
 	vb_ship.AddData(0, -0.5f, 0.5f, -0.5f);
 	vb_ship.AddData(0, 0.5f, 0.5f, -0.5f);
-	   
-	vb_ship.AddData(1, 1.0f, 0, 0);
-	vb_ship.AddData(1, 1.0f, 0, 0);
-	vb_ship.AddData(1, 1.0f, 0, 0);
-	vb_ship.AddData(1, 1.0f, 0, 0);
-	vb_ship.AddData(1, 1.0f, 0, 0);
-	vb_ship.AddData(1, 1.0f, 0, 0);
-	vb_ship.AddData(1, 1.0f, 0, 0);
-	vb_ship.AddData(1, 1.0f, 0, 0);
+	
+	if (isEnemy) {
+		vb_ship.AddData(1, 1.0f, 0, 0);
+		vb_ship.AddData(1, 1.0f, 0, 0);
+		vb_ship.AddData(1, 1.0f, 0, 0);
+		vb_ship.AddData(1, 1.0f, 0, 0);
+		vb_ship.AddData(1, 1.0f, 0, 0);
+		vb_ship.AddData(1, 1.0f, 0, 0);
+		vb_ship.AddData(1, 1.0f, 0, 0);
+		vb_ship.AddData(1, 1.0f, 0, 0);
+	}
+	else {
+		vb_ship.AddData(1, 0, 1.0f, 0);
+		vb_ship.AddData(1, 0, 1.0f, 0);
+		vb_ship.AddData(1, 0, 1.0f, 0);
+		vb_ship.AddData(1, 0, 1.0f, 0);
+		vb_ship.AddData(1, 0, 1.0f, 0);
+		vb_ship.AddData(1, 0, 1.0f, 0);
+		vb_ship.AddData(1, 0, 1.0f, 0);
+		vb_ship.AddData(1, 0, 1.0f, 0);
+	}
 	   
 	vb_ship.AddIndex(1, 2, 0);
 	vb_ship.AddIndex(1, 3, 2);

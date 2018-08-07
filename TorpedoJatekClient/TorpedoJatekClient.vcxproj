@@ -30,6 +30,7 @@
     <ClCompile Include="Source\Frontend\Sea.cpp" />
     <ClCompile Include="Source\Frontend\Ship.cpp" />
     <ClCompile Include="Source\Frontend\Terrain.cpp" />
+    <ClCompile Include="Source\Globals.cpp" />
     <ClCompile Include="TorpedoJatekClient.cpp" />
     <ClCompile Include="Utils\gCamera.cpp" />
     <ClCompile Include="Utils\gShaderProgram.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="Source\Frontend\Sea.h" />
     <ClInclude Include="Source\Frontend\Ship.h" />
     <ClInclude Include="Source\Frontend\Terrain.h" />
+    <ClInclude Include="Source\Globals.h" />
     <ClInclude Include="TorpedoJatekClient.h" />
     <ClInclude Include="Utils\gCamera.h" />
     <ClInclude Include="Utils\GLUtils.hpp" />

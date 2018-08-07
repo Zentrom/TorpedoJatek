@@ -22,7 +22,14 @@ public:
 	void Draw(gCamera &m_camera, gShaderProgram &m_program);
 
 protected:
-	Ground myGrounds[49];
+
+	//const int mapSize = GLOBALMapSize;
+	const int terrainScale = 3;
+
+	const int terrainMultiplier = terrainScale*terrainScale; //négyzetszám legyen
+	const int terrainSize = GLOBALMapSize*GLOBALMapSize*terrainMultiplier;
+	Ground* myGrounds;
+	//std::array<Ground, 7> myGrounds = new Ground();
 
 
 	//gVertexBuffer	vb_mountain;

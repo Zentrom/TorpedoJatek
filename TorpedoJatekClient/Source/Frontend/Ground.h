@@ -10,6 +10,8 @@
 #include "../../Utils/gShaderProgram.h"
 #include "../../Utils/gCamera.h"
 
+#include "../Globals.h"
+
 class Ground
 {
 public:
@@ -22,9 +24,9 @@ public:
 
 protected:
 	gVertexBuffer	vb_ground;
-	glm::vec3 ground_translate = glm::vec3(0, 0, 0);
+	glm::vec3 ground_translate = glm::vec3(0, 0, 0)* GLOBALScale;
 	float ground_rotate = 0.0f;
 	glm::vec3 ground_rotate_angle = glm::vec3(0, 1.0f, 0);
-	glm::vec3 ground_scale = glm::vec3(2.0f, 1.0f, 2.0f);
+	glm::vec3 ground_scale = glm::vec3(2.0f, 1.0f, 2.0f)* GLOBALScale;
 
 };

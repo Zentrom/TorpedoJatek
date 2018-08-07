@@ -6,7 +6,8 @@
 #include <iostream>
 Sea::Sea(void)
 {
-
+	myPlayTiles = new PlayTile[mapSize];
+	enemyPlayTiles = new PlayTile[mapSize];
 }
 
 Sea::~Sea(void)
@@ -18,9 +19,9 @@ void Sea::Init()
 	float tile_transX = 0;
 	float tile_transZ = 0;
 	glm::vec3 tileResult = glm::vec3(0.0f);
-	for (int i = 0; i < (7 * 7); i++) {
-		tile_transX = (i % 7) * 2.0f;
-		tile_transZ = ((i / 7) * 2.0f) - (3.0f*2.0f);
+	for (int i = 0; i < mapSize; i++) {
+		tile_transX = (i % GLOBALMapSize) * 2.0f * GLOBALScale;
+		tile_transZ = ((i / GLOBALMapSize) * 2.0f * GLOBALScale) - (3.0f*2.0f * GLOBALScale);
 
 		tileResult += glm::vec3(mountaincenter_border_Xoffset, 0, 0) +
 			glm::vec3(mountain_tile_offset, 0, 0) +

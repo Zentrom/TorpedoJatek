@@ -17,6 +17,8 @@
 #include "ClientSocket.h"
 #include "../Frontend/PlayTile.h"
 
+#include "../Globals.h"
+
 class GameLogic
 {
 public:

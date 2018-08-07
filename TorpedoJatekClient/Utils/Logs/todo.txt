@@ -14,6 +14,10 @@ Kell szervernél SDL_INIT_EVERYTHING??
 Versioncontrolt szerverbe
 GLint,GLfloat hogy müködjön 32,64 bites rendszeren is
 
+-FPS limiter
+-Hajókat összekötni grafikailag
+-ha mapsizepáros akk error
+
 -GL_LIGHTS és glFog
 -TileProcassable nemnézi pl a (122-2)=120 vagyis b0-t
 

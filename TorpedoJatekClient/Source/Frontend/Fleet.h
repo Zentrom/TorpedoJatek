@@ -29,9 +29,9 @@ protected:
 	Ship myBattleShip;
 	Ship enemyBattleShip;
 
-	float firstTile_battleShipOffset = 2.0f*7.0f;
-	const float mountain_tile_offset = 4.0f + 1.0f; //tilescale fele
-	const float mountaincenter_border_Xoffset = 6.0f / 2.0f; //scale2irányba megy
+	float firstTile_battleShipOffset = 2.0f*GLOBALMapSize* GLOBALScale;
+	const float mountain_tile_offset = (4.0f + 1.0f)* GLOBALScale; //tilescale fele
+	const float mountaincenter_border_Xoffset = 6.0f / 2.0f * GLOBALScale; //scale2irányba megy
 
 
 	//gVertexBuffer	vb_mountain;
