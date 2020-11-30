@@ -36,12 +36,14 @@ private:
 
 	SDL_GLContext	context;
 
-	const bool enableVsync = 1;
+	const int enableVsync = 1;
+	const int fpsLimit = 120;
+	const int enableFpsLimitMode = 0;
 
 	//jatekverzio
 	const unsigned int majorVersion = 0;
 	const unsigned int betaVersion = 0;
 	const unsigned int alphaVersion = 1;
-	const char experimentalVersion = 'b';
+	const char experimentalVersion = 'c';
 };
 

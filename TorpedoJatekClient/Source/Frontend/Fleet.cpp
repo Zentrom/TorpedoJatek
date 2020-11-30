@@ -21,8 +21,8 @@ void Fleet::Init(int* actPlayTiles)
 	for (int i = 0; i < 16; i++) {
 		//std::cout << actPlayTiles[i] << "fsfa" << std::endl;
 
-		tile_transX = ((actPlayTiles[i] % 10) - 1) * 2.0f * GLOBALScale;
-		tile_transZ = (((actPlayTiles[i] % 100) / 10 - 1) * 2.0f * GLOBALScale) - (3.0f*2.0f* GLOBALScale);
+		tile_transX = ((actPlayTiles[i] % 100) - 1) * 2.0f * GLOBALScale;
+		tile_transZ = (((actPlayTiles[i] % 10000) / 100 - 1) * 2.0f * GLOBALScale) - (3.0f*2.0f* GLOBALScale);
 
 		tileResult += glm::vec3(mountaincenter_border_Xoffset, 0, 0) +
 			glm::vec3(mountain_tile_offset, 0, 0) +

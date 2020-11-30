@@ -79,6 +79,7 @@
   <ItemGroup>
     <Text Include="..\Bstuff\Info\changelog.txt" />
     <Text Include="..\Bstuff\Info\controlsAlpha.txt" />
+    <Text Include="Utils\Logs\solutionDilemmas.txt" />
     <Text Include="Utils\Logs\temp.txt" />
     <Text Include="Utils\Logs\todo.txt" />
     <Text Include="Utils\Logs\versionInfo.txt" />

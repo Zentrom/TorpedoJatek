@@ -1,5 +1,3 @@
-
-
 #include "GameLogic.h"
 
 #include "../../Utils/gCamera.h"
@@ -79,15 +77,15 @@ void GameLogic::PlaceShips()
 
 					if (CheckTile(tmpTile)) {
 
-						if (TileProcessable(tmpTile + 10) && TileProcessable(tmpTile + 20)) {
-							if (CheckTile(tmpTile + 10) && CheckTile(tmpTile + 20))
-								tmpBack[0] = ProcessTile(tmpTile + 20);
-								tmpMiddle[0] = tmpTile + 10;
+						if (TileProcessable(tmpTile + 100) && TileProcessable(tmpTile + 200)) {
+							if (CheckTile(tmpTile + 100) && CheckTile(tmpTile + 200))
+								tmpBack[0] = ProcessTile(tmpTile + 200);
+								tmpMiddle[0] = tmpTile + 100;
 						}
-						if (TileProcessable(tmpTile - 10) && TileProcessable(tmpTile - 20)) {
-							if (CheckTile(tmpTile - 10) && CheckTile(tmpTile - 20))
-								tmpBack[1] = ProcessTile(tmpTile - 20);
-								tmpMiddle[1] = tmpTile - 10;
+						if (TileProcessable(tmpTile - 100) && TileProcessable(tmpTile - 200)) {
+							if (CheckTile(tmpTile - 100) && CheckTile(tmpTile - 200))
+								tmpBack[1] = ProcessTile(tmpTile - 200);
+								tmpMiddle[1] = tmpTile - 100;
 						}
 						if (TileProcessable(tmpTile + 1) && TileProcessable(tmpTile + 2)) {
 							if (CheckTile(tmpTile + 1) && CheckTile(tmpTile + 2))
@@ -166,13 +164,13 @@ void GameLogic::PlaceShips()
 
 					if (CheckTile(tmpTile)) {
 
-						if (TileProcessable(tmpTile + 10)) {
-							if (CheckTile(tmpTile + 10))
-								tmpBack[0] = ProcessTile(tmpTile + 10);
+						if (TileProcessable(tmpTile + 100)) {
+							if (CheckTile(tmpTile + 100))
+								tmpBack[0] = ProcessTile(tmpTile + 100);
 						}
-						if (TileProcessable(tmpTile - 10)) {
-							if (CheckTile(tmpTile - 10))
-								tmpBack[1] = ProcessTile(tmpTile - 10);
+						if (TileProcessable(tmpTile - 100)) {
+							if (CheckTile(tmpTile - 100))
+								tmpBack[1] = ProcessTile(tmpTile - 100);
 						}
 						if (TileProcessable(tmpTile + 1)) {
 							if (CheckTile(tmpTile + 1))
@@ -308,7 +306,7 @@ int GameLogic::Shoot()
 	//int sentData;
 	int newState;
 	while (1) {
-		std::cout << "Where do you want to shoot?(a1-g7)" << std::endl;
+		std::cout << "Where do you want to shoot?(a1-" << theColumns[GLOBALMapSize-1] << GLOBALMapSize <<")" << std::endl;
 		std::cin >> shoot;
 		if (CheckString(shoot)) {
 			this->processableTile = ProcessString(shoot);
@@ -343,7 +341,12 @@ int GameLogic::ProcessString(std::string coord)
 	strcpy(this->coordShip,coord.c_str());
 
 	int first;
-	switch (this->coordShip[0]) {
+	for (int i = 0; i < GLOBALMapSize; i++) {
+		if (coordShip[0] == theColumns[i]) {
+			first = i + 1;
+		}
+	}
+	/*switch (this->coordShip[0]) {
 	case 'a':
 		first = 1;
 		break;
@@ -367,12 +370,17 @@ int GameLogic::ProcessString(std::string coord)
 		break;
 	default:
 		break;
+	}*/
+
+	int second;
+	if (GLOBALMapSize < 10) {
+		second = atoi(&coordShip[1]);
+	}
+	else {
+		second = atoi(&coordShip[1]) * 10 +atoi(&coordShip[2]);
 	}
 
-
-	int second = atoi(&coordShip[1]);
-
-	int result = 100 + first * 10 + second;
+	int result = 10000 + first * 100 + second;
 
 	return result;
 }
@@ -380,21 +388,56 @@ int GameLogic::ProcessString(std::string coord)
 //check errors in shipcoord string input
 bool GameLogic::CheckString(std::string coord)
 {
-	if (coord.length() != 2) {
-		std::cout << "Incorrect length!(must be 2)" << std::endl;
-		return false;
+	if (GLOBALMapSize < 10) {
+		if (coord.length() != 2) {
+			std::cout << "Incorrect length!(must be 2)" << std::endl;
+			return false;
+		}
 	}
-	char tmp[3];
-	strcpy(tmp,coord.c_str());
+	else {
+		if (coord.length() > 3 || coord.length() < 2) {
+			std::cout << "Incorrect length!(must be 2 or 3)" << std::endl;
+			return false;
+		}
+	}
 
-	if (tmp[0] != 'a' && tmp[0] != 'b' && tmp[0] != 'c' && tmp[0] != 'd' && tmp[0] != 'e' && tmp[0] != 'f' && tmp[0] != 'g') {
-		std::cout << "Incorrect column!(must be a-g)" << std::endl;
+
+
+	char tmp[4];
+	strcpy(tmp,coord.c_str());
+	bool legitColumn = false;
+	for (int i = 0; i < GLOBALMapSize; i++) {
+		if (tmp[0] == theColumns[i]) {
+			legitColumn = true;
+		}
+	}
+	if (!legitColumn) {
+		std::cout << "Incorrect column!(must be a-" << theColumns[GLOBALMapSize-1] << ")" << std::endl;
 		return false;
 	}
-	if (tmp[1] != '1' && tmp[1] != '2' && tmp[1] != '3' && tmp[1] != '4' && tmp[1] != '5' && tmp[1] != '6' && tmp[1] != '7') {
-		std::cout << "Incorrect row!(must be 1-7)" << std::endl;
-		return false;
+
+
+	if (GLOBALMapSize < 10) {
+		int ia = tmp[1] - '0';
+		if (ia > GLOBALMapSize) {
+			return false;
+		}
 	}
+	else {
+		int ia = (tmp[1] - '0') * 10 + (tmp[2] - '0');
+		if (ia > GLOBALMapSize) {
+			return false;
+		}
+	}
+
+	//if (tmp[0] != 'a' && tmp[0] != 'b' && tmp[0] != 'c' && tmp[0] != 'd' && tmp[0] != 'e' && tmp[0] != 'f' && tmp[0] != 'g') {
+	//	std::cout << "Incorrect column!(must be a-g)" << std::endl;
+	//	return false;
+	//}
+	//if (tmp[1] != '1' && tmp[1] != '2' && tmp[1] != '3' && tmp[1] != '4' && tmp[1] != '5' && tmp[1] != '6' && tmp[1] != '7') {
+	//	std::cout << "Incorrect row!(must be 1-7)" << std::endl;
+	//	return false;
+	//}
 
 	return true;
 }
@@ -413,11 +456,13 @@ bool GameLogic::CheckTile(int tile)
 //creates stringcoord out of tilecoord
 std::string GameLogic::ProcessTile(int tile)
 {
-	int column = (tile % 100) / 10;
-	int row = tile % 10;
+	int column = (tile % 10000) / 100;
+	int row = tile % 100;
 
-	char col;
-	switch (column) {
+	
+
+	char col = theColumns[column-1];
+	/*switch (column) {
 	case 1:
 		col = 'a';
 		break;
@@ -439,7 +484,7 @@ std::string GameLogic::ProcessTile(int tile)
 	case 7:
 		col = 'g';
 		break;
-	}
+	}*/
 
 	char rowC[10];
 	_itoa(row, rowC,10);
@@ -455,20 +500,20 @@ std::string GameLogic::ProcessTile(int tile)
 bool GameLogic::TileProcessable(int tile)
 {
 
-	if(tile>177 || tile< 111){
+	if((tile%10000)/100>GLOBALMapSize || tile%100>GLOBALMapSize || (tile%10000)/100 == 0 || tile%100 == 0){
 		return false;
 	}
 
-	if (tile % 10 == 0 || tile%10 == 8 || tile%10 == 9) {
-		return false;
-	}
+	//if (tile % 10 == 0 || tile%10 == 8 || tile%10 == 9) {
+	//	return false;
+	//}
 
 	return true;
 }
 
 int GameLogic::ConvertCoordToTileIndex(int tile)
 {
-	int tens= (((tile%100) / 10)-1) * 7;
-	int ones= (tile%10)-1;
+	int tens= (((tile%10000) / 100)-1) * GLOBALMapSize;
+	int ones= (tile%100)-1;
 	return (tens+ones);
 }

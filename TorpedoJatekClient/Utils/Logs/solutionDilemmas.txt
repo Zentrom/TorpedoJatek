@@ -1,0 +1,4 @@
+Vsync-FpsLimit:
+-Vsyncel lockol 60fps-re,gép megkimélve.
+-FpsLimitmode 1-el pontosra lockolja az FPS-t,de pörög a gép s lassabb is a simulation.(manuálisan számolva)
+-FpsLimitmode 2-vel pontatlanra lockolja az FPS-t,1000-en felül nemmegy,de gép megkímélve.(SDL_Delay-t használva)

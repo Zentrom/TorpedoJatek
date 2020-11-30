@@ -143,7 +143,16 @@ int TorpedoJatekClient::StartGameInstance()
 
 	int frame_count = 0;
 	int last_time = SDL_GetTicks();
+	int last_render_time = SDL_GetTicks();
 	int time_diff = 0;
+	int ftime_diff = 0;
+
+	//std::cout << 56 / 100 << std::endl;
+
+	float frmtime = 1000.0f / fpsLimit;
+	//std::cout << frmtime;
+	float frmTemp = 0;
+	float frmMod = 0;
 	//std::vector<int> avgs;
 	//avgs.clear();
 	
@@ -184,13 +193,63 @@ int TorpedoJatekClient::StartGameInstance()
 				break;
 			}
 		}
-
+		
 		gameInstance.Update();
-		gameInstance.Render();
+		if (!enableVsync) {
+			if (enableFpsLimitMode == 1) {
+				ftime_diff = SDL_GetTicks() - last_render_time;
+				frmTemp = ftime_diff;
 
-		++frame_count;
+				if (frmTemp + frmMod >= frmtime) {
+					gameInstance.Render();
+					SDL_GL_SwapWindow(win);
+					++frame_count;
+					last_render_time = SDL_GetTicks();
+					frmMod = (frmTemp+frmMod) - frmtime;
+					//std::cout << frmTemp << std::endl;
+				}
+			}
+			else if(enableFpsLimitMode == 2){
+				last_render_time = SDL_GetTicks();
+				gameInstance.Render();
+				SDL_GL_SwapWindow(win);
+				++frame_count;
+				ftime_diff = SDL_GetTicks() - last_render_time;
+				if (ftime_diff < 1000 / fpsLimit) {
+
+					//gameInstance.Render();
+					//SDL_GL_SwapWindow(win);
+					SDL_Delay((1000 / fpsLimit) - ftime_diff);
+					//++frame_count;
+					//last_render_time = SDL_GetTicks();
+				}
+				else {
+					//std::cout << (1000.f/fpsLimit) <<" ftime:" << fmod(1.0f,0.0f) << std::endl;
+					SDL_Delay((1000 / fpsLimit) - (ftime_diff % (1000 / fpsLimit)));
+					//SDL_Delay(2.5);
+					//SDL_Delay((1000.0f / fpsLimit) - fmod(ftime_diff,(1000.0f / fpsLimit)));
+				}
+				//else {
+				//ftime_diff = 0;
+				//last_render_time = SDL_GetTicks();
+				//}
+			}
+			else {
+				gameInstance.Render();
+				SDL_GL_SwapWindow(win);
+				++frame_count;
+			}
+
+		}
+
+		else {
+			gameInstance.Render();
+			SDL_GL_SwapWindow(win);
+			++frame_count;
+		}
 
 		time_diff = SDL_GetTicks() - last_time;
+		//time_diff += SDL_GetTicks() - last_time;
 		if (time_diff >= 1000)
 		{
 			window_title.str(std::string());
@@ -202,10 +261,11 @@ int TorpedoJatekClient::StartGameInstance()
 			//avgs.push_back(frame_count);
 
 			last_time = SDL_GetTicks();
+			time_diff = 0;
 			frame_count = 0;
+			
 		}
-
-		SDL_GL_SwapWindow(win);
+		//SDL_GL_SwapWindow(win);
 	}
 
 

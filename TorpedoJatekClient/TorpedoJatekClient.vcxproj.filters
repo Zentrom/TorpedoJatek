@@ -218,5 +218,8 @@
     <Text Include="..\Bstuff\Info\controlsAlpha.txt">
       <Filter>Utils\Logs\Info</Filter>
     </Text>
+    <Text Include="Utils\Logs\solutionDilemmas.txt">
+      <Filter>Utils\Logs</Filter>
+    </Text>
   </ItemGroup>
 </Project>
