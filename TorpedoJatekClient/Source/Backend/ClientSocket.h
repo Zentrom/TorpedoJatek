@@ -5,6 +5,8 @@
 #include <SDL_net.h>
 #include <cstring>
 
+#include "../Globals.h"
+
 class ClientSocket
 {
 public:

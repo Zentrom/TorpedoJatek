@@ -1,0 +1,8 @@
+v0.0.1d-Basic Server Refactoring
+--------------------------------------------------------------------------------
+GAME IS UNPLAYABLE IN THIS VERSION(SERVER-CLIENT OUT OF SYNC)
+-Error handling of the server-client connection.
+-Fixed runtime error when closing window in Debug mode.
+-Added compile-date and compiler value logging at start of server and client.
+-Added server setup phase.
+-The server now checks for client-server version mismatch on connection.

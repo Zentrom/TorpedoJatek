@@ -2,3 +2,10 @@ Vsync-FpsLimit:
 -Vsyncel lockol 60fps-re,gép megkimélve.
 -FpsLimitmode 1-el pontosra lockolja az FPS-t,de pörög a gép s lassabb is a simulation.(manuálisan számolva)
 -FpsLimitmode 2-vel pontatlanra lockolja az FPS-t,1000-en felül nemmegy,de gép megkímélve.(SDL_Delay-t használva)
+
+TCP OR UDP?
+These functions are used to work with TCP Sockets. TCP is used with a full connection, 
+whereas UDP is connectionless. TCP also ensures that all packets reach the destionation (when possible). 
+TCP also ensures that packets are received in the same order as sent.
+UDP:https://www.libsdl.org/projects/SDL_net/docs/SDL_net_25.html#SEC25
+

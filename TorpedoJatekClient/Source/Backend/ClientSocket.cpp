@@ -10,7 +10,9 @@ ClientSocket::ClientSocket(void)
 
 ClientSocket::~ClientSocket(void)
 {
-	SDLNet_TCP_Close(myClient);
+	if (!GLOBALDebug) {
+		SDLNet_TCP_Close(myClient);
+	}
 	SDLNet_Quit();
 	//SDL_Quit();
 }
