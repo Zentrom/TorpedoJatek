@@ -30,7 +30,6 @@
     <ClCompile Include="Source\Frontend\Sea.cpp" />
     <ClCompile Include="Source\Frontend\Ship.cpp" />
     <ClCompile Include="Source\Frontend\Terrain.cpp" />
-    <ClCompile Include="Source\Globals.cpp" />
     <ClCompile Include="TorpedoJatekClient.cpp" />
     <ClCompile Include="Utils\gCamera.cpp" />
     <ClCompile Include="Utils\gShaderProgram.cpp" />

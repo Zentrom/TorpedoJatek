@@ -22,13 +22,13 @@ public:
 	~Ship(void);
 
 	void Init(bool isEnemy);
-	void Draw(gCamera &m_camera, gShaderProgram &m_program);
+	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
 protected:
 	gVertexBuffer	vb_ship;
-	glm::vec3 ship_translate = glm::vec3(0, 0, 0)* GLOBALScale;
+	glm::vec3 ship_translate = glm::vec3(0, 0, 0)* TorpedoGLOBAL::Scale;
 	float ship_rotate = 0.0f;
 	glm::vec3 ship_rotate_angle = glm::vec3(0, 1.0f, 0);
-	glm::vec3 ship_scale = glm::vec3(1.25f, 1.25f, 1.25f) * GLOBALScale;
+	glm::vec3 ship_scale = glm::vec3(1.25f, 1.25f, 1.25f) * TorpedoGLOBAL::Scale;
 
 };

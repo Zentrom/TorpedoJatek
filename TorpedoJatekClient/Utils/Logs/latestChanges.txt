@@ -1,8 +1,7 @@
-v0.0.1d-Basic Server Refactoring
+v0.0.1e-Basic Client Refactoring
 --------------------------------------------------------------------------------
-GAME IS UNPLAYABLE IN THIS VERSION(SERVER-CLIENT OUT OF SYNC)
--Error handling of the server-client connection.
--Fixed runtime error when closing window in Debug mode.
--Added compile-date and compiler value logging at start of server and client.
--Added server setup phase.
--The server now checks for client-server version mismatch on connection.
+-Started connection error-handling on client-side.
+-Put global variables in a namespace.
+-Tiles are represented with std::pair<char,int> now,instead of int,inside of an std::array.
+-Cleaned redundant comments,commented deprecated stuff.
+

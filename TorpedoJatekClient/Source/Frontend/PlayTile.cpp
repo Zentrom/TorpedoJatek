@@ -11,7 +11,7 @@ PlayTile::PlayTile(void)
 
 PlayTile::PlayTile(glm::vec3 translate)
 {
-	this->playtile_translate = translate;
+	playtile_translate = translate;
 }
 
 PlayTile::~PlayTile(void)
@@ -54,18 +54,18 @@ void PlayTile::Init()
 
 }
 
-void PlayTile::Draw(gCamera &m_camera,gShaderProgram &sh_playtile)
+void PlayTile::Draw(gCamera &camera,gShaderProgram &sh_playtile)
 {
 
 	glm::mat4 matWorld = glm::translate(playtile_translate) * glm::rotate(playtile_rotate, playtile_rotate_angle) * glm::scale(playtile_scale);
 	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
-	glm::mat4 mvp = m_camera.GetViewProj() *matWorld;
+	glm::mat4 mvp = camera.GetViewProj() *matWorld;
 
-	sh_playtile.SetUniform("world", matWorld);
-	sh_playtile.SetUniform("worldIT", matWorldIT);
+	//sh_playtile.SetUniform("world", matWorld);
+	//sh_playtile.SetUniform("worldIT", matWorldIT);
 	sh_playtile.SetUniform("MVP", mvp);
-
 	sh_playtile.SetUniform("tile_state", tileState);
+
 	//m_program.SetTexture("texImage", 0, m_groundTextureID);
 	//m_program.SetTexture("texNormal", 1, m_groundNormalMapID);
 
@@ -79,22 +79,22 @@ void PlayTile::setState(int newState)
 {
 	switch (newState) {
 	case 1:
-		this->tileState = glm::vec3(1, 0, 0);
+		tileState = glm::vec3(1, 0, 0);
 		break;
 	case 2:
-		this->tileState = glm::vec3(1, 1, 0);
+		tileState = glm::vec3(1, 1, 0);
 		break;
 	case 3:
-		this->tileState = glm::vec3(0, 0, 1);
+		tileState = glm::vec3(0, 0, 1);
 		break;
 	case 4:
-		this->tileState = glm::vec3(1, 0, 0);
+		tileState = glm::vec3(1, 0, 0);
 		break;
 	case 5:
-		this->tileState = glm::vec3(1, 0, 0);
+		tileState = glm::vec3(1, 0, 0);
 		break;
 	default:
-		this->tileState = glm::vec3(0, 0, 1);
+		tileState = glm::vec3(0, 0, 1);
 		break;
 	}
 }

@@ -12,18 +12,16 @@ public:
 	TorpedoJatekClient(void);
 	~TorpedoJatekClient(void);
 
-	
-	void static exitProgram();
 	int Start();
 	int Init();
-	int CreateWindo();
+	int CreateGameWindow();
 	int StartGameInstance();
 
 //protected:
 
 private:
-	enum State {GLOBAL_GAME,GLOBAL_MENU};
-	State GLOBAL_STATE = GLOBAL_MENU;
+	enum class State {GLOBAL_GAME,GLOBAL_MENU};
+	State GLOBAL_STATE = State::GLOBAL_MENU;
 
 	//window
 	SDL_Window *win = 0;
@@ -44,6 +42,6 @@ private:
 	const unsigned int majorVersion = 0;
 	const unsigned int betaVersion = 0;
 	const unsigned int alphaVersion = 1;
-	const char experimentalVersion = 'd';
+	const char experimentalVersion = 'e';
 };
 

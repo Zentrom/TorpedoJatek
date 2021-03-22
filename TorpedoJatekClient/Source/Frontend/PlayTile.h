@@ -20,7 +20,7 @@ public:
 	~PlayTile(void);
 
 	void Init();
-	void Draw(gCamera &m_camera,gShaderProgram &sh_playtile);
+	void Draw(gCamera &camera,gShaderProgram &sh_playtile);
 	void setState(int newState);
 
 protected:
@@ -28,9 +28,9 @@ protected:
 	
 	glm::vec3 tileState = glm::vec3(0, 0, 1); //3kek,2sarga,1piros
 
-	glm::vec3 playtile_translate = glm::vec3(0, 0, 0)*GLOBALScale;
+	glm::vec3 playtile_translate = glm::vec3(0, 0, 0)*TorpedoGLOBAL::Scale;
 	float playtile_rotate = 0.0f;
 	glm::vec3 playtile_rotate_angle = glm::vec3(0, 1.0f, 0);
-	glm::vec3 playtile_scale = glm::vec3(2.0f, 1.0f, 2.0f)*GLOBALScale;
+	glm::vec3 playtile_scale = glm::vec3(2.0f, 1.0f, 2.0f)*TorpedoGLOBAL::Scale;
 
 };

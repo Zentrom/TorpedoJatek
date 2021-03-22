@@ -37,7 +37,7 @@ public:
 	bool Init();
 	void Clean();
 
-	int static threadFunction(void* ptr);
+	//int static threadFunction(void* ptr);
 
 	void Update();
 	void Render();
@@ -52,32 +52,22 @@ public:
 protected:
 	SDL_Thread* inputThread;
 
-	enum GameState {GAME_WAITING};
-	GameState GAME_STATE = GAME_WAITING;
-	gCamera			m_camera;
-	gShaderProgram	m_program;
+	enum class GameState {GAME_WAITING};
+	GameState GAME_STATE = GameState::GAME_WAITING;
+	gCamera			cam_mainCamera;
+	gShaderProgram	sh_dirLight;
 	gShaderProgram  sh_playtile;
 
 	//const float mountain_tile_offset = 4.0f + 1.0f; //tilescale fele
 	//const float mountaincenter_border_Xoffset = 6.0f / 2.0f; //scale2irányba megy
 	Mountain mountain;
 	Terrain terrain;
-	/*PlayTile myPlayTiles[7*7];
-	PlayTile enemyPlayTiles[7*7];*/
 
 	Fleet fleet;
 	Sea sea;
 
-	//const float firstTile_battleShipOffset = 2.0f*7.0f;
-	//Ship myShips[16]; //kesobb 9 lesz
-	//Ship enemyShips[16];
-	//Ship myBattleShip;
-	//Ship enemyBattleShip;
-
 	GameLogic gameLogic;
-	int* actPlayTiles; //ezegy array
-	
-	
+	std::pair<char,int>* actPlayTiles; //ezegy array
 
 	/*bool is_filled = true;
 	bool use_texture = true;

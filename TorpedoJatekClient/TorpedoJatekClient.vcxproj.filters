@@ -96,9 +96,6 @@
     <ClCompile Include="Source\Frontend\Sea.cpp">
       <Filter>Source Files\Frontend</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Globals.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils\gCamera.h">

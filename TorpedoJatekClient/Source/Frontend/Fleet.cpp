@@ -13,7 +13,7 @@ Fleet::~Fleet(void)
 {
 }
 
-void Fleet::Init(int* actPlayTiles)
+void Fleet::Init(std::pair<char,int>* actPlayTiles)
 {
 	float tile_transX = 0;
 	float tile_transZ = 0;
@@ -21,8 +21,8 @@ void Fleet::Init(int* actPlayTiles)
 	for (int i = 0; i < 16; i++) {
 		//std::cout << actPlayTiles[i] << "fsfa" << std::endl;
 
-		tile_transX = ((actPlayTiles[i] % 100) - 1) * 2.0f * GLOBALScale;
-		tile_transZ = (((actPlayTiles[i] % 10000) / 100 - 1) * 2.0f * GLOBALScale) - (3.0f*2.0f* GLOBALScale);
+		tile_transX = (actPlayTiles[i].second - 1) * 2.0f * TorpedoGLOBAL::Scale;
+		tile_transZ = ((actPlayTiles[i].first - 'a') * 2.0f * TorpedoGLOBAL::Scale) - (3.0f*2.0f* TorpedoGLOBAL::Scale);
 
 		tileResult += glm::vec3(mountaincenter_border_Xoffset, 0, 0) +
 			glm::vec3(mountain_tile_offset, 0, 0) +
@@ -49,7 +49,7 @@ void Fleet::Init(int* actPlayTiles)
 	}
 }
 
-void Fleet::Draw(gCamera &m_camera, gShaderProgram &m_program)
+void Fleet::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
 
 	//glm::mat4 matWorld = glm::translate(mountain_translate) * glm::rotate(mountain_rotate, mountain_rotate_angle) * glm::scale(mountain_scale);
@@ -64,10 +64,10 @@ void Fleet::Draw(gCamera &m_camera, gShaderProgram &m_program)
 	//vb_mountain.Off();
 
 	for (int i = 0; i < 16; i++) {
-		myShips[i].Draw(m_camera,m_program);
+		myShips[i].Draw(camera,sh_program);
 		//enemyShips[i].Draw(m_camera,m_program);
 	}
-	myBattleShip.Draw(m_camera, m_program);
-	enemyBattleShip.Draw(m_camera,m_program);
+	myBattleShip.Draw(camera, sh_program);
+	enemyBattleShip.Draw(camera,sh_program);
 
 }

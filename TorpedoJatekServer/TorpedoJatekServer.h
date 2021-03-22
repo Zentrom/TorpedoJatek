@@ -66,7 +66,7 @@ protected:
 		unsigned int majorVersion = 0;
 		unsigned int betaVersion = 0;
 		unsigned int alphaVersion = 1;
-		char experimentalVersion = 'd';
+		char experimentalVersion = 'e';
 	}const serverVersion;
 
 };

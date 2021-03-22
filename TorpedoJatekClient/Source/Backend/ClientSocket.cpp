@@ -10,7 +10,7 @@ ClientSocket::ClientSocket(void)
 
 ClientSocket::~ClientSocket(void)
 {
-	if (!GLOBALDebug) {
+	if (!TorpedoGLOBAL::Debug) {
 		SDLNet_TCP_Close(myClient);
 	}
 	SDLNet_Quit();
@@ -19,37 +19,47 @@ ClientSocket::~ClientSocket(void)
 
 void ClientSocket::Init(std::string ipString,int portNr)
 {
-	SDLNet_ResolveHost(&ip, ipString.c_str(), portNr);
+	if (SDLNet_ResolveHost(&ip, ipString.c_str(), portNr) == -1) {
+		std::cerr << "[SDLNet_ResolveHost] ERROR: " << SDLNet_GetError() << '\n';
+	};
 
-	const char* http = "valami";
+	//const char* http = "valami";
 
 	myClient = SDLNet_TCP_Open(&ip);
 
-	if (myClient != NULL) {
+	if (myClient) {
 
 		//SDLNet_TCP_Send(myClient, http, strlen(http) + 1);
 
 		char text[100];
 
-		SDLNet_TCP_Recv(myClient, text, 100);
+		receivedBytes = SDLNet_TCP_Recv(myClient, text, 100);
+		if (receivedBytes <= 0) {
+			std::cerr << "[SDLNet_TCP_Recv] ERROR: " << SDLNet_GetError() << '\n';
+		}
 		std::cout << text << std::endl;
 	}
 	else {
-		std::cout << "Server not found!" << std::endl;
+		std::cerr << "[SDLNet_TCP_Open] ERROR: " << SDLNet_GetError() << '\n';
 	}
 	
 
 	
 }
 
-void ClientSocket::SendFleet(int * activeTiles)
+void ClientSocket::SendFleet(std::pair<char,int> *activeTiles)
 {
-	if (myClient != NULL) {
+	if (myClient) {
 		for (int i = 0; i < 16; i++) {
-			SDLNet_TCP_Send(myClient, &activeTiles[i], sizeof(int));
-
+			sentBytes = SDLNet_TCP_Send(myClient, &activeTiles[i], sizeof(std::pair<char,int>));
+			if (sentBytes < sizeof(std::pair<char,int>)) {
+				std::cerr << "[SDLNet_TCP_Send] ERROR: " << SDLNet_GetError() << '\n';
+			}
 		}
-		SDLNet_TCP_Recv(myClient, &ServerConfirm, sizeof(int));
+		receivedBytes = SDLNet_TCP_Recv(myClient, &ServerConfirm, sizeof(int));
+		if (receivedBytes <= 0) {
+			std::cerr << "[SDLNet_TCP_Recv] ERROR: " << SDLNet_GetError() << '\n';
+		}
 
 		if (ServerConfirm) std::cout<<"Server received the ShipData."<<std::endl;
 	}
@@ -61,7 +71,7 @@ void ClientSocket::SendFleet(int * activeTiles)
 int ClientSocket::getPlayerNum()
 {
 	int playerNum=1;
-	if (myClient != NULL) {
+	if (myClient) {
 		SDLNet_TCP_Recv(myClient, &playerNum, sizeof(int));
 		std::cout << "You are player number " << playerNum << std::endl;
 	}
@@ -71,14 +81,20 @@ int ClientSocket::getPlayerNum()
 	return playerNum;
 }
 
-int ClientSocket::SendShot(int tile)
+int ClientSocket::SendShot(std::pair<char,int> tile)
 {
 	int stateResult=3;
 
-	if (myClient != NULL) {
-		SDLNet_TCP_Send(myClient, &tile, sizeof(int));
-		//std::cout << "You are player number " << playerNum << std::endl;
-		SDLNet_TCP_Recv(myClient, &stateResult, sizeof(int));
+	if (myClient) {
+		sentBytes =  SDLNet_TCP_Send(myClient, &tile, sizeof(std::pair<char,int>));
+		if (sentBytes < sizeof(std::pair<char, int>)) {
+			std::cerr << "[SDLNet_TCP_Send] ERROR: " << SDLNet_GetError() << '\n';
+		}
+
+		receivedBytes = SDLNet_TCP_Recv(myClient, &stateResult, sizeof(int));
+		if (receivedBytes <= 0) {
+			std::cerr << "[SDLNet_TCP_Recv] ERROR: " << SDLNet_GetError() << '\n';
+		}
 	}
 	else {
 		std::cout << "No connection to the server!" << std::endl;
@@ -87,13 +103,15 @@ int ClientSocket::SendShot(int tile)
 	return stateResult;
 }
 
-int ClientSocket::ReceiveShot()
+std::pair<char,int> ClientSocket::ReceiveShot()
 {
-	int tileNr=1;
+	std::pair<char,int> tileNr('0',0);
 
-	if (myClient != NULL) {
-
-		SDLNet_TCP_Recv(myClient, &tileNr, sizeof(int));
+	if (myClient) {
+		receivedBytes = SDLNet_TCP_Recv(myClient, &tileNr, sizeof(std::pair<char,int>));
+		if (receivedBytes <= 0) {
+			std::cerr << "[SDLNet_TCP_Recv] ERROR: " << SDLNet_GetError() << '\n';
+		}
 	}
 	else {
 		std::cout << "No connection to the server!" << std::endl;
@@ -106,9 +124,11 @@ int ClientSocket::getRecShotState()
 {
 	int stateResult = 3;
 
-	if (myClient != NULL) {
-		
-		SDLNet_TCP_Recv(myClient, &stateResult, sizeof(int));
+	if (myClient) {
+		receivedBytes = SDLNet_TCP_Recv(myClient, &stateResult, sizeof(int));
+		if (receivedBytes <= 0) {
+			std::cerr << "[SDLNet_TCP_Recv] ERROR: " << SDLNet_GetError() << '\n';
+		}
 	}
 	else {
 		std::cout << "No connection to the server!" << std::endl;
@@ -116,33 +136,3 @@ int ClientSocket::getRecShotState()
 
 	return stateResult;
 }
-
-/*
-
-int main(int argc, char** argv)
-{
-	SDL_Init(SDL_INIT_EVERYTHING);
-	SDLNet_Init();
-
-	IPaddress ip;
-	//write "127.0.0.1",1234 to connect to the server.cpp on your local machine
-	SDLNet_ResolveHost(&ip, "www.linux.org", 80);
-
-	const char* http = "GET / HTTP/1.1\nHost: www.linux.org\n\n";
-
-	TCPsocket client = SDLNet_TCP_Open(&ip);
-
-	SDLNet_TCP_Send(client, http, strlen(http) + 1);
-
-	char text[10000];
-
-	while (SDLNet_TCP_Recv(client, text, 10000))
-		std::cout << text;
-
-	SDLNet_TCP_Close(client);
-
-	SDLNet_Quit();
-	SDL_Quit();
-}
-
-*/

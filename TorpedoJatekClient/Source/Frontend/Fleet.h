@@ -19,8 +19,8 @@ public:
 	//Fleet(int* actPlayTiles);
 	~Fleet(void);
 
-	void Init(int* actPlayTiles);
-	void Draw(gCamera &m_camera, gShaderProgram &m_program);
+	void Init(std::pair<char,int>* actPlayTiles);
+	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
 protected:
 	Ship myShips[16];
@@ -29,9 +29,9 @@ protected:
 	Ship myBattleShip;
 	Ship enemyBattleShip;
 
-	float firstTile_battleShipOffset = 2.0f*GLOBALMapSize* GLOBALScale;
-	const float mountain_tile_offset = (4.0f + 1.0f)* GLOBALScale; //tilescale fele
-	const float mountaincenter_border_Xoffset = 6.0f / 2.0f * GLOBALScale; //scale2irányba megy
+	float firstTile_battleShipOffset = 2.0f*TorpedoGLOBAL::MapSize * TorpedoGLOBAL::Scale;
+	const float mountain_tile_offset = (4.0f + 1.0f)* TorpedoGLOBAL::Scale; //tilescale fele
+	const float mountaincenter_border_Xoffset = 6.0f / 2.0f * TorpedoGLOBAL::Scale; //scale2irányba megy
 
 
 	//gVertexBuffer	vb_mountain;

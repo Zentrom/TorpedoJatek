@@ -20,8 +20,8 @@ void Sea::Init()
 	float tile_transZ = 0;
 	glm::vec3 tileResult = glm::vec3(0.0f);
 	for (int i = 0; i < mapSize; i++) {
-		tile_transX = (i % GLOBALMapSize) * 2.0f * GLOBALScale;
-		tile_transZ = ((i / GLOBALMapSize) * 2.0f * GLOBALScale) - (3.0f*2.0f * GLOBALScale);
+		tile_transX = (i % TorpedoGLOBAL::MapSize) * 2.0f * TorpedoGLOBAL::Scale;
+		tile_transZ = ((i / TorpedoGLOBAL::MapSize) * 2.0f * TorpedoGLOBAL::Scale) - (3.0f*2.0f * TorpedoGLOBAL::Scale);
 
 		tileResult += glm::vec3(mountaincenter_border_Xoffset, 0, 0) +
 			glm::vec3(mountain_tile_offset, 0, 0) +
@@ -36,7 +36,7 @@ void Sea::Init()
 	}
 }
 
-void Sea::Draw(gCamera &m_camera, gShaderProgram &m_program)
+void Sea::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
 
 	//glm::mat4 matWorld = glm::translate(mountain_translate) * glm::rotate(mountain_rotate, mountain_rotate_angle) * glm::scale(mountain_scale);
@@ -51,8 +51,8 @@ void Sea::Draw(gCamera &m_camera, gShaderProgram &m_program)
 	//vb_mountain.Off();
 
 	for (int i = 0; i < (7 * 7); i++) {
-		enemyPlayTiles[i].Draw(m_camera, m_program);
-		myPlayTiles[i].Draw(m_camera, m_program);
+		enemyPlayTiles[i].Draw(camera, sh_program);
+		myPlayTiles[i].Draw(camera, sh_program);
 	}
 
 }

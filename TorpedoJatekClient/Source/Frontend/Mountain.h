@@ -19,13 +19,13 @@ public:
 	~Mountain(void);
 
 	void Init();
-	void Draw(gCamera &m_camera, gShaderProgram &m_program);
+	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
 protected:
 	gVertexBuffer	vb_mountain;
-	glm::vec3 mountain_translate = glm::vec3(0, 0, 0)* GLOBALScale;
+	glm::vec3 mountain_translate = glm::vec3(0, 0, 0) * TorpedoGLOBAL::Scale;
 	float mountain_rotate = 0.0f;
 	glm::vec3 mountain_rotate_angle = glm::vec3(0, 1.0f, 0);
-	glm::vec3 mountain_scale = glm::vec3(6.0f,6.0f,20.0f)* GLOBALScale;
+	glm::vec3 mountain_scale = glm::vec3(6.0f,6.0f,20.0f)* TorpedoGLOBAL::Scale;
 
 };

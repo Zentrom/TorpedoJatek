@@ -2,11 +2,9 @@
 -Sea,Fleet,ground-terrain osztályok
 -sok beégetett érték van a playtileok létrehozásánál gameinstancebe,gamelogikot szétbontani
 -Cleanelést használni gameinstanceba.
-- this-> nemkell annyira használni
 -lehessen shipet leakni Place2Ship,stb-vel,grafikába tilebegin-tileend
--std::array-t használni ahol mûködik rendesen a comparison
 -SDLthread-nél Waitthraed
--Az ellenfél oldalán fükrözni kell a tileMapet
+-Az ellenfél oldalán tükrözni kell a tileMapet
 -Testelni evolveval mivan ha egyvalaki kilep.(ugyanaz)
 -megoldani hogy server nézze ha valaki kilép,kliens se menjen tovább ha connection problemvan
 -Serveren duplikátum kód van,átkell rendezni.
@@ -20,3 +18,6 @@ GLint,GLfloat hogy müködjön 32,64 bites rendszeren is
 
 OpenAl vagy SDLAudio(havan 3d) hangoknak
 Freetype vagy SDL rtf/ttf betuknek
+
+PLACESHIPSET GAMELOGICBAN PlayTile osztállyal oldjuk meg mert ez igy cancer.
+A THREAD MINTHA KÉNE, a GameLogic-ba inditaná a startmatch fgv-t :O

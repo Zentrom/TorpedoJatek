@@ -12,11 +12,11 @@ Terrain::Terrain(void)
 
 	float ground_transX = 0;
 	float ground_transZ = 0;
-	float ground_mountainY = -3.01f * GLOBALScale;
+	float ground_mountainY = -3.01f * TorpedoGLOBAL::Scale;
 	glm::vec3 groundResult = glm::vec3(0.0f);
 	for (int i = 0; i < terrainSize; i++) {
-		ground_transX = ((i % (GLOBALMapSize* terrainScale)) * 2.0f*GLOBALScale) - (3.0f*2.0f*GLOBALScale*terrainScale)-((terrainScale-1)*GLOBALScale);//(3.0f*2.0f*GLOBALScale*terrainScale)-2.0f;//- (terrainScale-1)*0.5f;
-		ground_transZ = ((i / (GLOBALMapSize* terrainScale)) * 2.0f*GLOBALScale) - (3.0f*2.0f*GLOBALScale*terrainScale)-((terrainScale-1)*GLOBALScale);//(3.0f*2.0f*GLOBALScale*terrainScale)-2.0f;//- (terrainScale-1)*0.5f;
+		ground_transX = ((i % (TorpedoGLOBAL::MapSize* terrainScale)) * 2.0f*TorpedoGLOBAL::Scale) - (3.0f*2.0f*TorpedoGLOBAL::Scale*terrainScale)-((terrainScale-1)*TorpedoGLOBAL::Scale);//(3.0f*2.0f*GLOBALScale*terrainScale)-2.0f;//- (terrainScale-1)*0.5f;
+		ground_transZ = ((i / (TorpedoGLOBAL::MapSize* terrainScale)) * 2.0f*TorpedoGLOBAL::Scale) - (3.0f*2.0f*TorpedoGLOBAL::Scale*terrainScale)-((terrainScale-1)*TorpedoGLOBAL::Scale);//(3.0f*2.0f*GLOBALScale*terrainScale)-2.0f;//- (terrainScale-1)*0.5f;
 
 		groundResult += glm::vec3(ground_transX, ground_mountainY, ground_transZ);
 
@@ -41,7 +41,7 @@ void Terrain::Init()
 	}
 }
 
-void Terrain::Draw(gCamera &m_camera, gShaderProgram &m_program)
+void Terrain::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
 
 	//glm::mat4 matWorld = glm::translate(mountain_translate) * glm::rotate(mountain_rotate, mountain_rotate_angle) * glm::scale(mountain_scale);
@@ -56,7 +56,7 @@ void Terrain::Draw(gCamera &m_camera, gShaderProgram &m_program)
 	//vb_mountain.Off();
 	
 	for (int i = 0; i < terrainSize; i++) {
-		myGrounds[i].Draw(m_camera,m_program);
+		myGrounds[i].Draw(camera,sh_program);
 	}
 	
 }

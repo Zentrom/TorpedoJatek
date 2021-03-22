@@ -53,16 +53,16 @@ void Mountain::Init()
 	vb_mountain.InitBuffers();
 }
 
-void Mountain::Draw(gCamera &m_camera,gShaderProgram &m_program) 
+void Mountain::Draw(gCamera &camera,gShaderProgram &sh_program) 
 {
 
 	glm::mat4 matWorld = glm::translate(mountain_translate) * glm::rotate(mountain_rotate,mountain_rotate_angle) * glm::scale(mountain_scale);
 	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
-	glm::mat4 mvp = m_camera.GetViewProj() *matWorld;
+	glm::mat4 mvp = camera.GetViewProj() *matWorld;
 
-	m_program.SetUniform("world", matWorld);
-	m_program.SetUniform("worldIT", matWorldIT);
-	m_program.SetUniform("MVP", mvp);
+	//sh_program.SetUniform("world", matWorld);
+	//sh_program.SetUniform("worldIT", matWorldIT);
+	sh_program.SetUniform("MVP", mvp);
 
 	//m_program.SetTexture("texImage", 0, m_groundTextureID);
 	//m_program.SetTexture("texNormal", 1, m_groundNormalMapID);

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <utility>
+
 #include <SDL.h>
 #include <SDL_net.h>
 #include <cstring>
@@ -14,10 +16,10 @@ public:
 	~ClientSocket(void);
 
 	void Init(std::string ipString,int portNr);
-	void SendFleet(int* activeTiles);
+	void SendFleet(std::pair<char,int> *activeTiles);
 	int getPlayerNum();
-	int SendShot(int tile);
-	int ReceiveShot();
+	int SendShot(std::pair<char,int> tile);
+	std::pair<char,int> ReceiveShot();
 
 	int getRecShotState();
 
@@ -25,7 +27,9 @@ protected:
 	IPaddress ip;
 	TCPsocket myClient;
 
-	int ServerConfirm=0;
+	int receivedBytes = 0;
+	int sentBytes = 0;
+	int ServerConfirm = 0;
 
 	//int recShotState=3;
 };

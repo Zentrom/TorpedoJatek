@@ -1,21 +1,21 @@
-#version 130
+#version 460
 
-in vec3 vs_out_pos;
+//in vec3 vs_out_pos;
 in vec3 vs_out_color;
 //in vec3 vs_out_normal;
 //in vec2 vs_out_tex0;
 
 out vec4 fs_out_col;
 
-uniform bool use_texture = true;
-uniform bool use_normal_map = true;
-uniform bool use_light = false;
+//uniform bool use_texture = true;
+//uniform bool use_normal_map = true;
+//uniform bool use_light = false;
 
-uniform bool is_sun = false;
+//uniform bool is_sun = false;
 
-uniform bool is_ambient = true;
-uniform bool is_diffuse = true;
-uniform bool is_specular = true;
+//uniform bool is_ambient = true;
+//uniform bool is_diffuse = true;
+//uniform bool is_specular = true;
 
 // színtér tulajdonságok
 uniform vec3 eye_pos = vec3(0, 15, 15);

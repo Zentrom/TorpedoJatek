@@ -19,7 +19,7 @@ public:
 	~Terrain(void);
 
 	void Init();
-	void Draw(gCamera &m_camera, gShaderProgram &m_program);
+	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
 protected:
 
@@ -27,7 +27,7 @@ protected:
 	const int terrainScale = 3;
 
 	const int terrainMultiplier = terrainScale*terrainScale; //négyzetszám legyen
-	const int terrainSize = GLOBALMapSize*GLOBALMapSize*terrainMultiplier;
+	const int terrainSize = TorpedoGLOBAL::MapSize*TorpedoGLOBAL::MapSize*terrainMultiplier;
 	Ground* myGrounds;
 	//std::array<Ground, 7> myGrounds = new Ground();
 

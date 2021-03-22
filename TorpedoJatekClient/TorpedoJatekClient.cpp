@@ -1,53 +1,43 @@
 // GLEW
 #include <GL/glew.h>
 
-
-
 #include "TorpedoJatekClient.h"
 #include "GameInstance.h"
 
 TorpedoJatekClient::TorpedoJatekClient(void)
 {
-	
 }
 
 TorpedoJatekClient::~TorpedoJatekClient(void)
 {
+	SDL_Quit();
+	std::cout << "Press enter to exit..." << std::endl;
+	std::cin.get();
 }
 
 int TorpedoJatekClient::Start()
 {
-	// állítsuk be, hogy kilépés elõtt hívja meg a rendszer az exitProgram() függvényt
-	atexit(exitProgram);
-
-	if (this->Init()) {
+	if (Init()) {
 		return 1;
 	}
-
-	if (this->CreateWindo()) {
+	if (CreateGameWindow()) {
 		return 1;
 	}
-
-	if (this->StartGameInstance()) {
+	if (StartGameInstance()) {
 		return 1;
 	}
-
 	return 0;
 }
 
 int TorpedoJatekClient::Init()
 {
-	// a grafikus alrendszert kapcsoljuk csak be, ha gond van, akkor jelezzük és lépjün ki
 	if (SDL_Init(SDL_INIT_VIDEO) == -1)
 	{
-		// irjuk ki a hibat es terminaljon a program
 		std::cout << "[SDL indítása]Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
 		return 1;
 	}
 
-
-	// beállíthatjuk azt, hogy pontosan milyen OpenGL context-et szeretnénk létrehozni - ha nem tesszük, akkor
-	// automatikusan a legmagasabb elérhetõ verziójút kapjuk
+	//explicit OPENGL verzio beallitas
 	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
@@ -68,26 +58,19 @@ int TorpedoJatekClient::Init()
 	return 0;
 }
 
-int TorpedoJatekClient::CreateWindo()
+int TorpedoJatekClient::CreateGameWindow()
 {
 	
 	window_title << "TorpedoJatek v" << majorVersion << "." << betaVersion << "." << alphaVersion << experimentalVersion;
 
-	
-	win = SDL_CreateWindow(window_title.str().c_str(),		// az ablak fejléce
-		rightOffset, downOffset, widthWindow, heightWindow,flagsWindow);			// megjelenítési tulajdonságok
+	win = SDL_CreateWindow(window_title.str().c_str(),
+		rightOffset, downOffset, widthWindow, heightWindow,flagsWindow);
 
-
-	// ha nem sikerült létrehozni az ablakot, akkor írjuk ki a hibát, amit kaptunk és lépjünk ki
 	if (win == 0)
 	{
 		std::cout << "[Ablak létrehozása]Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
 		return 1;
 	}
-
-	//
-	// 3. lépés: hozzunk létre az OpenGL context-et - ezen keresztül fogunk rajzolni
-	//
 
 	context = SDL_GL_CreateContext(win);
 	if (context == 0)
@@ -96,10 +79,9 @@ int TorpedoJatekClient::CreateWindo()
 		return 1;
 	}
 
-	// megjelenítés: várjuk be a vsync-et
+	//VSync
 	SDL_GL_SetSwapInterval(enableVsync);
 
-	// indítsuk el a GLEW-t
 	GLenum error = glewInit();
 	if (error != GLEW_OK)
 	{
@@ -117,9 +99,7 @@ int TorpedoJatekClient::CreateWindo()
 	{
 		SDL_GL_DeleteContext(context);
 		SDL_DestroyWindow(win);
-
 		std::cout << "[OGL context létrehozása] Nem sikerült létrehozni az OpenGL context-et! Lehet, hogy az SDL_GL_SetAttribute(...) hívásoknál az egyik beállítás helytelen." << std::endl;
-
 		return 1;
 	}
 
@@ -129,7 +109,6 @@ int TorpedoJatekClient::CreateWindo()
 int TorpedoJatekClient::StartGameInstance()
 {
 	bool quit = false;
-	// feldolgozandó üzenet ide kerül
 	SDL_Event ev;
 
 	GameInstance gameInstance;
@@ -274,12 +253,4 @@ int TorpedoJatekClient::StartGameInstance()
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(win);
 	return 0;
-}
-
-void TorpedoJatekClient::exitProgram()
-{
-	SDL_Quit();
-
-	std::cout << "Press a key to exit..." << std::endl;
-	std::cin.get();
 }

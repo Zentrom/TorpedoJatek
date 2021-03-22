@@ -6,9 +6,9 @@
 
 GameLogic::GameLogic(void)
 {
-	if (!GLOBALDebug) {
+	if (!TorpedoGLOBAL::Debug) {
 		for (int i = 0; i < activeTileCount; i++) {
-			activeTiles[i] = 0;
+			activeTiles[i] = std::pair<char,int>('0',0);
 		}
 	}
 }
@@ -20,14 +20,14 @@ GameLogic::~GameLogic(void)
 void GameLogic::Init()
 {
 	std::cout << "-----------------------------------------------" << std::endl
-		<< this->output << std::endl
+		<< output << std::endl
 		<< "-----------------------------------------------" << std::endl
 		<< std::endl;
 
-	if (!GLOBALDebug) {
-		this->ConnectionSetup();
-		this->PlaceShips();
-		mySocket.SendFleet(this->activeTiles);
+	if (!TorpedoGLOBAL::Debug) {
+		ConnectionSetup();
+		PlaceShips();
+		mySocket.SendFleet(activeTiles.data());
 	}
 }
 
@@ -35,82 +35,93 @@ void GameLogic::Init()
 void GameLogic::ConnectionSetup()
 {
 	
-	this->output = "Establishing connection.";
-	std::cout << this->output << std::endl;
+	output = "Establishing connection.";
+	std::cout << output << std::endl;
 
-	this->output = "Server ip:";
-	std::cout << this->output << std::endl;
-	std::cin >> this->ip;
+	output = "Server ip:";
+	std::cout << output << std::endl;
+	std::cin >> ip;
 
-	this->output = "Server port:";
-	std::cout << this->output << std::endl;
-	std::cin >> this->port;
+	output = "Server port:";
+	std::cout << output << std::endl;
+	std::cin >> port;
 
 	
-	mySocket.Init(this->ip,this->port);
+	mySocket.Init(ip,port);
 }
 
 void GameLogic::PlaceShips()
 {
-	this->output = "Place your ships!/nChoose what kind of ship do you want to place down:";
+	output = "Place your ships!/nChoose what kind of ship do you want to place down:";
 	
 	do {
 		std::cout << std::endl <<
-			this->output << std::endl
-			<< "1. - 3tile ships left: " << this->ship3count << std::endl
-			<< "2. - 2tile ships left: " << this->ship2count << std::endl
-			<< "3. - 1tile ships left: " << this->ship1count << std::endl;
+			output << std::endl
+			<< "1. - 3tile ships left: " << ship3count << std::endl
+			<< "2. - 2tile ships left: " << ship2count << std::endl
+			<< "3. - 1tile ships left: " << ship1count << std::endl;
 
-		std::cin >> this->choice;
+		std::cin >> choice;
 
-		int tmpTile;
+		std::pair<char,int> tmpTile;
 		std::string tmpBack[4] = {" "," "," "," "};
-		int tmpMiddle[4] = { 0,0,0,0 };
+		//int tmpMiddle[4] = { 0,0,0,0 };
+		std::pair<char, int> tmpMiddle[4] = {std::pair<char,int>('0',0),std::pair<char,int>('0',0),
+			std::pair<char,int>('0',0), std::pair<char,int>('0',0) };
 		switch (choice) {
 		case 1:
 			if (ship3count != 0) {
-				std::cout << this->shipFPlaceText << std::endl;
-				std::cin >> this->shipFront;
+				std::cout << shipFPlaceText << std::endl;
+				std::cin >> shipFront;
 
-				if (CheckString(this->shipFront)) {
-					tmpTile = ProcessString(this->shipFront);
+				if (CheckString(shipFront)) {
+					tmpTile = ProcessString(shipFront);
 
 					if (CheckTile(tmpTile)) {
 
-						if (TileProcessable(tmpTile + 100) && TileProcessable(tmpTile + 200)) {
-							if (CheckTile(tmpTile + 100) && CheckTile(tmpTile + 200))
-								tmpBack[0] = ProcessTile(tmpTile + 200);
-								tmpMiddle[0] = tmpTile + 100;
+						if (TileProcessable(std::pair<char,int>(tmpTile.first+1,tmpTile.second)) 
+							&& TileProcessable(std::pair<char, int>(tmpTile.first + 2, tmpTile.second))) {
+							if (CheckTile(std::pair<char, int>(tmpTile.first + 1, tmpTile.second))
+								&& CheckTile(std::pair<char, int>(tmpTile.first + 2, tmpTile.second)))
+								tmpBack[0] = ProcessTile(std::pair<char, int>(tmpTile.first + 2, tmpTile.second));
+								tmpMiddle[0] = std::pair<char, int>(tmpTile.first + 1, tmpTile.second);
 						}
-						if (TileProcessable(tmpTile - 100) && TileProcessable(tmpTile - 200)) {
-							if (CheckTile(tmpTile - 100) && CheckTile(tmpTile - 200))
-								tmpBack[1] = ProcessTile(tmpTile - 200);
-								tmpMiddle[1] = tmpTile - 100;
+						if (TileProcessable(std::pair<char, int>(tmpTile.first - 1, tmpTile.second))
+							&& TileProcessable(std::pair<char, int>(tmpTile.first - 2, tmpTile.second))) {
+							if (CheckTile(std::pair<char, int>(tmpTile.first - 1, tmpTile.second))
+								&& CheckTile(std::pair<char, int>(tmpTile.first - 2, tmpTile.second)))
+								tmpBack[1] = ProcessTile(std::pair<char, int>(tmpTile.first - 2, tmpTile.second));
+								tmpMiddle[1] = std::pair<char, int>(tmpTile.first - 1, tmpTile.second);
 						}
-						if (TileProcessable(tmpTile + 1) && TileProcessable(tmpTile + 2)) {
-							if (CheckTile(tmpTile + 1) && CheckTile(tmpTile + 2))
-								tmpBack[2] = ProcessTile(tmpTile + 2);
-								tmpMiddle[2] = tmpTile + 1;
+						if (TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second+1))
+							&& TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second + 2))) {
+							if (CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 1))
+								&& CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 2)))
+								tmpBack[2] = ProcessTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 2));
+								tmpMiddle[2] = std::pair<char, int>(tmpTile.first, tmpTile.second + 1);
 						}
-						if (TileProcessable(tmpTile - 1) && TileProcessable(tmpTile - 2)) {
-							if (CheckTile(tmpTile - 1) && CheckTile(tmpTile - 2))
-								tmpBack[3] = ProcessTile(tmpTile - 2);
-								tmpMiddle[3] = tmpTile - 1;
+						if (TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second - 1))
+							&& TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second - 2))) {
+							if (CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 1))
+								&& CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 2)))
+								tmpBack[3] = ProcessTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 2));
+								tmpMiddle[3] = std::pair<char, int>(tmpTile.first, tmpTile.second - 1);
 						}
+
 						bool arrayHasElem = false;
 						for (int i = 0; i < 4; i++) {
-							if (tmpBack[i] != " " && tmpMiddle[i]!=0) { arrayHasElem = true; break; }
+							if (tmpBack[i] != " " && tmpMiddle[i].first!='0') { arrayHasElem = true; break; }
 						}
 						if (arrayHasElem) {
 							bool tmpFound = false;
 							int midIndex = 0;
 							do {
-								std::cout << this->shipBPlaceText << tmpBack[0] << tmpBack[1] << tmpBack[2] << tmpBack[3] << std::endl;
-								std::cin >> this->shipBack;
+								std::cout << shipBPlaceText << tmpBack[0] << tmpBack[1] << tmpBack[2] << tmpBack[3] << std::endl;
+								std::cin >> shipBack;
 
 
 								for (int i = 0; i < 4; i++) {
-									if (this->shipBack == tmpBack[i]) {
+									if (shipBack == tmpBack[i]) {
 										tmpFound = true;
 										midIndex = i;
 										break;
@@ -118,22 +129,22 @@ void GameLogic::PlaceShips()
 								}
 							} while (!tmpFound);
 
-							for (int i = 0; i < this->activeTileCount; i++) {
-								if (this->activeTiles[i] == 0) {
-									this->activeTiles[i] = tmpTile;
+							for (int i = 0; i < activeTileCount; i++) {
+								if (activeTiles[i].first == '0') {
+									activeTiles[i] = tmpTile;
 									break;
 								}
 							}
-							tmpTile = ProcessString(this->shipBack);
-							for (int i = 0; i < this->activeTileCount; i++) {
-								if (this->activeTiles[i] == 0) {
-									this->activeTiles[i] = tmpTile;
+							tmpTile = ProcessString(shipBack);
+							for (int i = 0; i < activeTileCount; i++) {
+								if (activeTiles[i].first == '0') {
+									activeTiles[i] = tmpTile;
 									break;
 								}
 							}
-							for (int i = 0; i < this->activeTileCount; i++) {
-								if (this->activeTiles[i] == 0) {
-									this->activeTiles[i] = tmpMiddle[midIndex];
+							for (int i = 0; i < activeTileCount; i++) {
+								if (activeTiles[i].first == '0') {
+									activeTiles[i] = tmpMiddle[midIndex];
 									break;
 								}
 							}
@@ -145,7 +156,7 @@ void GameLogic::PlaceShips()
 						}
 						for (int i = 0; i < 4; i++) {
 							tmpBack[i] = " ";
-							tmpMiddle[i] = 0;
+							tmpMiddle[i] = std::pair<char,int>('0',0);
 						}
 					}
 					else {
@@ -156,29 +167,29 @@ void GameLogic::PlaceShips()
 			break;
 		case 2:
 			if (ship2count != 0) {
-				std::cout << this->shipFPlaceText << std::endl;
-				std::cin >> this->shipFront;
+				std::cout << shipFPlaceText << std::endl;
+				std::cin >> shipFront;
 
-				if (CheckString(this->shipFront)) {
-					tmpTile = ProcessString(this->shipFront);
+				if (CheckString(shipFront)) {
+					tmpTile = ProcessString(shipFront);
 
 					if (CheckTile(tmpTile)) {
 
-						if (TileProcessable(tmpTile + 100)) {
-							if (CheckTile(tmpTile + 100))
-								tmpBack[0] = ProcessTile(tmpTile + 100);
+						if (TileProcessable(std::pair<char, int>(tmpTile.first + 1, tmpTile.second))) {
+							if (CheckTile(std::pair<char, int>(tmpTile.first + 1, tmpTile.second)))
+								tmpBack[0] = ProcessTile(std::pair<char, int>(tmpTile.first + 1, tmpTile.second));
 						}
-						if (TileProcessable(tmpTile - 100)) {
-							if (CheckTile(tmpTile - 100))
-								tmpBack[1] = ProcessTile(tmpTile - 100);
+						if (TileProcessable(std::pair<char, int>(tmpTile.first - 1, tmpTile.second))) {
+							if (CheckTile(std::pair<char, int>(tmpTile.first - 1, tmpTile.second)))
+								tmpBack[1] = ProcessTile(std::pair<char, int>(tmpTile.first - 1, tmpTile.second));
 						}
-						if (TileProcessable(tmpTile + 1)) {
-							if (CheckTile(tmpTile + 1))
-								tmpBack[2] = ProcessTile(tmpTile + 1);
+						if (TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second+1))) {
+							if (CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 1)))
+								tmpBack[2] = ProcessTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 1));
 						}
-						if (TileProcessable(tmpTile - 1)) {
-							if (CheckTile(tmpTile - 1))
-								tmpBack[3] = ProcessTile(tmpTile - 1);
+						if (TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second - 1))) {
+							if (CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 1)))
+								tmpBack[3] = ProcessTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 1));
 						}
 						bool arrayHasElem = false;
 						for (int i = 0; i < 4; i++) {
@@ -187,28 +198,28 @@ void GameLogic::PlaceShips()
 						if (arrayHasElem) {
 							bool tmpFound = false;
 							do {
-								std::cout << this->shipBPlaceText << tmpBack[0] << " " << tmpBack[1] << " " << tmpBack[2] << " " << tmpBack[3] << std::endl;
-								std::cin >> this->shipBack;
+								std::cout << shipBPlaceText << tmpBack[0] << " " << tmpBack[1] << " " << tmpBack[2] << " " << tmpBack[3] << std::endl;
+								std::cin >> shipBack;
 
 
 								for (int i = 0; i < 4; i++) {
-									if (this->shipBack == tmpBack[i]) {
+									if (shipBack == tmpBack[i]) {
 										tmpFound = true;
 										break;
 									}
 								}
 							} while (!tmpFound);
 
-							for (int i = 0; i < this->activeTileCount; i++) {
-								if (this->activeTiles[i] == 0) {
-									this->activeTiles[i] = tmpTile;
+							for (int i = 0; i < activeTileCount; i++) {
+								if (activeTiles[i].first == '0') {
+									activeTiles[i] = tmpTile;
 									break;
 								}
 							}
-							tmpTile = ProcessString(this->shipBack);
-							for (int i = 0; i < this->activeTileCount; i++) {
-								if (this->activeTiles[i] == 0) {
-									this->activeTiles[i] = tmpTile;
+							tmpTile = ProcessString(shipBack);
+							for (int i = 0; i < activeTileCount; i++) {
+								if (activeTiles[i].first == '0') {
+									activeTiles[i] = tmpTile;
 									break;
 								}
 							}
@@ -231,17 +242,17 @@ void GameLogic::PlaceShips()
 			break;
 		case 3:
 			if (ship1count != 0) {
-				std::cout << this->ship1PlaceText << std::endl;
-				std::cin >> this->shipFront;
+				std::cout << ship1PlaceText << std::endl;
+				std::cin >> shipFront;
 
-				this->shipBack = this->shipFront;
+				shipBack = shipFront;
 
-				if (CheckString(this->shipFront)) {
-					tmpTile = ProcessString(this->shipFront);
+				if (CheckString(shipFront)) {
+					tmpTile = ProcessString(shipFront);
 					if (CheckTile(tmpTile)) {
-						for (int i = 0; i < this->activeTileCount; i++) {
-							if (this->activeTiles[i] == 0) {
-								this->activeTiles[i] = tmpTile;
+						for (int i = 0; i < activeTileCount; i++) {
+							if (activeTiles[i].first == '0') {
+								activeTiles[i] = tmpTile;
 								break;
 							}
 						}
@@ -261,7 +272,7 @@ void GameLogic::PlaceShips()
 
 		
 
-	} while (this->ship3count!=0 ||this->ship2count!=0 || this->ship1count!=0);
+	} while (ship3count!=0 ||ship2count!=0 || ship1count!=0);
 }
 
 void GameLogic::StartMatch(PlayTile *myTiles, PlayTile *enemyTiles)
@@ -269,17 +280,17 @@ void GameLogic::StartMatch(PlayTile *myTiles, PlayTile *enemyTiles)
 	playerNum=mySocket.getPlayerNum();
 	int processableTileState= 10;
 	if (playerNum == 1) {
-		processableTileState=this->Shoot();
+		processableTileState=Shoot();
 
-		enemyTiles[ConvertCoordToTileIndex(this->processableTile)].setState(processableTileState);
+		enemyTiles[ConvertCoordToTileIndex(processableTile)].setState(processableTileState);
 	}
 
 	while (processableTileState != 4 && processableTileState != 5) {
-		processableTileState = this->GetShoot();
-		myTiles[ConvertCoordToTileIndex(this->processableTile)].setState(processableTileState);
+		processableTileState = GetShoot();
+		myTiles[ConvertCoordToTileIndex(processableTile)].setState(processableTileState);
 		if (processableTileState != 4 && processableTileState != 5) {
-			processableTileState = this->Shoot();
-			enemyTiles[ConvertCoordToTileIndex(this->processableTile)].setState(processableTileState);
+			processableTileState = Shoot();
+			enemyTiles[ConvertCoordToTileIndex(processableTile)].setState(processableTileState);
 		}
 	}
 
@@ -295,9 +306,9 @@ void GameLogic::StartMatch(PlayTile *myTiles, PlayTile *enemyTiles)
 
 }
 
-int* GameLogic::getActiveTiles()
+std::pair<char,int>* GameLogic::getActiveTiles()
 {
-	return activeTiles;
+	return activeTiles.data();
 }
 
 int GameLogic::Shoot()
@@ -306,10 +317,11 @@ int GameLogic::Shoot()
 	//int sentData;
 	int newState;
 	while (1) {
-		std::cout << "Where do you want to shoot?(a1-" << theColumns[GLOBALMapSize-1] << GLOBALMapSize <<")" << std::endl;
+		std::cout << "Where do you want to shoot?(a1-" << ('a'+TorpedoGLOBAL::MapSize-1)//theColumns[TorpedoGLOBAL::MapSize -1] 
+			<< TorpedoGLOBAL::MapSize <<")" << std::endl;
 		std::cin >> shoot;
 		if (CheckString(shoot)) {
-			this->processableTile = ProcessString(shoot);
+			processableTile = ProcessString(shoot);
 			newState=mySocket.SendShot(processableTile);
 			break;
 		}
@@ -326,127 +338,93 @@ int GameLogic::GetShoot()
 	int newState;
 	//int receivedShotTile;
 
-	this->processableTile = mySocket.ReceiveShot();
+	processableTile = mySocket.ReceiveShot();
 	newState = mySocket.getRecShotState();
 
-	shoot = ProcessTile(this->processableTile);
+	shoot = ProcessTile(processableTile);
 	std::cout << "Enemy's shot to " << shoot << " was a " << (newState == 2 ? "miss." : (newState == 1 ? "hit!" : "banger!!")) << std::endl;
 
 	return newState;
 }
 
-//converts errorless stringinput in tilecoords
-int GameLogic::ProcessString(std::string coord)
+//converts errorless stringinput into tilecoords
+std::pair<char,int> GameLogic::ProcessString(std::string coord)
 {
-	strcpy(this->coordShip,coord.c_str());
+	char coordShip[2];
+	strcpy(coordShip,coord.c_str());
 
-	int first;
-	for (int i = 0; i < GLOBALMapSize; i++) {
-		if (coordShip[0] == theColumns[i]) {
-			first = i + 1;
-		}
-	}
-	/*switch (this->coordShip[0]) {
-	case 'a':
-		first = 1;
-		break;
-	case 'b':
-		first = 2;
-		break;
-	case 'c':
-		first = 3;
-		break;
-	case 'd':
-		first = 4;
-		break;
-	case 'e':
-		first = 5;
-		break;
-	case 'f':
-		first = 6;
-		break;
-	case 'g':
-		first = 7;
-		break;
-	default:
-		break;
-	}*/
+	//int first;
+	//for (int i = 0; i < TorpedoGLOBAL::MapSize; i++) {
+	//	if (coordShip[0] == theColumns[i]) {
+	//		first = i + 1;
+	//	}
+	//}
 
-	int second;
-	if (GLOBALMapSize < 10) {
-		second = atoi(&coordShip[1]);
-	}
-	else {
-		second = atoi(&coordShip[1]) * 10 +atoi(&coordShip[2]);
-	}
+	//int second;
+	//if (TorpedoGLOBAL::MapSize < 10) {
+	//	second = atoi(&coordShip[1]);
+	//}
+	//else {
+	//	second = atoi(&coordShip[1]) * 10 +atoi(&coordShip[2]);
+	//}
 
-	int result = 10000 + first * 100 + second;
+	//int result = 10000 + first * 100 + second;
 
-	return result;
+	return std::pair<char,int>(coordShip[0], atoi(&coordShip[1]));
 }
 
 //check errors in shipcoord string input
 bool GameLogic::CheckString(std::string coord)
 {
-	if (GLOBALMapSize < 10) {
-		if (coord.length() != 2) {
-			std::cout << "Incorrect length!(must be 2)" << std::endl;
-			return false;
-		}
+	//if (TorpedoGLOBAL::MapSize < 10) {
+	if (coord.length() != 2) {
+		std::cout << "Incorrect length!(must be 2)" << std::endl;
+		return false;
 	}
-	else {
-		if (coord.length() > 3 || coord.length() < 2) {
-			std::cout << "Incorrect length!(must be 2 or 3)" << std::endl;
-			return false;
-		}
-	}
+	//}
+	//else {
+	//	if (coord.length() > 3 || coord.length() < 2) {
+	//		std::cout << "Incorrect length!(must be 2 or 3)" << std::endl;
+	//		return false;
+	//	}
+	//}
 
-
-
-	char tmp[4];
+	char tmp[2];
 	strcpy(tmp,coord.c_str());
 	bool legitColumn = false;
-	for (int i = 0; i < GLOBALMapSize; i++) {
-		if (tmp[0] == theColumns[i]) {
-			legitColumn = true;
-		}
+	//for (int i = 0; i < TorpedoGLOBAL::MapSize; i++) {
+		//if (tmp[0] == theColumns[i]) {
+	if(tmp[0] < ('a'+TorpedoGLOBAL::MapSize) || tmp[0] >= 'a'){
+		legitColumn = true;
 	}
+	//}
 	if (!legitColumn) {
-		std::cout << "Incorrect column!(must be a-" << theColumns[GLOBALMapSize-1] << ")" << std::endl;
+		std::cout << "Incorrect column!(must be a-" << ('a'+TorpedoGLOBAL::MapSize-1)//theColumns[TorpedoGLOBAL::MapSize - 1] 
+			<< ")" << std::endl;
 		return false;
 	}
 
-
-	if (GLOBALMapSize < 10) {
-		int ia = tmp[1] - '0';
-		if (ia > GLOBALMapSize) {
-			return false;
-		}
+	//if (TorpedoGLOBAL::MapSize < 10) {
+	int ia = tmp[1] - '0';
+	if (ia > TorpedoGLOBAL::MapSize) {
+		return false;
 	}
-	else {
-		int ia = (tmp[1] - '0') * 10 + (tmp[2] - '0');
-		if (ia > GLOBALMapSize) {
-			return false;
-		}
-	}
-
-	//if (tmp[0] != 'a' && tmp[0] != 'b' && tmp[0] != 'c' && tmp[0] != 'd' && tmp[0] != 'e' && tmp[0] != 'f' && tmp[0] != 'g') {
-	//	std::cout << "Incorrect column!(must be a-g)" << std::endl;
-	//	return false;
 	//}
-	//if (tmp[1] != '1' && tmp[1] != '2' && tmp[1] != '3' && tmp[1] != '4' && tmp[1] != '5' && tmp[1] != '6' && tmp[1] != '7') {
-	//	std::cout << "Incorrect row!(must be 1-7)" << std::endl;
-	//	return false;
+	//else {
+	//	int ia = (tmp[1] - '0') * 10 + (tmp[2] - '0');
+	//	if (ia > TorpedoGLOBAL::MapSize) {
+	//		return false;
+	//	}
 	//}
 
 	return true;
 }
 
 //check if the tile is free
-bool GameLogic::CheckTile(int tile)
+bool GameLogic::CheckTile(std::pair<char,int> tile)
 {
-	for (int i = 0; i < this->activeTileCount; i++) {
-		if (this->activeTiles[i] == tile) {
+	for (int i = 0; i < activeTileCount; i++) {
+		if (activeTiles[i] == tile) {
 			return false;
 		}
 	}
@@ -454,66 +432,37 @@ bool GameLogic::CheckTile(int tile)
 }
 
 //creates stringcoord out of tilecoord
-std::string GameLogic::ProcessTile(int tile)
+std::string GameLogic::ProcessTile(std::pair<char,int> tile)
 {
-	int column = (tile % 10000) / 100;
-	int row = tile % 100;
-
-	
-
-	char col = theColumns[column-1];
-	/*switch (column) {
-	case 1:
-		col = 'a';
-		break;
-	case 2:
-		col = 'b';
-		break;
-	case 3:
-		col = 'c';
-		break;
-	case 4:
-		col = 'd';
-		break;
-	case 5:
-		col = 'e';
-		break;
-	case 6:
-		col = 'f';
-		break;
-	case 7:
-		col = 'g';
-		break;
-	}*/
+	//int column = (tile % 10000) / 100;
+	//int row = tile % 100;
+	//char col = theColumns[column-1];
 
 	char rowC[10];
-	_itoa(row, rowC,10);
+	//_itoa(row, rowC,10);
+	_itoa(tile.second, rowC, 10);
 
 	std::string result;
-	result.push_back(col);
+	//result.push_back(col);
+	result.push_back(tile.first);
 	result.push_back(rowC[0]);
 
 	return result;
 }
 
 //checks if tilecoord is legal
-bool GameLogic::TileProcessable(int tile)
+bool GameLogic::TileProcessable(std::pair<char,int> tile)
 {
-
-	if((tile%10000)/100>GLOBALMapSize || tile%100>GLOBALMapSize || (tile%10000)/100 == 0 || tile%100 == 0){
+	//if((tile%10000)/100>TorpedoGLOBAL::MapSize || tile%100>TorpedoGLOBAL::MapSize || (tile%10000)/100 == 0 || tile%100 == 0){
+	if(tile.first>('a'+TorpedoGLOBAL::MapSize) || tile.second>TorpedoGLOBAL::MapSize || tile.first<'a' || tile.second <= 0){
 		return false;
 	}
-
-	//if (tile % 10 == 0 || tile%10 == 8 || tile%10 == 9) {
-	//	return false;
-	//}
-
 	return true;
 }
 
-int GameLogic::ConvertCoordToTileIndex(int tile)
+int GameLogic::ConvertCoordToTileIndex(std::pair<char,int> tile)
 {
-	int tens= (((tile%10000) / 100)-1) * GLOBALMapSize;
-	int ones= (tile%100)-1;
+	int tens= (tile.first-'a'+1) * TorpedoGLOBAL::MapSize;
+	int ones= tile.second-1;
 	return (tens+ones);
 }
