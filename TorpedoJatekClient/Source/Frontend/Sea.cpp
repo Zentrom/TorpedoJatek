@@ -1,8 +1,5 @@
 #include "Sea.h"
 
-#include "../../Utils/gCamera.h"
-#include "../../Utils/gShaderProgram.h"
-
 #include <iostream>
 Sea::Sea(void)
 {

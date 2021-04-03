@@ -10,11 +10,11 @@
 #include <utility>
 #include <array>
 
-#include "../../Utils/gVertexBuffer.h"
-#include "../../Utils/gShaderProgram.h"
-#include "../../Utils/gCamera.h"
+#include "../../Utility/gVertexBuffer.h"
+#include "../../Utility/gShaderProgram.h"
+#include "../../Utility/gCamera.h"
 
-#include "ClientSocket.h"
+#include "ClientHandler.h"
 #include "../Frontend/PlayTile.h"
 
 #include "../Globals.h"
@@ -36,7 +36,7 @@ public:
 	int Shoot();
 	int GetShoot();
 protected:
-	ClientSocket mySocket;
+	ClientHandler mySocket;
 
 	bool CheckString(std::string coord);
 	std::pair<char,int> ProcessString(std::string coord);

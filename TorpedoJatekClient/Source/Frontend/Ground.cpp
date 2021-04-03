@@ -1,10 +1,6 @@
 
 #include "Ground.h"
 
-#include "../../Utils/gCamera.h"
-#include "../../Utils/gShaderProgram.h"
-
-
 Ground::Ground(void)
 {
 

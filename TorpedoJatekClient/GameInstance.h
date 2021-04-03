@@ -14,10 +14,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-#include "Utils/gCamera.h"
-#include "Utils/gShaderProgram.h"
-#include "Utils/gVertexBuffer.h"
-#include "Utils/Mesh_OGL3.h"
+#include "Utility/gCamera.h"
+#include "Utility/gShaderProgram.h"
+#include "Utility/gVertexBuffer.h"
+#include "Utility/Mesh_OGL3.h"
 
 #include "Source/Frontend/Mountain.h"
 //#include "Source/Frontend/PlayTile.h"
@@ -37,7 +37,7 @@ public:
 	bool Init();
 	void Clean();
 
-	//int static threadFunction(void* ptr);
+	int static threadFunction(void* ptr);
 
 	void Update();
 	void Render();

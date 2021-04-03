@@ -5,19 +5,23 @@
 -lehessen shipet leakni Place2Ship,stb-vel,grafikába tilebegin-tileend
 -SDLthread-nél Waitthraed
 -Az ellenfél oldalán tükrözni kell a tileMapet
--Testelni evolveval mivan ha egyvalaki kilep.(ugyanaz)
--megoldani hogy server nézze ha valaki kilép,kliens se menjen tovább ha connection problemvan
 -Serveren duplikátum kód van,átkell rendezni.
 GLint,GLfloat hogy müködjön 32,64 bites rendszeren is
+-std::cin.get()-et lecserélni server s client oldalon.
+
+-Server csak egy clienssel tud foglalkozni egyszerre. VAGYIS ha éppen adatot vár egy clienttõl,akkor nem tud Accept-olni
+egy másikat. Ugyanígy a kilépést csak akkor veszi észre,ha éppen adatot kéne küldenie vagy kapnia.
+THREAD vagy CHECKSOCKET megoldaná valszeg a jövõben.
 
 -FPS limiter
 -Hajókat összekötni grafikailag
--ha mapsizepáros akk error
+-Mapsize-t a server küldje ki a klienseknek.Õ dönt.
 
--TileProcassable nemnézi pl a (122-2)=120 vagyis b0-t
+-TileProcassable nemnézi pl a (122-2)=120 vagyis b0-t ÉS G-nél nagyobb oszlopot!!
 
 OpenAl vagy SDLAudio(havan 3d) hangoknak
 Freetype vagy SDL rtf/ttf betuknek
 
 PLACESHIPSET GAMELOGICBAN PlayTile osztállyal oldjuk meg mert ez igy cancer.
-A THREAD MINTHA KÉNE, a GameLogic-ba inditaná a startmatch fgv-t :O
+A THREAD MINTHA KÉNE, a GameLogic-ba inditaná a startmatch fgv-t :O VAGY CHECKSOCKET client oldalon is.
+CheckSocket blokkolna input közbe,thread nem.Threadet elõbb is el lehetne inditani.

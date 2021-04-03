@@ -8,12 +8,14 @@
 #include <cstring>
 
 #include "../Globals.h"
+#include "../../../CommonSource/ConnectionHandler.h"
+#include "../../../CommonSource/TorpedoVersion.h"
 
-class ClientSocket
+class ClientHandler : public ConnectionHandler
 {
 public:
-	ClientSocket(void);
-	~ClientSocket(void);
+	ClientHandler(void);
+	~ClientHandler(void);
 
 	void Init(std::string ipString,int portNr);
 	void SendFleet(std::pair<char,int> *activeTiles);
@@ -31,5 +33,6 @@ protected:
 	int sentBytes = 0;
 	int ServerConfirm = 0;
 
+	const TorpedoVersion clientVersion;
 	//int recShotState=3;
 };

@@ -8,6 +8,9 @@
 #include <array>
 #include <sstream>
 
+#include "Source\ServerHandler.h"
+#include "../CommonSource/TorpedoVersion.h"
+
 class TorpedoJatekServer
 {
 public:
@@ -16,7 +19,7 @@ public:
 
 	int Start();
 
-protected:
+private:
 	enum class SetupOptions {
 		CLOSE_PROGRAM,
 		START_SERVER,
@@ -33,7 +36,7 @@ protected:
 	void Init();
 	void StartMatch();
 	void UpdateSettings();
-	void ReportErrorAndExit(char functionName[],int exitCode);
+	//void ReportErrorAndExit(char functionName[],int exitCode);
 	bool CheckClientVersion(TCPsocket &connectedSocket);
 	ResponseState ProcessTiles(int playerNum);
 
@@ -41,17 +44,15 @@ protected:
 	Uint16 port = 27015;
 	SDLNet_SocketSet socketSet = nullptr;
 	TCPsocket server = nullptr;
-	IPaddress *firstClientAddress;
 	TCPsocket firstClient = nullptr;
-	IPaddress *secondClientAddress;
 	TCPsocket secondClient = nullptr;
 	const int maxSockets = 3;
 
 	std::stringstream currentSettings;
 	ResponseState responseState = ResponseState::START_OF_GAME;
 	bool closeConnection = false;
-	int sentBytes;
-	int receivedBytes;
+	//int sentBytes;
+	//int receivedBytes;
 
 	int mapSize = 7;
 	//int activeTilesOne[16];
@@ -62,11 +63,12 @@ protected:
 	//int responseState=3;
 	
 	//serververzio
-	struct TorpedoVersion {
-		unsigned int majorVersion = 0;
-		unsigned int betaVersion = 0;
-		unsigned int alphaVersion = 1;
-		char experimentalVersion = 'e';
-	}const serverVersion;
+	//struct TorpedoVersion {
+	//	unsigned int majorVersion = 0;
+	//	unsigned int betaVersion = 0;
+	//	unsigned int alphaVersion = 1;
+	//	char experimentalVersion = 'f';
+	//}
+	const TorpedoVersion serverVersion;
 
 };

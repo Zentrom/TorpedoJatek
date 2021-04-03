@@ -1,8 +1,5 @@
 #include "Fleet.h"
 
-#include "../../Utils/gCamera.h"
-#include "../../Utils/gShaderProgram.h"
-
 #include <iostream>
 Fleet::Fleet(void)
 {

@@ -1,10 +1,6 @@
 
 #include "Mountain.h"
 
-#include "../../Utils/gCamera.h"
-#include "../../Utils/gShaderProgram.h"
-
-
 Mountain::Mountain(void)
 {
 

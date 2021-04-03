@@ -1,10 +1,6 @@
 
 #include "PlayTile.h"
 
-#include "../../Utils/gCamera.h"
-#include "../../Utils/gShaderProgram.h"
-
-
 PlayTile::PlayTile(void)
 {
 }

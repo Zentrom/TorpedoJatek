@@ -1,10 +1,6 @@
 
 #include "Terrain.h"
 
-#include "../../Utils/gCamera.h"
-#include "../../Utils/gShaderProgram.h"
-
-
 Terrain::Terrain(void)
 {
 	myGrounds = new Ground[terrainSize];

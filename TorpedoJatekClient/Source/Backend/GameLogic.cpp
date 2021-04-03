@@ -1,9 +1,5 @@
 #include "GameLogic.h"
 
-#include "../../Utils/gCamera.h"
-#include "../../Utils/gShaderProgram.h"
-
-
 GameLogic::GameLogic(void)
 {
 	if (!TorpedoGLOBAL::Debug) {
@@ -28,6 +24,7 @@ void GameLogic::Init()
 		ConnectionSetup();
 		PlaceShips();
 		mySocket.SendFleet(activeTiles.data());
+
 	}
 }
 
@@ -45,7 +42,6 @@ void GameLogic::ConnectionSetup()
 	output = "Server port:";
 	std::cout << output << std::endl;
 	std::cin >> port;
-
 	
 	mySocket.Init(ip,port);
 }
@@ -294,7 +290,7 @@ void GameLogic::StartMatch(PlayTile *myTiles, PlayTile *enemyTiles)
 		}
 	}
 
-	mySocket.~ClientSocket();
+	mySocket.~ClientHandler();
 
 	if ((processableTileState == 4 && playerNum==1) || (processableTileState == 5 && playerNum == 2)) {
 		std::cout << "You've won the match!" << std::endl;
@@ -317,7 +313,7 @@ int GameLogic::Shoot()
 	//int sentData;
 	int newState;
 	while (1) {
-		std::cout << "Where do you want to shoot?(a1-" << ('a'+TorpedoGLOBAL::MapSize-1)//theColumns[TorpedoGLOBAL::MapSize -1] 
+		std::cout << "Where do you want to shoot?(a1-" << static_cast<char>('a'+TorpedoGLOBAL::MapSize-1)//theColumns[TorpedoGLOBAL::MapSize -1] 
 			<< TorpedoGLOBAL::MapSize <<")" << std::endl;
 		std::cin >> shoot;
 		if (CheckString(shoot)) {
@@ -399,7 +395,7 @@ bool GameLogic::CheckString(std::string coord)
 	}
 	//}
 	if (!legitColumn) {
-		std::cout << "Incorrect column!(must be a-" << ('a'+TorpedoGLOBAL::MapSize-1)//theColumns[TorpedoGLOBAL::MapSize - 1] 
+		std::cout << "Incorrect column!(must be a-" << static_cast<char>('a'+TorpedoGLOBAL::MapSize-1)//theColumns[TorpedoGLOBAL::MapSize - 1] 
 			<< ")" << std::endl;
 		return false;
 	}
@@ -462,7 +458,7 @@ bool GameLogic::TileProcessable(std::pair<char,int> tile)
 
 int GameLogic::ConvertCoordToTileIndex(std::pair<char,int> tile)
 {
-	int tens= (tile.first-'a'+1) * TorpedoGLOBAL::MapSize;
+	int tens= (tile.first-'a') * TorpedoGLOBAL::MapSize;
 	int ones= tile.second-1;
 	return (tens+ones);
 }

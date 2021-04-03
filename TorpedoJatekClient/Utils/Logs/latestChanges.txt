@@ -1,7 +1,0 @@
-v0.0.1e-Basic Client Refactoring
---------------------------------------------------------------------------------
--Started connection error-handling on client-side.
--Put global variables in a namespace.
--Tiles are represented with std::pair<char,int> now,instead of int,inside of an std::array.
--Cleaned redundant comments,commented deprecated stuff.
-

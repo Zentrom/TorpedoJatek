@@ -6,6 +6,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "../CommonSource/TorpedoVersion.h"
+
 class TorpedoJatekClient
 {
 public:
@@ -39,9 +41,10 @@ private:
 	const int enableFpsLimitMode = 0;
 
 	//jatekverzio
-	const unsigned int majorVersion = 0;
-	const unsigned int betaVersion = 0;
-	const unsigned int alphaVersion = 1;
-	const char experimentalVersion = 'e';
+	//const unsigned int majorVersion = 0;
+	//const unsigned int betaVersion = 0;
+	//const unsigned int alphaVersion = 1;
+	//const char experimentalVersion = 'f';
+	const TorpedoVersion clientVersion;
 };
 

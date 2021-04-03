@@ -4,9 +4,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-#include "../../Utils/gVertexBuffer.h"
-#include "../../Utils/gShaderProgram.h"
-#include "../../Utils/gCamera.h"
+#include "../../Utility/gVertexBuffer.h"
+#include "../../Utility/gShaderProgram.h"
+#include "../../Utility/gCamera.h"
 
 #include "../Globals.h"
 

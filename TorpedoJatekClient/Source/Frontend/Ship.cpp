@@ -1,10 +1,6 @@
 
 #include "Ship.h"
 
-#include "../../Utils/gCamera.h"
-#include "../../Utils/gShaderProgram.h"
-
-
 Ship::Ship(void)
 {
 

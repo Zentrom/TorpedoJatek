@@ -13,6 +13,7 @@ TorpedoJatekClient::~TorpedoJatekClient(void)
 	SDL_Quit();
 	std::cout << "Press enter to exit..." << std::endl;
 	std::cin.get();
+	std::cin.get();
 }
 
 int TorpedoJatekClient::Start()
@@ -61,7 +62,8 @@ int TorpedoJatekClient::Init()
 int TorpedoJatekClient::CreateGameWindow()
 {
 	
-	window_title << "TorpedoJatek v" << majorVersion << "." << betaVersion << "." << alphaVersion << experimentalVersion;
+	window_title << "TorpedoJatek v" << clientVersion.majorVersion << "." << clientVersion.betaVersion 
+		<< "." << clientVersion.alphaVersion << clientVersion.experimentalVersion;
 
 	win = SDL_CreateWindow(window_title.str().c_str(),
 		rightOffset, downOffset, widthWindow, heightWindow,flagsWindow);
@@ -233,7 +235,8 @@ int TorpedoJatekClient::StartGameInstance()
 		{
 			window_title.str(std::string());
 			//window_title << time_diff / (float)frame_count << " ms, " << frame_count << " FPS";
-			window_title << "TorpedoJatek v" << majorVersion << "." << betaVersion << "." << alphaVersion << experimentalVersion
+			window_title << "TorpedoJatek v" << clientVersion.majorVersion << "." << clientVersion.betaVersion 
+				<< "." << clientVersion.alphaVersion << clientVersion.experimentalVersion
 				<< " | FPS:" << frame_count;
 			SDL_SetWindowTitle(win, window_title.str().c_str());
 

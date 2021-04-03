@@ -25,8 +25,9 @@ bool GameInstance::Init()
 	gameLogic.Init();
 	actPlayTiles = gameLogic.getActiveTiles();
 
-	//inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);
-
+	if (!TorpedoGLOBAL::Debug) {
+		inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);
+	}
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 
 	glEnable(GL_CULL_FACE);
@@ -86,7 +87,7 @@ void GameInstance::Clean()
 
 	sh_dirLight.Clean();
 }
-/*
+
 int GameInstance::threadFunction(void *ptr)
 {
 	//int cnt;
@@ -105,7 +106,7 @@ int GameInstance::threadFunction(void *ptr)
 	return 1;
 
 }
-*/
+
 void GameInstance::Update()
 {
 	// kameramozgatáshoz

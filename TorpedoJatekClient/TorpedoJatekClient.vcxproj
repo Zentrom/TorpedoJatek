@@ -19,9 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\CommonSource\ConnectionHandler.cpp" />
     <ClCompile Include="GameInstance.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Source\Backend\ClientSocket.cpp" />
+    <ClCompile Include="Source\Backend\ClientHandler.cpp" />
     <ClCompile Include="Source\Backend\GameLogic.cpp" />
     <ClCompile Include="Source\Frontend\Fleet.cpp" />
     <ClCompile Include="Source\Frontend\Ground.cpp" />
@@ -31,15 +32,16 @@
     <ClCompile Include="Source\Frontend\Ship.cpp" />
     <ClCompile Include="Source\Frontend\Terrain.cpp" />
     <ClCompile Include="TorpedoJatekClient.cpp" />
-    <ClCompile Include="Utils\gCamera.cpp" />
-    <ClCompile Include="Utils\gShaderProgram.cpp" />
-    <ClCompile Include="Utils\gVertexBuffer.cpp" />
-    <ClCompile Include="Utils\Mesh_OGL3.cpp" />
-    <ClCompile Include="Utils\ObjParser_OGL3.cpp" />
+    <ClCompile Include="Utility\gCamera.cpp" />
+    <ClCompile Include="Utility\gShaderProgram.cpp" />
+    <ClCompile Include="Utility\gVertexBuffer.cpp" />
+    <ClCompile Include="Utility\Mesh_OGL3.cpp" />
+    <ClCompile Include="Utility\ObjParser_OGL3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\CommonSource\ConnectionHandler.h" />
     <ClInclude Include="GameInstance.h" />
-    <ClInclude Include="Source\Backend\ClientSocket.h" />
+    <ClInclude Include="Source\Backend\ClientHandler.h" />
     <ClInclude Include="Source\Backend\GameLogic.h" />
     <ClInclude Include="Source\Frontend\Fleet.h" />
     <ClInclude Include="Source\Frontend\Ground.h" />
@@ -50,12 +52,12 @@
     <ClInclude Include="Source\Frontend\Terrain.h" />
     <ClInclude Include="Source\Globals.h" />
     <ClInclude Include="TorpedoJatekClient.h" />
-    <ClInclude Include="Utils\gCamera.h" />
-    <ClInclude Include="Utils\GLUtils.hpp" />
-    <ClInclude Include="Utils\gShaderProgram.h" />
-    <ClInclude Include="Utils\gVertexBuffer.h" />
-    <ClInclude Include="Utils\Mesh_OGL3.h" />
-    <ClInclude Include="Utils\ObjParser_OGL3.h" />
+    <ClInclude Include="Utility\gCamera.h" />
+    <ClInclude Include="Utility\GLUtils.hpp" />
+    <ClInclude Include="Utility\gShaderProgram.h" />
+    <ClInclude Include="Utility\gVertexBuffer.h" />
+    <ClInclude Include="Utility\Mesh_OGL3.h" />
+    <ClInclude Include="Utility\ObjParser_OGL3.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\dirLight.frag" />
@@ -76,13 +78,11 @@
     <Image Include="Resources\Textures\top_texture.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\Bstuff\Info\changelog.txt" />
-    <Text Include="..\Bstuff\Info\controlsAlpha.txt" />
-    <Text Include="Utils\Logs\latestChanges.txt" />
-    <Text Include="Utils\Logs\solutionDilemmas.txt" />
-    <Text Include="Utils\Logs\temp.txt" />
-    <Text Include="Utils\Logs\todo.txt" />
-    <Text Include="Utils\Logs\versionInfo.txt" />
+    <Text Include="Utility\Logs\latestChanges.txt" />
+    <Text Include="Utility\Logs\solutionDilemmas.txt" />
+    <Text Include="Utility\Logs\temp.txt" />
+    <Text Include="Utility\Logs\todo.txt" />
+    <Text Include="Utility\Logs\versionInfo.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F7A21611-DC56-43E4-9080-AE5095F30900}</ProjectGuid>

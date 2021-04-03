@@ -1,0 +1,4 @@
+v0.0.1f-Server-Client Connection fix
+--------------------------------------------------------------------------------
+-Finished error-handling of server-client connection.
+-Synced up server with client.
