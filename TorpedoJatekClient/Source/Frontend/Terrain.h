@@ -1,7 +1,5 @@
 #pragma once
 
-//#include <GL/glew.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
@@ -23,19 +21,13 @@ public:
 
 protected:
 
-	//const int mapSize = GLOBALMapSize;
+	//Ideiglenes.A mapsize nem fogja befolyasolni a fold meretet.
+	const int mapSize = 7;
+	//A terrainscale az feldarabolja az ugyanolyan nagy négyzetet
 	const int terrainScale = 3;
-
 	const int terrainMultiplier = terrainScale*terrainScale; //négyzetszám legyen
-	const int terrainSize = TorpedoGLOBAL::MapSize*TorpedoGLOBAL::MapSize*terrainMultiplier;
+	const int terrainSize = mapSize*mapSize*terrainMultiplier;
 	Ground* myGrounds;
-	//std::array<Ground, 7> myGrounds = new Ground();
-
-
-	//gVertexBuffer	vb_mountain;
-	//glm::vec3 mountain_translate = glm::vec3(0, 0, 0);
-	//float mountain_rotate = 0.0f;
-	//glm::vec3 mountain_rotate_angle = glm::vec3(0, 1.0f, 0);
-	//glm::vec3 mountain_scale = glm::vec3(6.0f, 6.0f, 20.0f);
+	//std::array<Ground, terrainSize> *myGrounds = new std::array<Ground, 7>();
 
 };

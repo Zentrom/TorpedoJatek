@@ -11,10 +11,10 @@ public:
 	static TCPsocket TCP_Accept(TCPsocket serverSocket);
 
 private:
-	//itt talán nem jön át a ConnectionHandlerbõl az enum és okozhat gondot
 	enum ErrorCode{
 		INIT_SDL=10,
 		ALLOC_SET,
 		CHECK_SOCKETS,
+		SOCKET_READY,
 	};
 };

@@ -4,13 +4,7 @@ TorpedoJatekServer::TorpedoJatekServer(void)
 {
 	UpdateSettings();
 
-	//if (SDL_Init(0) == -1) {
-	//	ReportErrorAndExit("SDL_Init", 1);
-	//}
 	ServerHandler::Init_SDL();
-	//if (SDLNet_Init() == -1) {
-	//	ReportErrorAndExit("SDLNet_Init", 2);
-	//}
 	ServerHandler::Init_SDLNet();
 }
 
@@ -18,9 +12,6 @@ TorpedoJatekServer::~TorpedoJatekServer(void)
 {
 	SDLNet_Quit();
 	SDL_Quit();
-
-	//std::cout << "Press enter to exit..." << std::endl;
-	//std::cin.get();
 }
 
 void TorpedoJatekServer::UpdateSettings() {
@@ -28,6 +19,7 @@ void TorpedoJatekServer::UpdateSettings() {
 	currentSettings << "Server version: " << serverVersion.majorVersion << '.' << serverVersion.betaVersion << '.'
 		<< serverVersion.alphaVersion << serverVersion.experimentalVersion << '\n';
 	currentSettings << "Current map-size: " << mapSize << '\n';
+	currentSettings << "Port used: " << port << '\n';
 }
 
 int TorpedoJatekServer::Start() {
@@ -41,6 +33,7 @@ int TorpedoJatekServer::Start() {
 			<< "Choose an option:\n\
             1.Start server\n\
             2.Change map size\n\
+            3.Change port\n\
             0.Quit" << std::endl;
 		std::cin >> input;
 		setupOption = static_cast<SetupOptions>(input);
@@ -54,10 +47,17 @@ int TorpedoJatekServer::Start() {
 			mapSize = tmpMapSize;
 			UpdateSettings();
 		}
+		if (setupOption == SetupOptions::CHANGE_PORT) {
+			std::cout << "New port number: ";
+			std::cin >> port;
+			UpdateSettings();
+		}
 	}
 
 	if (setupOption == SetupOptions::START_SERVER) {
 		Init();
+		GetShips(firstClient);
+		GetShips(secondClient);
 		StartMatch();
 	}
 
@@ -65,308 +65,165 @@ int TorpedoJatekServer::Start() {
 }
 
 bool TorpedoJatekServer::CheckClientVersion(TCPsocket &connectedSocket) {
-	TorpedoVersion *clientVersion = new TorpedoVersion;
 
-	//receivedBytes = SDLNet_TCP_Recv(connectedSocket, clientVersion, sizeof(TorpedoVersion));
-	//if (receivedBytes <= 0) {
-	//	delete clientVersion;
-	//	ReportErrorAndExit("SDLNet_TCP_Recv", 6);
-	//}
+	const char* text;
+	int textLength;
+
+	TorpedoVersion *clientVersion = new TorpedoVersion;
 	ServerHandler::ReceiveBinary(connectedSocket, clientVersion, sizeof(TorpedoVersion));
 
 	if (serverVersion.majorVersion == clientVersion->majorVersion && serverVersion.betaVersion == clientVersion->betaVersion
 		&& serverVersion.alphaVersion == clientVersion->alphaVersion
 		&& serverVersion.experimentalVersion == clientVersion->experimentalVersion) {
-		std::cout << "connectedSocket passed the version check." << std::endl;
+		std::cout << "Connected socket passed the version check." << std::endl;
+		
+		text = "Version check passed.";
+		textLength = strlen(text) + 1;
+		ServerHandler::SendBinary(connectedSocket, new bool(true), sizeof(bool));
+		ServerHandler::SendBinary(connectedSocket, &textLength, sizeof(int));
+		ServerHandler::SendText(connectedSocket, text, strlen(text) + 1);
 		return true;
 	}
 
+	std::stringstream response;
+	response << "Version check failed!\n" << "Server version is: v" << serverVersion.majorVersion << '.'
+		<< serverVersion.betaVersion << '.' << serverVersion.alphaVersion << '.' << serverVersion.experimentalVersion;
+	text = response.str().c_str();
+	textLength = strlen(text) + 1;
+	ServerHandler::SendBinary(connectedSocket, new bool(false), sizeof(bool));
+	ServerHandler::SendBinary(connectedSocket, &textLength, sizeof(int));
+	ServerHandler::SendText(connectedSocket, text, strlen(text) + 1);
 	return false;
 }
 
 void TorpedoJatekServer::Init()
 {
-	//socketSet = SDLNet_AllocSocketSet(maxSockets);
-	//if (!socketSet) {
-	//	ReportErrorAndExit("SDLNet_AllocSocketSet", 7);
-	//}
 	socketSet = ServerHandler::AllocSocketSet(maxSockets);
 
-	//if (SDLNet_ResolveHost(&ip, nullptr, port) == -1) {
-	//	ReportErrorAndExit("SDLNet_ResolveHost", 3);
-	//};
 	ServerHandler::ResolveHost(&ip, nullptr, port);
 
-	//server = SDLNet_TCP_Open(&ip);
-	//if (!server) {
-	//	ReportErrorAndExit("SDLNet_TCP_Open", 4);
-	//}
 	std::cout << "Creating server..." << std::endl;
 	server = ServerHandler::TCP_Open(&ip);
 
-	//if (SDLNet_TCP_AddSocket(socketSet, server) == -1) {
-	//	ReportErrorAndExit("SDLNet_TCP_AddSocket", 8);
-	//}
 	ServerHandler::TCP_AddSocket(socketSet, server);
+}
 
-	const char* text = "HELLO CLIENT!\n";
-
-	//elso jatekos hajoi
-	while (true)
+void TorpedoJatekServer::GetShips(Client &client)
+{
+	while (successfullyConnectedPlayers<2)
 	{
-		//if (SDLNet_CheckSockets(socketSet, -1) == -1) {
-		//	printf("SDLNet_CheckSockets: %s\n", SDLNet_GetError());
-		//	//most of the time this is a system error, where perror might help you.
-		//	perror("SDLNet_CheckSockets");
-		//}else{
-		//	if (SDLNet_SocketReady(server)) {
-		//		firstClient = SDLNet_TCP_Accept(server);
-		//		if (SDLNet_TCP_AddSocket(socketSet, firstClient) == -1) {
-		//			ReportErrorAndExit("SDLNet_TCP_AddSocket", 8);
-		//		}
-		//	}
-		//}
 		std::cout << "Waiting for incoming connection..." << std::endl;
 		if (ServerHandler::CheckSocketReady(socketSet, server, -1)) {
-			firstClient = ServerHandler::TCP_Accept(server);
-			ServerHandler::TCP_AddSocket(socketSet, firstClient);
+			client.socket = ServerHandler::TCP_Accept(server);
+			ServerHandler::TCP_AddSocket(socketSet, client.socket);
 		}
 
-		//sentBytes = SDLNet_TCP_Send(firstClient, text, strlen(text) + 1);
-		//if (sentBytes < (strlen(text) + 1)) {
-		//	ReportErrorAndExit("SDLNet_TCP_Send", 5);
-		//}
-		ServerHandler::SendText(firstClient, text, strlen(text) + 1);
-
-		if (!CheckClientVersion(firstClient)) {
-			std::cerr << "Version mismatch at firstClient!/n";
-			SDLNet_TCP_DelSocket(socketSet, firstClient);
-			SDLNet_TCP_Close(firstClient);
+		if (!CheckClientVersion(client.socket)) {
+			std::cerr << "Version mismatch at connected Client!/n";
+			SDLNet_TCP_DelSocket(socketSet, client.socket);
+			SDLNet_TCP_Close(client.socket);
 			continue;
 		}
 
+		client.name << "Player" << ++successfullyConnectedPlayers;
+		client.playerNum = successfullyConnectedPlayers;
+
+		std::cout << "Sending map size to client..." << std::endl;
+		ServerHandler::SendBinary(client.socket, &mapSize, sizeof(int));
+
+		std::cout << "Receiving shipdata from " << client.name.str() << std::endl;
 		for (int i = 0; i < 16; i++) {
-			//receivedBytes = SDLNet_TCP_Recv(firstClient, &activeTilesPlayerOne[i], sizeof(std::pair<char,int>));
-			//if (receivedBytes <= 0) {
-			//	ReportErrorAndExit("SDLNet_TCP_Recv", 6);
-			//}
-			//else {
-			//	std::cout << activeTilesPlayerOne[i].first << activeTilesPlayerOne[i].second << std::endl;
-			//}
-			std::cout << "Receiving shipdata player1..." << std::endl;
-			ServerHandler::ReceiveBinary(firstClient, &activeTilesPlayerOne[i], sizeof(std::pair<char, int>));
-			std::cout << activeTilesPlayerOne[i].first << activeTilesPlayerOne[i].second << std::endl;
+			ServerHandler::ReceiveBinary(client.socket, &client.activeTiles[i], sizeof(std::pair<char, int>));
+			std::cout << client.activeTiles[i].first << client.activeTiles[i].second << ' ';
 		}
-		std::cout << "Received ShipData from Player1" << std::endl;
-		//sentBytes = SDLNet_TCP_Send(firstClient, new int(1), sizeof(int));
-		//if (sentBytes < sizeof(int)) {
-		//	ReportErrorAndExit("SDLNet_TCP_Send", 5);
-		//}
-		ServerHandler::SendBinary(firstClient, new int(1), sizeof(int));
+		std::cout << "\nReceived ShipData from " << client.name.str() << std::endl;
 		break;
-		//closeConnection = !closeConnection;
-	}
-
-	//masodik hajoi
-	while (true)
-	{
-		//if (SDLNet_CheckSockets(socketSet, -1) == -1) {
-		//	printf("SDLNet_CheckSockets: %s\n", SDLNet_GetError());
-		//	//most of the time this is a system error, where perror might help you.
-		//	perror("SDLNet_CheckSockets");
-		//}else{
-		//	if (SDLNet_SocketReady(server)) {
-		//		firstClient = SDLNet_TCP_Accept(server);
-		//		if (SDLNet_TCP_AddSocket(socketSet, firstClient) == -1) {
-		//			ReportErrorAndExit("SDLNet_TCP_AddSocket", 8);
-		//		}
-		//	}
-		//}
-		std::cout << "Waiting for incoming connection..." << std::endl;
-		if (ServerHandler::CheckSocketReady(socketSet, server, -1)) {
-			secondClient = ServerHandler::TCP_Accept(server);
-			ServerHandler::TCP_AddSocket(socketSet, secondClient);
-		}
-
-		//sentBytes = SDLNet_TCP_Send(firstClient, text, strlen(text) + 1);
-		//if (sentBytes < (strlen(text) + 1)) {
-		//	ReportErrorAndExit("SDLNet_TCP_Send", 5);
-		//}
-		ServerHandler::SendText(secondClient, text, strlen(text) + 1);
-
-		if (!CheckClientVersion(secondClient)) {
-			std::cerr << "Version mismatch at secondClient!/n";
-			SDLNet_TCP_DelSocket(socketSet, secondClient);
-			SDLNet_TCP_Close(secondClient);
-			continue;
-		}
-
-		for (int i = 0; i < 16; i++) {
-			//receivedBytes = SDLNet_TCP_Recv(firstClient, &activeTilesPlayerOne[i], sizeof(std::pair<char,int>));
-			//if (receivedBytes <= 0) {
-			//	ReportErrorAndExit("SDLNet_TCP_Recv", 6);
-			//}
-			//else {
-			//	std::cout << activeTilesPlayerOne[i].first << activeTilesPlayerOne[i].second << std::endl;
-			//}
-			std::cout << "Receiving shipdata player2..." << std::endl;
-			ServerHandler::ReceiveBinary(secondClient, &activeTilesPlayerTwo[i], sizeof(std::pair<char, int>));
-			std::cout << activeTilesPlayerTwo[i].first << activeTilesPlayerTwo[i].second << std::endl;
-		}
-		std::cout << "Received ShipData from Player2" << std::endl;
-		//sentBytes = SDLNet_TCP_Send(firstClient, new int(1), sizeof(int));
-		//if (sentBytes < sizeof(int)) {
-		//	ReportErrorAndExit("SDLNet_TCP_Send", 5);
-		//}
-		ServerHandler::SendBinary(secondClient, new int(1), sizeof(int));
-		break;
-		//closeConnection = !closeConnection;
 	}
 }
 
 void TorpedoJatekServer::StartMatch() {
 	int egy = 1;
 	int ketto = 2;
-	if (firstClient && secondClient) {
-		//sentBytes = SDLNet_TCP_Send(firstClient, &egy, sizeof(int));
-		//if (sentBytes < sizeof(int)) {
-		//	ReportErrorAndExit("SDLNet_TCP_Send", 5);
-		//}
+	if (firstClient.socket && secondClient.socket) {
 		std::cout << "Sending playernumbers..." << std::endl;
-		ServerHandler::SendBinary(firstClient, &egy, sizeof(int));
-		//sentBytes = SDLNet_TCP_Send(secondClient, &ketto, sizeof(int));
-		//if (sentBytes < sizeof(int)) {
-		//	ReportErrorAndExit("SDLNet_TCP_Send", 5);
-		//}
-		ServerHandler::SendBinary(secondClient, &ketto, sizeof(int));
+		ServerHandler::SendBinary(firstClient.socket, &egy, sizeof(int));
+		ServerHandler::SendBinary(secondClient.socket, &ketto, sizeof(int));
 
-		while (firstClient && secondClient && responseState != ResponseState::WIN_PLAYER_ONE
+		while (firstClient.socket && secondClient.socket && responseState != ResponseState::WIN_PLAYER_ONE
 			&& responseState != ResponseState::WIN_PLAYER_TWO) {
 
-			//receivedBytes = SDLNet_TCP_Recv(firstClient, &targetTile, sizeof(std::pair<char, int>));
-			//if (receivedBytes <= 0) {
-			//	ReportErrorAndExit("SDLNet_TCP_Recv", 6);
-			//}
-			ServerHandler::ReceiveBinary(firstClient, &targetTile, sizeof(std::pair<char, int>));
+			HandleShot(firstClient, secondClient);
 
-			std::cout << "Player1 shot at " << targetTile.first << targetTile.second << std::endl;
-			responseState = ProcessTiles(2);
-
-			//sentBytes = SDLNet_TCP_Send(firstClient, &responseState, sizeof(ResponseState));
-			//if (sentBytes < sizeof(ResponseState)) {
-			//	ReportErrorAndExit("SDLNet_TCP_Send", 5);
-			//}
-			ServerHandler::SendBinary(firstClient, &responseState, sizeof(ResponseState));
-			//sentBytes = SDLNet_TCP_Send(secondClient, &targetTile, sizeof(std::pair<char, int>));
-			//if (sentBytes < sizeof(std::pair<char,int>)) {
-			//	ReportErrorAndExit("SDLNet_TCP_Send", 5);
-			//}
-			ServerHandler::SendBinary(secondClient, &targetTile, sizeof(std::pair<char, int>));
-			//sentBytes = SDLNet_TCP_Send(secondClient, &responseState, sizeof(ResponseState));
-			//if (sentBytes < sizeof(ResponseState)) {
-			//	ReportErrorAndExit("SDLNet_TCP_Send", 5);
-			//}
-			ServerHandler::SendBinary(secondClient, &responseState, sizeof(ResponseState));
-
-			if (firstClient && secondClient && responseState != ResponseState::WIN_PLAYER_ONE
+			if (firstClient.socket && secondClient.socket && responseState != ResponseState::WIN_PLAYER_ONE
 				&& responseState != ResponseState::WIN_PLAYER_TWO) {
 
-				//receivedBytes = SDLNet_TCP_Recv(secondClient, &targetTile, sizeof(std::pair<char, int>));
-				//if (receivedBytes <= 0) {
-				//	ReportErrorAndExit("SDLNet_TCP_Recv", 6);
-				//}
-				ServerHandler::ReceiveBinary(secondClient, &targetTile, sizeof(std::pair<char, int>));
-
-				std::cout << "Player2 shot at " << targetTile.first << targetTile.second << std::endl;
-				responseState = ProcessTiles(1);
-
-				//sentBytes = SDLNet_TCP_Send(secondClient, &responseState, sizeof(ResponseState));
-				//if (sentBytes < sizeof(ResponseState)) {
-				//	ReportErrorAndExit("SDLNet_TCP_Send", 5);
-				//}
-				ServerHandler::SendBinary(secondClient, &responseState, sizeof(ResponseState));
-				//sentBytes = SDLNet_TCP_Send(firstClient, &targetTile, sizeof(std::pair<char, int>));
-				//if (sentBytes < sizeof(std::pair<char, int>)) {
-				//	ReportErrorAndExit("SDLNet_TCP_Send", 5);
-				//}
-				ServerHandler::SendBinary(firstClient, &targetTile, sizeof(std::pair<char, int>));
-				//sentBytes = SDLNet_TCP_Send(firstClient, &responseState, sizeof(ResponseState));
-				//if (sentBytes < sizeof(ResponseState)) {
-				//	ReportErrorAndExit("SDLNet_TCP_Send", 5);
-				//}
-				ServerHandler::SendBinary(firstClient, &responseState, sizeof(ResponseState));
+				HandleShot(secondClient, firstClient);
 			}
 		}
 
 		if (responseState == ResponseState::WIN_PLAYER_ONE) {
-			std::cout << "Player1 won the match!" << std::endl;
+			std::cout << firstClient.name.str() << " won the match!" << std::endl;
 		}
 		else if (responseState == ResponseState::WIN_PLAYER_TWO) {
-			std::cout << "Player2 won the match!" << std::endl;
+			std::cout << secondClient.name.str() << " won the match!" << std::endl;
 		}
 
-		std::cin.get();
-		std::cin.get();
-
-		SDLNet_TCP_DelSocket(socketSet, firstClient);
-		SDLNet_TCP_DelSocket(socketSet, secondClient);
+		SDLNet_TCP_DelSocket(socketSet, firstClient.socket);
+		SDLNet_TCP_DelSocket(socketSet, secondClient.socket);
 		SDLNet_TCP_DelSocket(socketSet, server);
 		SDLNet_FreeSocketSet(socketSet);
 
-		SDLNet_TCP_Close(firstClient);
-		SDLNet_TCP_Close(secondClient);
+		SDLNet_TCP_Close(firstClient.socket);
+		SDLNet_TCP_Close(secondClient.socket);
 		SDLNet_TCP_Close(server);
+
+		std::cout << "Press enter to exit..." << std::endl;
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cin.get();
 	}
 }
 
-//void TorpedoJatekServer::ReportErrorAndExit(char functionName[], int exitCode)
-//{
-//	std::cerr << "[" << functionName << "] " << SDL_GetError() << '\n'
-//		<< "ERROR OCCURED!Press enter to exit...\n";
-//	int getlinePlaceholder;
-//	std::cin >> getlinePlaceholder;
-//	std::exit(exitCode);
-//}
+void TorpedoJatekServer::HandleShot(Client &shooter, Client &taker)
+{
+	ServerHandler::ReceiveBinary(shooter.socket, &targetTile, sizeof(std::pair<char, int>));
 
-TorpedoJatekServer::ResponseState TorpedoJatekServer::ProcessTiles(int playerNum)
+	std::cout << shooter.name.str() << " shot at " << targetTile.first << targetTile.second << std::endl;
+	responseState = ProcessTiles(taker);
+
+	ServerHandler::SendBinary(shooter.socket, &responseState, sizeof(ResponseState));
+	ServerHandler::SendBinary(taker.socket, &targetTile, sizeof(std::pair<char, int>));
+	ServerHandler::SendBinary(taker.socket, &responseState, sizeof(ResponseState));
+}
+
+TorpedoJatekServer::ResponseState TorpedoJatekServer::ProcessTiles(Client &clientTiles)
 {
 	ResponseState resultState=ResponseState::CONTINUE_MATCH;
 	int allZeros = true;
 
-	if (playerNum == 1) {
-		for (int i = 0; i < 16; i++) {
-			if (targetTile == activeTilesPlayerOne[i]) {
-				activeTilesPlayerOne[i] = std::pair<char,int>('0',0);
-				resultState = ResponseState::HIT_ENEMY_SHIP;
-				break;
-			}
-		}
-		for (int i = 0; i < 16; i++) {
-			if (activeTilesPlayerOne[i].first != '0') {
-				allZeros = false;
-			}
-		}
-		if (allZeros) {
-			resultState = ResponseState::WIN_PLAYER_TWO;
+	//if (playerNum == 1) {
+	for (int i = 0; i < 16; i++) {
+		if (targetTile == clientTiles.activeTiles[i]) {
+			clientTiles.activeTiles[i] = std::pair<char,int>('0',0);
+			resultState = ResponseState::HIT_ENEMY_SHIP;
+			break;
 		}
 	}
-	else if (playerNum == 2) {
-		for (int i = 0; i < 16; i++) {
-			if (targetTile == activeTilesPlayerTwo[i]) {
-				activeTilesPlayerTwo[i] = std::pair<char,int>('0',0);
-				resultState = ResponseState::HIT_ENEMY_SHIP;
-				break;
-			}
+	for (int i = 0; i < 16; i++) {
+		if (firstClient.activeTiles[i].first != '0') {
+			allZeros = false;
+			break;
 		}
-		for (int i = 0; i < 16; i++) {
-			if (activeTilesPlayerTwo[i].first != '0') {
-				allZeros = false;
-			}
+	}
+	if (allZeros) {
+		if (clientTiles.playerNum == 1) {
+			resultState = ResponseState::WIN_PLAYER_TWO;
 		}
-		if (allZeros) {
+		else if (clientTiles.playerNum == 2) {
 			resultState = ResponseState::WIN_PLAYER_ONE;
 		}
 	}
 
 	return resultState;
 }
+

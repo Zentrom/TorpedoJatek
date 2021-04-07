@@ -27,8 +27,6 @@ protected:
 
 	static void printRetry(int currentRetry, char currentAction[]);
 	static void ReportErrorAndExit(char functionName[], int exitCode);
-	//static int sentBytes;
-	//static int receivedBytes;
 
 	static const int delayTime = 2000;
 	static const int maxRetryCountOnError = 5;

@@ -29,6 +29,7 @@
     <ClCompile Include="Source\Frontend\Mountain.cpp" />
     <ClCompile Include="Source\Frontend\PlayTile.cpp" />
     <ClCompile Include="Source\Frontend\Sea.cpp" />
+    <ClCompile Include="Source\Frontend\SeaTile.cpp" />
     <ClCompile Include="Source\Frontend\Ship.cpp" />
     <ClCompile Include="Source\Frontend\Terrain.cpp" />
     <ClCompile Include="TorpedoJatekClient.cpp" />
@@ -40,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CommonSource\ConnectionHandler.h" />
+    <ClInclude Include="..\CommonSource\TorpedoVersion.h" />
     <ClInclude Include="GameInstance.h" />
     <ClInclude Include="Source\Backend\ClientHandler.h" />
     <ClInclude Include="Source\Backend\GameLogic.h" />
@@ -48,6 +50,7 @@
     <ClInclude Include="Source\Frontend\Mountain.h" />
     <ClInclude Include="Source\Frontend\PlayTile.h" />
     <ClInclude Include="Source\Frontend\Sea.h" />
+    <ClInclude Include="Source\Frontend\SeaTile.h" />
     <ClInclude Include="Source\Frontend\Ship.h" />
     <ClInclude Include="Source\Frontend\Terrain.h" />
     <ClInclude Include="Source\Globals.h" />

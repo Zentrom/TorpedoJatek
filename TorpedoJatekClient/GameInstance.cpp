@@ -1,11 +1,8 @@
-//#include <GL/GLU.h>
-#include <math.h>
 
 #include "GameInstance.h"
 
 GameInstance::GameInstance(void)
 {
-	
 	/*
 	m_coneTextureID = 0;
 	m_coneNormalMapID = 0;
@@ -22,8 +19,8 @@ GameInstance::~GameInstance(void)
 
 bool GameInstance::Init()
 {
-	gameLogic.Init();
-	actPlayTiles = gameLogic.getActiveTiles();
+	mapSize = gameLogic.Init(&playerFleet,&enemyFleet,&sea);
+	gameLogic.InitGame();
 
 	if (!TorpedoGLOBAL::Debug) {
 		inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);
@@ -36,12 +33,11 @@ bool GameInstance::Init()
 	mountain.Init();
 	terrain.Init();
 
-
 	//tile
-	sea.Init();
+	//sea.Init();
 	
 	//ships
-	fleet.Init(actPlayTiles);
+	//fleet.Init(actPlayTiles);
 	
 	sh_dirLight.AttachShader(GL_VERTEX_SHADER, "Shaders/dirLight.vert");
 	sh_dirLight.AttachShader(GL_FRAGMENT_SHADER, "Shaders/dirLight.frag");
@@ -90,16 +86,9 @@ void GameInstance::Clean()
 
 int GameInstance::threadFunction(void *ptr)
 {
-	//int cnt;
-
-	//for (cnt = 0; cnt < 200; ++cnt) {
-	//	printf("\nThread counter: %d", cnt);
-	//	SDL_Delay(50);
-	//}
-
 	GameInstance* pointr= static_cast<GameInstance *>(ptr);
 
-	pointr->gameLogic.StartMatch(pointr->sea.getMyTiles(),pointr->sea.getEnemyTiles());
+	pointr->gameLogic.StartMatch(pointr->sea.getTiles(true) ,pointr->sea.getTiles(false));
 
 	std::cout << "The match is over." << std::endl;
 
@@ -133,13 +122,12 @@ void GameInstance::Render()
 	//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//}
 
-	sh_dirLight.On(); //SHADER
-
+	sh_dirLight.On();
 	//float r = 2 * f_PI * SDL_GetTicks() / 1000.0f / 5.0f;
 	glm::vec3 light_pos = glm::vec3(0, 0, 0);//glm::vec3(10 * cosf(r), 10, 10 * sinf(r));
 
-	sh_dirLight.SetUniform("light_pos", light_pos);
-	sh_dirLight.SetUniform("eye_pos", cam_mainCamera.GetEye());
+	//sh_dirLight.SetUniform("light_pos", light_pos);
+	//sh_dirLight.SetUniform("eye_pos", cam_mainCamera.GetEye());
 
 	//m_program.SetUniform("use_texture", use_texture);
 	//m_program.SetUniform("use_normal_map", use_normal_map);
@@ -152,14 +140,12 @@ void GameInstance::Render()
 	mountain.Draw(cam_mainCamera,sh_dirLight);
 	terrain.Draw(cam_mainCamera,sh_dirLight);
 
-	fleet.Draw(cam_mainCamera,sh_dirLight);
-
+	playerFleet.Draw(cam_mainCamera,sh_dirLight);
+	enemyFleet.Draw(cam_mainCamera, sh_dirLight);
 	sh_dirLight.Off();
 
 	sh_playtile.On();
-
 	sea.Draw(cam_mainCamera, sh_playtile);
-
 	sh_playtile.Off();
 }
 

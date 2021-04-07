@@ -8,7 +8,7 @@ Ground::Ground(void)
 
 Ground::Ground(glm::vec3 terrainTranslate)
 {
-	ground_translate = ground_translate + terrainTranslate;
+	ground_translate += terrainTranslate;
 }
 
 Ground::~Ground(void)
@@ -40,8 +40,8 @@ void Ground::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
 
 	glm::mat4 matWorld = glm::translate(ground_translate) * glm::rotate(ground_rotate, ground_rotate_angle) * glm::scale(ground_scale);
-	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
-	glm::mat4 mvp = camera.GetViewProj() *matWorld;
+	//glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
+	glm::mat4 mvp = camera.GetViewProj() * matWorld;
 
 	//sh_program.SetUniform("world", matWorld);
 	//sh_program.SetUniform("worldIT", matWorldIT);

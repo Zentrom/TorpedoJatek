@@ -39,7 +39,6 @@ TCPsocket ConnectionHandler::TCP_Open(IPaddress *ip)
 
 void ConnectionHandler::ReceiveText(TCPsocket &socket,void *data, const int length)
 {
-	//std::string result;
 	int receivedBytes;
 	for (int retryCount = 0; retryCount < maxRetryCountOnError; retryCount++) {
 		receivedBytes = SDLNet_TCP_Recv(socket, data, length);
@@ -112,7 +111,8 @@ void ConnectionHandler::ReportErrorAndExit(char functionName[], int exitCode)
 {
 	std::cerr << "[" << functionName << "] " << SDLNet_GetError() << '\n'
 		<< "ERROR OCCURED!Press enter to exit...\n";
-	std::cin.get();
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	std::cin.get();
 	std::exit(exitCode);
 }

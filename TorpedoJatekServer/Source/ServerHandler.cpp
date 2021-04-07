@@ -21,16 +21,13 @@ SDLNet_SocketSet ServerHandler::AllocSocketSet(int maxSockets)
 void ServerHandler::TCP_AddSocket(SDLNet_SocketSet set, TCPsocket socket) 
 {
 	if (SDLNet_TCP_AddSocket(set, socket) == -1) {
-		std::cerr << "[SDLNet_TCP_AddSocket] " << SDLNet_GetError() << std::endl;
+		std::cerr << "SDLNet_TCP_AddSocket" << SDLNet_GetError() << std::endl;
 	}
-	//ReportErrorAndExit("SDLNet_TCP_AddSocket", 8);
 }
 
-//most of the time this is a system error, where perror might help you.
 bool ServerHandler::CheckSocketReady(SDLNet_SocketSet set,TCPsocket socket, Uint32 timeout)
 {
 	if (SDLNet_CheckSockets(set, timeout) == -1) {
-		//printf("SDLNet_CheckSockets: %s\n", SDLNet_GetError());
 		perror("SDLNet_CheckSockets");
 		ReportErrorAndExit("SDLNet_CheckSockets", ErrorCode::CHECK_SOCKETS);
 	}
@@ -39,6 +36,8 @@ bool ServerHandler::CheckSocketReady(SDLNet_SocketSet set,TCPsocket socket, Uint
 			return true;
 		}
 		else {
+			//javitani kell ezt ITT majd
+			ReportErrorAndExit("SDLNet_SocketReady", ErrorCode::SOCKET_READY);
 			return false;
 		}
 	}

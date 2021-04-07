@@ -1,11 +1,13 @@
 #pragma once
 
+#include <GL/glew.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
 
 #include <iostream>
 #include <sstream>
 
+#include "GameInstance.h"
 #include "../CommonSource/TorpedoVersion.h"
 
 class TorpedoJatekClient
@@ -19,13 +21,10 @@ public:
 	int CreateGameWindow();
 	int StartGameInstance();
 
-//protected:
-
 private:
 	enum class State {GLOBAL_GAME,GLOBAL_MENU};
 	State GLOBAL_STATE = State::GLOBAL_MENU;
 
-	//window
 	SDL_Window *win = 0;
 	const unsigned int rightOffset = 100;
 	const unsigned int downOffset = 100;
@@ -38,13 +37,8 @@ private:
 
 	const int enableVsync = 1;
 	const int fpsLimit = 120;
-	const int enableFpsLimitMode = 0;
+	const int enableFpsLimit = 0;
 
-	//jatekverzio
-	//const unsigned int majorVersion = 0;
-	//const unsigned int betaVersion = 0;
-	//const unsigned int alphaVersion = 1;
-	//const char experimentalVersion = 'f';
 	const TorpedoVersion clientVersion;
 };
 

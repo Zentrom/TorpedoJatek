@@ -6,6 +6,7 @@
 #include <SDL.h>
 #include <SDL_net.h>
 #include <cstring>
+#include <vector>
 
 #include "../Globals.h"
 #include "../../../CommonSource/ConnectionHandler.h"
@@ -17,8 +18,9 @@ public:
 	ClientHandler(void);
 	~ClientHandler(void);
 
-	void Init(std::string ipString,int portNr);
-	void SendFleet(std::pair<char,int> *activeTiles);
+	bool Init(std::string ipString,int portNr);
+	void SendFleet(std::vector<std::pair<char,int>> activeTilePositions);
+	int getMapSize();
 	int getPlayerNum();
 	int SendShot(std::pair<char,int> tile);
 	std::pair<char,int> ReceiveShot();
@@ -27,11 +29,10 @@ public:
 
 protected:
 	IPaddress ip;
-	TCPsocket myClient;
+	TCPsocket mySocket;
 
 	int receivedBytes = 0;
 	int sentBytes = 0;
-	int ServerConfirm = 0;
 
 	const TorpedoVersion clientVersion;
 	//int recShotState=3;

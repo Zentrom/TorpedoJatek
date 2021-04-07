@@ -24,6 +24,7 @@ private:
 		CLOSE_PROGRAM,
 		START_SERVER,
 		CHANGE_MAPSIZE,
+		CHANGE_PORT,
 		DUMMY_OPTION = 9999,
 	};
 	enum class ResponseState {
@@ -33,42 +34,36 @@ private:
 		WIN_PLAYER_ONE,
 		WIN_PLAYER_TWO,
 	};
+
+	struct Client {
+		std::stringstream name;
+		int playerNum;
+		TCPsocket socket;
+		std::array<std::pair<char, int>, 16> activeTiles;
+	}firstClient,secondClient;
+
 	void Init();
+	void GetShips(Client &client);
 	void StartMatch();
 	void UpdateSettings();
-	//void ReportErrorAndExit(char functionName[],int exitCode);
 	bool CheckClientVersion(TCPsocket &connectedSocket);
-	ResponseState ProcessTiles(int playerNum);
+	ResponseState ProcessTiles(Client &clientTiles);
+
+	void HandleShot(Client &shooter, Client &taker);
 
 	IPaddress ip;
 	Uint16 port = 27015;
 	SDLNet_SocketSet socketSet = nullptr;
 	TCPsocket server = nullptr;
-	TCPsocket firstClient = nullptr;
-	TCPsocket secondClient = nullptr;
 	const int maxSockets = 3;
+	int successfullyConnectedPlayers = 0;
 
 	std::stringstream currentSettings;
 	ResponseState responseState = ResponseState::START_OF_GAME;
-	bool closeConnection = false;
-	//int sentBytes;
-	//int receivedBytes;
 
 	int mapSize = 7;
-	//int activeTilesOne[16];
-	//int activeTilesTwo[16];
-	std::array<std::pair<char, int>, 16> activeTilesPlayerOne;
-	std::array<std::pair<char, int>, 16> activeTilesPlayerTwo;
 	std::pair<char,int> targetTile;
-	//int responseState=3;
-	
-	//serververzio
-	//struct TorpedoVersion {
-	//	unsigned int majorVersion = 0;
-	//	unsigned int betaVersion = 0;
-	//	unsigned int alphaVersion = 1;
-	//	char experimentalVersion = 'f';
-	//}
+
 	const TorpedoVersion serverVersion;
 
 };

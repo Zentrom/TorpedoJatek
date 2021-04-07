@@ -1,3 +1,273 @@
+gameLogic.cpp PlaceShips
+----------------------------------------------
+//std::pair<char,int> tmpTile;
+//std::string tmpBack[4] = {" "," "," "," "};
+////int tmpMiddle[4] = { 0,0,0,0 };
+//std::pair<char, int> tmpMiddle[4] = {std::pair<char,int>('0',0),std::pair<char,int>('0',0),
+//	std::pair<char,int>('0',0), std::pair<char,int>('0',0) };
+//switch (choice) {
+//case 1:
+//	if (ship3count != 0) {
+//		std::cout << shipFPlaceText << std::endl;
+//		std::cin >> shipFront;
+//
+//		if (CheckString(shipFront)) {
+//			tmpTile = ProcessString(shipFront);
+//
+//			if (CheckTile(tmpTile)) {
+//
+//				if (TileProcessable(std::pair<char,int>(tmpTile.first+1,tmpTile.second)) 
+//					&& TileProcessable(std::pair<char, int>(tmpTile.first + 2, tmpTile.second))) {
+//					if (CheckTile(std::pair<char, int>(tmpTile.first + 1, tmpTile.second))
+//						&& CheckTile(std::pair<char, int>(tmpTile.first + 2, tmpTile.second)))
+//						tmpBack[0] = ProcessTile(std::pair<char, int>(tmpTile.first + 2, tmpTile.second));
+//						tmpMiddle[0] = std::pair<char, int>(tmpTile.first + 1, tmpTile.second);
+//				}
+//				if (TileProcessable(std::pair<char, int>(tmpTile.first - 1, tmpTile.second))
+//					&& TileProcessable(std::pair<char, int>(tmpTile.first - 2, tmpTile.second))) {
+//					if (CheckTile(std::pair<char, int>(tmpTile.first - 1, tmpTile.second))
+//						&& CheckTile(std::pair<char, int>(tmpTile.first - 2, tmpTile.second)))
+//						tmpBack[1] = ProcessTile(std::pair<char, int>(tmpTile.first - 2, tmpTile.second));
+//						tmpMiddle[1] = std::pair<char, int>(tmpTile.first - 1, tmpTile.second);
+//				}
+//				if (TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second+1))
+//					&& TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second + 2))) {
+//					if (CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 1))
+//						&& CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 2)))
+//						tmpBack[2] = ProcessTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 2));
+//						tmpMiddle[2] = std::pair<char, int>(tmpTile.first, tmpTile.second + 1);
+//				}
+//				if (TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second - 1))
+//					&& TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second - 2))) {
+//					if (CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 1))
+//						&& CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 2)))
+//						tmpBack[3] = ProcessTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 2));
+//						tmpMiddle[3] = std::pair<char, int>(tmpTile.first, tmpTile.second - 1);
+//				}
+//
+//				bool arrayHasElem = false;
+//				for (int i = 0; i < 4; i++) {
+//					if (tmpBack[i] != " " && tmpMiddle[i].first!='0') { arrayHasElem = true; break; }
+//				}
+//				if (arrayHasElem) {
+//					bool tmpFound = false;
+//					int midIndex = 0;
+//					do {
+//						std::cout << shipBPlaceText << tmpBack[0] << tmpBack[1] << tmpBack[2] << tmpBack[3] << std::endl;
+//						std::cin >> shipBack;
+//
+//
+//						for (int i = 0; i < 4; i++) {
+//							if (shipBack == tmpBack[i]) {
+//								tmpFound = true;
+//								midIndex = i;
+//								break;
+//							}
+//						}
+//					} while (!tmpFound);
+//
+//					for (int i = 0; i < activeTileCount; i++) {
+//						if (activeTiles[i].first == '0') {
+//							activeTiles[i] = tmpTile;
+//							break;
+//						}
+//					}
+//					tmpTile = ProcessString(shipBack);
+//					for (int i = 0; i < activeTileCount; i++) {
+//						if (activeTiles[i].first == '0') {
+//							activeTiles[i] = tmpTile;
+//							break;
+//						}
+//					}
+//					for (int i = 0; i < activeTileCount; i++) {
+//						if (activeTiles[i].first == '0') {
+//							activeTiles[i] = tmpMiddle[midIndex];
+//							break;
+//						}
+//					}
+//					ship3count--;
+//					std::cout << "Ship placed!" << std::endl;
+//				}
+//				else {
+//					std::cout << "There aren't any free tiles for the back(middle) of this ship!" << std::endl;
+//				}
+//				for (int i = 0; i < 4; i++) {
+//					tmpBack[i] = " ";
+//					tmpMiddle[i] = std::pair<char,int>('0',0);
+//				}
+//			}
+//			else {
+//				std::cout << "Tile is not empty!" << std::endl;
+//			}
+//		}
+//	}
+//	break;
+//case 2:
+//	if (ship2count != 0) {
+//		std::cout << shipFPlaceText << std::endl;
+//		std::cin >> shipFront;
+//
+//		if (CheckString(shipFront)) {
+//			tmpTile = ProcessString(shipFront);
+//
+//			if (CheckTile(tmpTile)) {
+//
+//				if (TileProcessable(std::pair<char, int>(tmpTile.first + 1, tmpTile.second))) {
+//					if (CheckTile(std::pair<char, int>(tmpTile.first + 1, tmpTile.second)))
+//						tmpBack[0] = ProcessTile(std::pair<char, int>(tmpTile.first + 1, tmpTile.second));
+//				}
+//				if (TileProcessable(std::pair<char, int>(tmpTile.first - 1, tmpTile.second))) {
+//					if (CheckTile(std::pair<char, int>(tmpTile.first - 1, tmpTile.second)))
+//						tmpBack[1] = ProcessTile(std::pair<char, int>(tmpTile.first - 1, tmpTile.second));
+//				}
+//				if (TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second+1))) {
+//					if (CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 1)))
+//						tmpBack[2] = ProcessTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 1));
+//				}
+//				if (TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second - 1))) {
+//					if (CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 1)))
+//						tmpBack[3] = ProcessTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 1));
+//				}
+//				bool arrayHasElem = false;
+//				for (int i = 0; i < 4; i++) {
+//					if (tmpBack[i] != " ") { arrayHasElem = true; break; }
+//				}
+//				if (arrayHasElem) {
+//					bool tmpFound = false;
+//					do {
+//						std::cout << shipBPlaceText << tmpBack[0] << " " << tmpBack[1] << " " << tmpBack[2] << " " << tmpBack[3] << std::endl;
+//						std::cin >> shipBack;
+//
+//
+//						for (int i = 0; i < 4; i++) {
+//							if (shipBack == tmpBack[i]) {
+//								tmpFound = true;
+//								break;
+//							}
+//						}
+//					} while (!tmpFound);
+//
+//					for (int i = 0; i < activeTileCount; i++) {
+//						if (activeTiles[i].first == '0') {
+//							activeTiles[i] = tmpTile;
+//							break;
+//						}
+//					}
+//					tmpTile = ProcessString(shipBack);
+//					for (int i = 0; i < activeTileCount; i++) {
+//						if (activeTiles[i].first == '0') {
+//							activeTiles[i] = tmpTile;
+//							break;
+//						}
+//					}
+//					ship2count--;
+//					std::cout << "Ship placed!" << std::endl;
+//				}
+//				else {
+//					std::cout << "There aren't any free tiles for the back of this ship!" << std::endl;
+//				}
+//				tmpBack[0] = " ";
+//				tmpBack[1] = " ";
+//				tmpBack[2] = " ";
+//				tmpBack[3] = " ";
+//			}
+//			else {
+//				std::cout << "Tile is not empty!" << std::endl;
+//			}
+//		}
+//	}
+//	break;
+//case 3:
+//	if (ship1count != 0) {
+//		std::cout << ship1PlaceText << std::endl;
+//		std::cin >> shipFront;
+//
+//		shipBack = shipFront;
+//
+//		if (CheckString(shipFront)) {
+//			tmpTile = ProcessString(shipFront);
+//			if (CheckTile(tmpTile)) {
+//				for (int i = 0; i < activeTileCount; i++) {
+//					if (activeTiles[i].first == '0') {
+//						activeTiles[i] = tmpTile;
+//						break;
+//					}
+//				}
+//				ship1count--;
+//				std::cout << "Ship placed!" << std::endl;
+//			}
+//			else {
+//				std::cout << "Tile is not empty!" << std::endl;
+//			}
+//		}
+//	}
+//	break;
+//default:
+//	std::cout << "You need to choose between 1-3!" << std::endl;
+//	break;
+//}
+
+fleet.cpp
+-----------------------------------
+//void Fleet::Init(std::pair<char,int>* actPlayTiles)
+//{
+//	float tile_transX = 0;
+//	float tile_transZ = 0;
+//	glm::vec3 tileResult = glm::vec3(0.0f);
+//	for (int i = 0; i < 16; i++) {
+//
+//		tile_transX = (actPlayTiles[i].second - 1) * 2.0f * TorpedoGLOBAL::Scale;
+//		tile_transZ = ((actPlayTiles[i].first - 'a') * 2.0f * TorpedoGLOBAL::Scale) - (3.0f*2.0f* TorpedoGLOBAL::Scale);
+//
+//		tileResult += glm::vec3(mountaincenter_border_Xoffset, 0, 0) +
+//			glm::vec3(mountain_tile_offset, 0, 0) +
+//			glm::vec3(tile_transX, 0, tile_transZ);
+//
+//		myShips[i] = Ship(glm::vec3(-1, 1, 1)*tileResult);
+//		//enemyShips[i] = Ship(tileResult);
+//
+//		//enemyShips[i].Init();
+//		//myShips[i].Init();
+//		tileResult = glm::vec3(0.0f);
+//	}
+//
+//	glm::vec3 battleShipOffset = glm::vec3(firstTile_battleShipOffset, 0, 0) + glm::vec3(mountaincenter_border_Xoffset + mountain_tile_offset, 0, 0);
+//	myBattleShip = Ship(-battleShipOffset);
+//	//myBattleShip.Init();
+//	enemyBattleShip = Ship(battleShipOffset);
+//
+//	myBattleShip.Init(false);
+//	enemyBattleShip.Init(true);
+//	for (int i = 0; i < 16; i++) {
+//		myShips[i].Init(false);
+//		//enemyShips[i].Init(true);
+//	}
+//}
+
+sea.cpp
+-----------------------------------
+//void Sea::Init()
+//{
+//	float tile_transX = 0;
+//	float tile_transZ = 0;
+//	glm::vec3 tileResult = glm::vec3(0.0f);
+//	for (int i = 0; i < mapSize; i++) {
+//		tile_transX = (i % TorpedoGLOBAL::MapSize) * 2.0f * TorpedoGLOBAL::Scale;
+//		tile_transZ = ((i / TorpedoGLOBAL::MapSize) * 2.0f * TorpedoGLOBAL::Scale) - (3.0f*2.0f * TorpedoGLOBAL::Scale);
+//
+//		tileResult += glm::vec3(mountaincenter_border_Xoffset, 0, 0) +
+//			glm::vec3(mountain_tile_offset, 0, 0) +
+//			glm::vec3(tile_transX, 0, tile_transZ);
+//
+//		enemyPlayTiles[i] = PlayTile(tileResult);
+//		myPlayTiles[i] = PlayTile(glm::vec3(-1, 1, 1)*tileResult);
+//
+//		enemyPlayTiles[i].Init();
+//		myPlayTiles[i].Init();
+//		tileResult = glm::vec3(0.0f);
+//	}
+//}
+
 gameinstance.h
 ------------------------------------
 

@@ -1,27 +1,18 @@
--Kirajzolásnál a shaderekt,kamerát ugykell átadni hogy ne csináljon duplikátumot.
--Sea,Fleet,ground-terrain osztályok
--sok beégetett érték van a playtileok létrehozásánál gameinstancebe,gamelogikot szétbontani
--Cleanelést használni gameinstanceba.
--lehessen shipet leakni Place2Ship,stb-vel,grafikába tilebegin-tileend
 -SDLthread-nél Waitthraed
--Az ellenfél oldalán tükrözni kell a tileMapet
--Serveren duplikátum kód van,átkell rendezni.
-GLint,GLfloat hogy müködjön 32,64 bites rendszeren is
--std::cin.get()-et lecserélni server s client oldalon.
-
 -Server csak egy clienssel tud foglalkozni egyszerre. VAGYIS ha éppen adatot vár egy clienttõl,akkor nem tud Accept-olni
 egy másikat. Ugyanígy a kilépést csak akkor veszi észre,ha éppen adatot kéne küldenie vagy kapnia.
 THREAD vagy CHECKSOCKET megoldaná valszeg a jövõben.
-
--FPS limiter
--Hajókat összekötni grafikailag
--Mapsize-t a server küldje ki a klienseknek.Õ dönt.
-
--TileProcassable nemnézi pl a (122-2)=120 vagyis b0-t ÉS G-nél nagyobb oszlopot!!
+-GLOBALScale-t javítani hogy menjen.
+-MapSize-t testelni.
+-Testelni zonen kivüli lövést.
 
 OpenAl vagy SDLAudio(havan 3d) hangoknak
 Freetype vagy SDL rtf/ttf betuknek
 
-PLACESHIPSET GAMELOGICBAN PlayTile osztállyal oldjuk meg mert ez igy cancer.
-A THREAD MINTHA KÉNE, a GameLogic-ba inditaná a startmatch fgv-t :O VAGY CHECKSOCKET client oldalon is.
-CheckSocket blokkolna input közbe,thread nem.Threadet elõbb is el lehetne inditani.
+CHECKSOCKET clientOldalon megfontolandó majd, 3D pickingtõl kezdve.
+Addig Threadet elõbb is el lehetne inditani.
+
+Terraint majd átkell dolgozni,mikor végtelenített kirajzolás lesz 003ban.(Mapsize-független legyen,stb)
+Jegyzetrefaktoring marad 003-ra.
+'a' és 'A' különbözõ ASCII értékû!(tesztelni kell,h baje)
+Codeot commentelni,cleanelni.

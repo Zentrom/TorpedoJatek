@@ -2,296 +2,183 @@
 
 GameLogic::GameLogic(void)
 {
-	if (!TorpedoGLOBAL::Debug) {
-		for (int i = 0; i < activeTileCount; i++) {
-			activeTiles[i] = std::pair<char,int>('0',0);
-		}
-	}
+	//if (!TorpedoGLOBAL::Debug) {
+	//	for (int i = 0; i < activeTileCount; i++) {
+	//		activeTiles[i] = std::pair<char,int>('0',0);
+	//	}
+	//}
 }
 
 GameLogic::~GameLogic(void)
 {
 }
 
-void GameLogic::Init()
+int GameLogic::Init(Fleet *player,Fleet *enemy,Sea *sea)
 {
 	std::cout << "-----------------------------------------------" << std::endl
 		<< output << std::endl
 		<< "-----------------------------------------------" << std::endl
 		<< std::endl;
 
+	myFleet = player;
+	enemyFleet = enemy;
+	mySea = sea;
+
 	if (!TorpedoGLOBAL::Debug) {
 		ConnectionSetup();
-		PlaceShips();
-		mySocket.SendFleet(activeTiles.data());
-
+		mapSize = clientHandler.getMapSize();
+		//PlaceShips();
+		//clientHandler.SendFleet(activeTiles.data());
 	}
+	return mapSize;
 }
 
 
 void GameLogic::ConnectionSetup()
 {
-	
-	output = "Establishing connection.";
-	std::cout << output << std::endl;
+	do {
+		std::cout << "Establishing connection." << std::endl;
+		std::cout << "Server ip: ";
+		std::cin >> ip;
+		std::cout << "Server port: ";
+		std::cin >> port;
+	} while (!clientHandler.Init(ip, port));
+}
 
-	output = "Server ip:";
-	std::cout << output << std::endl;
-	std::cin >> ip;
-
-	output = "Server port:";
-	std::cout << output << std::endl;
-	std::cin >> port;
+void GameLogic::InitGame()
+{
 	
-	mySocket.Init(ip,port);
+		mySea->Init(mapSize);
+		
+		myFleet->Init(mapSize, true);
+		myFleet->InitTiles(mySea->getTiles(true));
+		
+		enemyFleet->Init(mapSize, false);
+		enemyFleet->InitTiles(mySea->getTiles(false));
+	if (!TorpedoGLOBAL::Debug) {
+		PlaceShips();
+		clientHandler.SendFleet(myFleet->getActiveTilePositions());
+	}
+	else {
+		PlaceShipsINDEBUG();
+	}
 }
 
 void GameLogic::PlaceShips()
 {
+	
+	ship1PlaceText.push_back(static_cast<char>('a' + mapSize - 1));
+	ship1PlaceText.push_back(static_cast<char>('0' + mapSize));
+	ship1PlaceText.push_back(')');
+
+	shipFPlaceText.push_back(static_cast<char>('a' + mapSize - 1));
+	shipFPlaceText.push_back(static_cast<char>('0' + mapSize));
+	shipFPlaceText.push_back(')');
+
 	output = "Place your ships!/nChoose what kind of ship do you want to place down:";
 	
-	do {
-		std::cout << std::endl <<
-			output << std::endl
-			<< "1. - 3tile ships left: " << ship3count << std::endl
-			<< "2. - 2tile ships left: " << ship2count << std::endl
-			<< "3. - 1tile ships left: " << ship1count << std::endl;
+	std::array<int,4> &unplacedShips = myFleet->getUnplacedShipCount();
 
+	//std::pair<char, int> frontPos;
+	//std::pair<char, int> backPos;
+	PlayTile tmpFront;
+	PlayTile tmpBack;
+
+	PlayTile* frontPos;
+	PlayTile* backPos;
+	do {
+		
+		backPos = nullptr;
+
+		std::cout << '\n' <<
+			output << '\n'
+			<< "1. - 1tile ships left: " << unplacedShips.at(0) << '\n'
+			<< "2. - 2tile ships left: " << unplacedShips.at(1) << '\n'
+			<< "3. - 3tile ships left: " << unplacedShips.at(2) << '\n'
+			<< "4. - 4tile ships left: " << unplacedShips.at(3) << std::endl;
+		
 		std::cin >> choice;
 
-		std::pair<char,int> tmpTile;
-		std::string tmpBack[4] = {" "," "," "," "};
-		//int tmpMiddle[4] = { 0,0,0,0 };
-		std::pair<char, int> tmpMiddle[4] = {std::pair<char,int>('0',0),std::pair<char,int>('0',0),
-			std::pair<char,int>('0',0), std::pair<char,int>('0',0) };
-		switch (choice) {
-		case 1:
-			if (ship3count != 0) {
-				std::cout << shipFPlaceText << std::endl;
+		if (choice > 0 && choice <= 4) {
+			if (unplacedShips.at(choice - 1) > 0) {
+				std::cout << (choice == 1 ? ship1PlaceText : shipFPlaceText) << std::endl;
 				std::cin >> shipFront;
-
+		
 				if (CheckString(shipFront)) {
-					tmpTile = ProcessString(shipFront);
+					tmpFront = ProcessString(shipFront);
+					if (myFleet->CheckTile(tmpFront)) {
+						frontPos = &myFleet->getTile(tmpFront.getPos());
+						if (choice > 1) {
+							std::array<PlayTile*, 4> freeChoices = myFleet->getFreeBacks(*frontPos, choice - 1);
+							if (std::none_of(freeChoices.cbegin(), freeChoices.cend(), [](PlayTile* ptr) {return ptr; }))
+							{
+								std::cout << "No position available for the back of the ship!" << std::endl;
+								continue;
+							}
+							else {
+								bool foundInputInChoices = false;
+								while (!foundInputInChoices) {
+									std::cout << shipBPlaceText;
+									for (PlayTile* choisz : freeChoices) {
+										if (choisz) {
+											std::cout << ' ' << choisz->getPos().first << choisz->getPos().second;
+										}
+									}
+									std::cout << std::endl;
+									std::cin >> shipBack;
 
-					if (CheckTile(tmpTile)) {
-
-						if (TileProcessable(std::pair<char,int>(tmpTile.first+1,tmpTile.second)) 
-							&& TileProcessable(std::pair<char, int>(tmpTile.first + 2, tmpTile.second))) {
-							if (CheckTile(std::pair<char, int>(tmpTile.first + 1, tmpTile.second))
-								&& CheckTile(std::pair<char, int>(tmpTile.first + 2, tmpTile.second)))
-								tmpBack[0] = ProcessTile(std::pair<char, int>(tmpTile.first + 2, tmpTile.second));
-								tmpMiddle[0] = std::pair<char, int>(tmpTile.first + 1, tmpTile.second);
-						}
-						if (TileProcessable(std::pair<char, int>(tmpTile.first - 1, tmpTile.second))
-							&& TileProcessable(std::pair<char, int>(tmpTile.first - 2, tmpTile.second))) {
-							if (CheckTile(std::pair<char, int>(tmpTile.first - 1, tmpTile.second))
-								&& CheckTile(std::pair<char, int>(tmpTile.first - 2, tmpTile.second)))
-								tmpBack[1] = ProcessTile(std::pair<char, int>(tmpTile.first - 2, tmpTile.second));
-								tmpMiddle[1] = std::pair<char, int>(tmpTile.first - 1, tmpTile.second);
-						}
-						if (TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second+1))
-							&& TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second + 2))) {
-							if (CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 1))
-								&& CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 2)))
-								tmpBack[2] = ProcessTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 2));
-								tmpMiddle[2] = std::pair<char, int>(tmpTile.first, tmpTile.second + 1);
-						}
-						if (TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second - 1))
-							&& TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second - 2))) {
-							if (CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 1))
-								&& CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 2)))
-								tmpBack[3] = ProcessTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 2));
-								tmpMiddle[3] = std::pair<char, int>(tmpTile.first, tmpTile.second - 1);
-						}
-
-						bool arrayHasElem = false;
-						for (int i = 0; i < 4; i++) {
-							if (tmpBack[i] != " " && tmpMiddle[i].first!='0') { arrayHasElem = true; break; }
-						}
-						if (arrayHasElem) {
-							bool tmpFound = false;
-							int midIndex = 0;
-							do {
-								std::cout << shipBPlaceText << tmpBack[0] << tmpBack[1] << tmpBack[2] << tmpBack[3] << std::endl;
-								std::cin >> shipBack;
-
-
-								for (int i = 0; i < 4; i++) {
-									if (shipBack == tmpBack[i]) {
-										tmpFound = true;
-										midIndex = i;
-										break;
+									if (CheckString(shipBack)) {
+										tmpBack = ProcessString(shipBack);
+										backPos = &myFleet->getTile(tmpBack.getPos());
+										for (PlayTile* choisz : freeChoices) {
+											if (choisz && choisz == backPos) {
+												foundInputInChoices = true;
+											}
+										}
 									}
 								}
-							} while (!tmpFound);
-
-							for (int i = 0; i < activeTileCount; i++) {
-								if (activeTiles[i].first == '0') {
-									activeTiles[i] = tmpTile;
-									break;
-								}
 							}
-							tmpTile = ProcessString(shipBack);
-							for (int i = 0; i < activeTileCount; i++) {
-								if (activeTiles[i].first == '0') {
-									activeTiles[i] = tmpTile;
-									break;
-								}
-							}
-							for (int i = 0; i < activeTileCount; i++) {
-								if (activeTiles[i].first == '0') {
-									activeTiles[i] = tmpMiddle[midIndex];
-									break;
-								}
-							}
-							ship3count--;
-							std::cout << "Ship placed!" << std::endl;
 						}
-						else {
-							std::cout << "There aren't any free tiles for the back(middle) of this ship!" << std::endl;
-						}
-						for (int i = 0; i < 4; i++) {
-							tmpBack[i] = " ";
-							tmpMiddle[i] = std::pair<char,int>('0',0);
-						}
+						myFleet->PlaceShip(frontPos,backPos);
+						--unplacedShips.at(choice - 1);
 					}
 					else {
 						std::cout << "Tile is not empty!" << std::endl;
 					}
 				}
 			}
-			break;
-		case 2:
-			if (ship2count != 0) {
-				std::cout << shipFPlaceText << std::endl;
-				std::cin >> shipFront;
-
-				if (CheckString(shipFront)) {
-					tmpTile = ProcessString(shipFront);
-
-					if (CheckTile(tmpTile)) {
-
-						if (TileProcessable(std::pair<char, int>(tmpTile.first + 1, tmpTile.second))) {
-							if (CheckTile(std::pair<char, int>(tmpTile.first + 1, tmpTile.second)))
-								tmpBack[0] = ProcessTile(std::pair<char, int>(tmpTile.first + 1, tmpTile.second));
-						}
-						if (TileProcessable(std::pair<char, int>(tmpTile.first - 1, tmpTile.second))) {
-							if (CheckTile(std::pair<char, int>(tmpTile.first - 1, tmpTile.second)))
-								tmpBack[1] = ProcessTile(std::pair<char, int>(tmpTile.first - 1, tmpTile.second));
-						}
-						if (TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second+1))) {
-							if (CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 1)))
-								tmpBack[2] = ProcessTile(std::pair<char, int>(tmpTile.first, tmpTile.second + 1));
-						}
-						if (TileProcessable(std::pair<char, int>(tmpTile.first, tmpTile.second - 1))) {
-							if (CheckTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 1)))
-								tmpBack[3] = ProcessTile(std::pair<char, int>(tmpTile.first, tmpTile.second - 1));
-						}
-						bool arrayHasElem = false;
-						for (int i = 0; i < 4; i++) {
-							if (tmpBack[i] != " ") { arrayHasElem = true; break; }
-						}
-						if (arrayHasElem) {
-							bool tmpFound = false;
-							do {
-								std::cout << shipBPlaceText << tmpBack[0] << " " << tmpBack[1] << " " << tmpBack[2] << " " << tmpBack[3] << std::endl;
-								std::cin >> shipBack;
-
-
-								for (int i = 0; i < 4; i++) {
-									if (shipBack == tmpBack[i]) {
-										tmpFound = true;
-										break;
-									}
-								}
-							} while (!tmpFound);
-
-							for (int i = 0; i < activeTileCount; i++) {
-								if (activeTiles[i].first == '0') {
-									activeTiles[i] = tmpTile;
-									break;
-								}
-							}
-							tmpTile = ProcessString(shipBack);
-							for (int i = 0; i < activeTileCount; i++) {
-								if (activeTiles[i].first == '0') {
-									activeTiles[i] = tmpTile;
-									break;
-								}
-							}
-							ship2count--;
-							std::cout << "Ship placed!" << std::endl;
-						}
-						else {
-							std::cout << "There aren't any free tiles for the back of this ship!" << std::endl;
-						}
-						tmpBack[0] = " ";
-						tmpBack[1] = " ";
-						tmpBack[2] = " ";
-						tmpBack[3] = " ";
-					}
-					else {
-						std::cout << "Tile is not empty!" << std::endl;
-					}
-				}
+			else {
+				std::cout << "You can't place down any more ships of " << choice << " size!" << std::endl;
 			}
-			break;
-		case 3:
-			if (ship1count != 0) {
-				std::cout << ship1PlaceText << std::endl;
-				std::cin >> shipFront;
-
-				shipBack = shipFront;
-
-				if (CheckString(shipFront)) {
-					tmpTile = ProcessString(shipFront);
-					if (CheckTile(tmpTile)) {
-						for (int i = 0; i < activeTileCount; i++) {
-							if (activeTiles[i].first == '0') {
-								activeTiles[i] = tmpTile;
-								break;
-							}
-						}
-						ship1count--;
-						std::cout << "Ship placed!" << std::endl;
-					}
-					else {
-						std::cout << "Tile is not empty!" << std::endl;
-					}
-				}
-			}
-			break;
-		default:
-			std::cout << "You need to choose between 1-3!" << std::endl;
-			break;
+		}
+		else {
+			std::cout << "You need to choose between 1-4!" << std::endl;
 		}
 
-		
-
-	} while (ship3count!=0 ||ship2count!=0 || ship1count!=0);
+	} while (std::any_of(unplacedShips.cbegin(), unplacedShips.cend(), [](int i) {return i != 0; }));
 }
 
-void GameLogic::StartMatch(PlayTile *myTiles, PlayTile *enemyTiles)
+void GameLogic::StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile> &enemyTiles)
 {
-	playerNum=mySocket.getPlayerNum();
+	playerNum= clientHandler.getPlayerNum();
 	int processableTileState= 10;
 	if (playerNum == 1) {
 		processableTileState=Shoot();
-
-		enemyTiles[ConvertCoordToTileIndex(processableTile)].setState(processableTileState);
+	
+		enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(processableTileState);
 	}
-
+	
 	while (processableTileState != 4 && processableTileState != 5) {
 		processableTileState = GetShoot();
-		myTiles[ConvertCoordToTileIndex(processableTile)].setState(processableTileState);
+		myTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(processableTileState);
 		if (processableTileState != 4 && processableTileState != 5) {
 			processableTileState = Shoot();
-			enemyTiles[ConvertCoordToTileIndex(processableTile)].setState(processableTileState);
+			enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(processableTileState);
 		}
 	}
-
-	mySocket.~ClientHandler();
-
+	
+	clientHandler.~ClientHandler();
+	
 	if ((processableTileState == 4 && playerNum==1) || (processableTileState == 5 && playerNum == 2)) {
 		std::cout << "You've won the match!" << std::endl;
 	}
@@ -302,27 +189,26 @@ void GameLogic::StartMatch(PlayTile *myTiles, PlayTile *enemyTiles)
 
 }
 
-std::pair<char,int>* GameLogic::getActiveTiles()
-{
-	return activeTiles.data();
-}
+//std::pair<char,int>* GameLogic::getActiveTiles()
+//{
+//	return activeTiles.data();
+//}
 
 int GameLogic::Shoot()
 {
 	std::string shoot;
-	//int sentData;
 	int newState;
 	while (1) {
-		std::cout << "Where do you want to shoot?(a1-" << static_cast<char>('a'+TorpedoGLOBAL::MapSize-1)//theColumns[TorpedoGLOBAL::MapSize -1] 
-			<< TorpedoGLOBAL::MapSize <<")" << std::endl;
+		std::cout << "Where do you want to shoot?(a1-" << static_cast<char>('a'+mapSize-1)
+			<< mapSize <<")" << std::endl;
 		std::cin >> shoot;
 		if (CheckString(shoot)) {
 			processableTile = ProcessString(shoot);
-			newState=mySocket.SendShot(processableTile);
+			newState= clientHandler.SendShot(processableTile.getPos());
 			break;
 		}
 	}
-
+	
 	std::cout << "Your shot to " << shoot << " was a " << (newState==2? "miss." : (newState==1? "hit!" : "banger!!")) << std::endl;
 
 	return newState;
@@ -332,114 +218,63 @@ int GameLogic::GetShoot()
 {
 	std::string shoot;
 	int newState;
-	//int receivedShotTile;
 
-	processableTile = mySocket.ReceiveShot();
-	newState = mySocket.getRecShotState();
-
-	shoot = ProcessTile(processableTile);
+	processableTile = PlayTile(clientHandler.ReceiveShot());
+	newState = clientHandler.getRecShotState();
+	
+	shoot = ProcessTile(processableTile.getPos());
 	std::cout << "Enemy's shot to " << shoot << " was a " << (newState == 2 ? "miss." : (newState == 1 ? "hit!" : "banger!!")) << std::endl;
 
 	return newState;
 }
 
 //converts errorless stringinput into tilecoords
-std::pair<char,int> GameLogic::ProcessString(std::string coord)
+PlayTile GameLogic::ProcessString(std::string coord)
 {
 	char coordShip[2];
 	strcpy(coordShip,coord.c_str());
 
-	//int first;
-	//for (int i = 0; i < TorpedoGLOBAL::MapSize; i++) {
-	//	if (coordShip[0] == theColumns[i]) {
-	//		first = i + 1;
-	//	}
-	//}
-
-	//int second;
-	//if (TorpedoGLOBAL::MapSize < 10) {
-	//	second = atoi(&coordShip[1]);
-	//}
-	//else {
-	//	second = atoi(&coordShip[1]) * 10 +atoi(&coordShip[2]);
-	//}
-
-	//int result = 10000 + first * 100 + second;
-
-	return std::pair<char,int>(coordShip[0], atoi(&coordShip[1]));
+	return PlayTile(std::pair<char,int>(coordShip[0], atoi(&coordShip[1])));
 }
 
 //check errors in shipcoord string input
 bool GameLogic::CheckString(std::string coord)
 {
-	//if (TorpedoGLOBAL::MapSize < 10) {
+
 	if (coord.length() != 2) {
 		std::cout << "Incorrect length!(must be 2)" << std::endl;
 		return false;
 	}
-	//}
-	//else {
-	//	if (coord.length() > 3 || coord.length() < 2) {
-	//		std::cout << "Incorrect length!(must be 2 or 3)" << std::endl;
-	//		return false;
-	//	}
-	//}
 
 	char tmp[2];
 	strcpy(tmp,coord.c_str());
 	bool legitColumn = false;
-	//for (int i = 0; i < TorpedoGLOBAL::MapSize; i++) {
-		//if (tmp[0] == theColumns[i]) {
-	if(tmp[0] < ('a'+TorpedoGLOBAL::MapSize) || tmp[0] >= 'a'){
+
+	if(tmp[0] < ('a'+mapSize) && tmp[0] >= 'a'){
 		legitColumn = true;
 	}
-	//}
+
 	if (!legitColumn) {
-		std::cout << "Incorrect column!(must be a-" << static_cast<char>('a'+TorpedoGLOBAL::MapSize-1)//theColumns[TorpedoGLOBAL::MapSize - 1] 
+		std::cout << "Incorrect column!(must be a-" << static_cast<char>('a'+mapSize-1)
 			<< ")" << std::endl;
 		return false;
 	}
 
-	//if (TorpedoGLOBAL::MapSize < 10) {
 	int ia = tmp[1] - '0';
-	if (ia > TorpedoGLOBAL::MapSize) {
+	if (ia > mapSize || ia==0) {
 		return false;
 	}
-	//}
-	//else {
-	//	int ia = (tmp[1] - '0') * 10 + (tmp[2] - '0');
-	//	if (ia > TorpedoGLOBAL::MapSize) {
-	//		return false;
-	//	}
-	//}
 
-	return true;
-}
-
-//check if the tile is free
-bool GameLogic::CheckTile(std::pair<char,int> tile)
-{
-	for (int i = 0; i < activeTileCount; i++) {
-		if (activeTiles[i] == tile) {
-			return false;
-		}
-	}
 	return true;
 }
 
 //creates stringcoord out of tilecoord
 std::string GameLogic::ProcessTile(std::pair<char,int> tile)
 {
-	//int column = (tile % 10000) / 100;
-	//int row = tile % 100;
-	//char col = theColumns[column-1];
-
 	char rowC[10];
-	//_itoa(row, rowC,10);
 	_itoa(tile.second, rowC, 10);
 
 	std::string result;
-	//result.push_back(col);
 	result.push_back(tile.first);
 	result.push_back(rowC[0]);
 
@@ -449,8 +284,7 @@ std::string GameLogic::ProcessTile(std::pair<char,int> tile)
 //checks if tilecoord is legal
 bool GameLogic::TileProcessable(std::pair<char,int> tile)
 {
-	//if((tile%10000)/100>TorpedoGLOBAL::MapSize || tile%100>TorpedoGLOBAL::MapSize || (tile%10000)/100 == 0 || tile%100 == 0){
-	if(tile.first>('a'+TorpedoGLOBAL::MapSize) || tile.second>TorpedoGLOBAL::MapSize || tile.first<'a' || tile.second <= 0){
+	if(tile.first>('a'+mapSize) || tile.second>mapSize || tile.first<'a' || tile.second <= 0){
 		return false;
 	}
 	return true;
@@ -458,7 +292,20 @@ bool GameLogic::TileProcessable(std::pair<char,int> tile)
 
 int GameLogic::ConvertCoordToTileIndex(std::pair<char,int> tile)
 {
-	int tens= (tile.first-'a') * TorpedoGLOBAL::MapSize;
+	int tens= (tile.first-'a') * mapSize;
 	int ones= tile.second-1;
 	return (tens+ones);
+}
+
+void GameLogic::PlaceShipsINDEBUG() {
+	myFleet->PlaceShip(&myFleet->getTile(std::pair<char, int>('a', 1)), nullptr);
+
+	enemyFleet->PlaceShip(&enemyFleet->getTile(std::pair<char, int>('a', 1)), nullptr);
+
+	myFleet->PlaceShip(&myFleet->getTile(std::pair<char, int>('c', 2)), 
+		&myFleet->getTile(std::pair<char, int>('d', 2)));
+	myFleet->PlaceShip(&myFleet->getTile(std::pair<char, int>('c', 4)),
+		&myFleet->getTile(std::pair<char, int>('c', 7)));
+	myFleet->PlaceShip(&myFleet->getTile(std::pair<char, int>('e', 3)),
+		&myFleet->getTile(std::pair<char, int>('e', 7)));
 }

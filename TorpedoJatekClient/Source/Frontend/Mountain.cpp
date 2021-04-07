@@ -53,7 +53,7 @@ void Mountain::Draw(gCamera &camera,gShaderProgram &sh_program)
 {
 
 	glm::mat4 matWorld = glm::translate(mountain_translate) * glm::rotate(mountain_rotate,mountain_rotate_angle) * glm::scale(mountain_scale);
-	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
+	//glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
 	glm::mat4 mvp = camera.GetViewProj() *matWorld;
 
 	//sh_program.SetUniform("world", matWorld);

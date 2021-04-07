@@ -1,12 +1,13 @@
 #pragma once
 
+#include <math.h>
+
 // GLEW
 #include <GL/glew.h>
 
 // SDL
 #include <SDL.h>
 #include <SDL_opengl.h>
-
 #include <SDL_thread.h>
 
 // GLM
@@ -52,23 +53,22 @@ public:
 protected:
 	SDL_Thread* inputThread;
 
-	enum class GameState {GAME_WAITING};
-	GameState GAME_STATE = GameState::GAME_WAITING;
+	//enum class GameState {GAME_WAITING};
+	//GameState GAME_STATE = GameState::GAME_WAITING;
 	gCamera			cam_mainCamera;
 	gShaderProgram	sh_dirLight;
 	gShaderProgram  sh_playtile;
 
-	//const float mountain_tile_offset = 4.0f + 1.0f; //tilescale fele
-	//const float mountaincenter_border_Xoffset = 6.0f / 2.0f; //scale2irányba megy
 	Mountain mountain;
 	Terrain terrain;
 
-	Fleet fleet;
+	Fleet playerFleet;
+	Fleet enemyFleet;
 	Sea sea;
 
 	GameLogic gameLogic;
-	std::pair<char,int>* actPlayTiles; //ezegy array
 
+	int mapSize;
 	/*bool is_filled = true;
 	bool use_texture = true;
 	bool use_normal_map = false;

@@ -1,27 +1,47 @@
 
 #include "Ship.h"
 
+#include <iostream>
+
 Ship::Ship(void)
 {
 
 }
 
-Ship::Ship(glm::vec3 fleetTranslate)
+Ship::Ship(bool isBattleShip,bool ally,glm::vec3 battleShipTranslate)
 {
-	ship_translate = fleetTranslate;
+	isAlly = ally;
+	Init(isAlly);
+
+	ship_translate = glm::vec3((ally?-1:1) ,1,1) * (battleShipTranslate+glm::vec3(1,0,0)) * TorpedoGLOBAL::Scale;
+
+	//std::cout << "Battlesh: " << ship_translate.x << ' ' << ship_translate.y << ' ' << ship_translate.z << std::endl;
 }
 
-Ship::Ship(int tilePos)
+Ship::Ship(std::vector<PlayTile*> tiles,bool ally)
 {
+	isAlly = ally;
+	Init(isAlly);
 
+	playTiles = tiles;
+
+	glm::vec3 frontTranslation = tiles[0]->getTranslate();
+	glm::vec3 backTranslation = tiles[tiles.size() - 1]->getTranslate();
+	ship_translate = (frontTranslation + backTranslation) / 2.0f;
+
+	ship_scale = glm::vec3(1.6f*tiles.size(), 0.6f + 0.4f*tiles.size(), 0.6f + 0.25f*tiles.size()) * TorpedoGLOBAL::Scale;
+	if (tiles.size() > 1) {
+		if (tiles[0]->getPos().first != tiles[1]->getPos().first) {
+			ship_rotate = glm::half_pi<float>();
+		}
+	}
 }
-
 
 Ship::~Ship(void)
 {
 }
 
-void Ship::Init(bool isEnemy)
+void Ship::Init(bool isAlly)
 {
 	vb_ship.AddAttribute(0, 3);
 	vb_ship.AddAttribute(1, 3);
@@ -35,7 +55,7 @@ void Ship::Init(bool isEnemy)
 	vb_ship.AddData(0, -0.5f, 0.5f, -0.5f);
 	vb_ship.AddData(0, 0.5f, 0.5f, -0.5f);
 	
-	if (isEnemy) {
+	if (!isAlly) {
 		vb_ship.AddData(1, 1.0f, 0, 0);
 		vb_ship.AddData(1, 1.0f, 0, 0);
 		vb_ship.AddData(1, 1.0f, 0, 0);
@@ -76,7 +96,7 @@ void Ship::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
 
 	glm::mat4 matWorld = glm::translate(ship_translate) * glm::rotate(ship_rotate, ship_rotate_angle) * glm::scale(ship_scale);
-	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
+	//glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
 	glm::mat4 mvp = camera.GetViewProj() *matWorld;
 
 	//sh_program.SetUniform("world", matWorld);
@@ -89,4 +109,9 @@ void Ship::Draw(gCamera &camera, gShaderProgram &sh_program)
 	vb_ship.On();
 	vb_ship.DrawIndexed(GL_TRIANGLES, 0, 36, 0);
 	vb_ship.Off();
+}
+
+std::vector<PlayTile*> Ship::getPlayTiles()
+{
+	return playTiles;
 }
