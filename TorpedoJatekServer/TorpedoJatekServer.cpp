@@ -14,6 +14,7 @@ TorpedoJatekServer::~TorpedoJatekServer(void)
 	SDL_Quit();
 }
 
+//Beállítási szöveg frissítése
 void TorpedoJatekServer::UpdateSettings() {
 	currentSettings.str("");
 	currentSettings << "Server version: " << serverVersion.majorVersion << '.' << serverVersion.betaVersion << '.'
@@ -22,6 +23,7 @@ void TorpedoJatekServer::UpdateSettings() {
 	currentSettings << "Port used: " << port << '\n';
 }
 
+//Elindítja a szervert
 int TorpedoJatekServer::Start() {
 	
 	SetupOptions setupOption = SetupOptions::DUMMY_OPTION;
@@ -55,6 +57,9 @@ int TorpedoJatekServer::Start() {
 	}
 
 	if (setupOption == SetupOptions::START_SERVER) {
+		
+		CalcActiveTileCount();
+
 		Init();
 		GetShips(firstClient);
 		GetShips(secondClient);
@@ -64,6 +69,30 @@ int TorpedoJatekServer::Start() {
 	return 0;
 }
 
+//Kiszámolja a pályaméret alapján,hogy hány játékmezõn lesz hajó
+void TorpedoJatekServer::CalcActiveTileCount()
+{
+	activeTileCount = 0;
+	std::array<int, 4> tmpCopy;
+
+	switch (mapSize) {
+	case 5:
+		tmpCopy = ShipCount::Five;
+		break;
+	case 7:
+		tmpCopy = ShipCount::Seven;
+		break;
+	case 9:
+		tmpCopy = ShipCount::Nine;
+		break;
+	}
+
+	for (int i = 0; i < tmpCopy.size(); i++) {
+		activeTileCount += (i + 1) * tmpCopy[i];
+	}
+}
+
+//Megnézi,hogy a csatlakozott kliens verziója megegyezik-e a szerverével
 bool TorpedoJatekServer::CheckClientVersion(TCPsocket &connectedSocket) {
 
 	const char* text;
@@ -96,6 +125,7 @@ bool TorpedoJatekServer::CheckClientVersion(TCPsocket &connectedSocket) {
 	return false;
 }
 
+//Szerver létrehozása
 void TorpedoJatekServer::Init()
 {
 	socketSet = ServerHandler::AllocSocketSet(maxSockets);
@@ -108,14 +138,24 @@ void TorpedoJatekServer::Init()
 	ServerHandler::TCP_AddSocket(socketSet, server);
 }
 
+//Azon játékmezõk lekérése a klienstõl,amin van hajó
 void TorpedoJatekServer::GetShips(Client &client)
 {
 	while (successfullyConnectedPlayers<2)
 	{
 		std::cout << "Waiting for incoming connection..." << std::endl;
-		if (ServerHandler::CheckSocketReady(socketSet, server, -1)) {
-			client.socket = ServerHandler::TCP_Accept(server);
-			ServerHandler::TCP_AddSocket(socketSet, client.socket);
+		if (ServerHandler::CheckSocket(socketSet, -1)) {
+			if (ServerHandler::SocketReady(server)) {
+				client.socket = ServerHandler::TCP_Accept(server);
+				ServerHandler::TCP_AddSocket(socketSet, client.socket);
+			}
+			else {
+				std::cerr << "Firstclient probably left the server!" << std::endl;
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cin.get();
+				std::exit(99);
+			}
 		}
 
 		if (!CheckClientVersion(client.socket)) {
@@ -127,20 +167,22 @@ void TorpedoJatekServer::GetShips(Client &client)
 
 		client.name << "Player" << ++successfullyConnectedPlayers;
 		client.playerNum = successfullyConnectedPlayers;
+		client.activeTiles.reserve(activeTileCount);
 
 		std::cout << "Sending map size to client..." << std::endl;
 		ServerHandler::SendBinary(client.socket, &mapSize, sizeof(int));
 
 		std::cout << "Receiving shipdata from " << client.name.str() << std::endl;
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < activeTileCount; i++) {
 			ServerHandler::ReceiveBinary(client.socket, &client.activeTiles[i], sizeof(std::pair<char, int>));
-			std::cout << client.activeTiles[i].first << client.activeTiles[i].second << ' ';
+			//std::cout << client.activeTiles[i].first << client.activeTiles[i].second << ' ';
 		}
 		std::cout << "\nReceived ShipData from " << client.name.str() << std::endl;
 		break;
 	}
 }
 
+//Játékmeccs indítása
 void TorpedoJatekServer::StartMatch() {
 	int egy = 1;
 	int ketto = 2;
@@ -184,6 +226,7 @@ void TorpedoJatekServer::StartMatch() {
 	}
 }
 
+//Egy lövés lekezelése
 void TorpedoJatekServer::HandleShot(Client &shooter, Client &taker)
 {
 	ServerHandler::ReceiveBinary(shooter.socket, &targetTile, sizeof(std::pair<char, int>));
@@ -196,21 +239,22 @@ void TorpedoJatekServer::HandleShot(Client &shooter, Client &taker)
 	ServerHandler::SendBinary(taker.socket, &responseState, sizeof(ResponseState));
 }
 
+//A célzott játékmezõ lekezelése,és egy válaszállapot visszaadása
 TorpedoJatekServer::ResponseState TorpedoJatekServer::ProcessTiles(Client &clientTiles)
 {
 	ResponseState resultState=ResponseState::CONTINUE_MATCH;
 	int allZeros = true;
 
 	//if (playerNum == 1) {
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < activeTileCount; i++) {
 		if (targetTile == clientTiles.activeTiles[i]) {
 			clientTiles.activeTiles[i] = std::pair<char,int>('0',0);
 			resultState = ResponseState::HIT_ENEMY_SHIP;
 			break;
 		}
 	}
-	for (int i = 0; i < 16; i++) {
-		if (firstClient.activeTiles[i].first != '0') {
+	for (int i = 0; i < activeTileCount; i++) {
+		if (clientTiles.activeTiles[i].first != '0') {
 			allZeros = false;
 			break;
 		}

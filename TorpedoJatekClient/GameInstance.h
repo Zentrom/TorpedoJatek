@@ -21,14 +21,13 @@
 #include "Utility/Mesh_OGL3.h"
 
 #include "Source/Frontend/Mountain.h"
-//#include "Source/Frontend/PlayTile.h"
 #include "Source/Frontend/Fleet.h"
-//#include "Source/Frontend/Ship.h"
 #include "Source/Frontend/Terrain.h"
 #include "Source/Frontend/Sea.h"
 
 #include "Source/BackEnd/GameLogic.h"
 
+//Játékmenet osztálya
 class GameInstance
 {
 public:
@@ -51,24 +50,22 @@ public:
 	void MouseWheel(SDL_MouseWheelEvent&);
 	void Resize(int, int);
 protected:
-	SDL_Thread* inputThread;
+	SDL_Thread* inputThread; //Thread az inputkezeléshez
 
-	//enum class GameState {GAME_WAITING};
-	//GameState GAME_STATE = GameState::GAME_WAITING;
-	gCamera			cam_mainCamera;
-	gShaderProgram	sh_dirLight;
-	gShaderProgram  sh_playtile;
+	gCamera			cam_mainCamera; //Kamera
+	gShaderProgram	sh_dirLight; //Alap shader
+	gShaderProgram  sh_playtile; //Játékmezõk shadere
 
-	Mountain mountain;
-	Terrain terrain;
+	Mountain mountain;	//Hegy
+	Terrain terrain;	//Föld
 
-	Fleet playerFleet;
-	Fleet enemyFleet;
-	Sea sea;
+	Fleet playerFleet;	//Játékos hajói
+	Fleet enemyFleet;	//Ellenfél hajói
+	Sea sea;	//Játék és tengermezõk
 
-	GameLogic gameLogic;
+	GameLogic gameLogic;	//Háttérlogika
 
-	int mapSize;
+	int mapSize;	//Játékpálya mérete
 	/*bool is_filled = true;
 	bool use_texture = true;
 	bool use_normal_map = false;

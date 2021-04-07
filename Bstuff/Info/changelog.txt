@@ -1,4 +1,18 @@
-
+-----------------------------------------------------------------------------------------
+v0.0.2<->Refactoring
+-----------------------------------------------------------------------------------------
+[FEATURES]
+-FPS counter.(and Limiter)
+-Terrain below the sea.
+-Ship size now scales based on how many tiles it occupies.
+-Map size(5,7 or 9) and Port number can be changed.
+-Client-Server version mismatch checking on connection.
+[FIXES]
+-Refactored entire game logic.
+-Ships that occupy multiple tiles are not sliced anymore.
+-Error-handled server-client connection.
+-Mirrored enemy player's playzone.
+-Fixed a bug,where a player could shoot out of the playzone.
 -----------------------------------------------------------------------------------------
 v0.0.1<->Playable Alpha
 -----------------------------------------------------------------------------------------

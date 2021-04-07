@@ -11,6 +11,7 @@
 #include "../Globals.h"
 #include "../Frontend/PlayTile.h"
 
+//Hajó osztálya
 class Ship
 {
 public:
@@ -24,14 +25,14 @@ public:
 
 	std::vector<PlayTile*> getPlayTiles();
 private:
-	gVertexBuffer	vb_ship;
+	gVertexBuffer	vb_ship; //Hajó grafikai modell adatai
 
-	bool isAlly;
-	std::vector<PlayTile*> playTiles;
+	bool isAlly; //Kliens szempontjából mi hajónk-e
+	std::vector<PlayTile*> playTiles;	//Mely játékmezõkön van a hajó
 
-	glm::vec3 ship_translate = glm::vec3(0, 0, 0)* TorpedoGLOBAL::Scale;
-	float ship_rotate = 0.0f;
-	glm::vec3 ship_rotate_angle = glm::vec3(0, 1.0f, 0);
-	glm::vec3 ship_scale = glm::vec3(3.0f, 1.25f, 1.5f) * TorpedoGLOBAL::Scale;
+	glm::vec3 ship_translate = glm::vec3(0, 0, 0)* TorpedoGLOBAL::Scale; //mozgatás
+	float ship_rotate = 0.0f; //forgatás
+	glm::vec3 ship_rotate_angle = glm::vec3(0, 1.0f, 0); //forgatás tengelye
+	glm::vec3 ship_scale = glm::vec3(3.0f, 1.25f, 1.5f) * TorpedoGLOBAL::Scale; //nagyítás
 
 };

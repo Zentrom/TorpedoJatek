@@ -12,6 +12,7 @@
 #include "../../../CommonSource/ConnectionHandler.h"
 #include "../../../CommonSource/TorpedoVersion.h"
 
+//A kliens oldali kapcsolattartó osztály
 class ClientHandler : public ConnectionHandler
 {
 public:
@@ -28,12 +29,11 @@ public:
 	int getRecShotState();
 
 protected:
-	IPaddress ip;
-	TCPsocket mySocket;
+	IPaddress ip;	//ip-cím
+	TCPsocket mySocket;	//kliens oldali socket
 
-	int receivedBytes = 0;
-	int sentBytes = 0;
+	int receivedBytes = 0;	//szervertõl érkezett byte mennyisége
+	int sentBytes = 0; //szervernek átküldött byte mennyisége
 
-	const TorpedoVersion clientVersion;
-	//int recShotState=3;
+	const TorpedoVersion clientVersion; //a kliens verziószáma
 };

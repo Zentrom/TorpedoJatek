@@ -14,6 +14,7 @@ TorpedoJatekClient::~TorpedoJatekClient(void)
 	std::cin.get();
 }
 
+//Elindítja a klienst
 int TorpedoJatekClient::Start()
 {
 	if (Init()) {
@@ -28,6 +29,7 @@ int TorpedoJatekClient::Start()
 	return 0;
 }
 
+//Inicializálja a segédkönyvtárakat
 int TorpedoJatekClient::Init()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) == -1)
@@ -57,6 +59,7 @@ int TorpedoJatekClient::Init()
 	return 0;
 }
 
+//SDL-el lekér egy ablakot a Windowstól
 int TorpedoJatekClient::CreateGameWindow()
 {
 	
@@ -106,6 +109,7 @@ int TorpedoJatekClient::CreateGameWindow()
 	return 0;
 }
 
+//Elindít egy játékmenetet
 int TorpedoJatekClient::StartGameInstance()
 {
 	bool quit = false;

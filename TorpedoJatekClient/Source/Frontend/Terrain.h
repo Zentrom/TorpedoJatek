@@ -10,6 +10,7 @@
 
 #include "Ground.h"
 
+//A föld osztálya(darabokat összegyûjti)
 class Terrain
 {
 public:

@@ -5,12 +5,14 @@
 #include <SDL_net.h>
 #include <cstring>
 #include <utility>
-#include <array>
+#include <vector>
 #include <sstream>
 
 #include "Source\ServerHandler.h"
 #include "../CommonSource/TorpedoVersion.h"
+#include "../CommonSource/CommonGlobals.h"
 
+//Szerver fõosztálya
 class TorpedoJatekServer
 {
 public:
@@ -20,6 +22,7 @@ public:
 	int Start();
 
 private:
+	//Melyik szerveropció
 	enum class SetupOptions {
 		CLOSE_PROGRAM,
 		START_SERVER,
@@ -27,6 +30,7 @@ private:
 		CHANGE_PORT,
 		DUMMY_OPTION = 9999,
 	};
+	//Játékállapot válasz
 	enum class ResponseState {
 		HIT_ENEMY_SHIP=1,
 		CONTINUE_MATCH,
@@ -35,12 +39,15 @@ private:
 		WIN_PLAYER_TWO,
 	};
 
+	//Kliensadatok
 	struct Client {
-		std::stringstream name;
-		int playerNum;
-		TCPsocket socket;
-		std::array<std::pair<char, int>, 16> activeTiles;
+		std::stringstream name; //név
+		int playerNum;	//hányadik játékos
+		TCPsocket socket;	//kapcsolati socket
+		std::vector<std::pair<char, int>> activeTiles;	//Mely mezõkoordinátáin vannak hajói
 	}firstClient,secondClient;
+
+	void CalcActiveTileCount();
 
 	void Init();
 	void GetShips(Client &client);
@@ -51,19 +58,20 @@ private:
 
 	void HandleShot(Client &shooter, Client &taker);
 
-	IPaddress ip;
-	Uint16 port = 27015;
-	SDLNet_SocketSet socketSet = nullptr;
-	TCPsocket server = nullptr;
-	const int maxSockets = 3;
-	int successfullyConnectedPlayers = 0;
+	IPaddress ip; //ip osztálya
+	Uint16 port = 27015; //portszám
+	SDLNet_SocketSet socketSet = nullptr; //socket csoport
+	TCPsocket server = nullptr; //szerver socket
+	const int maxSockets = 3; //maximum hány socket lehet egy socketcsoportban
+	int successfullyConnectedPlayers = 0; //hány kliens csatlakozott sikeresen
 
-	std::stringstream currentSettings;
-	ResponseState responseState = ResponseState::START_OF_GAME;
+	std::stringstream currentSettings; //Jelenlegi beállítás szövege
+	ResponseState responseState = ResponseState::START_OF_GAME; //Mi a játék állapota
 
-	int mapSize = 7;
-	std::pair<char,int> targetTile;
+	int mapSize = 7; //játékPálya mérete
+	int activeTileCount = 0; //hány hajót tartalmazó mezõ van
+	std::pair<char,int> targetTile; //melyik mezõkoordinátára lõtt valaki
 
-	const TorpedoVersion serverVersion;
+	const TorpedoVersion serverVersion; //szerver verziószáma
 
 };

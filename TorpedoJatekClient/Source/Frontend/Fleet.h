@@ -11,17 +11,17 @@
 #include <array>
 
 #include "Ship.h"
+#include "../../../CommonSource/CommonGlobals.h"
 
+//Egy játékos hajóit és más adatait tartalmazó osztály
 class Fleet
 {
 public:
 	Fleet(void);
 	~Fleet(void);
 
-	//void Init(std::pair<char,int>* actPlayTiles);
 	void Init(int inMapSize,bool ally);
 	void InitTiles(std::vector<PlayTile> &tiles);
-	//void Init(std::array<int, 4> shipCount);
 	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
 	bool CheckTile(PlayTile tile);
@@ -32,28 +32,17 @@ public:
 	std::array<int, 4>& getUnplacedShipCount();
 	std::vector<std::pair<char, int>> getActiveTilePositions();
 private:
+	std::array<int, 4> unplacedShipCount;	//1x1,2x2,stb. méretû hajókból még hányat NEM raktunk le
 
-	//Hajoszam a palyanagysag fuggvenyeben(1x1,2x2,stb.)
-	const std::array<int, 4> shipCountFive = { 3,1,1,0 };
-	const std::array<int, 4> shipCountSeven = { 4,3,2,0 };
-	const std::array<int, 4> shipCountNine = { 6,4,3,1 };
-
-	std::array<int, 4> unplacedShipCount;
-
-	std::vector<Ship> ships;
-	std::vector<PlayTile> playTiles; //csak az aktivak kéne a Fleetbe is legyenek majd szerintem.
-	//Ship enemyShips[16];
-	Ship battleShip;
-	//Ship enemyBattleShip;
+	std::vector<Ship> ships;	//Játékos hajói
+	std::vector<PlayTile> playTiles; //csak az aktivak kéne a Fleetbe is legyenek majd szerintem.Most van passzív is.
+	Ship battleShip;	//Játékos hajója amit nem lehet kilõni,hanem ez lõ majd.
 	
-	bool isAlly = true;
-	int mapSize;
-	//std::map<int,std::vector<Ship>> ships;
-	//Ship battleShip;
+	bool isAlly = true;	//Kliens szemszögébõl eza mi Fleet-ünke
+	int mapSize;	//Szervertõl átjött pályaméret
 
-	int fleetTranslation;
-	float firstTile_battleShipOffset = 2.0f*mapSize * TorpedoGLOBAL::Scale;
-	const float mountain_tile_offset = (4.0f + 1.0f)* TorpedoGLOBAL::Scale; //tilescale fele
-	const float mountaincenter_border_Xoffset = 6.0f / 2.0f * TorpedoGLOBAL::Scale; //scale2irányba megy
+	float firstTile_battleShipOffset = 2.0f*mapSize * TorpedoGLOBAL::Scale;	//Csatahajó és elsõ játékmezõ közti táv
+	const float mountain_tile_offset = (4.0f + 1.0f)* TorpedoGLOBAL::Scale; //Hegy és elsõ mezõ közti táv
+	float mountaincenter_border_Xoffset = 6.0f / 2.0f * TorpedoGLOBAL::Scale; //Hegy közepe és széle közti táv
 
 };

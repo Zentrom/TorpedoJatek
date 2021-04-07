@@ -10,11 +10,11 @@
 
 #include "../Globals.h"
 
+//Tenger mezõ
 class SeaTile
 {
 public:
 	SeaTile(void);
-	SeaTile(glm::vec3 translate);
 	~SeaTile(void);
 
 	void Init();
@@ -23,11 +23,11 @@ public:
 
 protected:
 
-	gVertexBuffer	vb_seatile;
+	gVertexBuffer	vb_seatile; //grafikai modell adatok
 
-	glm::vec3 seatile_translate = glm::vec3(0, 0, 0)*TorpedoGLOBAL::Scale;
-	float seatile_rotate = 0.0f;
-	glm::vec3 seatile_rotate_angle = glm::vec3(0, 1.0f, 0);
-	glm::vec3 seatile_scale = glm::vec3(2.0f, 1.0f, 2.0f)*TorpedoGLOBAL::Scale;
+	glm::vec3 seatile_translate = glm::vec3(0, 0, 0)*TorpedoGLOBAL::Scale; //elmozgazás
+	float seatile_rotate = 0.0f; //forgatás
+	glm::vec3 seatile_rotate_angle = glm::vec3(0, 1.0f, 0); //forgatási tengely
+	glm::vec3 seatile_scale = glm::vec3(2.0f, 1.0f, 2.0f)*TorpedoGLOBAL::Scale; //nagyítás
 
 };

@@ -1,21 +1,17 @@
 
 #include "Ship.h"
 
-#include <iostream>
-
 Ship::Ship(void)
 {
-
 }
 
+//Ez a csatahajónak fenntartott konstruktor
 Ship::Ship(bool isBattleShip,bool ally,glm::vec3 battleShipTranslate)
 {
 	isAlly = ally;
 	Init(isAlly);
 
-	ship_translate = glm::vec3((ally?-1:1) ,1,1) * (battleShipTranslate+glm::vec3(1,0,0)) * TorpedoGLOBAL::Scale;
-
-	//std::cout << "Battlesh: " << ship_translate.x << ' ' << ship_translate.y << ' ' << ship_translate.z << std::endl;
+	ship_translate = glm::vec3((ally ? -1 : 1), 1, 1) * battleShipTranslate;
 }
 
 Ship::Ship(std::vector<PlayTile*> tiles,bool ally)
@@ -41,6 +37,7 @@ Ship::~Ship(void)
 {
 }
 
+//Hajó modell adatainak inicializálása
 void Ship::Init(bool isAlly)
 {
 	vb_ship.AddAttribute(0, 3);
@@ -92,6 +89,7 @@ void Ship::Init(bool isAlly)
 	vb_ship.InitBuffers();
 }
 
+//Egy hajó kirajzolása
 void Ship::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
 

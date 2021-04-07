@@ -10,13 +10,11 @@ GameInstance::GameInstance(void)
 	m_mesh = 0;*/
 }
 
-
 GameInstance::~GameInstance(void)
 {
 }
 
-
-
+//Játékmenet inicializálása
 bool GameInstance::Init()
 {
 	mapSize = gameLogic.Init(&playerFleet,&enemyFleet,&sea);
@@ -32,12 +30,6 @@ bool GameInstance::Init()
 
 	mountain.Init();
 	terrain.Init();
-
-	//tile
-	//sea.Init();
-	
-	//ships
-	//fleet.Init(actPlayTiles);
 	
 	sh_dirLight.AttachShader(GL_VERTEX_SHADER, "Shaders/dirLight.vert");
 	sh_dirLight.AttachShader(GL_FRAGMENT_SHADER, "Shaders/dirLight.frag");
@@ -82,8 +74,10 @@ void GameInstance::Clean()
 	glDeleteTextures(1, &m_coneNormalMapID);*/
 
 	sh_dirLight.Clean();
+	sh_playtile.Clean();
 }
 
+//A thread hívja meg ezt a függvényt,hogy lehessen meccs közbe gépelni consoleba
 int GameInstance::threadFunction(void *ptr)
 {
 	GameInstance* pointr= static_cast<GameInstance *>(ptr);
@@ -96,6 +90,7 @@ int GameInstance::threadFunction(void *ptr)
 
 }
 
+//Adatok frissítése minden kirajzolásnál
 void GameInstance::Update()
 {
 	// kameramozgatáshoz
@@ -106,8 +101,7 @@ void GameInstance::Update()
 
 }
 
-
-
+//Rajzolási hívás
 void GameInstance::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -199,6 +193,7 @@ void GameInstance::MouseWheel(SDL_MouseWheelEvent& wheel)
 {
 }
 
+//Ablak átméretezéskor hívódik
 void GameInstance::Resize(int _w, int _h)
 {
 	glViewport(0, 0, _w, _h);

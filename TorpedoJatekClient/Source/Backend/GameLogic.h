@@ -16,11 +16,11 @@
 #include "../../Utility/gCamera.h"
 
 #include "ClientHandler.h"
-//#include "../Frontend/PlayTile.h"
 #include "../Frontend/Fleet.h"
 #include "../Frontend/Sea.h"
 #include "../Globals.h"
 
+//Játék háttérlogikájával kapcsolatos osztály
 class GameLogic
 {
 public:
@@ -33,12 +33,10 @@ public:
 	void PlaceShips();
 	void StartMatch(std::vector<PlayTile> &myTiles,std::vector<PlayTile> &enemyTiles);
 
-	//std::pair<char,int>* getActiveTiles();
-
 	int Shoot();
 	int GetShoot();
 protected:
-	ClientHandler clientHandler;
+	ClientHandler clientHandler;	//A hálózati kapcsolat kliens-oldali vezérlõje
 	
 	void PlaceShipsINDEBUG();
 
@@ -53,33 +51,20 @@ protected:
 	std::string shipFPlaceText = "Where do you want the front of the ship to be?(a1-";
 	std::string shipBPlaceText = "Where do you want the back of the ship to be?\nChoices are:";
 
-	std::string shipFront;
+	std::string shipFront;	//Hajó végeit tároló inputadat
 	std::string shipBack;
 
-	std::string ip="127.0.0.1";
-	int port=27015;
+	std::string ip="127.0.0.1";	//A szerver-ip szöveges alakja
+	int port=27015; //szerver port
 
-	Fleet *myFleet;
-	Fleet *enemyFleet;
-	Sea *mySea;
-	//const int activeTileCount = 16;
-	//beégetett!!!!
-	//std::array<std::pair<char, int>, 16> activeTiles = { std::pair<char,int>('a',1),std::pair<char,int>('f',3),
-	//	std::pair<char,int>('g',1), std::pair<char,int>('a',3), std::pair<char,int>('d',5), 
-	//	std::pair<char,int>('d',6), std::pair<char,int>('c',3), std::pair<char,int>('d',3), 
-	//	std::pair<char,int>('g',3), std::pair<char,int>('g',4), std::pair<char,int>('b',2), 
-	//	std::pair<char,int>('b',3), std::pair<char,int>('b',4), std::pair<char,int>('c',5), 
-	//	std::pair<char,int>('c',6), std::pair<char,int>('c',7), };
+	Fleet *myFleet;	//Pointer a mi hajóseregünkre
+	Fleet *enemyFleet;	//Pointer az ellenfél hajóseregére
+	Sea *mySea;	//Pointer a tengerre
 
-	//int ship3count = 2;
-	//int ship2count = 3;
-	//int ship1count = 4;
+	int mapSize = 7;	//Tárolt pályaméret
+	int choice = 0; //Felhasználói input,mikor dönteni kell
 
-	int mapSize = 7;
-	int choice = 0;
+	int playerNum;	//Ha 1 akkor mi kezdünk,ha 2 akkor nem
 
-	int playerNum;
-	int receivedShoot=99999; //1-win 2-loose
-
-	PlayTile processableTile; //statenel 1-piros 2-sarga 3-kek 4-nyert 5-vesztett
+	PlayTile processableTile; //Feldolgozásra váró játékmezõ
 };

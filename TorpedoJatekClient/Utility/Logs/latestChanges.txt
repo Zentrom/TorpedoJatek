@@ -1,9 +1,14 @@
-v0.0.1g-All-Out Refactoring
+v0.0.2<->Refactoring
 --------------------------------------------------------------------------------
--Server port number can now be changed during runtime.
--Map size is now determined by the server.
+[FEATURES]
+-FPS counter.(and Limiter)
+-Terrain below the sea.
 -Ship size now scales based on how many tiles it occupies.
--Mirrored Player2's playzone.
--Fixed bug where a player could shoot out of the playzone.
--Fixed FPS limiter.
--Server now sends it's version to client on version-mismatch.
+-Map size(5,7 or 9) and Port number can be changed.
+-Client-Server version mismatch checking on connection.
+[FIXES]
+-Refactored entire game logic.
+-Ships that occupy multiple tiles are not sliced anymore.
+-Error-handled server-client connection.
+-Mirrored enemy player's playzone.
+-Fixed a bug,where a player could shoot out of the playzone.

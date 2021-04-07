@@ -5,11 +5,6 @@ PlayTile::PlayTile(void)
 {
 }
 
-//PlayTile::PlayTile(glm::vec3 translate)
-//{
-//	seatile_translate = translate;
-//}
-
 PlayTile::PlayTile(std::pair<char, int> pos)
 {
 	position = pos;
@@ -19,6 +14,7 @@ PlayTile::~PlayTile(void)
 {
 }
 
+//Egy játékmezõ kirajzolása
 void PlayTile::Draw(gCamera &camera,gShaderProgram &sh_playtile)
 {
 
@@ -40,6 +36,7 @@ void PlayTile::Draw(gCamera &camera,gShaderProgram &sh_playtile)
 
 }
 
+//Játékmezõ állapotának állítása(hogy más színe legyen)
 void PlayTile::setState(int newState)
 {
 	switch (newState) {

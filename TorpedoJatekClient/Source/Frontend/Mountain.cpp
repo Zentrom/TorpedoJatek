@@ -10,6 +10,7 @@ Mountain::~Mountain(void)
 {
 }
 
+//Inicializálja a hegy grafikai modelljét
 void Mountain::Init()
 {
 	vb_mountain.AddAttribute(0, 3);
@@ -49,6 +50,7 @@ void Mountain::Init()
 	vb_mountain.InitBuffers();
 }
 
+//Kirajzolja a hegyet
 void Mountain::Draw(gCamera &camera,gShaderProgram &sh_program) 
 {
 

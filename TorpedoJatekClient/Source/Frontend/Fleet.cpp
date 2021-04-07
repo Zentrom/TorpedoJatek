@@ -1,7 +1,5 @@
 #include "Fleet.h"
 
-#include <iostream>
-
 Fleet::Fleet(void)
 {
 }
@@ -10,6 +8,7 @@ Fleet::~Fleet(void)
 {
 }
 
+//Inicializálja egy játékos hajóseregét
 void Fleet::Init(int inMapSize,bool ally) 
 {
 	mapSize = inMapSize;
@@ -17,87 +16,44 @@ void Fleet::Init(int inMapSize,bool ally)
 
 	switch (mapSize) {
 	case 5:
-		unplacedShipCount = shipCountFive;
+		unplacedShipCount = ShipCount::Five;
 		break;
 	case 7:
-		unplacedShipCount = shipCountSeven;
+		unplacedShipCount = ShipCount::Seven;
 		break;
 	case 9:
-		unplacedShipCount = shipCountNine;
+		unplacedShipCount = ShipCount::Nine;
 		break;
 	}
 
-	firstTile_battleShipOffset = 2.0f * mapSize * TorpedoGLOBAL::Scale;
+	firstTile_battleShipOffset = ((2.0f * mapSize)+1.0f) * TorpedoGLOBAL::Scale;
+	mountaincenter_border_Xoffset = (mapSize-1) / 2.0f * TorpedoGLOBAL::Scale;
 
 	glm::vec3 battleShipOffset = glm::vec3(firstTile_battleShipOffset, 0, 0) + glm::vec3(mountaincenter_border_Xoffset + mountain_tile_offset, 0, 0);
 	battleShip = Ship(true, isAlly, battleShipOffset);
 }
 
+//Elkéri a játékos játékmezõit
 void Fleet::InitTiles(std::vector<PlayTile> &tiles)
 {
 	playTiles = tiles;
 }
 
-//void Fleet::Init(std::pair<char,int>* actPlayTiles)
-//{
-//	float tile_transX = 0;
-//	float tile_transZ = 0;
-//	glm::vec3 tileResult = glm::vec3(0.0f);
-//	for (int i = 0; i < 16; i++) {
-//
-//		tile_transX = (actPlayTiles[i].second - 1) * 2.0f * TorpedoGLOBAL::Scale;
-//		tile_transZ = ((actPlayTiles[i].first - 'a') * 2.0f * TorpedoGLOBAL::Scale) - (3.0f*2.0f* TorpedoGLOBAL::Scale);
-//
-//		tileResult += glm::vec3(mountaincenter_border_Xoffset, 0, 0) +
-//			glm::vec3(mountain_tile_offset, 0, 0) +
-//			glm::vec3(tile_transX, 0, tile_transZ);
-//
-//		myShips[i] = Ship(glm::vec3(-1, 1, 1)*tileResult);
-//		//enemyShips[i] = Ship(tileResult);
-//
-//		//enemyShips[i].Init();
-//		//myShips[i].Init();
-//		tileResult = glm::vec3(0.0f);
-//	}
-//
-//	glm::vec3 battleShipOffset = glm::vec3(firstTile_battleShipOffset, 0, 0) + glm::vec3(mountaincenter_border_Xoffset + mountain_tile_offset, 0, 0);
-//	myBattleShip = Ship(-battleShipOffset);
-//	//myBattleShip.Init();
-//	enemyBattleShip = Ship(battleShipOffset);
-//
-//	myBattleShip.Init(false);
-//	enemyBattleShip.Init(true);
-//	for (int i = 0; i < 16; i++) {
-//		myShips[i].Init(false);
-//		//enemyShips[i].Init(true);
-//	}
-//}
-
-//void Fleet::Init(std::array<int, 4> shipCount)
-//{
-//	unplacedShipCount = shipCount;
-//}
-
+//Játékos hajóinak kirajzolása
 void Fleet::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
 
 	for (int i = 0; i < ships.size(); i++) {
 		ships[i].Draw(camera,sh_program);
-		//enemyShips[i].Draw(m_camera,m_program);
 	}
 	battleShip.Draw(camera, sh_program);
-	//enemyBattleShip.Draw(camera,sh_program);
 
 }
 
-//Megnezi hogy szabad-e a tile
+//Megnezi hogy szabad-e a játékmezõ
 bool Fleet::CheckTile(PlayTile tile)
 {
-	//std::cout << "Checking tile: " << tile.getPos().first << tile.getPos().second << std::endl;
 	for (PlayTile playTile : playTiles) {
-		//std::cout << "checking tile: " << playTile.getIndex() << ' ' << playTile.getPos().first
-		//	<< playTile.getPos().second << ' ' << (tile.getPos() == playTile.getPos()) 
-		//	<< ' ' << playTile.isUsed() << std::endl;
 		if (tile.getPos() == playTile.getPos() && playTile.isUsed()) {
 			return false;
 		}
@@ -105,6 +61,7 @@ bool Fleet::CheckTile(PlayTile tile)
 	return true;
 }
 
+//Koordináta alapján visszaad egy játékmezõt
 PlayTile& Fleet::getTile(std::pair<char, int> pos)
 {
 	for (PlayTile &playTile : playTiles) {
@@ -114,6 +71,7 @@ PlayTile& Fleet::getTile(std::pair<char, int> pos)
 	}
 }
 
+//Visszaadja azokat a mezõket,ahova egy hajó másik vége lerakható lenne
 std::array<PlayTile*, 4> Fleet::getFreeBacks(PlayTile &tile,int backDistance)
 {
 	std::array<PlayTile*, 4> result;
@@ -121,8 +79,6 @@ std::array<PlayTile*, 4> Fleet::getFreeBacks(PlayTile &tile,int backDistance)
 	bool leftFree = true;
 	bool upFree = true;
 	bool downFree = true;
-	//for (int i = 0; i < (mapSize*mapSize);i++) {
-		//if (tile == playTiles[i].getPos()) {
 			
 	if (((tile.getIndex()%mapSize) + backDistance) >= mapSize) {
 		rightFree = false;
@@ -137,7 +93,6 @@ std::array<PlayTile*, 4> Fleet::getFreeBacks(PlayTile &tile,int backDistance)
 		upFree = false;
 	}
 
-	//PlayTile &tmpTile = playTiles[i];
 	for (int i = backDistance; i > 0; i--) {
 		if (rightFree) {
 			if (playTiles.at(tile.getIndex() + i).isUsed()) {
@@ -160,30 +115,27 @@ std::array<PlayTile*, 4> Fleet::getFreeBacks(PlayTile &tile,int backDistance)
 			}
 		}
 	}
-			//break;
-		//}
-	//}
 
 	if (rightFree) {
-		result[0] = &playTiles.at(tile.getIndex() + backDistance);//std::pair<char, int>(tile.first, tile.second + backDistance);
+		result[0] = &playTiles.at(tile.getIndex() + backDistance);
 	}
 	else {
 		result[0] = nullptr;
 	}
 	if (leftFree) {
-		result[1] = &playTiles.at(tile.getIndex() - backDistance);//std::pair<char, int>(tile.first, tile.second - backDistance);
+		result[1] = &playTiles.at(tile.getIndex() - backDistance);
 	}
 	else {
 		result[1] = nullptr;
 	}
 	if (downFree) {
-		result[2] = &playTiles.at(tile.getIndex() + backDistance*mapSize);//std::pair<char, int>(static_cast<char>(tile.first+backDistance), tile.second);
+		result[2] = &playTiles.at(tile.getIndex() + backDistance*mapSize);
 	}
 	else {
 		result[2] = nullptr;
 	}
 	if (upFree) {
-		result[3] = &playTiles.at(tile.getIndex() - backDistance*mapSize);//std::pair<char, int>(static_cast<char>(tile.first-backDistance), tile.second);
+		result[3] = &playTiles.at(tile.getIndex() - backDistance*mapSize);
 	}
 	else {
 		result[3] = nullptr;
@@ -192,10 +144,10 @@ std::array<PlayTile*, 4> Fleet::getFreeBacks(PlayTile &tile,int backDistance)
 	return result;
 }
 
+//Lerak egy hajót a pályára
 void Fleet::PlaceShip(PlayTile *front, PlayTile *back)
 {
 	std::vector<PlayTile*> shipTiles;
-	//shipTiles.push_back(front);
 
 	PlayTile* tmpTile = &playTiles[front->getIndex()];
 	if (!back) {
@@ -232,11 +184,13 @@ void Fleet::PlaceShip(PlayTile *front, PlayTile *back)
 	ships.push_back(Ship(shipTiles,isAlly));
 }
 
+//Visszaadja a le nem rakott hajók számát méret alapján(1x1,2x2,stb.)
 std::array<int, 4>& Fleet::getUnplacedShipCount()
 {
 	return unplacedShipCount;
 }
 
+//Visszaadja azoknak a mezõknek a koordinátáit amin van hajó
 std::vector<std::pair<char, int>> Fleet::getActiveTilePositions()
 {
 	std::vector<std::pair<char, int>> result;

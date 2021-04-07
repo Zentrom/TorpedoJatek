@@ -1,5 +1,6 @@
 #include "ConnectionHandler.h"
 
+//SDLNet inicializálás
 void ConnectionHandler::Init_SDLNet()
 {
 	if (SDLNet_Init() == -1) {
@@ -7,6 +8,7 @@ void ConnectionHandler::Init_SDLNet()
 	}
 }
 
+//Host adatok feldolgozása
 void ConnectionHandler::ResolveHost(IPaddress *address, const char *host, Uint16 port)
 {
 	for (int retryCount = 0; retryCount < maxRetryCountOnError; retryCount++) {
@@ -21,6 +23,7 @@ void ConnectionHandler::ResolveHost(IPaddress *address, const char *host, Uint16
 	ReportErrorAndExit("SDLNet_ResolveHost", ErrorCode::RESOLVE_HOST);
 }
 
+//Csatlakozás
 TCPsocket ConnectionHandler::TCP_Open(IPaddress *ip)
 {
 	TCPsocket serverSocket;
@@ -37,6 +40,7 @@ TCPsocket ConnectionHandler::TCP_Open(IPaddress *ip)
 	ReportErrorAndExit("SDLNet_TCP_Open", ErrorCode::OPEN);
 }
 
+//Szöveg fogadása hálózaton
 void ConnectionHandler::ReceiveText(TCPsocket &socket,void *data, const int length)
 {
 	int receivedBytes;
@@ -53,6 +57,7 @@ void ConnectionHandler::ReceiveText(TCPsocket &socket,void *data, const int leng
 	ReportErrorAndExit("SDLNet_TCP_Recv", ErrorCode::RECEIVE);
 }
 
+//Bináris adat fogadása hálózaton
 void ConnectionHandler::ReceiveBinary(TCPsocket &socket, void *dest, const int size)
 {
 	int receivedBytes;
@@ -69,6 +74,7 @@ void ConnectionHandler::ReceiveBinary(TCPsocket &socket, void *dest, const int s
 	ReportErrorAndExit("SDLNet_TCP_Recv", ErrorCode::RECEIVE);
 }
 
+//Szöveg küldése hálózaton
 void ConnectionHandler::SendText(TCPsocket &socket, const char *text, const int length)
 {
 	int sentBytes;
@@ -85,6 +91,7 @@ void ConnectionHandler::SendText(TCPsocket &socket, const char *text, const int 
 	ReportErrorAndExit("SDLNet_TCP_Send", ErrorCode::SEND);
 }
 
+//Bináris adat küldése hálózaton
 void ConnectionHandler::SendBinary(TCPsocket &socket, const void *source, const int size)
 {
 	int sentBytes;
@@ -101,12 +108,14 @@ void ConnectionHandler::SendBinary(TCPsocket &socket, const void *source, const 
 	ReportErrorAndExit("SDLNet_TCP_Send", ErrorCode::SEND);
 }
 
+//Kiirjuk hogy újra próbálkozunk
 void ConnectionHandler::printRetry(int currentRetry, char currentAction[]) 
 {
 	std::cout << "Losing connection while: " << currentAction << '\n'
 		<< "Retrying!(" << currentRetry+1 << '/' << maxRetryCountOnError << ')' << std::endl;
 }
 
+//Nagyobb hiba esetén kiirjuk és kilépünk
 void ConnectionHandler::ReportErrorAndExit(char functionName[], int exitCode)
 {
 	std::cerr << "[" << functionName << "] " << SDLNet_GetError() << '\n'

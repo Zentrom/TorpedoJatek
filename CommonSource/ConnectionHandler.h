@@ -4,6 +4,7 @@
 #include <string>
 #include <SDL_net.h>
 
+//Hibamentes hálózati kommunikációhoz szükséges static függvények gyûjteménye
 class ConnectionHandler {
 public:
 	static void Init_SDLNet();
@@ -17,6 +18,7 @@ public:
 	static void SendBinary(TCPsocket &socket, const void* source, const int size);
 
 protected:
+	//Milyen hibakód
 	enum ErrorCode{
 		SDLNET_INIT = 1,
 		RESOLVE_HOST,
@@ -28,7 +30,7 @@ protected:
 	static void printRetry(int currentRetry, char currentAction[]);
 	static void ReportErrorAndExit(char functionName[], int exitCode);
 
-	static const int delayTime = 2000;
-	static const int maxRetryCountOnError = 5;
+	static const int delayTime = 2000; //Újrapróbálkozás elõtt mennyit várjunk
+	static const int maxRetryCountOnError = 5;	//Hányszor próbáljuk újra,mielõtt feladjuk
 
 };

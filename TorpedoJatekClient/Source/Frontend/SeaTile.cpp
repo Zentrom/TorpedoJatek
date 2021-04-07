@@ -1,16 +1,8 @@
 
 #include "SeaTile.h"
 
-#include <iostream>
-
 SeaTile::SeaTile(void)
 {
-	Init();
-}
-
-SeaTile::SeaTile(glm::vec3 translate)
-{
-	seatile_translate = translate;
 	Init();
 }
 
@@ -18,6 +10,7 @@ SeaTile::~SeaTile(void)
 {
 }
 
+//Inicializálja a tengermezõ grafikai modelljét
 void SeaTile::Init()
 {
 	vb_seatile.AddAttribute(0, 3);
@@ -49,11 +42,9 @@ void SeaTile::Init()
 	vb_seatile.AddIndex(1, 2, 3);
 
 	vb_seatile.InitBuffers();
-
-
-
 }
 
+//Kirajzol egy tengermezõt
 void SeaTile::Draw(gCamera &camera, gShaderProgram &sh_playtile)
 {
 
@@ -77,6 +68,5 @@ void SeaTile::Draw(gCamera &camera, gShaderProgram &sh_playtile)
 
 void SeaTile::setTranslate(glm::vec3 trans)
 {
-	//std::cout << trans.x << ' ' << trans.z << std::endl;
-	seatile_translate = trans * TorpedoGLOBAL::Scale;
+	seatile_translate = trans;
 }

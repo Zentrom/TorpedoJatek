@@ -10,6 +10,7 @@
 
 #include "PlayTile.h"
 
+//Tenger osztálya-2játékos játékmezõi+többi tengermezõ
 class Sea
 {
 public:
@@ -25,13 +26,13 @@ protected:
 
 	glm::vec3 calcTranslate(int rowNr,int columnNr,bool ally);
 
-	int mapSize;
-	int tileCount;
-	std::vector<PlayTile> myTiles;
-	std::vector<PlayTile> enemyTiles;
+	int mapSize; //játékPálya mérete
+	int tileCount;	//játékMezõk száma
+	std::vector<PlayTile> myTiles;	//kliens játékmezõi
+	std::vector<PlayTile> enemyTiles; //ellenfél játékmezõi
 
-	float firstTile_battleShipOffset; //= 2.0f*mapSize*TorpedoGLOBAL::Scale;
-	const float mountain_tile_offset = (4.0f + 1.0f)*TorpedoGLOBAL::Scale; //tilescale fele
-	const float mountaincenter_border_Xoffset = 6.0f / 2.0f*TorpedoGLOBAL::Scale; //scale2irányba megy
+	float firstTile_battleShipOffset; //elsõ játékmezõ és csatahajó közti táv
+	const float mountain_tile_offset = (4.0f + 1.0f)*TorpedoGLOBAL::Scale; //hegy és elsõ játékmezõ közti táv
+	float mountaincenter_border_Xoffset = 6.0f / 2.0f*TorpedoGLOBAL::Scale; //hegy közepe és széle közti táv
 
 };

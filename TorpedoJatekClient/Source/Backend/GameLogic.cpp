@@ -2,17 +2,13 @@
 
 GameLogic::GameLogic(void)
 {
-	//if (!TorpedoGLOBAL::Debug) {
-	//	for (int i = 0; i < activeTileCount; i++) {
-	//		activeTiles[i] = std::pair<char,int>('0',0);
-	//	}
-	//}
 }
 
 GameLogic::~GameLogic(void)
 {
 }
 
+//Inicializálja a háttérlogikát
 int GameLogic::Init(Fleet *player,Fleet *enemy,Sea *sea)
 {
 	std::cout << "-----------------------------------------------" << std::endl
@@ -27,13 +23,12 @@ int GameLogic::Init(Fleet *player,Fleet *enemy,Sea *sea)
 	if (!TorpedoGLOBAL::Debug) {
 		ConnectionSetup();
 		mapSize = clientHandler.getMapSize();
-		//PlaceShips();
-		//clientHandler.SendFleet(activeTiles.data());
 	}
+
 	return mapSize;
 }
 
-
+//Kapcsolatot létesít egy szerverrel
 void GameLogic::ConnectionSetup()
 {
 	do {
@@ -45,16 +40,16 @@ void GameLogic::ConnectionSetup()
 	} while (!clientHandler.Init(ip, port));
 }
 
+//Inicializálja a játékkal kapcsolatos háttéradatokat
 void GameLogic::InitGame()
 {
+	mySea->Init(mapSize);
 	
-		mySea->Init(mapSize);
-		
-		myFleet->Init(mapSize, true);
-		myFleet->InitTiles(mySea->getTiles(true));
-		
-		enemyFleet->Init(mapSize, false);
-		enemyFleet->InitTiles(mySea->getTiles(false));
+	myFleet->Init(mapSize, true);
+	myFleet->InitTiles(mySea->getTiles(true));
+	
+	enemyFleet->Init(mapSize, false);
+	enemyFleet->InitTiles(mySea->getTiles(false));
 	if (!TorpedoGLOBAL::Debug) {
 		PlaceShips();
 		clientHandler.SendFleet(myFleet->getActiveTilePositions());
@@ -64,9 +59,9 @@ void GameLogic::InitGame()
 	}
 }
 
+//Lerakja a mi hajóinkat a pályára
 void GameLogic::PlaceShips()
 {
-	
 	ship1PlaceText.push_back(static_cast<char>('a' + mapSize - 1));
 	ship1PlaceText.push_back(static_cast<char>('0' + mapSize));
 	ship1PlaceText.push_back(')');
@@ -79,8 +74,6 @@ void GameLogic::PlaceShips()
 	
 	std::array<int,4> &unplacedShips = myFleet->getUnplacedShipCount();
 
-	//std::pair<char, int> frontPos;
-	//std::pair<char, int> backPos;
 	PlayTile tmpFront;
 	PlayTile tmpBack;
 
@@ -158,10 +151,11 @@ void GameLogic::PlaceShips()
 	} while (std::any_of(unplacedShips.cbegin(), unplacedShips.cend(), [](int i) {return i != 0; }));
 }
 
+//Elkezdi a játékmenetet két játékos között
 void GameLogic::StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile> &enemyTiles)
 {
 	playerNum= clientHandler.getPlayerNum();
-	int processableTileState= 10;
+	int processableTileState= 10; //statenel 1-piros 2-sarga 3-kek 4-nyert 5-vesztett
 	if (playerNum == 1) {
 		processableTileState=Shoot();
 	
@@ -186,14 +180,9 @@ void GameLogic::StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile>
 		std::cout << "You've lost the match!" << std::endl;
 	}
 	
-
 }
 
-//std::pair<char,int>* GameLogic::getActiveTiles()
-//{
-//	return activeTiles.data();
-//}
-
+//Bekéri a játékostól,hogy hova akar lõni,majd küldi a szervernek
 int GameLogic::Shoot()
 {
 	std::string shoot;
@@ -214,6 +203,7 @@ int GameLogic::Shoot()
 	return newState;
 }
 
+//Kapunk egy lövést az ellenféltõl
 int GameLogic::GetShoot()
 {
 	std::string shoot;
@@ -228,7 +218,7 @@ int GameLogic::GetShoot()
 	return newState;
 }
 
-//converts errorless stringinput into tilecoords
+//Hibamentes szöveges koordinátát konvertál át egy ideiglenes játékmezõvé
 PlayTile GameLogic::ProcessString(std::string coord)
 {
 	char coordShip[2];
@@ -237,7 +227,7 @@ PlayTile GameLogic::ProcessString(std::string coord)
 	return PlayTile(std::pair<char,int>(coordShip[0], atoi(&coordShip[1])));
 }
 
-//check errors in shipcoord string input
+//Szöveges koordinátát ellenõriz,hogy jó-e
 bool GameLogic::CheckString(std::string coord)
 {
 
@@ -256,19 +246,20 @@ bool GameLogic::CheckString(std::string coord)
 
 	if (!legitColumn) {
 		std::cout << "Incorrect column!(must be a-" << static_cast<char>('a'+mapSize-1)
-			<< ")" << std::endl;
+			<< ')' << std::endl;
 		return false;
 	}
 
 	int ia = tmp[1] - '0';
 	if (ia > mapSize || ia==0) {
+		std::cout << "Incorrect row!(must be 1-" << mapSize << ')' << std::endl;
 		return false;
 	}
 
 	return true;
 }
 
-//creates stringcoord out of tilecoord
+//Játékmezõ koordinátákból csinál szöveges formájút
 std::string GameLogic::ProcessTile(std::pair<char,int> tile)
 {
 	char rowC[10];
@@ -281,7 +272,7 @@ std::string GameLogic::ProcessTile(std::pair<char,int> tile)
 	return result;
 }
 
-//checks if tilecoord is legal
+//Ellenõrzi,hogy a mezõkoordináta a pályán belül van-e
 bool GameLogic::TileProcessable(std::pair<char,int> tile)
 {
 	if(tile.first>('a'+mapSize) || tile.second>mapSize || tile.first<'a' || tile.second <= 0){
@@ -290,6 +281,7 @@ bool GameLogic::TileProcessable(std::pair<char,int> tile)
 	return true;
 }
 
+//Játékmezõ koordinátát konvertál mezõket tartalmazó tömb indexévé
 int GameLogic::ConvertCoordToTileIndex(std::pair<char,int> tile)
 {
 	int tens= (tile.first-'a') * mapSize;
@@ -297,6 +289,7 @@ int GameLogic::ConvertCoordToTileIndex(std::pair<char,int> tile)
 	return (tens+ones);
 }
 
+//Ha a játék DEBUG módba indítjuk,akkor beégetetten lerak nekünk néhány hajót
 void GameLogic::PlaceShipsINDEBUG() {
 	myFleet->PlaceShip(&myFleet->getTile(std::pair<char, int>('a', 1)), nullptr);
 

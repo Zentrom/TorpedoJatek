@@ -1,7 +1,4 @@
-[RAM Usage] 35 MB
+DEBUG+VSync:[RAM Usage] 23 MB [FPS] 3100
 Backendes
--Ha debugolni akarsz akkor GameLogic constructorat,ConnectionSetupjaba a ip-port beolvasast,initbe a this->PlaceShips-t kell commentelni.
+-Ha debugolni akarsz szerverkapcsolódás nélkül,akkor Globals.h-ba a TorpedoGlobal::Debug-ot true-ra kell tenni.
 -Lehet tobbszor ugyanoda lõni.
--Ha bármikor leállítasz bármit a vége elõtt akkor a többi nem áll le.
--A kliens megy szerver nélkül de csak egy végtelen loopba pörög,ugyhogy szerverrel kell tesztelgetni.
--Itt threadet használ a program input lekezelésére,szerverrel is eza thread kommunikál.

@@ -15,6 +15,7 @@ Ground::~Ground(void)
 {
 }
 
+//Inicializálja a földdarab grafikai modelljét
 void Ground::Init()
 {
 	vb_ground.AddAttribute(0, 3);
@@ -36,6 +37,7 @@ void Ground::Init()
 	vb_ground.InitBuffers();
 }
 
+//Kirajzol egy földdarabot
 void Ground::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
 

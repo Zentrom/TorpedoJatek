@@ -26,6 +26,7 @@ Terrain::~Terrain(void)
 	delete[] myGrounds;
 }
 
+//Inicializálja a Földet összerakó darabokat
 void Terrain::Init()
 {
 	for (int i = 0; i < terrainSize; i++) {
@@ -33,11 +34,10 @@ void Terrain::Init()
 	}
 }
 
+//A földdarabok kirajzolása
 void Terrain::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
-	
 	for (int i = 0; i < terrainSize; i++) {
 		myGrounds[i].Draw(camera,sh_program);
 	}
-	
 }

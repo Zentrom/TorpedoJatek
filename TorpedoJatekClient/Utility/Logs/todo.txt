@@ -1,10 +1,7 @@
 -SDLthread-nél Waitthraed
 -Server csak egy clienssel tud foglalkozni egyszerre. VAGYIS ha éppen adatot vár egy clienttõl,akkor nem tud Accept-olni
 egy másikat. Ugyanígy a kilépést csak akkor veszi észre,ha éppen adatot kéne küldenie vagy kapnia.
-THREAD vagy CHECKSOCKET megoldaná valszeg a jövõben.
--GLOBALScale-t javítani hogy menjen.
--MapSize-t testelni.
--Testelni zonen kivüli lövést.
+THREAD vagy CHECKSOCKET package alapú megoldás megoldaná valszeg a jövõben.
 
 OpenAl vagy SDLAudio(havan 3d) hangoknak
 Freetype vagy SDL rtf/ttf betuknek
@@ -12,7 +9,7 @@ Freetype vagy SDL rtf/ttf betuknek
 CHECKSOCKET clientOldalon megfontolandó majd, 3D pickingtõl kezdve.
 Addig Threadet elõbb is el lehetne inditani.
 
-Terraint majd átkell dolgozni,mikor végtelenített kirajzolás lesz 003ban.(Mapsize-független legyen,stb)
+Terraint,Mountain majd átkell dolgozni,mikor végtelenített kirajzolás lesz 003ban.(Mapsize-független legyen,stb)
 Jegyzetrefaktoring marad 003-ra.
 'a' és 'A' különbözõ ASCII értékû!(tesztelni kell,h baje)
-Codeot commentelni,cleanelni.
+Kapcsolatban a ResponseState-et commonná tenni.

@@ -46,6 +46,9 @@
     <Filter Include="Utility\gClasses">
       <UniqueIdentifier>{640a6233-b296-4142-8a6a-a24454637e80}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utility\Info">
+      <UniqueIdentifier>{b88298de-5669-46d7-9454-bbf91a01469a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -170,6 +173,9 @@
     <ClInclude Include="Source\Frontend\SeaTile.h">
       <Filter>Header Files\Frontend</Filter>
     </ClInclude>
+    <ClInclude Include="..\CommonSource\CommonGlobals.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\dirLight.frag">
@@ -232,6 +238,12 @@
     </Text>
     <Text Include="Utility\Logs\versionInfo.txt">
       <Filter>Utility\Logs</Filter>
+    </Text>
+    <Text Include="..\Bstuff\Info\changelog.txt">
+      <Filter>Utility\Info</Filter>
+    </Text>
+    <Text Include="..\Bstuff\Info\controlsAlpha.txt">
+      <Filter>Utility\Info</Filter>
     </Text>
   </ItemGroup>
 </Project>

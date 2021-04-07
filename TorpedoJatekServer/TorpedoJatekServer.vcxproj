@@ -172,6 +172,7 @@
     <ClCompile Include="TorpedoJatekServer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\CommonSource\CommonGlobals.h" />
     <ClInclude Include="..\CommonSource\ConnectionHandler.h" />
     <ClInclude Include="..\CommonSource\TorpedoVersion.h" />
     <ClInclude Include="Source\ServerHandler.h" />

@@ -1,4 +1,13 @@
+Windows window
+---------------------
 Move with WASD
 Drag the mouse on the screen to look around.
 Hold Shift to move slower.
 Press ESC to quit.
+---------------------
+Console
+---------------------
+1.Type ip,then port.(ex. 127.0.0.1 and 27015)
+2.Place ships one by one,by typing it's size,then a coordinate.(ex. a5)
+3.After all ships have been placed,type a coordinate to shoot at,when the console asks you to.
+Continue this until you,or the enemy loses all the ships.

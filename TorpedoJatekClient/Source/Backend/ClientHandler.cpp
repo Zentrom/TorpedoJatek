@@ -15,6 +15,8 @@ ClientHandler::~ClientHandler(void)
 	SDLNet_Quit();
 }
 
+//Csatlakozik a szerverhez,elküldi a kliens verziószámát,kiírja hogy egyezik-e
+//Visszaadja,hogy egyeztek-e a verziók
 bool ClientHandler::Init(std::string ipString,int portNr)
 {
 	ResolveHost(&ip, ipString.c_str(), portNr);
@@ -38,6 +40,7 @@ bool ClientHandler::Init(std::string ipString,int portNr)
 	return responseVersionCheck;
 }
 
+//Elkéri a szervertõl a játékPálya méretét
 int ClientHandler::getMapSize() {
 
 	std::cout << "Receiving map size from server..." << std::endl;
@@ -47,6 +50,7 @@ int ClientHandler::getMapSize() {
 	return result;
 }
 
+//Elküldi a szervernek azokat a játékmezõket,amin hajója van a kliensnek.
 void ClientHandler::SendFleet(std::vector<std::pair<char,int>> activeTilePositions)
 {
 	std::cout << "Sending activetiles..." << std::endl;
@@ -61,6 +65,7 @@ void ClientHandler::SendFleet(std::vector<std::pair<char,int>> activeTilePositio
 	}
 }
 
+//Lekéri a szervertõl,hogy mi kezdünk-e
 int ClientHandler::getPlayerNum()
 {
 	int playerNum=1;
@@ -74,6 +79,8 @@ int ClientHandler::getPlayerNum()
 	return playerNum;
 }
 
+//Elküldi a szervernek,hogy mely mezõkoordinátára lövünk
+//Visszaadja a lövésünk eredményét
 int ClientHandler::SendShot(std::pair<char,int> tile)
 {
 	int stateResult=3;
@@ -90,6 +97,7 @@ int ClientHandler::SendShot(std::pair<char,int> tile)
 	return stateResult;
 }
 
+//Visszaadja hogy az ellenfél hova lõtt
 std::pair<char,int> ClientHandler::ReceiveShot()
 {
 	std::pair<char,int> tileNr('0',0);
@@ -104,6 +112,7 @@ std::pair<char,int> ClientHandler::ReceiveShot()
 	return tileNr;
 }
 
+//Megkérdi a szervert,hogy miután kaptunk egy lövést,milyen állapotba lesz a játék
 int ClientHandler::getRecShotState()
 {
 	int stateResult = 3;

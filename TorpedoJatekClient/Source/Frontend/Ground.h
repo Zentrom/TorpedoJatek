@@ -10,6 +10,7 @@
 
 #include "../Globals.h"
 
+//A föld egy darabja
 class Ground
 {
 public:
@@ -21,10 +22,10 @@ public:
 	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
 protected:
-	gVertexBuffer	vb_ground;
-	glm::vec3 ground_translate = glm::vec3(0, 0, 0)* TorpedoGLOBAL::Scale;
-	float ground_rotate = 0.0f;
-	glm::vec3 ground_rotate_angle = glm::vec3(0, 1.0f, 0);
-	glm::vec3 ground_scale = glm::vec3(2.0f, 1.0f, 2.0f)* TorpedoGLOBAL::Scale;
+	gVertexBuffer	vb_ground; //grafikai adatokat tároló buffer
+	glm::vec3 ground_translate = glm::vec3(0, 0, 0)* TorpedoGLOBAL::Scale; //elmozgatás
+	float ground_rotate = 0.0f; //forgatás
+	glm::vec3 ground_rotate_angle = glm::vec3(0, 1.0f, 0); //forgatás tengelye
+	glm::vec3 ground_scale = glm::vec3(2.0f, 1.0f, 2.0f)* TorpedoGLOBAL::Scale; //nagyítás
 
 };
