@@ -6,6 +6,7 @@
 #include <cstring>
 #include <utility>
 #include <vector>
+#include <array>
 #include <sstream>
 
 #include "Source\ServerHandler.h"
@@ -30,13 +31,12 @@ private:
 		CHANGE_PORT,
 		DUMMY_OPTION = 9999,
 	};
-	//Játékállapot válasz
-	enum class ResponseState {
-		HIT_ENEMY_SHIP=1,
-		CONTINUE_MATCH,
-		START_OF_GAME,
-		WIN_PLAYER_ONE,
-		WIN_PLAYER_TWO,
+
+	//A szerver "párhuzamosításához" el kell tárolni,hogy hol tartottunk egy klienssel
+	enum class ClientState {
+		NOT_CONNECTED,
+		RECEIVING_SHIPS,
+		IN_MATCH,
 	};
 
 	//Kliensadatok
@@ -45,28 +45,31 @@ private:
 		int playerNum;	//hányadik játékos
 		TCPsocket socket;	//kapcsolati socket
 		std::vector<std::pair<char, int>> activeTiles;	//Mely mezõkoordinátáin vannak hajói
-	}firstClient,secondClient;
+		ClientState state = ClientState::NOT_CONNECTED; //Az elején a kliens még nem csatlakozott
+	}firstClient,secondClient,temporaryClient;
+	std::array<Client*, 3> clients;
 
 	void CalcActiveTileCount();
-
 	void Init();
-	void GetShips(Client &client);
+	void PrepareMatch();
+	void HandleClientState(Client *client);
 	void StartMatch();
 	void UpdateSettings();
 	bool CheckClientVersion(TCPsocket &connectedSocket);
 	ResponseState ProcessTiles(Client &clientTiles);
-
 	void HandleShot(Client &shooter, Client &taker);
+	int getFirstNotConnectedIndex();
 
 	IPaddress ip; //ip osztálya
 	Uint16 port = 27015; //portszám
 	SDLNet_SocketSet socketSet = nullptr; //socket csoport
 	TCPsocket server = nullptr; //szerver socket
-	const int maxSockets = 3; //maximum hány socket lehet egy socketcsoportban
-	int successfullyConnectedPlayers = 0; //hány kliens csatlakozott sikeresen
+	const int maxSockets = 4; //maximum hány socket lehet egy socketcsoportban
+	//int connectedClients = 0; //hány kliens csatlakozott sikeresen
 
 	std::stringstream currentSettings; //Jelenlegi beállítás szövege
 	ResponseState responseState = ResponseState::START_OF_GAME; //Mi a játék állapota
+	MessageType receivedType; //Elvárt üzenetet küld-e a kliens
 
 	int mapSize = 7; //játékPálya mérete
 	int activeTileCount = 0; //hány hajót tartalmazó mezõ van

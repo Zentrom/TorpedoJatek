@@ -54,45 +54,40 @@ int ClientHandler::getMapSize() {
 void ClientHandler::SendFleet(std::vector<std::pair<char,int>> activeTilePositions)
 {
 	std::cout << "Sending activetiles..." << std::endl;
-	if (mySocket) {
-		for (int i = 0; i < activeTilePositions.size(); i++) {
-			SendBinary(mySocket, &activeTilePositions[i], sizeof(std::pair<char, int>));
-		}
-		std::cout<<"ShipData sent to server."<<std::endl;
+	SendBinary(mySocket, &sentMessageType, sizeof(MessageType));
+	for (int i = 0; i < activeTilePositions.size(); i++) {
+		SendBinary(mySocket, &activeTilePositions[i], sizeof(std::pair<char, int>));
 	}
-	else {
-		std::cout << "No connection to the server!" << std::endl;
-	}
+	std::cout<<"ShipData sent to server."<<std::endl;
 }
 
 //Lekéri a szervertõl,hogy mi kezdünk-e
 int ClientHandler::getPlayerNum()
 {
-	int playerNum=1;
-	if (mySocket) {
-		ReceiveBinary(mySocket, &playerNum, sizeof(int));
-		std::cout << "You are player number " << playerNum << std::endl;
-	}
-	else {
-		std::cout << "No connection to the server!" << std::endl;
-	}
+	int playerNum = 1;
+	ReceiveBinary(mySocket, &playerNum, sizeof(int));
+	std::cout << "You are player number " << playerNum << std::endl;
 	return playerNum;
+}
+
+//Vár a szerverre,hogy jelezzen,hogy indulhat a meccs
+void ClientHandler::getStartSignal()
+{
+	int startSignal;
+	ReceiveBinary(mySocket, &startSignal, sizeof(int));
+	std::cout << "Match Started!" << std::endl;
 }
 
 //Elküldi a szervernek,hogy mely mezõkoordinátára lövünk
 //Visszaadja a lövésünk eredményét
-int ClientHandler::SendShot(std::pair<char,int> tile)
+ResponseState ClientHandler::SendShot(std::pair<char,int> tile)
 {
-	int stateResult=3;
+	stateResult = ResponseState::START_OF_GAME;
 
-	if (mySocket) {
-		SendBinary(mySocket, &tile, sizeof(std::pair<char, int>));
+	SendBinary(mySocket, &sentMessageType, sizeof(MessageType));
+	SendBinary(mySocket, &tile, sizeof(std::pair<char, int>));
 
-		ReceiveBinary(mySocket, &stateResult, sizeof(int));
-	}
-	else {
-		std::cout << "No connection to the server!" << std::endl;
-	}
+	ReceiveBinary(mySocket, &stateResult, sizeof(ResponseState));
 
 	return stateResult;
 }
@@ -102,27 +97,30 @@ std::pair<char,int> ClientHandler::ReceiveShot()
 {
 	std::pair<char,int> tileNr('0',0);
 
-	if (mySocket) {
-		ReceiveBinary(mySocket, &tileNr, sizeof(std::pair<char, int>));
-	}
-	else {
-		std::cout << "No connection to the server!" << std::endl;
-	}
+	ReceiveBinary(mySocket, &tileNr, sizeof(std::pair<char, int>));
 
 	return tileNr;
 }
 
-//Megkérdi a szervert,hogy miután kaptunk egy lövést,milyen állapotba lesz a játék
-int ClientHandler::getRecShotState()
+void ClientHandler::quitGame()
 {
-	int stateResult = 3;
+	sentMessageType = MessageType::QUIT;
+	SendBinary(mySocket, &sentMessageType, sizeof(MessageType));
 
-	if (mySocket) {
-		ReceiveBinary(mySocket, &stateResult, sizeof(int));
-	}
-	else {
-		std::cout << "No connection to the server!" << std::endl;
-	}
+	std::cout << "You left the game! Press enter to exit..." << std::endl;
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	std::cin.get();
+	std::exit(99);
+
+}
+
+//Megkérdi a szervert,hogy miután kaptunk egy lövést,milyen állapotba lesz a játék
+ResponseState ClientHandler::getRecShotState()
+{
+	stateResult = ResponseState::START_OF_GAME;
+
+	ReceiveBinary(mySocket, &stateResult, sizeof(ResponseState));
 
 	return stateResult;
 }

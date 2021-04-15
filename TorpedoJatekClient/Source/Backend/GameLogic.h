@@ -33,8 +33,8 @@ public:
 	void PlaceShips();
 	void StartMatch(std::vector<PlayTile> &myTiles,std::vector<PlayTile> &enemyTiles);
 
-	int Shoot();
-	int GetShoot();
+	ResponseState Shoot();
+	ResponseState GetShoot();
 protected:
 	ClientHandler clientHandler;	//A hálózati kapcsolat kliens-oldali vezérlõje
 	

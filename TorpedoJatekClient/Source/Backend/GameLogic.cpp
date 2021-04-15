@@ -22,6 +22,14 @@ int GameLogic::Init(Fleet *player,Fleet *enemy,Sea *sea)
 
 	if (!TorpedoGLOBAL::Debug) {
 		ConnectionSetup();
+		playerNum = clientHandler.getPlayerNum();
+		if (playerNum > 2) {
+			std::cout << "Server is FULL!!\nPress enter to exit..." << std::endl;
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cin.get();
+			std::exit(99);
+		}
 		mapSize = clientHandler.getMapSize();
 	}
 
@@ -88,7 +96,8 @@ void GameLogic::PlaceShips()
 			<< "1. - 1tile ships left: " << unplacedShips.at(0) << '\n'
 			<< "2. - 2tile ships left: " << unplacedShips.at(1) << '\n'
 			<< "3. - 3tile ships left: " << unplacedShips.at(2) << '\n'
-			<< "4. - 4tile ships left: " << unplacedShips.at(3) << std::endl;
+			<< "4. - 4tile ships left: " << unplacedShips.at(3) << '\n'
+			<< "0. - Quit game!" << std::endl;
 		
 		std::cin >> choice;
 
@@ -144,8 +153,11 @@ void GameLogic::PlaceShips()
 				std::cout << "You can't place down any more ships of " << choice << " size!" << std::endl;
 			}
 		}
+		else if (choice == 0) {
+			clientHandler.quitGame();
+		}
 		else {
-			std::cout << "You need to choose between 1-4!" << std::endl;
+			std::cout << "You need to choose between 0-4!" << std::endl;
 		}
 
 	} while (std::any_of(unplacedShips.cbegin(), unplacedShips.cend(), [](int i) {return i != 0; }));
@@ -154,67 +166,78 @@ void GameLogic::PlaceShips()
 //Elkezdi a játékmenetet két játékos között
 void GameLogic::StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile> &enemyTiles)
 {
-	playerNum= clientHandler.getPlayerNum();
-	int processableTileState= 10; //statenel 1-piros 2-sarga 3-kek 4-nyert 5-vesztett
+	std::cout << "Waiting for server to start the match." << std::endl;
+	clientHandler.getStartSignal();
+
+	ResponseState processableTileState = ResponseState::START_OF_GAME; //statenel 1-piros 2-sarga 3-kek 4-nyert 5-vesztett
 	if (playerNum == 1) {
 		processableTileState=Shoot();
 	
-		enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(processableTileState);
+		enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
 	}
 	
-	while (processableTileState != 4 && processableTileState != 5) {
+	while (processableTileState != ResponseState::WIN_PLAYER_ONE && processableTileState != ResponseState::WIN_PLAYER_TWO) {
 		processableTileState = GetShoot();
-		myTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(processableTileState);
-		if (processableTileState != 4 && processableTileState != 5) {
+		if (processableTileState != ResponseState::WIN_PLAYER_ONE && processableTileState != ResponseState::WIN_PLAYER_TWO) {
+			myTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
 			processableTileState = Shoot();
-			enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(processableTileState);
+			enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
 		}
 	}
 	
 	clientHandler.~ClientHandler();
 	
-	if ((processableTileState == 4 && playerNum==1) || (processableTileState == 5 && playerNum == 2)) {
+	if ((processableTileState == ResponseState::WIN_PLAYER_ONE && playerNum==1) || (processableTileState == ResponseState::WIN_PLAYER_TWO && playerNum == 2)) {
 		std::cout << "You've won the match!" << std::endl;
 	}
-	else if ((processableTileState == 5 && playerNum == 1)|| (processableTileState == 4 && playerNum == 2)) {
+	else if ((processableTileState == ResponseState::WIN_PLAYER_TWO && playerNum == 1)|| (processableTileState == ResponseState::WIN_PLAYER_ONE && playerNum == 2)) {
 		std::cout << "You've lost the match!" << std::endl;
 	}
 	
 }
 
 //Bekéri a játékostól,hogy hova akar lõni,majd küldi a szervernek
-int GameLogic::Shoot()
+ResponseState GameLogic::Shoot()
 {
 	std::string shoot;
-	int newState;
+	ResponseState newState;
 	while (1) {
 		std::cout << "Where do you want to shoot?(a1-" << static_cast<char>('a'+mapSize-1)
-			<< mapSize <<")" << std::endl;
+			<< mapSize <<")\n(Or enter 0 to quit!)" << std::endl;
 		std::cin >> shoot;
+		if (shoot == "0") {
+			clientHandler.quitGame();
+		}
 		if (CheckString(shoot)) {
 			processableTile = ProcessString(shoot);
-			newState= clientHandler.SendShot(processableTile.getPos());
+			newState = clientHandler.SendShot(processableTile.getPos());
 			break;
 		}
 	}
 	
-	std::cout << "Your shot to " << shoot << " was a " << (newState==2? "miss." : (newState==1? "hit!" : "banger!!")) << std::endl;
+	std::cout << "Your shot to " << shoot << " was a " 
+		<< (newState==ResponseState::CONTINUE_MATCH? "miss." : (newState==ResponseState::HIT_ENEMY_SHIP? "hit!" : "banger!!")) << std::endl;
 
 	return newState;
 }
 
 //Kapunk egy lövést az ellenféltõl
-int GameLogic::GetShoot()
+ResponseState GameLogic::GetShoot()
 {
 	std::string shoot;
-	int newState;
+	ResponseState newState;
 
 	processableTile = PlayTile(clientHandler.ReceiveShot());
 	newState = clientHandler.getRecShotState();
 	
-	shoot = ProcessTile(processableTile.getPos());
-	std::cout << "Enemy's shot to " << shoot << " was a " << (newState == 2 ? "miss." : (newState == 1 ? "hit!" : "banger!!")) << std::endl;
-
+	if (processableTile.getPos().first == '0') {
+		std::cout << "The enemy left the game!" << std::endl;
+	}
+	else {
+		shoot = ProcessTile(processableTile.getPos());
+		std::cout << "Enemy's shot to " << shoot << " was a "
+			<< (newState == ResponseState::CONTINUE_MATCH ? "miss." : (newState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+	}
 	return newState;
 }
 

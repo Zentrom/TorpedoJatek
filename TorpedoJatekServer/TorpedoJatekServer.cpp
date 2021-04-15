@@ -2,6 +2,13 @@
 
 TorpedoJatekServer::TorpedoJatekServer(void)
 {
+	firstClient.playerNum = 1;
+	secondClient.playerNum = 2;
+	temporaryClient.playerNum = 3;
+	clients.at(0) = &firstClient;
+	clients.at(1) = &secondClient;
+	clients.at(2) = &temporaryClient;
+
 	UpdateSettings();
 
 	ServerHandler::Init_SDL();
@@ -61,8 +68,7 @@ int TorpedoJatekServer::Start() {
 		CalcActiveTileCount();
 
 		Init();
-		GetShips(firstClient);
-		GetShips(secondClient);
+		PrepareMatch();
 		StartMatch();
 	}
 
@@ -95,7 +101,7 @@ void TorpedoJatekServer::CalcActiveTileCount()
 //Megnézi,hogy a csatlakozott kliens verziója megegyezik-e a szerverével
 bool TorpedoJatekServer::CheckClientVersion(TCPsocket &connectedSocket) {
 
-	const char* text;
+	const char *text;
 	int textLength;
 
 	TorpedoVersion *clientVersion = new TorpedoVersion;
@@ -116,8 +122,9 @@ bool TorpedoJatekServer::CheckClientVersion(TCPsocket &connectedSocket) {
 
 	std::stringstream response;
 	response << "Version check failed!\n" << "Server version is: v" << serverVersion.majorVersion << '.'
-		<< serverVersion.betaVersion << '.' << serverVersion.alphaVersion << '.' << serverVersion.experimentalVersion;
-	text = response.str().c_str();
+		<< serverVersion.betaVersion << '.' << serverVersion.alphaVersion << serverVersion.experimentalVersion;
+	std::string convertedTemp = response.str();
+	text = convertedTemp.c_str();
 	textLength = strlen(text) + 1;
 	ServerHandler::SendBinary(connectedSocket, new bool(false), sizeof(bool));
 	ServerHandler::SendBinary(connectedSocket, &textLength, sizeof(int));
@@ -138,109 +145,153 @@ void TorpedoJatekServer::Init()
 	ServerHandler::TCP_AddSocket(socketSet, server);
 }
 
-//Azon játékmezõk lekérése a klienstõl,amin van hajó
-void TorpedoJatekServer::GetShips(Client &client)
+//Várunk két kliensre, és elkérjük a mezõket amiken vannak hajóik
+void TorpedoJatekServer::PrepareMatch() 
 {
-	while (successfullyConnectedPlayers<2)
-	{
-		std::cout << "Waiting for incoming connection..." << std::endl;
+	while (firstClient.state != ClientState::IN_MATCH || secondClient.state != ClientState::IN_MATCH) {
+		std::cout << "Waiting for network activity..." << std::endl;
 		if (ServerHandler::CheckSocket(socketSet, -1)) {
 			if (ServerHandler::SocketReady(server)) {
-				client.socket = ServerHandler::TCP_Accept(server);
-				ServerHandler::TCP_AddSocket(socketSet, client.socket);
+				HandleClientState(clients.at(getFirstNotConnectedIndex()));
 			}
-			else {
-				std::cerr << "Firstclient probably left the server!" << std::endl;
-				std::cin.clear();
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-				std::cin.get();
-				std::exit(99);
+			else if (firstClient.state != ClientState::NOT_CONNECTED && ServerHandler::SocketReady(firstClient.socket)) {
+				HandleClientState(clients.at(0));
+			}
+			else if (secondClient.state != ClientState::NOT_CONNECTED && ServerHandler::SocketReady(secondClient.socket)) {
+				HandleClientState(clients.at(1));
 			}
 		}
+	}
+	ServerHandler::SendBinary(firstClient.socket, new int(1), sizeof(int));
+	ServerHandler::SendBinary(secondClient.socket, new int(1), sizeof(int));
+	std::cout << "Both players ready.Starting match!" << std::endl;
+}
 
-		if (!CheckClientVersion(client.socket)) {
-			std::cerr << "Version mismatch at connected Client!/n";
-			SDLNet_TCP_DelSocket(socketSet, client.socket);
-			SDLNet_TCP_Close(client.socket);
-			continue;
+//Tovább visszük egy kliens állapotát
+void TorpedoJatekServer::HandleClientState(Client *client)
+{
+	if (client->state == ClientState::NOT_CONNECTED) {
+		client->socket = ServerHandler::TCP_Accept(server);
+		ServerHandler::TCP_AddSocket(socketSet, client->socket);
+
+		if (!CheckClientVersion(client->socket)) {
+			std::cerr << "Version mismatch at connected Client!\n";
+			SDLNet_TCP_DelSocket(socketSet, client->socket);
+			SDLNet_TCP_Close(client->socket);
+			return;
 		}
 
-		client.name << "Player" << ++successfullyConnectedPlayers;
-		client.playerNum = successfullyConnectedPlayers;
-		client.activeTiles.reserve(activeTileCount);
+		client->name.str("");
+		client->name << "Player" << client->playerNum;
+		if (client->playerNum > 2) {
+			ServerHandler::SendBinary(client->socket, &client->playerNum, sizeof(int));
+			std::cout << "Server is full.Rejected a connection!" << std::endl;
 
-		std::cout << "Sending map size to client..." << std::endl;
-		ServerHandler::SendBinary(client.socket, &mapSize, sizeof(int));
-
-		std::cout << "Receiving shipdata from " << client.name.str() << std::endl;
-		for (int i = 0; i < activeTileCount; i++) {
-			ServerHandler::ReceiveBinary(client.socket, &client.activeTiles[i], sizeof(std::pair<char, int>));
-			//std::cout << client.activeTiles[i].first << client.activeTiles[i].second << ' ';
+			SDLNet_TCP_DelSocket(socketSet, client->socket);
+			SDLNet_TCP_Close(client->socket);
 		}
-		std::cout << "\nReceived ShipData from " << client.name.str() << std::endl;
-		break;
+		else
+		{
+			client->activeTiles.reserve(activeTileCount);
+
+			ServerHandler::SendBinary(client->socket, &client->playerNum, sizeof(int));
+
+			std::cout << "Sending map size to client..." << std::endl;
+			ServerHandler::SendBinary(client->socket, &mapSize, sizeof(int));
+			client->state = ClientState::RECEIVING_SHIPS;
+			std::cout << client->name.str() << " connected." << '(' << getFirstNotConnectedIndex() << "/2)" << std::endl;
+		}
+	}
+	else if (client->state == ClientState::RECEIVING_SHIPS) {
+		ServerHandler::ReceiveBinary(client->socket, &receivedType, sizeof(MessageType));
+		if (receivedType == MessageType::ESTIMATED) {
+			std::cout << "Receiving shipdata from " << client->name.str() << std::endl;
+			for (int i = 0; i < activeTileCount; i++) {
+				ServerHandler::ReceiveBinary(client->socket, &client->activeTiles[i], sizeof(std::pair<char, int>));
+				//std::cout << client.activeTiles[i].first << client.activeTiles[i].second << ' ';
+			}
+			std::cout << "\nReceived ShipData from " << client->name.str() << std::endl;
+			client->state = ClientState::IN_MATCH;
+		}
+		else if (receivedType == MessageType::QUIT) {
+			std::cout << client->name.str() << " has left the server!!" << std::endl;
+			SDLNet_TCP_DelSocket(socketSet, client->socket);
+			SDLNet_TCP_Close(client->socket);
+			client->state = ClientState::NOT_CONNECTED;
+		}
 	}
 }
 
 //Játékmeccs indítása
 void TorpedoJatekServer::StartMatch() {
-	int egy = 1;
-	int ketto = 2;
-	if (firstClient.socket && secondClient.socket) {
-		std::cout << "Sending playernumbers..." << std::endl;
-		ServerHandler::SendBinary(firstClient.socket, &egy, sizeof(int));
-		ServerHandler::SendBinary(secondClient.socket, &ketto, sizeof(int));
 
-		while (firstClient.socket && secondClient.socket && responseState != ResponseState::WIN_PLAYER_ONE
-			&& responseState != ResponseState::WIN_PLAYER_TWO) {
+	while (firstClient.socket && secondClient.socket && responseState != ResponseState::WIN_PLAYER_ONE
+		&& responseState != ResponseState::WIN_PLAYER_TWO) {
 
-			HandleShot(firstClient, secondClient);
-
-			if (firstClient.socket && secondClient.socket && responseState != ResponseState::WIN_PLAYER_ONE
-				&& responseState != ResponseState::WIN_PLAYER_TWO) {
-
+		if (ServerHandler::CheckSocket(socketSet, -1)) {
+			if (ServerHandler::SocketReady(server)) {
+				HandleClientState(&temporaryClient);
+			}
+			else if (ServerHandler::SocketReady(firstClient.socket)) {
+				HandleShot(firstClient, secondClient);
+			}
+			else if (ServerHandler::SocketReady(secondClient.socket)) {
 				HandleShot(secondClient, firstClient);
 			}
 		}
-
-		if (responseState == ResponseState::WIN_PLAYER_ONE) {
-			std::cout << firstClient.name.str() << " won the match!" << std::endl;
-		}
-		else if (responseState == ResponseState::WIN_PLAYER_TWO) {
-			std::cout << secondClient.name.str() << " won the match!" << std::endl;
-		}
-
-		SDLNet_TCP_DelSocket(socketSet, firstClient.socket);
-		SDLNet_TCP_DelSocket(socketSet, secondClient.socket);
-		SDLNet_TCP_DelSocket(socketSet, server);
-		SDLNet_FreeSocketSet(socketSet);
-
-		SDLNet_TCP_Close(firstClient.socket);
-		SDLNet_TCP_Close(secondClient.socket);
-		SDLNet_TCP_Close(server);
-
-		std::cout << "Press enter to exit..." << std::endl;
-		std::cin.clear();
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		std::cin.get();
 	}
+
+	if (responseState == ResponseState::WIN_PLAYER_ONE) {
+		std::cout << firstClient.name.str() << " won the match!" << std::endl;
+	}
+	else if (responseState == ResponseState::WIN_PLAYER_TWO) {
+		std::cout << secondClient.name.str() << " won the match!" << std::endl;
+	}
+
+	SDLNet_TCP_DelSocket(socketSet, firstClient.socket);
+	SDLNet_TCP_DelSocket(socketSet, secondClient.socket);
+	SDLNet_TCP_DelSocket(socketSet, server);
+	SDLNet_FreeSocketSet(socketSet);
+
+	SDLNet_TCP_Close(firstClient.socket);
+	SDLNet_TCP_Close(secondClient.socket);
+	SDLNet_TCP_Close(server);
+
+	std::cout << "Press enter to exit..." << std::endl;
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	std::cin.get();
 }
 
 //Egy lövés lekezelése
 void TorpedoJatekServer::HandleShot(Client &shooter, Client &taker)
-{
-	ServerHandler::ReceiveBinary(shooter.socket, &targetTile, sizeof(std::pair<char, int>));
+{	
+	ServerHandler::ReceiveBinary(shooter.socket, &receivedType, sizeof(MessageType));
+	if (receivedType == MessageType::ESTIMATED) {
+		ServerHandler::ReceiveBinary(shooter.socket, &targetTile, sizeof(std::pair<char, int>));
 
-	std::cout << shooter.name.str() << " shot at " << targetTile.first << targetTile.second << std::endl;
-	responseState = ProcessTiles(taker);
+		std::cout << shooter.name.str() << " shot at " << targetTile.first << targetTile.second << std::endl;
+		responseState = ProcessTiles(taker);
 
-	ServerHandler::SendBinary(shooter.socket, &responseState, sizeof(ResponseState));
-	ServerHandler::SendBinary(taker.socket, &targetTile, sizeof(std::pair<char, int>));
-	ServerHandler::SendBinary(taker.socket, &responseState, sizeof(ResponseState));
+		ServerHandler::SendBinary(shooter.socket, &responseState, sizeof(ResponseState));
+		ServerHandler::SendBinary(taker.socket, &targetTile, sizeof(std::pair<char, int>));
+		ServerHandler::SendBinary(taker.socket, &responseState, sizeof(ResponseState));
+	}
+	else if (receivedType == MessageType::QUIT) {
+		std::cout << shooter.name.str() << " left the game!!" << std::endl;
+		if (shooter.playerNum == 1) {
+			responseState = ResponseState::WIN_PLAYER_TWO;
+		}
+		else if (shooter.playerNum == 2) {
+			responseState = ResponseState::WIN_PLAYER_ONE;
+		}
+		ServerHandler::SendBinary(taker.socket, new std::pair<char,int>('0',0), sizeof(std::pair<char, int>));
+		ServerHandler::SendBinary(taker.socket, &responseState, sizeof(ResponseState));
+	}
 }
 
 //A célzott játékmezõ lekezelése,és egy válaszállapot visszaadása
-TorpedoJatekServer::ResponseState TorpedoJatekServer::ProcessTiles(Client &clientTiles)
+ResponseState TorpedoJatekServer::ProcessTiles(Client &clientTiles)
 {
 	ResponseState resultState=ResponseState::CONTINUE_MATCH;
 	int allZeros = true;
@@ -271,3 +322,12 @@ TorpedoJatekServer::ResponseState TorpedoJatekServer::ProcessTiles(Client &clien
 	return resultState;
 }
 
+//Visszaadja az elsõ nem csatlakozott kliens indexet
+int TorpedoJatekServer::getFirstNotConnectedIndex()
+{
+	for (int i = 0; i < clients.size();i++) {
+		if (clients.at(i)->state == ClientState::NOT_CONNECTED) {
+			return i;
+		}
+	}
+}
