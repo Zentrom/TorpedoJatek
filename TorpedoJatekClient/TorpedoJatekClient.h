@@ -1,14 +1,14 @@
 #pragma once
 
+#include "GameInstance.h"
+#include "../CommonSource/TorpedoVersion.h"
+
 #include <GL/glew.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
 
 #include <iostream>
 #include <sstream>
-
-#include "GameInstance.h"
-#include "../CommonSource/TorpedoVersion.h"
 
 //Kliens fõosztály
 class TorpedoJatekClient

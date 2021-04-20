@@ -1,14 +1,14 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include "../Globals.h"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
 #include "../../Utility/gCamera.h"
 
-#include "../Globals.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
 
 //Tenger mezõ
 class SeaTile
@@ -19,7 +19,7 @@ public:
 
 	void Init();
 	void Draw(gCamera &camera, gShaderProgram &sh_playtile);
-	void setTranslate(glm::vec3 trans);
+	void setTranslate(const glm::vec3 &trans);
 
 protected:
 

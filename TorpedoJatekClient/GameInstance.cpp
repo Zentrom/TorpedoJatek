@@ -12,12 +12,13 @@ GameInstance::GameInstance(void)
 
 GameInstance::~GameInstance(void)
 {
+	SDL_WaitThread(inputThread, nullptr);
 }
 
 //Játékmenet inicializálása
 bool GameInstance::Init()
 {
-	mapSize = gameLogic.Init(&playerFleet,&enemyFleet,&sea);
+	mapSize = gameLogic.Init(&playerFleet, &enemyFleet, &sea);
 	gameLogic.InitGame();
 
 	if (!TorpedoGLOBAL::Debug) {
@@ -30,7 +31,7 @@ bool GameInstance::Init()
 
 	mountain.Init();
 	terrain.Init();
-	
+
 	sh_dirLight.AttachShader(GL_VERTEX_SHADER, "Shaders/dirLight.vert");
 	sh_dirLight.AttachShader(GL_FRAGMENT_SHADER, "Shaders/dirLight.frag");
 
@@ -80,11 +81,11 @@ void GameInstance::Clean()
 //A thread hívja meg ezt a függvényt,hogy lehessen meccs közbe gépelni consoleba
 int GameInstance::threadFunction(void *ptr)
 {
-	GameInstance* pointr= static_cast<GameInstance *>(ptr);
-
-	pointr->gameLogic.StartMatch(pointr->sea.getTiles(true) ,pointr->sea.getTiles(false));
-
-	std::cout << "The match is over." << std::endl;
+	if (ptr) {
+		GameInstance* pointr = static_cast<GameInstance *>(ptr);
+		pointr->gameLogic.StartMatch(pointr->sea.getTiles(true), pointr->sea.getTiles(false));
+		std::cout << "The match is over." << std::endl;
+	}
 
 	return 1;
 
@@ -131,10 +132,10 @@ void GameInstance::Render()
 	//m_program.SetUniform("is_diffuse", is_diffuse);
 	//m_program.SetUniform("is_specular", is_specular);
 
-	mountain.Draw(cam_mainCamera,sh_dirLight);
-	terrain.Draw(cam_mainCamera,sh_dirLight);
+	mountain.Draw(cam_mainCamera, sh_dirLight);
+	terrain.Draw(cam_mainCamera, sh_dirLight);
 
-	playerFleet.Draw(cam_mainCamera,sh_dirLight);
+	playerFleet.Draw(cam_mainCamera, sh_dirLight);
 	enemyFleet.Draw(cam_mainCamera, sh_dirLight);
 	sh_dirLight.Off();
 

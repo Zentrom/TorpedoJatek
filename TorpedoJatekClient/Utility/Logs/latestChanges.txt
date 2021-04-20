@@ -1,6 +1,5 @@
-v0.0.2a-Server update
+v0.0.2b-Note-based Refactoring
 --------------------------------------------------------------------------------
--Server can now handle connections in parallel,while still being sequential.
--Server will now reject a connection if the server is full.
--Client can now quit the game,and it will notify the server.
--Fixed server sending wrong text on version mismatch.
+-Refactoring based on the c++ and opengl notes i made.
+-Server now handles client abort or disconnection better.
+-Testing and fixing.

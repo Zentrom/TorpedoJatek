@@ -21,7 +21,7 @@ SDLNet_SocketSet ServerHandler::AllocSocketSet(int maxSockets)
 
 //Socket hozzáadása egy csoporthoz
 //Ez csak akkor dobhat hibát,ha nem fér el a socketsetben a socket
-void ServerHandler::TCP_AddSocket(SDLNet_SocketSet set, TCPsocket socket) 
+void ServerHandler::TCP_AddSocket(SDLNet_SocketSet &set, TCPsocket &socket)
 {
 	if (SDLNet_TCP_AddSocket(set, socket) == -1) {
 		std::cerr << "SDLNet_TCP_AddSocket" << SDLNet_GetError() << std::endl;
@@ -29,7 +29,7 @@ void ServerHandler::TCP_AddSocket(SDLNet_SocketSet set, TCPsocket socket)
 }
 
 //Megnézi,hogy bármely socketen a csoportba,van-e aktivitás
-bool ServerHandler::CheckSocket(SDLNet_SocketSet set, Uint32 timeout)
+bool ServerHandler::CheckSocket(SDLNet_SocketSet &set, Uint32 timeout)
 {
 	if (SDLNet_CheckSockets(set, timeout) == -1) {
 		perror("SDLNet_CheckSockets");
@@ -41,7 +41,7 @@ bool ServerHandler::CheckSocket(SDLNet_SocketSet set, Uint32 timeout)
 }
 
 //Van-e aktivitás egy socketen
-bool ServerHandler::SocketReady(TCPsocket socket)
+bool ServerHandler::SocketReady(TCPsocket &socket)
 {
 	if (SDLNet_SocketReady(socket)) {
 		return true;
@@ -53,7 +53,24 @@ bool ServerHandler::SocketReady(TCPsocket socket)
 }
 
 //Kapcsolat fogadása egy szerversocketen
-TCPsocket ServerHandler::TCP_Accept(TCPsocket serverSocket)
+TCPsocket ServerHandler::TCP_Accept(TCPsocket &serverSocket)
 {
 	return SDLNet_TCP_Accept(serverSocket);
+}
+
+MessageType ServerHandler::ReceiveMessageType(TCPsocket &socket)
+{
+	int receivedBytes;
+	MessageType result;
+	for (int retryCount = 0; retryCount < maxRetryCountOnError; retryCount++) {
+		receivedBytes = SDLNet_TCP_Recv(socket, &result, sizeof(MessageType));
+		if (receivedBytes <= 0) {
+			printRetry(retryCount, "Receiving message type");
+			SDL_Delay(delayTime);
+		}
+		else {
+			return result;
+		}
+	}
+	return MessageType::QUIT;
 }

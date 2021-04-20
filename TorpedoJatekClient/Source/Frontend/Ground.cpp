@@ -6,7 +6,7 @@ Ground::Ground(void)
 
 }
 
-Ground::Ground(glm::vec3 terrainTranslate)
+Ground::Ground(const glm::vec3 &terrainTranslate)
 {
 	ground_translate += terrainTranslate;
 }
@@ -20,20 +20,20 @@ void Ground::Init()
 {
 	vb_ground.AddAttribute(0, 3);
 	vb_ground.AddAttribute(1, 3);
-	
+
 	vb_ground.AddData(0, -0.5f, 0, -0.5f);
 	vb_ground.AddData(0, 0.5f, 0, -0.5f);
 	vb_ground.AddData(0, -0.5f, 0, 0.5f);
 	vb_ground.AddData(0, 0.5f, 0, 0.5f);
-	
+
 	vb_ground.AddData(1, 0.6f, 0.6f, 0);
 	vb_ground.AddData(1, 0.6f, 0.6f, 0);
 	vb_ground.AddData(1, 0.6f, 0.6f, 0);
 	vb_ground.AddData(1, 0.6f, 0.6f, 0);
-	
+
 	vb_ground.AddIndex(1, 0, 2);
 	vb_ground.AddIndex(1, 2, 3);
-	
+
 	vb_ground.InitBuffers();
 }
 

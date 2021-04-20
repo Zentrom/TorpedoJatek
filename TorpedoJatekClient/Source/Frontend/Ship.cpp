@@ -6,29 +6,25 @@ Ship::Ship(void)
 }
 
 //Ez a csatahajónak fenntartott konstruktor
-Ship::Ship(bool isBattleShip,bool ally,glm::vec3 battleShipTranslate)
+Ship::Ship(bool isBattleShip, bool ally, const glm::vec3 &battleShipTranslate) : isAlly(ally)
 {
-	isAlly = ally;
 	Init(isAlly);
-
 	ship_translate = glm::vec3((ally ? -1 : 1), 1, 1) * battleShipTranslate;
 }
 
-Ship::Ship(std::vector<PlayTile*> tiles,bool ally)
+Ship::Ship(const std::vector<PlayTile*> &tiles, bool ally) : isAlly(ally), playTiles(tiles)
 {
-	isAlly = ally;
 	Init(isAlly);
 
-	playTiles = tiles;
-
-	glm::vec3 frontTranslation = tiles[0]->getTranslate();
-	glm::vec3 backTranslation = tiles[tiles.size() - 1]->getTranslate();
-	ship_translate = (frontTranslation + backTranslation) / 2.0f;
-
-	ship_scale = glm::vec3(1.6f*tiles.size(), 0.6f + 0.4f*tiles.size(), 0.6f + 0.25f*tiles.size()) * TorpedoGLOBAL::Scale;
-	if (tiles.size() > 1) {
-		if (tiles[0]->getPos().first != tiles[1]->getPos().first) {
-			ship_rotate = glm::half_pi<float>();
+	if (tiles[0]) {
+		glm::vec3 frontTranslation = tiles[0]->getTranslate();
+		glm::vec3 backTranslation = tiles[tiles.size() - 1]->getTranslate();
+		ship_translate = (frontTranslation + backTranslation) / 2.0f;
+		ship_scale = glm::vec3(1.6f*tiles.size(), 0.6f + 0.4f*tiles.size(), 0.6f + 0.25f*tiles.size()) * TorpedoGLOBAL::Scale;
+		if (tiles.size() > 1) {
+			if (tiles[0]->getPos().first != tiles[1]->getPos().first) {
+				ship_rotate = glm::half_pi<float>();
+			}
 		}
 	}
 }
@@ -42,7 +38,7 @@ void Ship::Init(bool isAlly)
 {
 	vb_ship.AddAttribute(0, 3);
 	vb_ship.AddAttribute(1, 3);
-	   
+
 	vb_ship.AddData(0, -0.5f, -0.5f, 0.5f);
 	vb_ship.AddData(0, 0.5f, -0.5f, 0.5f);
 	vb_ship.AddData(0, -0.5f, 0.5f, 0.5f);
@@ -51,7 +47,7 @@ void Ship::Init(bool isAlly)
 	vb_ship.AddData(0, 0.5f, -0.5f, -0.5f);
 	vb_ship.AddData(0, -0.5f, 0.5f, -0.5f);
 	vb_ship.AddData(0, 0.5f, 0.5f, -0.5f);
-	
+
 	if (!isAlly) {
 		vb_ship.AddData(1, 1.0f, 0, 0);
 		vb_ship.AddData(1, 1.0f, 0, 0);
@@ -72,7 +68,7 @@ void Ship::Init(bool isAlly)
 		vb_ship.AddData(1, 0, 1.0f, 0);
 		vb_ship.AddData(1, 0, 1.0f, 0);
 	}
-	   
+
 	vb_ship.AddIndex(1, 2, 0);
 	vb_ship.AddIndex(1, 3, 2);
 	vb_ship.AddIndex(5, 3, 1);
@@ -85,7 +81,7 @@ void Ship::Init(bool isAlly)
 	vb_ship.AddIndex(3, 7, 6);
 	vb_ship.AddIndex(5, 0, 4);
 	vb_ship.AddIndex(5, 1, 0);
-	   
+
 	vb_ship.InitBuffers();
 }
 
@@ -109,7 +105,7 @@ void Ship::Draw(gCamera &camera, gShaderProgram &sh_program)
 	vb_ship.Off();
 }
 
-std::vector<PlayTile*> Ship::getPlayTiles()
+std::vector<PlayTile*>& Ship::getPlayTiles()
 {
 	return playTiles;
 }

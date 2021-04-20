@@ -1,6 +1,5 @@
-#include <iostream>
 #include "TorpedoJatekClient.h"
-
+#include <iostream>
 
 int main(int argc, char* args[]) {
 
@@ -8,7 +7,7 @@ int main(int argc, char* args[]) {
 		<< ") with compiler value " << __cplusplus << std::endl;
 
 	TorpedoJatekClient torpedoJatek;
-	
+
 	return torpedoJatek.Start();
 
 }

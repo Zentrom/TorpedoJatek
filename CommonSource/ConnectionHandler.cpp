@@ -41,7 +41,7 @@ TCPsocket ConnectionHandler::TCP_Open(IPaddress *ip)
 }
 
 //Szöveg fogadása hálózaton
-void ConnectionHandler::ReceiveText(TCPsocket &socket,void *data, const int length)
+void ConnectionHandler::ReceiveText(TCPsocket &socket, void *data, const int length)
 {
 	int receivedBytes;
 	for (int retryCount = 0; retryCount < maxRetryCountOnError; retryCount++) {
@@ -95,7 +95,7 @@ void ConnectionHandler::SendText(TCPsocket &socket, const char *text, const int 
 void ConnectionHandler::SendBinary(TCPsocket &socket, const void *source, const int size)
 {
 	int sentBytes;
-	for (int retryCount = 0; retryCount < maxRetryCountOnError;retryCount++){
+	for (int retryCount = 0; retryCount < maxRetryCountOnError; retryCount++) {
 		sentBytes = SDLNet_TCP_Send(socket, source, size);
 		if (sentBytes < size) {
 			printRetry(retryCount, "Sending binary data");
@@ -109,10 +109,10 @@ void ConnectionHandler::SendBinary(TCPsocket &socket, const void *source, const 
 }
 
 //Kiirjuk hogy újra próbálkozunk
-void ConnectionHandler::printRetry(int currentRetry, char currentAction[]) 
+void ConnectionHandler::printRetry(int currentRetry, char currentAction[])
 {
 	std::cout << "Losing connection while: " << currentAction << '\n'
-		<< "Retrying!(" << currentRetry+1 << '/' << maxRetryCountOnError << ')' << std::endl;
+		<< "Retrying!(" << currentRetry + 1 << '/' << maxRetryCountOnError << ')' << std::endl;
 }
 
 //Nagyobb hiba esetén kiirjuk és kilépünk

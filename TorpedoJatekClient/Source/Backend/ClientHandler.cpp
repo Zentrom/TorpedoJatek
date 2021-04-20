@@ -17,14 +17,14 @@ ClientHandler::~ClientHandler(void)
 
 //Csatlakozik a szerverhez,elküldi a kliens verziószámát,kiírja hogy egyezik-e
 //Visszaadja,hogy egyeztek-e a verziók
-bool ClientHandler::Init(std::string ipString,int portNr)
+bool ClientHandler::Init(std::string ipString, int portNr)
 {
-	ResolveHost(&ip, ipString.c_str(), portNr);
+	ResolveHost(&ip, ipString.c_str(), static_cast<Uint16>(portNr));
 
 	std::cout << "Connecting to server..." << std::endl;
 	mySocket = TCP_Open(&ip);
 	std::cout << "Connected!" << std::endl;
-	
+
 	std::cout << "Sending client version..." << std::endl;
 	SendBinary(mySocket, &clientVersion, sizeof(TorpedoVersion));
 
@@ -41,7 +41,7 @@ bool ClientHandler::Init(std::string ipString,int portNr)
 }
 
 //Elkéri a szervertõl a játékPálya méretét
-int ClientHandler::getMapSize() {
+int ClientHandler::GetMapSize() {
 
 	std::cout << "Receiving map size from server..." << std::endl;
 	int result;
@@ -51,27 +51,36 @@ int ClientHandler::getMapSize() {
 }
 
 //Elküldi a szervernek azokat a játékmezõket,amin hajója van a kliensnek.
-void ClientHandler::SendFleet(std::vector<std::pair<char,int>> activeTilePositions)
+void ClientHandler::SendFleet(const std::vector<std::pair<char, int>> &activeTilePositions)
 {
 	std::cout << "Sending activetiles..." << std::endl;
 	SendBinary(mySocket, &sentMessageType, sizeof(MessageType));
-	for (int i = 0; i < activeTilePositions.size(); i++) {
-		SendBinary(mySocket, &activeTilePositions[i], sizeof(std::pair<char, int>));
+	for (std::pair<char, int> activeTilePos : activeTilePositions) {
+		SendBinary(mySocket, &activeTilePos, sizeof(std::pair<char, int>));
 	}
-	std::cout<<"ShipData sent to server."<<std::endl;
+	std::cout << "ShipData sent to server." << std::endl;
 }
 
 //Lekéri a szervertõl,hogy mi kezdünk-e
-int ClientHandler::getPlayerNum()
+int ClientHandler::GetPlayerNum()
 {
 	int playerNum = 1;
 	ReceiveBinary(mySocket, &playerNum, sizeof(int));
-	std::cout << "You are player number " << playerNum << std::endl;
+	if (playerNum > 2) {
+		std::cout << "Server is FULL!!\nPress enter to exit..." << std::endl;
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cin.get();
+		std::exit(99);
+	}
+	else {
+		std::cout << "You are player number " << playerNum << std::endl;
+	}
 	return playerNum;
 }
 
 //Vár a szerverre,hogy jelezzen,hogy indulhat a meccs
-void ClientHandler::getStartSignal()
+void ClientHandler::GetStartSignal()
 {
 	int startSignal;
 	ReceiveBinary(mySocket, &startSignal, sizeof(int));
@@ -80,7 +89,7 @@ void ClientHandler::getStartSignal()
 
 //Elküldi a szervernek,hogy mely mezõkoordinátára lövünk
 //Visszaadja a lövésünk eredményét
-ResponseState ClientHandler::SendShot(std::pair<char,int> tile)
+ResponseState ClientHandler::SendShot(const std::pair<char, int> &tile)
 {
 	stateResult = ResponseState::START_OF_GAME;
 
@@ -93,9 +102,9 @@ ResponseState ClientHandler::SendShot(std::pair<char,int> tile)
 }
 
 //Visszaadja hogy az ellenfél hova lõtt
-std::pair<char,int> ClientHandler::ReceiveShot()
+std::pair<char, int> ClientHandler::ReceiveShot()
 {
-	std::pair<char,int> tileNr('0',0);
+	std::pair<char, int> tileNr('0', 0);
 
 	ReceiveBinary(mySocket, &tileNr, sizeof(std::pair<char, int>));
 

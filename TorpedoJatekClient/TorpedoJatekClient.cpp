@@ -62,12 +62,12 @@ int TorpedoJatekClient::Init()
 //SDL-el lekér egy ablakot a Windowstól
 int TorpedoJatekClient::CreateGameWindow()
 {
-	
-	window_title << "TorpedoJatek v" << clientVersion.majorVersion << "." << clientVersion.betaVersion 
+
+	window_title << "TorpedoJatek v" << clientVersion.majorVersion << "." << clientVersion.betaVersion
 		<< "." << clientVersion.alphaVersion << clientVersion.experimentalVersion;
 
 	win = SDL_CreateWindow(window_title.str().c_str(),
-		rightOffset, downOffset, widthWindow, heightWindow,flagsWindow);
+		rightOffset, downOffset, widthWindow, heightWindow, flagsWindow);
 
 	if (win == 0)
 	{
@@ -132,7 +132,7 @@ int TorpedoJatekClient::StartGameInstance()
 
 	float frmtime = 1000.0f / fpsLimit;
 	float frmMod = 0;
-	
+
 	while (!quit)
 	{
 		while (SDL_PollEvent(&ev))
@@ -170,7 +170,7 @@ int TorpedoJatekClient::StartGameInstance()
 				break;
 			}
 		}
-		
+
 		//FPS limiter
 		if (!enableVsync) {
 			if (enableFpsLimit) {
@@ -182,7 +182,7 @@ int TorpedoJatekClient::StartGameInstance()
 					SDL_GL_SwapWindow(win);
 					++frame_count;
 					last_render_time = SDL_GetTicks();
-					frmMod = (ftime_diff+frmMod) - frmtime;
+					frmMod = (ftime_diff + frmMod) - frmtime;
 				}
 			}
 			else {
@@ -206,7 +206,7 @@ int TorpedoJatekClient::StartGameInstance()
 		if (time_diff >= 1000)
 		{
 			window_title.str(std::string());
-			window_title << "TorpedoJatek v" << clientVersion.majorVersion << "." << clientVersion.betaVersion 
+			window_title << "TorpedoJatek v" << clientVersion.majorVersion << "." << clientVersion.betaVersion
 				<< "." << clientVersion.alphaVersion << clientVersion.experimentalVersion
 				<< " | FPS:" << frame_count;
 			SDL_SetWindowTitle(win, window_title.str().c_str());

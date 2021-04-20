@@ -55,7 +55,7 @@ void SeaTile::Draw(gCamera &camera, gShaderProgram &sh_playtile)
 	//sh_playtile.SetUniform("world", matWorld);
 	//sh_playtile.SetUniform("worldIT", matWorldIT);
 	sh_playtile.SetUniform("MVP", mvp);
-	sh_playtile.SetUniform("tile_state", glm::vec3(0,0,1));
+	sh_playtile.SetUniform("tile_state", glm::vec3(0, 0, 1));
 
 	//m_program.SetTexture("texImage", 0, m_groundTextureID);
 	//m_program.SetTexture("texNormal", 1, m_groundNormalMapID);
@@ -66,7 +66,7 @@ void SeaTile::Draw(gCamera &camera, gShaderProgram &sh_playtile)
 
 }
 
-void SeaTile::setTranslate(glm::vec3 trans)
+void SeaTile::setTranslate(const glm::vec3 &trans)
 {
 	seatile_translate = trans;
 }

@@ -4,3 +4,15 @@ whereas UDP is connectionless. TCP also ensures that all packets reach the desti
 TCP also ensures that packets are received in the same order as sent.
 UDP:https://www.libsdl.org/projects/SDL_net/docs/SDL_net_25.html#SEC25
 
+Saját pair osztály std::pair-bõl örökölve?
+operator<< overloading?
+
+Capture the cursor in beta!
+SeaTile and Ground generation with geometry shader?
+Partition the scene on CPU side,and only draw SeaTiles and Ground that are visible?
+
+std:algorithm-eket használni?
+Time measureing with chrono?
+Try-catch exception handling with stack unwinding?
+Move-asignments?
+std::cin-el kapcsolatos dolgok learnCpp jegyzetben.

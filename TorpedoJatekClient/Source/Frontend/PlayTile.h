@@ -7,22 +7,21 @@ class PlayTile : public SeaTile
 {
 public:
 	PlayTile(void);
-	PlayTile(std::pair<char, int> pos);
+	PlayTile(const std::pair<char, int> &pos);
 	~PlayTile(void);
 
-	void Draw(gCamera &camera,gShaderProgram &sh_playtile);
-	void setState(int newState);
-	void setIndex(int newIndex);
-	void setUsed(bool used);
+	void Draw(gCamera &camera, gShaderProgram &sh_playtile);
+	void setState(int newState = 3);
+	void setIndex(int newIndex = 0);
+	void setUsed(bool used = true);
 
-	int getIndex();
-	std::pair<char, int> getPos();
-	bool isUsed();
-
-	glm::vec3 getTranslate();
+	int getIndex() const;
+	std::pair<char, int> getPos() const;
+	bool isUsed() const;
+	glm::vec3 getTranslate() const;
 
 private:
-	
+
 	int index; //Egy játékos játékmezõi közül hányas indexû
 	std::pair<char, int> position;	//Koordináta (pl. A7)
 	bool usedTile = false;	//Van-e hajó rajta

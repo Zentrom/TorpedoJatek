@@ -1,6 +1,6 @@
 Megoldani egy tényleges visszakapcsolódást a serverre,lementett állapottal, 60sec timeout.EZT majd beta körül.
-std::exit()-ektõl lehetõleg megszabadulni.
-std::cin.get()-el még mindig vannak problémák.
+std::exit()-ektõl lehetõleg megszabadulni. Beta verziónál.
+std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
 
 OpenAl vagy SDLAudio(havan 3d) hangoknak
 Freetype vagy SDL rtf/ttf betuknek
@@ -9,8 +9,8 @@ CHECKSOCKET clientOldalon megfontolandó majd, 3D pickingtõl kezdve.
 Addig Threadet elõbb is el lehetne inditani.(ez elmarad)
 
 Terraint,Mountain majd átkell dolgozni,mikor végtelenített kirajzolás lesz 003ban.(Mapsize-független legyen,stb)
-Jegyzetrefaktoring marad 003-ra.
 
 Hogy jelenjenek meg az ellenfél hajói?
 Ha piros mezõre lövünk,az maradjon piros.
 Ha zöld hajó minden pontja kilõve,akkor tünjön el.
+

@@ -1,14 +1,14 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include "Ground.h"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
 #include "../../Utility/gCamera.h"
 
-#include "Ground.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
 
 //A föld osztálya(darabokat összegyûjti)
 class Terrain
@@ -27,8 +27,7 @@ protected:
 	//A terrainscale az feldarabolja az ugyanolyan nagy négyzetet
 	const int terrainScale = 3;
 	const int terrainMultiplier = terrainScale*terrainScale; //négyzetszám legyen
-	const int terrainSize = mapSize*mapSize*terrainMultiplier;
-	Ground* myGrounds;
-	//std::array<Ground, terrainSize> *myGrounds = new std::array<Ground, 7>();
+	const int terrainSize = mapSize*mapSize*terrainMultiplier; //hány darab földdarab legyen
+	std::vector<Ground> myGrounds; //földdarabok
 
 };

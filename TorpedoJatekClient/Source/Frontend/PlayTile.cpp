@@ -5,9 +5,8 @@ PlayTile::PlayTile(void)
 {
 }
 
-PlayTile::PlayTile(std::pair<char, int> pos)
+PlayTile::PlayTile(const std::pair<char, int> &pos) : position(pos)
 {
-	position = pos;
 }
 
 PlayTile::~PlayTile(void)
@@ -15,7 +14,7 @@ PlayTile::~PlayTile(void)
 }
 
 //Egy játékmezõ kirajzolása
-void PlayTile::Draw(gCamera &camera,gShaderProgram &sh_playtile)
+void PlayTile::Draw(gCamera &camera, gShaderProgram &sh_playtile)
 {
 
 	glm::mat4 matWorld = glm::translate(seatile_translate) * glm::rotate(seatile_rotate, seatile_rotate_angle) * glm::scale(seatile_scale);
@@ -71,22 +70,22 @@ void PlayTile::setUsed(bool used)
 	usedTile = used;
 }
 
-int PlayTile::getIndex()
+int PlayTile::getIndex() const
 {
 	return index;
 }
 
-std::pair<char, int> PlayTile::getPos()
+std::pair<char, int> PlayTile::getPos() const
 {
 	return position;
 }
 
-bool PlayTile::isUsed()
+bool PlayTile::isUsed() const
 {
 	return usedTile;
 }
 
-glm::vec3 PlayTile::getTranslate()
+glm::vec3 PlayTile::getTranslate() const
 {
 	return seatile_translate;
 }

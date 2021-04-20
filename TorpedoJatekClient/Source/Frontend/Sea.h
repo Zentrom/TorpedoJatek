@@ -1,14 +1,14 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include "PlayTile.h"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
 #include "../../Utility/gCamera.h"
 
-#include "PlayTile.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
 
 //Tenger osztálya-2játékos játékmezõi+többi tengermezõ
 class Sea
@@ -17,14 +17,14 @@ public:
 	Sea(void);
 	~Sea(void);
 
-	void Init(int inMapSize);
+	void Init(int inMapSize = 7);
 	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
-	std::vector<PlayTile>& getTiles(bool ally);
+	std::vector<PlayTile>& getTiles(bool ally = true);
 
 protected:
 
-	glm::vec3 calcTranslate(int rowNr,int columnNr,bool ally);
+	glm::vec3 calcTranslate(int rowNr, int columnNr, bool ally = true) const;
 
 	int mapSize; //játékPálya mérete
 	int tileCount;	//játékMezõk száma

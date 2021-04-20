@@ -1,17 +1,18 @@
 #pragma once
 
-#include <iostream>
+#include "Source\ServerHandler.h"
+#include "../CommonSource/TorpedoVersion.h"
+#include "../CommonSource/CommonGlobals.h"
+
 #include <SDL.h>
 #include <SDL_net.h>
+
+#include <iostream>
 #include <cstring>
 #include <utility>
 #include <vector>
 #include <array>
 #include <sstream>
-
-#include "Source\ServerHandler.h"
-#include "../CommonSource/TorpedoVersion.h"
-#include "../CommonSource/CommonGlobals.h"
 
 //Szerver fõosztálya
 class TorpedoJatekServer
@@ -36,7 +37,8 @@ private:
 	enum class ClientState {
 		NOT_CONNECTED,
 		RECEIVING_SHIPS,
-		IN_MATCH,
+		IN_MATCH_SHOOTER,
+		IN_MATCH_TAKER,
 	};
 
 	//Kliensadatok
@@ -46,8 +48,8 @@ private:
 		TCPsocket socket;	//kapcsolati socket
 		std::vector<std::pair<char, int>> activeTiles;	//Mely mezõkoordinátáin vannak hajói
 		ClientState state = ClientState::NOT_CONNECTED; //Az elején a kliens még nem csatlakozott
-	}firstClient,secondClient,temporaryClient;
-	std::array<Client*, 3> clients;
+	}firstClient, secondClient, temporaryClient;
+	std::array<Client*, 3> clients; //Csatlakozott kliensek pointer tömbje
 
 	void CalcActiveTileCount();
 	void Init();
@@ -58,7 +60,7 @@ private:
 	bool CheckClientVersion(TCPsocket &connectedSocket);
 	ResponseState ProcessTiles(Client &clientTiles);
 	void HandleShot(Client &shooter, Client &taker);
-	int getFirstNotConnectedIndex();
+	int getFirstNotConnectedIndex() const;
 
 	IPaddress ip; //ip osztálya
 	Uint16 port = 27015; //portszám
@@ -71,9 +73,10 @@ private:
 	ResponseState responseState = ResponseState::START_OF_GAME; //Mi a játék állapota
 	MessageType receivedType; //Elvárt üzenetet küld-e a kliens
 
+	std::string input; //Inputot tároló string
 	int mapSize = 7; //játékPálya mérete
 	int activeTileCount = 0; //hány hajót tartalmazó mezõ van
-	std::pair<char,int> targetTile; //melyik mezõkoordinátára lõtt valaki
+	std::pair<char, int> targetTile; //melyik mezõkoordinátára lõtt valaki
 
 	const TorpedoVersion serverVersion; //szerver verziószáma
 

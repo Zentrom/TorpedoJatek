@@ -1,31 +1,24 @@
 #pragma once
 
-#include <math.h>
-
-// GLEW
-#include <GL/glew.h>
-
-// SDL
-#include <SDL.h>
-#include <SDL_opengl.h>
-#include <SDL_thread.h>
-
-// GLM
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
-
-#include "Utility/gCamera.h"
-#include "Utility/gShaderProgram.h"
-#include "Utility/gVertexBuffer.h"
-#include "Utility/Mesh_OGL3.h"
-
 #include "Source/Frontend/Mountain.h"
 #include "Source/Frontend/Fleet.h"
 #include "Source/Frontend/Terrain.h"
 #include "Source/Frontend/Sea.h"
-
 #include "Source/BackEnd/GameLogic.h"
+
+#include "Utility/gCamera.h"
+#include "Utility/gShaderProgram.h"
+#include "Utility/gVertexBuffer.h"
+
+#include <GL/glew.h>
+#include <SDL.h>
+#include <SDL_opengl.h>
+#include <SDL_thread.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
+
+#include <math.h>
 
 //Játékmenet osztálya
 class GameInstance
@@ -42,13 +35,13 @@ public:
 	void Update();
 	void Render();
 
-	void KeyboardDown(SDL_KeyboardEvent&);
-	void KeyboardUp(SDL_KeyboardEvent&);
-	void MouseMove(SDL_MouseMotionEvent&);
-	void MouseDown(SDL_MouseButtonEvent&);
-	void MouseUp(SDL_MouseButtonEvent&);
-	void MouseWheel(SDL_MouseWheelEvent&);
-	void Resize(int, int);
+	void KeyboardDown(SDL_KeyboardEvent& key);
+	void KeyboardUp(SDL_KeyboardEvent& key);
+	void MouseMove(SDL_MouseMotionEvent& mouse);
+	void MouseDown(SDL_MouseButtonEvent& mouse);
+	void MouseUp(SDL_MouseButtonEvent& mouse);
+	void MouseWheel(SDL_MouseWheelEvent& wheel);
+	void Resize(int _w, int _h);
 protected:
 	SDL_Thread* inputThread; //Thread az inputkezeléshez
 

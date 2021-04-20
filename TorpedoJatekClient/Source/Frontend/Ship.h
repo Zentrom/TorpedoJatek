@@ -1,29 +1,29 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include "../Globals.h"
+#include "../Frontend/PlayTile.h"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
 #include "../../Utility/gCamera.h"
 
-#include "../Globals.h"
-#include "../Frontend/PlayTile.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
 
 //Hajó osztálya
 class Ship
 {
 public:
 	Ship(void);
-	Ship(bool isBattleShip,bool ally, glm::vec3 battleShipTranslate);
-	Ship(std::vector<PlayTile*> tiles,bool ally);
+	Ship(bool isBattleShip, bool ally, const glm::vec3 &battleShipTranslate);
+	Ship(const std::vector<PlayTile*> &tiles, bool ally = true);
 	~Ship(void);
 
-	void Init(bool isAlly);
+	void Init(bool isAlly = true);
 	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
-	std::vector<PlayTile*> getPlayTiles();
+	std::vector<PlayTile*>& getPlayTiles();
 private:
 	gVertexBuffer	vb_ship; //Hajó grafikai modell adatai
 

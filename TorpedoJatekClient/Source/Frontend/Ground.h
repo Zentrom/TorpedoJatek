@@ -1,21 +1,21 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include "../Globals.h"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
 #include "../../Utility/gCamera.h"
 
-#include "../Globals.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
 
 //A föld egy darabja
 class Ground
 {
 public:
 	Ground(void);
-	Ground(glm::vec3 terrainTranslate);
+	Ground(const glm::vec3 &terrainTranslate);
 	~Ground(void);
 
 	void Init();

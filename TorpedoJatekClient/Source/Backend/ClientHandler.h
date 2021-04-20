@@ -1,17 +1,17 @@
 #pragma once
 
-#include <iostream>
-#include <utility>
-
-#include <SDL.h>
-#include <SDL_net.h>
-#include <cstring>
-#include <vector>
-
 #include "../Globals.h"
 #include "../../../CommonSource/ConnectionHandler.h"
 #include "../../../CommonSource/TorpedoVersion.h"
 #include "../../../CommonSource/CommonGlobals.h"
+
+#include <SDL.h>
+#include <SDL_net.h>
+
+#include <iostream>
+#include <utility>
+#include <cstring>
+#include <vector>
 
 //A kliens oldali kapcsolattartó osztály
 class ClientHandler : public ConnectionHandler
@@ -20,13 +20,13 @@ public:
 	ClientHandler(void);
 	~ClientHandler(void);
 
-	bool Init(std::string ipString,int portNr);
-	void SendFleet(std::vector<std::pair<char,int>> activeTilePositions);
-	int getMapSize();
-	int getPlayerNum();
-	void getStartSignal();
-	ResponseState SendShot(std::pair<char,int> tile);
-	std::pair<char,int> ReceiveShot();
+	bool Init(std::string ipString = "127.0.0.1", int portNr = 27015);
+	void SendFleet(const std::vector<std::pair<char, int>> &activeTilePositions);
+	int GetMapSize();
+	int GetPlayerNum();
+	void GetStartSignal();
+	ResponseState SendShot(const std::pair<char, int> &tile);
+	std::pair<char, int> ReceiveShot();
 	void quitGame();
 
 	ResponseState getRecShotState();
