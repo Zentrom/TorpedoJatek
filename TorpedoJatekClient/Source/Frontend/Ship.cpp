@@ -6,15 +6,15 @@ Ship::Ship(void)
 }
 
 //Ez a csatahajónak fenntartott konstruktor
-Ship::Ship(bool isBattleShip, bool ally, const glm::vec3 &battleShipTranslate) : isAlly(ally)
+Ship::Ship(bool ally, const glm::vec3 &battleShipTranslate) : isAlly(ally)
 {
-	Init(isAlly);
+	Init();
 	ship_translate = glm::vec3((ally ? -1 : 1), 1, 1) * battleShipTranslate;
 }
 
 Ship::Ship(const std::vector<PlayTile*> &tiles, bool ally) : isAlly(ally), playTiles(tiles)
 {
-	Init(isAlly);
+	Init();
 
 	if (tiles[0]) {
 		glm::vec3 frontTranslation = tiles[0]->getTranslate();
@@ -34,10 +34,11 @@ Ship::~Ship(void)
 }
 
 //Hajó modell adatainak inicializálása
-void Ship::Init(bool isAlly)
+void Ship::Init()
 {
 	vb_ship.AddAttribute(0, 3);
 	vb_ship.AddAttribute(1, 3);
+	vb_ship.AddAttribute(2, 3);
 
 	vb_ship.AddData(0, -0.5f, -0.5f, 0.5f);
 	vb_ship.AddData(0, 0.5f, -0.5f, 0.5f);
@@ -69,6 +70,15 @@ void Ship::Init(bool isAlly)
 		vb_ship.AddData(1, 0, 1.0f, 0);
 	}
 
+	vb_ship.AddData(2, -0.5f, -0.5f, 0.5f);
+	vb_ship.AddData(2, 0.5f, -0.5f, 0.5f);
+	vb_ship.AddData(2, -0.5f, 0.5f, 0.5f);
+	vb_ship.AddData(2, 0.5f, 0.5f, 0.5f);
+	vb_ship.AddData(2, -0.5f, -0.5f, -0.5f);
+	vb_ship.AddData(2, 0.5f, -0.5f, -0.5f);
+	vb_ship.AddData(2, -0.5f, 0.5f, -0.5f);
+	vb_ship.AddData(2, 0.5f, 0.5f, -0.5f);
+
 	vb_ship.AddIndex(1, 2, 0);
 	vb_ship.AddIndex(1, 3, 2);
 	vb_ship.AddIndex(5, 3, 1);
@@ -90,12 +100,13 @@ void Ship::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
 
 	glm::mat4 matWorld = glm::translate(ship_translate) * glm::rotate(ship_rotate, ship_rotate_angle) * glm::scale(ship_scale);
-	//glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
+	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
 	glm::mat4 mvp = camera.GetViewProj() *matWorld;
 
-	//sh_program.SetUniform("world", matWorld);
-	//sh_program.SetUniform("worldIT", matWorldIT);
+	sh_program.SetUniform("world", matWorld);
+	sh_program.SetUniform("worldIT", matWorldIT);
 	sh_program.SetUniform("MVP", mvp);
+	sh_program.SetUniform("eye_pos", camera.GetEye());
 
 	//m_program.SetTexture("texImage", 0, m_groundTextureID);
 	//m_program.SetTexture("texNormal", 1, m_groundNormalMapID);

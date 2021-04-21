@@ -8,7 +8,7 @@
 /// </summary>
 gCamera::gCamera(void) : m_eye(0.0f, 20.0f, 20.0f), m_at(0.0f), m_up(0.0f, 1.0f, 0.0f), m_speed(16.0f), m_goFw(0), m_goRight(0), m_slow(false)
 {
-	SetView( glm::vec3(0,20,20), glm::vec3(0,0,0), glm::vec3(0,1,0));
+	SetView( m_eye, m_at, m_up);
 
 	m_dist = glm::length( m_at - m_eye );	
 
@@ -113,7 +113,6 @@ void gCamera::KeyboardDown(SDL_KeyboardEvent& key)
 
 void gCamera::KeyboardUp(SDL_KeyboardEvent& key)
 {
-	float current_speed = m_speed;
 	switch ( key.keysym.sym )
 	{
 	case SDLK_LSHIFT:

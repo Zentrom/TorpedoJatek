@@ -30,7 +30,7 @@ void Fleet::Init(int inMapSize, bool ally)
 	mountaincenter_border_Xoffset = (mapSize - 1) / 2.0f * TorpedoGLOBAL::Scale;
 
 	glm::vec3 battleShipOffset = glm::vec3(firstTile_battleShipOffset, 0, 0) + glm::vec3(mountaincenter_border_Xoffset + mountain_tile_offset, 0, 0);
-	battleShip = Ship(true, isAlly, battleShipOffset);
+	battleShip = Ship(isAlly, battleShipOffset);
 }
 
 //Elkéri a játékos játékmezõit
@@ -69,6 +69,7 @@ PlayTile& Fleet::getTile(const std::pair<char, int> &pos)
 			return playTile;
 		}
 	}
+	return playTiles[0];
 }
 
 //Visszaadja azokat a mezõket,ahova egy hajó másik vége lerakható lenne

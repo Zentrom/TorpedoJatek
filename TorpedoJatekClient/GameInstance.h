@@ -4,6 +4,7 @@
 #include "Source/Frontend/Fleet.h"
 #include "Source/Frontend/Terrain.h"
 #include "Source/Frontend/Sea.h"
+#include "Source\Frontend\Skybox.h"
 #include "Source/BackEnd/GameLogic.h"
 
 #include "Utility/gCamera.h"
@@ -47,8 +48,9 @@ protected:
 
 	gCamera			cam_mainCamera; //Kamera
 	gShaderProgram	sh_dirLight; //Alap shader
-	gShaderProgram  sh_playtile; //Játékmezõk shadere
+	gShaderProgram  sh_skybox; //Skybox shadere
 
+	Skybox skybox; //Pályát körülvevõ skybox
 	Mountain mountain;	//Hegy
 	Terrain terrain;	//Föld
 

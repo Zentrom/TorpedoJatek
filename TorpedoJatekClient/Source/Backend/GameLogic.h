@@ -3,7 +3,7 @@
 #include "ClientHandler.h"
 #include "../Frontend/Fleet.h"
 #include "../Frontend/Sea.h"
-#include "../Globals.h"
+#include "../Globals.hpp"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"

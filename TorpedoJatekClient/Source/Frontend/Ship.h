@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Globals.h"
+#include "../Globals.hpp"
 #include "../Frontend/PlayTile.h"
 
 #include "../../Utility/gVertexBuffer.h"
@@ -16,11 +16,11 @@ class Ship
 {
 public:
 	Ship(void);
-	Ship(bool isBattleShip, bool ally, const glm::vec3 &battleShipTranslate);
+	Ship(bool ally, const glm::vec3 &battleShipTranslate);
 	Ship(const std::vector<PlayTile*> &tiles, bool ally = true);
 	~Ship(void);
 
-	void Init(bool isAlly = true);
+	void Init();
 	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
 	std::vector<PlayTile*>& getPlayTiles();

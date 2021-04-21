@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Globals.h"
+#include "../Globals.hpp"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"

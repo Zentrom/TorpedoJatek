@@ -146,10 +146,12 @@ void GameLogic::PlaceShips()
 				std::cout << "You can't place down any more ships of " << choice << " size!" << std::endl;
 			}
 		}
-		else if (choice == 0) {
+		else if (choice == 0 && !std::cin.fail()) {
 			clientHandler.quitGame();
 		}
 		else {
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 			std::cout << "You need to choose between 0-4!" << std::endl;
 		}
 

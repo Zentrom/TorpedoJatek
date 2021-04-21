@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Source Files\Source">
       <UniqueIdentifier>{46e06a4f-b1f7-47d2-936b-8c59cec59da1}</UniqueIdentifier>
     </Filter>
@@ -47,10 +43,10 @@
     <ClInclude Include="Source\ServerHandler.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\CommonSource\TorpedoVersion.h">
+    <ClInclude Include="..\CommonSource\CommonGlobals.hpp">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\CommonSource\CommonGlobals.h">
+    <ClInclude Include="..\CommonSource\TorpedoVersion.hpp">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,17 +14,18 @@ PlayTile::~PlayTile(void)
 }
 
 //Egy játékmezõ kirajzolása
-void PlayTile::Draw(gCamera &camera, gShaderProgram &sh_playtile)
+void PlayTile::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
 
 	glm::mat4 matWorld = glm::translate(seatile_translate) * glm::rotate(seatile_rotate, seatile_rotate_angle) * glm::scale(seatile_scale);
-	//glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
+	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
 	glm::mat4 mvp = camera.GetViewProj() *matWorld;
 
-	//sh_playtile.SetUniform("world", matWorld);
-	//sh_playtile.SetUniform("worldIT", matWorldIT);
-	sh_playtile.SetUniform("MVP", mvp);
-	sh_playtile.SetUniform("tile_state", tileState);
+	sh_program.SetUniform("world", matWorld);
+	sh_program.SetUniform("worldIT", matWorldIT);
+	sh_program.SetUniform("MVP", mvp);
+	sh_program.SetUniform("tile_state", tileState);
+	sh_program.SetUniform("is_playtile", true);
 
 	//m_program.SetTexture("texImage", 0, m_groundTextureID);
 	//m_program.SetTexture("texNormal", 1, m_groundNormalMapID);
@@ -33,6 +34,7 @@ void PlayTile::Draw(gCamera &camera, gShaderProgram &sh_playtile)
 	vb_seatile.DrawIndexed(GL_TRIANGLES, 0, 6, 0);
 	vb_seatile.Off();
 
+	sh_program.SetUniform("is_playtile", false);
 }
 
 //Játékmezõ állapotának állítása(hogy más színe legyen)

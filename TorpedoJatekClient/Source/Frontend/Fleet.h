@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Ship.h"
-#include "../../../CommonSource/CommonGlobals.h"
+#include "../../../CommonSource/CommonGlobals.hpp"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"

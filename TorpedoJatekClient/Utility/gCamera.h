@@ -23,7 +23,7 @@ public:
 	void LookAt(glm::vec3 _at);
 
 	void SetSpeed(float _val);
-	glm::vec3 GetEye()
+	glm::vec3& GetEye()
 	{
 		return m_eye;
 	}

@@ -13,4 +13,3 @@ Terraint,Mountain majd átkell dolgozni,mikor végtelenített kirajzolás lesz 003ba
 Hogy jelenjenek meg az ellenfél hajói?
 Ha piros mezõre lövünk,az maradjon piros.
 Ha zöld hajó minden pontja kilõve,akkor tünjön el.
-

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Source\ServerHandler.h"
-#include "../CommonSource/TorpedoVersion.h"
-#include "../CommonSource/CommonGlobals.h"
+#include "../CommonSource/TorpedoVersion.hpp"
+#include "../CommonSource/CommonGlobals.hpp"
 
 #include <SDL.h>
 #include <SDL_net.h>

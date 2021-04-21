@@ -108,6 +108,9 @@
     <ClCompile Include="Source\Frontend\SeaTile.cpp">
       <Filter>Source Files\Frontend</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Frontend\Skybox.cpp">
+      <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TorpedoJatekClient.h">
@@ -139,9 +142,6 @@
     </ClInclude>
     <ClInclude Include="Source\Frontend\Sea.h">
       <Filter>Header Files\Frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Globals.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\CommonSource\ConnectionHandler.h">
       <Filter>Common</Filter>
@@ -176,6 +176,12 @@
     <ClInclude Include="..\CommonSource\CommonGlobals.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Globals.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Skybox.h">
+      <Filter>Header Files\Frontend</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\dirLight.frag">
@@ -184,10 +190,10 @@
     <None Include="Shaders\dirLight.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\playTile.vert">
+    <None Include="Shaders\skybox.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\playTile.frag">
+    <None Include="Shaders\skybox.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

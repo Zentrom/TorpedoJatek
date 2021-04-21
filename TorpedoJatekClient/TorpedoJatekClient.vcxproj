@@ -31,6 +31,7 @@
     <ClCompile Include="Source\Frontend\Sea.cpp" />
     <ClCompile Include="Source\Frontend\SeaTile.cpp" />
     <ClCompile Include="Source\Frontend\Ship.cpp" />
+    <ClCompile Include="Source\Frontend\Skybox.cpp" />
     <ClCompile Include="Source\Frontend\Terrain.cpp" />
     <ClCompile Include="TorpedoJatekClient.cpp" />
     <ClCompile Include="Utility\gCamera.cpp" />
@@ -53,8 +54,9 @@
     <ClInclude Include="Source\Frontend\Sea.h" />
     <ClInclude Include="Source\Frontend\SeaTile.h" />
     <ClInclude Include="Source\Frontend\Ship.h" />
+    <ClInclude Include="Source\Frontend\Skybox.h" />
     <ClInclude Include="Source\Frontend\Terrain.h" />
-    <ClInclude Include="Source\Globals.h" />
+    <ClInclude Include="Source\Globals.hpp" />
     <ClInclude Include="TorpedoJatekClient.h" />
     <ClInclude Include="Utility\gCamera.h" />
     <ClInclude Include="Utility\GLUtils.hpp" />
@@ -66,8 +68,8 @@
   <ItemGroup>
     <None Include="Shaders\dirLight.frag" />
     <None Include="Shaders\dirLight.vert" />
-    <None Include="Shaders\playTile.frag" />
-    <None Include="Shaders\playTile.vert" />
+    <None Include="Shaders\skybox.frag" />
+    <None Include="Shaders\skybox.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Normals\cylinder_normal.bmp" />

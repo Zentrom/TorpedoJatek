@@ -1,5 +1,4 @@
-v0.0.2b-Note-based Refactoring
+v0.0.2c-Skybox And Light
 --------------------------------------------------------------------------------
--Refactoring based on the c++ and opengl notes i made.
--Server now handles client abort or disconnection better.
--Testing and fixing.
+-Skybox added.
+-Added Directional light,implemented with the Phong shading model.

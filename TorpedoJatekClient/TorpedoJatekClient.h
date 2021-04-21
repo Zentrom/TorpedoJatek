@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameInstance.h"
-#include "../CommonSource/TorpedoVersion.h"
+#include "../CommonSource/TorpedoVersion.hpp"
 
 #include <GL/glew.h>
 #include <SDL.h>

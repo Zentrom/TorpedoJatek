@@ -12,7 +12,9 @@ GameInstance::GameInstance(void)
 
 GameInstance::~GameInstance(void)
 {
-	SDL_WaitThread(inputThread, nullptr);
+	if (!TorpedoGLOBAL::Debug) {
+		SDL_WaitThread(inputThread, nullptr);
+	}
 }
 
 //Játékmenet inicializálása
@@ -28,30 +30,27 @@ bool GameInstance::Init()
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
+	skybox.Init();
 	mountain.Init();
 	terrain.Init();
 
 	sh_dirLight.AttachShader(GL_VERTEX_SHADER, "Shaders/dirLight.vert");
 	sh_dirLight.AttachShader(GL_FRAGMENT_SHADER, "Shaders/dirLight.frag");
-
 	sh_dirLight.BindAttribLoc(0, "vs_in_pos");
 	sh_dirLight.BindAttribLoc(1, "vs_in_color");
-	//m_program.BindAttribLoc(2, "vs_in_normal");
+	sh_dirLight.BindAttribLoc(2, "vs_in_normal");
 	//m_program.BindAttribLoc(3, "vs_in_tex0");
-
 	if (!sh_dirLight.LinkProgram())
 	{
 		return false;
 	}
 
-	sh_playtile.AttachShader(GL_VERTEX_SHADER, "Shaders/playTile.vert");
-	sh_playtile.AttachShader(GL_FRAGMENT_SHADER, "Shaders/playTile.frag");
-
-	sh_playtile.BindAttribLoc(0, "vs_in_pos");
-
-	if (!sh_playtile.LinkProgram())
-	{
+	sh_skybox.AttachShader(GL_VERTEX_SHADER, "Shaders/skybox.vert");
+	sh_skybox.AttachShader(GL_FRAGMENT_SHADER, "Shaders/skybox.frag");
+	sh_skybox.BindAttribLoc(0, "vs_in_pos");
+	if (!sh_skybox.LinkProgram()) {
 		return false;
 	}
 
@@ -75,7 +74,7 @@ void GameInstance::Clean()
 	glDeleteTextures(1, &m_coneNormalMapID);*/
 
 	sh_dirLight.Clean();
-	sh_playtile.Clean();
+	sh_skybox.Clean();
 }
 
 //A thread hívja meg ezt a függvényt,hogy lehessen meccs közbe gépelni consoleba
@@ -84,9 +83,8 @@ int GameInstance::threadFunction(void *ptr)
 	if (ptr) {
 		GameInstance* pointr = static_cast<GameInstance *>(ptr);
 		pointr->gameLogic.StartMatch(pointr->sea.getTiles(true), pointr->sea.getTiles(false));
-		std::cout << "The match is over." << std::endl;
 	}
-
+	std::cout << "The match is over,input thread stopped." << std::endl;
 	return 1;
 
 }
@@ -118,58 +116,23 @@ void GameInstance::Render()
 	//}
 
 	sh_dirLight.On();
-	//float r = 2 * f_PI * SDL_GetTicks() / 1000.0f / 5.0f;
-	glm::vec3 light_pos = glm::vec3(0, 0, 0);//glm::vec3(10 * cosf(r), 10, 10 * sinf(r));
-
-	//sh_dirLight.SetUniform("light_pos", light_pos);
-	//sh_dirLight.SetUniform("eye_pos", cam_mainCamera.GetEye());
-
-	//m_program.SetUniform("use_texture", use_texture);
-	//m_program.SetUniform("use_normal_map", use_normal_map);
-	//m_program.SetUniform("use_light", use_light);
-
-	//m_program.SetUniform("is_ambient", is_ambient);
-	//m_program.SetUniform("is_diffuse", is_diffuse);
-	//m_program.SetUniform("is_specular", is_specular);
-
 	mountain.Draw(cam_mainCamera, sh_dirLight);
 	terrain.Draw(cam_mainCamera, sh_dirLight);
 
 	playerFleet.Draw(cam_mainCamera, sh_dirLight);
 	enemyFleet.Draw(cam_mainCamera, sh_dirLight);
+	
+	sea.Draw(cam_mainCamera, sh_dirLight);
 	sh_dirLight.Off();
 
-	sh_playtile.On();
-	sea.Draw(cam_mainCamera, sh_playtile);
-	sh_playtile.Off();
+	sh_skybox.On();
+	skybox.Draw(cam_mainCamera, sh_skybox);
+	sh_skybox.Off();
 }
 
 void GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 {
 	cam_mainCamera.KeyboardDown(key);
-	/*switch (key.keysym.sym) {
-	case SDLK_q:
-		is_filled = !is_filled;
-		break;
-	case SDLK_t:
-		use_texture = !use_texture;
-		break;
-	case SDLK_l:
-		use_light = !use_light;
-		break;
-	case SDLK_7:
-		is_ambient = !is_ambient;
-		break;
-	case SDLK_8:
-		is_diffuse = !is_diffuse;
-		break;
-	case SDLK_9:
-		is_specular = !is_specular;
-		break;
-	case SDLK_n:
-		use_normal_map = !use_normal_map;
-		break;
-	}*/
 }
 
 void GameInstance::KeyboardUp(SDL_KeyboardEvent& key)

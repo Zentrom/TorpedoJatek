@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../CommonSource/ConnectionHandler.h"
-#include "../../CommonSource/CommonGlobals.h"
+#include "../../CommonSource/CommonGlobals.hpp"
 
 //Szerverhez köthetõ kapcsolat függvények
 class ServerHandler : public ConnectionHandler {
