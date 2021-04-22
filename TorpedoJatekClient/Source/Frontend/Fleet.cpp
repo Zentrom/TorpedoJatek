@@ -26,9 +26,7 @@ void Fleet::Init(int inMapSize, bool ally)
 		break;
 	}
 
-	firstTile_battleShipOffset = ((2.0f * mapSize) + 1.0f) * TorpedoGLOBAL::Scale;
-	mountaincenter_border_Xoffset = (mapSize - 1) / 2.0f * TorpedoGLOBAL::Scale;
-
+	firstTile_battleShipOffset = ((SeaTile::getScaleXZ() * mapSize) + 1.0f) * TorpedoGLOBAL::Scale;
 	glm::vec3 battleShipOffset = glm::vec3(firstTile_battleShipOffset, 0, 0) + glm::vec3(mountaincenter_border_Xoffset + mountain_tile_offset, 0, 0);
 	battleShip = Ship(isAlly, battleShipOffset);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Globals.hpp"
+#include "SeaTile.h"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
@@ -19,13 +20,15 @@ public:
 	~Ground(void);
 
 	void Init();
-	void Draw(gCamera &camera, gShaderProgram &sh_program);
+	void Draw(gCamera &camera, gShaderProgram &sh_program, GLuint &textureID);
+	static float getScaleXZ();
 
 protected:
 	gVertexBuffer	vb_ground; //grafikai adatokat tároló buffer
 	glm::vec3 ground_translate = glm::vec3(0, 0, 0)* TorpedoGLOBAL::Scale; //elmozgatás
 	float ground_rotate = 0.0f; //forgatás
-	glm::vec3 ground_rotate_angle = glm::vec3(0, 1.0f, 0); //forgatás tengelye
-	glm::vec3 ground_scale = glm::vec3(2.0f, 1.0f, 2.0f)* TorpedoGLOBAL::Scale; //nagyítás
+	const glm::vec3 ground_rotate_angle = glm::vec3(0, 1.0f, 0); //forgatás tengelye
+	static const float scaleXZ; //földdarab skálázása XZ tengelyeken
+	const glm::vec3 ground_scale = glm::vec3(scaleXZ, 1.0f, scaleXZ) * TorpedoGLOBAL::Scale; //nagyítás
 
 };

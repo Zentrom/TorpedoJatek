@@ -8,8 +8,10 @@ Freetype vagy SDL rtf/ttf betuknek
 CHECKSOCKET clientOldalon megfontolandó majd, 3D pickingtõl kezdve.
 Addig Threadet elõbb is el lehetne inditani.(ez elmarad)
 
-Terraint,Mountain majd átkell dolgozni,mikor végtelenített kirajzolás lesz 003ban.(Mapsize-független legyen,stb)
-
 Hogy jelenjenek meg az ellenfél hajói?
 Ha piros mezõre lövünk,az maradjon piros.
 Ha zöld hajó minden pontja kilõve,akkor tünjön el.
+
+Vertexbufferek lehetnének static-ok talán?
+Tesztelni Scale,mapSize,seaTilesize és groundSize változtatást.
+SeaTile és Ground darabokat egy Vertexbufferbe(+Vertexbuffert egyszer initelni)/Instancing/Deferred shading.

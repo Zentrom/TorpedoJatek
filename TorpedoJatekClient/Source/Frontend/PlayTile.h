@@ -25,6 +25,6 @@ private:
 	int index; //Egy játékos játékmezõi közül hányas indexû
 	std::pair<char, int> position;	//Koordináta (pl. A7)
 	bool usedTile = false;	//Van-e hajó rajta
-	glm::vec3 tileState = glm::vec3(0, 0, 1); //3kek,2sarga,1piros-sárga=nemtalált,piros=talált
+	glm::vec4 tileState = glm::vec4(0, 0, 1, 1); //3kek,2sarga,1piros-sárga=nemtalált,piros=talált
 
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PlayTile.h"
+#include "Mountain.h"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
@@ -9,6 +10,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
+
+#include <cmath>
 
 //Tenger osztálya-2játékos játékmezõi+többi tengermezõ
 class Sea
@@ -23,16 +26,22 @@ public:
 	std::vector<PlayTile>& getTiles(bool ally = true);
 
 protected:
-
+	void InitSeaTiles();
+	void InitPlayTiles(int inMapSize);
+	void RemoveExtraSeaTiles();
+	bool CompareTileTranslations(SeaTile &sTile, PlayTile &pTile);
 	glm::vec3 calcTranslate(int rowNr, int columnNr, bool ally = true) const;
 
+	const int seaTileScale = 50 * 2; //hány tengermezõ van egy sorba
+	const int seaTileCount = seaTileScale * seaTileScale; //hány tengermezõ van összesen
+	std::vector<SeaTile> seaTiles; //Tengermezõket tartalmazza
+
 	int mapSize; //játékPálya mérete
-	int tileCount;	//játékMezõk száma
+	int playTileCount;	//játékMezõk száma
 	std::vector<PlayTile> myTiles;	//kliens játékmezõi
 	std::vector<PlayTile> enemyTiles; //ellenfél játékmezõi
 
-	float firstTile_battleShipOffset; //elsõ játékmezõ és csatahajó közti táv
-	const float mountain_tile_offset = (4.0f + 1.0f)*TorpedoGLOBAL::Scale; //hegy és elsõ játékmezõ közti táv
-	float mountaincenter_border_Xoffset = 6.0f / 2.0f*TorpedoGLOBAL::Scale; //hegy közepe és széle közti táv
+	const float mountain_tile_offset = (2 * SeaTile::getScaleXZ())*TorpedoGLOBAL::Scale; //hegy és elsõ játékmezõ közti táv
+	const float mountaincenter_border_Xoffset = Mountain::getWidth() / 2.0f*TorpedoGLOBAL::Scale; //hegy közepe és széle közti táv
 
 };

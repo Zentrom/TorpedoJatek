@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -7,6 +9,8 @@
 #include <GL/glew.h>
 
 #include <SDL_image.h>
+
+//EZT A FÁJLT CSAK CPP-be lehet beincludeolni!!
 
 /* 
 

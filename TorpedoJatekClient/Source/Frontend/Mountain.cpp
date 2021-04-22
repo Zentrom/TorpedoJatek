@@ -1,6 +1,9 @@
 
 #include "Mountain.h"
 
+const float Mountain::heightY = 6.0f;
+const float Mountain::widthX = 6.0f;
+
 Mountain::Mountain(void)
 {
 
@@ -14,7 +17,7 @@ Mountain::~Mountain(void)
 void Mountain::Init()
 {
 	vb_mountain.AddAttribute(0, 3);
-	vb_mountain.AddAttribute(1, 3);
+	vb_mountain.AddAttribute(1, 4);
 	vb_mountain.AddAttribute(2, 3);
 
 	vb_mountain.AddData(0, -0.5f, -0.5f, 0.5f);
@@ -26,14 +29,14 @@ void Mountain::Init()
 	vb_mountain.AddData(0, -0.5f, 0.5f, -0.5f);
 	vb_mountain.AddData(0, 0.5f, 0.5f, -0.5f);
 
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0);
+	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
+	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
+	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
+	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
+	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
+	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
+	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
+	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
 
 	vb_mountain.AddData(2, -0.5f, -0.5f, 0.5f);
 	vb_mountain.AddData(2, 0.5f, -0.5f, 0.5f);
@@ -78,4 +81,15 @@ void Mountain::Draw(gCamera &camera, gShaderProgram &sh_program)
 	vb_mountain.On();
 	vb_mountain.DrawIndexed(GL_TRIANGLES, 0, 36, 0);
 	vb_mountain.Off();
+}
+
+//Visszaadja hegy szélességét
+float Mountain::getWidth()
+{
+	return widthX;
+}
+
+float Mountain::getHeight()
+{
+	return heightY;
 }

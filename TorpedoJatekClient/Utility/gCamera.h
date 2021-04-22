@@ -1,124 +1,104 @@
 #pragma once
 
+#include "../Source/Globals.hpp"
+
 #include <SDL.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <iostream>
+#include <math.h>
 
 class gCamera
 {
 public:
-	gCamera(void);
-	gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up);
+	gCamera(glm::vec3 pos);
+	//gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up);
 	~gCamera(void);
 
-	/// <summary>
-	/// Gets the view matrix.
-	/// </summary>
-	/// <returns>The 4x4 view matrix</returns>
+	void Update(float deltaTime);
+
+	void SetBoundaries(float bX, float bY, float bZ);
+	void SetView(glm::vec3 eye, glm::vec3 at, glm::vec3 up);
+	void SetProj(float angle, float aspect, float zn, float zf);
+	void LookAt(glm::vec3 at);
+	void SetSpeed(float val);
 	glm::mat4 GetViewMatrix();
-
-	void Update(float _deltaTime);
-
-	void SetView(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up);
-	void SetProj(float _angle, float _aspect, float _zn, float _zf); 
-	void LookAt(glm::vec3 _at);
-
-	void SetSpeed(float _val);
 	glm::vec3& GetEye()
 	{
-		return m_eye;
+		return camEye;
 	}
 
 	glm::vec3 GetAt()
 	{
-		return m_at;
+		return camAt;
 	}
 
 	glm::vec3 GetUp()
 	{
-		return m_up;
+		return camUp;
 	}
 
 	glm::mat4 GetProj()
 	{
-		return m_matProj;
+		return matProj;
 	}
 
 	glm::mat4 GetViewProj()
 	{
-		return m_matViewProj;
+		return matViewProj;
 	}
 
-	void Resize(int _w, int _h);
+	void Resize(float w, float h, float fov, float viewDist);
 
 	void KeyboardDown(SDL_KeyboardEvent& key);
 	void KeyboardUp(SDL_KeyboardEvent& key);
 	void MouseMove(SDL_MouseMotionEvent& mouse);
 
 private:
-	/// <summary>
-	/// Updates the UV.
-	/// </summary>
-	/// <param name="du">The du, i.e. the change of spherical coordinate u.</param>
-	/// <param name="dv">The dv, i.e. the change of spherical coordinate v.</param>
+	bool BoundaryCheckNextFrame(float deltaTime);
+	void CameraResetCheck();
 	void UpdateUV(float du, float dv);
 
-	/// <summary>
-	///  The traversal speed of the camera
-	/// </summary>
-	float		m_speed;
-	/// <summary>
-	/// The view matrix of the camera
-	/// </summary>
-	glm::mat4	m_viewMatrix;
+	//Boundaries the camera cannot pass
+	float boundaryX;
+	float boundaryY;
+	float boundaryZ;
 
-	glm::mat4	m_matViewProj;
+	// The traversal speed of the camera
+	float speed;
+	// The view matrix of the camera
+	glm::mat4 viewMatrix;
+	glm::mat4 matViewProj;
 
-	bool	m_slow;
+	bool slow;
 
-	/// <summary>
-	/// The camera position.
-	/// </summary>
-	glm::vec3	m_eye;
+	// The camera position.
+	glm::vec3 camEye;
+	// The vector pointing upwards
+	glm::vec3 camUp;
+	// The camera look at point.
+	glm::vec3 camAt;
 
-	/// <summary>
-	/// The vector pointing upwards
-	/// </summary>
-	glm::vec3	m_up;
+	// The u spherical coordinate of the spherical coordinate pair (u,v) denoting the
+	// current viewing direction from the view position m_eye. 
+	float camU;
 
-	/// <summary>
-	/// The camera look at point.
-	/// </summary>
-	glm::vec3	m_at;
+	// The v spherical coordinate of the spherical coordinate pair (u,v) denoting the
+	// current viewing direction from the view position m_eye. 
+	float camV;
 
-	/// <summary>
-	/// The u spherical coordinate of the spherical coordinate pair (u,v) denoting the
-	/// current viewing direction from the view position m_eye. 
-	/// </summary>
-	float	m_u;
+	// The distance of the look at point from the camera. 
+	float dist;
 
-	/// <summary>
-	/// The v spherical coordinate of the spherical coordinate pair (u,v) denoting the
-	/// current viewing direction from the view position m_eye. 
-	/// </summary>
-	float	m_v;
+	// The unit vector pointing towards the viewing direction.
+	glm::vec3 camFw;
+	// The unit vector pointing to the 'right'
+	glm::vec3 camSt;
 
-	/// <summary>
-	/// The distance of the look at point from the camera. 
-	/// </summary>
-	float	m_dist;
+	glm::mat4 matProj;
 
-	/// <summary>
-	/// The unit vector pointing towards the viewing direction.
-	/// </summary>
-	glm::vec3	m_fw;
-	/// <summary>
-	/// The unit vector pointing to the 'right'
-	/// </summary>
-	glm::vec3	m_st;
-
-	glm::mat4	m_matProj;
-
-	float	m_goFw;
-	float	m_goRight;
+	float goFw;
+	float goRight;
 };
 

@@ -115,7 +115,7 @@ int TorpedoJatekClient::StartGameInstance()
 	bool quit = false;
 	SDL_Event ev;
 
-	GameInstance gameInstance;
+	GameInstance gameInstance(static_cast<float>(widthWindow),static_cast<float>(heightWindow));
 
 	if (!gameInstance.Init())
 	{

@@ -1,12 +1,15 @@
 
 #include "GameInstance.h"
 
-GameInstance::GameInstance(void)
+GameInstance::GameInstance(float viewportW, float viewportH) : viewportWidth(viewportW),viewportHeight(viewportH),
+	cam_mainCamera(glm::vec3(0,20.0f,20.0f))
 {
+	cam_mainCamera.SetBoundaries(terrain.getTerrainScale() * Ground::getScaleXZ() / 3.0f,
+		Mountain::getHeight() * 4.0f, terrain.getTerrainScale() * Ground::getScaleXZ() / 3.0f);
+	cam_mainCamera.SetProj(fieldOfView, viewportWidth / viewportHeight, 0.01f, viewDistance);
 	/*
 	m_coneTextureID = 0;
 	m_coneNormalMapID = 0;
-
 	m_mesh = 0;*/
 }
 
@@ -31,6 +34,8 @@ bool GameInstance::Init()
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	skybox.Init();
 	mountain.Init();
@@ -41,7 +46,7 @@ bool GameInstance::Init()
 	sh_dirLight.BindAttribLoc(0, "vs_in_pos");
 	sh_dirLight.BindAttribLoc(1, "vs_in_color");
 	sh_dirLight.BindAttribLoc(2, "vs_in_normal");
-	//m_program.BindAttribLoc(3, "vs_in_tex0");
+	sh_dirLight.BindAttribLoc(3, "vs_in_tex");
 	if (!sh_dirLight.LinkProgram())
 	{
 		return false;
@@ -54,16 +59,15 @@ bool GameInstance::Init()
 		return false;
 	}
 
-	cam_mainCamera.SetProj(45.0f, 800.0f / 600.0f, 0.01f, 1000.0f);
-	/*
+	
 	// textúrák betöltése
-	m_coneTextureID = TextureFromFile("Resources/Textures/cylinder_texture.bmp");
-	m_coneNormalMapID = TextureFromFile("Resources/Normals/cylinder_normal.bmp");
+	//GLuint m_coneTextureID = TextureFromFile("Resources/Textures/cylinder_texture.bmp");
+	//m_coneNormalMapID = TextureFromFile("Resources/Normals/cylinder_normal.bmp");
 
 	// mesh betöltés
-	m_mesh = ObjParser::parse("Resources/suzanne.obj");
-	m_mesh->initBuffers();
-	*/
+	//m_mesh = ObjParser::parse("Resources/suzanne.obj");
+	//m_mesh->initBuffers();
+	
 
 	return true;
 }
@@ -118,16 +122,17 @@ void GameInstance::Render()
 	sh_dirLight.On();
 	mountain.Draw(cam_mainCamera, sh_dirLight);
 	terrain.Draw(cam_mainCamera, sh_dirLight);
-
 	playerFleet.Draw(cam_mainCamera, sh_dirLight);
 	enemyFleet.Draw(cam_mainCamera, sh_dirLight);
-	
-	sea.Draw(cam_mainCamera, sh_dirLight);
 	sh_dirLight.Off();
 
 	sh_skybox.On();
 	skybox.Draw(cam_mainCamera, sh_skybox);
 	sh_skybox.Off();
+
+	sh_dirLight.On();
+	sea.Draw(cam_mainCamera, sh_dirLight);
+	sh_dirLight.Off();
 }
 
 void GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
@@ -158,9 +163,9 @@ void GameInstance::MouseWheel(SDL_MouseWheelEvent& wheel)
 }
 
 //Ablak átméretezéskor hívódik
-void GameInstance::Resize(int _w, int _h)
+void GameInstance::Resize(int w, int h)
 {
-	glViewport(0, 0, _w, _h);
+	glViewport(0, 0, w, h);
 
-	cam_mainCamera.Resize(_w, _h);
+	cam_mainCamera.Resize(w, h, fieldOfView, viewDistance);
 }

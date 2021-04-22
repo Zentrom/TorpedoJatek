@@ -1,4 +1,6 @@
-v0.0.2c-Skybox And Light
+v0.0.2d-Sea And Terrain Expansion
 --------------------------------------------------------------------------------
--Skybox added.
--Added Directional light,implemented with the Phong shading model.
+-The Camera is now clamped to certain bounds it cannot pass through.
+-The Terrain is now expanded and textured.
+-The Sea is now expanded and made transparent.
+-Tweaked light parameters a little.

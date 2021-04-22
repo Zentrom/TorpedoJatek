@@ -20,7 +20,9 @@ Ship::Ship(const std::vector<PlayTile*> &tiles, bool ally) : isAlly(ally), playT
 		glm::vec3 frontTranslation = tiles[0]->getTranslate();
 		glm::vec3 backTranslation = tiles[tiles.size() - 1]->getTranslate();
 		ship_translate = (frontTranslation + backTranslation) / 2.0f;
-		ship_scale = glm::vec3(1.6f*tiles.size(), 0.6f + 0.4f*tiles.size(), 0.6f + 0.25f*tiles.size()) * TorpedoGLOBAL::Scale;
+		ship_scale = glm::vec3(0.8f * tiles.size() * SeaTile::getScaleXZ(),
+			0.6f + 0.4f*tiles.size(), (0.3f + 0.12f*tiles.size()) * SeaTile::getScaleXZ() ) 
+			* TorpedoGLOBAL::Scale;
 		if (tiles.size() > 1) {
 			if (tiles[0]->getPos().first != tiles[1]->getPos().first) {
 				ship_rotate = glm::half_pi<float>();
@@ -37,7 +39,7 @@ Ship::~Ship(void)
 void Ship::Init()
 {
 	vb_ship.AddAttribute(0, 3);
-	vb_ship.AddAttribute(1, 3);
+	vb_ship.AddAttribute(1, 4);
 	vb_ship.AddAttribute(2, 3);
 
 	vb_ship.AddData(0, -0.5f, -0.5f, 0.5f);
@@ -50,24 +52,24 @@ void Ship::Init()
 	vb_ship.AddData(0, 0.5f, 0.5f, -0.5f);
 
 	if (!isAlly) {
-		vb_ship.AddData(1, 1.0f, 0, 0);
-		vb_ship.AddData(1, 1.0f, 0, 0);
-		vb_ship.AddData(1, 1.0f, 0, 0);
-		vb_ship.AddData(1, 1.0f, 0, 0);
-		vb_ship.AddData(1, 1.0f, 0, 0);
-		vb_ship.AddData(1, 1.0f, 0, 0);
-		vb_ship.AddData(1, 1.0f, 0, 0);
-		vb_ship.AddData(1, 1.0f, 0, 0);
+		vb_ship.AddData(1, 1.0f, 0, 0, 1);
+		vb_ship.AddData(1, 1.0f, 0, 0, 1);
+		vb_ship.AddData(1, 1.0f, 0, 0, 1);
+		vb_ship.AddData(1, 1.0f, 0, 0, 1);
+		vb_ship.AddData(1, 1.0f, 0, 0, 1);
+		vb_ship.AddData(1, 1.0f, 0, 0, 1);
+		vb_ship.AddData(1, 1.0f, 0, 0, 1);
+		vb_ship.AddData(1, 1.0f, 0, 0, 1);
 	}
 	else {
-		vb_ship.AddData(1, 0, 1.0f, 0);
-		vb_ship.AddData(1, 0, 1.0f, 0);
-		vb_ship.AddData(1, 0, 1.0f, 0);
-		vb_ship.AddData(1, 0, 1.0f, 0);
-		vb_ship.AddData(1, 0, 1.0f, 0);
-		vb_ship.AddData(1, 0, 1.0f, 0);
-		vb_ship.AddData(1, 0, 1.0f, 0);
-		vb_ship.AddData(1, 0, 1.0f, 0);
+		vb_ship.AddData(1, 0, 1.0f, 0, 1);
+		vb_ship.AddData(1, 0, 1.0f, 0, 1);
+		vb_ship.AddData(1, 0, 1.0f, 0, 1);
+		vb_ship.AddData(1, 0, 1.0f, 0, 1);
+		vb_ship.AddData(1, 0, 1.0f, 0, 1);
+		vb_ship.AddData(1, 0, 1.0f, 0, 1);
+		vb_ship.AddData(1, 0, 1.0f, 0, 1);
+		vb_ship.AddData(1, 0, 1.0f, 0, 1);
 	}
 
 	vb_ship.AddData(2, -0.5f, -0.5f, 0.5f);

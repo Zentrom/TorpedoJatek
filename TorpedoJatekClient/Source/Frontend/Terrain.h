@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Ground.h"
+#include "Mountain.h"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
@@ -20,14 +21,14 @@ public:
 	void Init();
 	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
-protected:
+	int getTerrainScale();
 
-	//Ideiglenes.A mapsize nem fogja befolyasolni a fold meretet.
-	const int mapSize = 7;
+protected:
+	GLuint groundTextureID; //földdarab textúra azonosítója
+	const float ground_mountainY = (Mountain::getHeight() / -2.0f - 0.01f) * TorpedoGLOBAL::Scale; //hegy közepe és alja közti táv
 	//A terrainscale az feldarabolja az ugyanolyan nagy négyzetet
-	const int terrainScale = 3;
-	const int terrainMultiplier = terrainScale*terrainScale; //négyzetszám legyen
-	const int terrainSize = mapSize*mapSize*terrainMultiplier; //hány darab földdarab legyen
+	const int terrainScale = 50;
+	const int terrainSizeXZ = terrainScale*terrainScale; //hány darab földdarab legyen
 	std::vector<Ground> myGrounds; //földdarabok
 
 };

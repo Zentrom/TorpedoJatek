@@ -167,20 +167,20 @@
     <ClInclude Include="Source\Backend\ClientHandler.h">
       <Filter>Header Files\Backend</Filter>
     </ClInclude>
-    <ClInclude Include="..\CommonSource\TorpedoVersion.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Frontend\SeaTile.h">
       <Filter>Header Files\Frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="..\CommonSource\CommonGlobals.h">
-      <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Source\Globals.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Frontend\Skybox.h">
       <Filter>Header Files\Frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonSource\CommonGlobals.hpp">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonSource\TorpedoVersion.hpp">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -213,19 +213,19 @@
     <Image Include="Resources\Normals\top_normal.bmp">
       <Filter>Resource Files\NormalMaps</Filter>
     </Image>
-    <Image Include="Resources\Textures\cylinder_texture.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
     <Image Include="Resources\Textures\gomb_texture.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\ground_texture.bmp">
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Resources\Textures\suzanne_texture.bmp">
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Resources\Textures\top_texture.bmp">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\texture_1.bmp">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\ground_texture.bmp">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

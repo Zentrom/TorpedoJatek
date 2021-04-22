@@ -42,22 +42,22 @@ void PlayTile::setState(int newState)
 {
 	switch (newState) {
 	case 1:
-		tileState = glm::vec3(1, 0, 0);
+		tileState = glm::vec4(1, 0, 0, 1);
 		break;
 	case 2:
-		tileState = glm::vec3(1, 1, 0);
+		tileState = glm::vec4(1, 1, 0, 1);
 		break;
 	case 3:
-		tileState = glm::vec3(0, 0, 1);
+		tileState = glm::vec4(0, 0, 1, 1);
 		break;
 	case 4:
-		tileState = glm::vec3(1, 0, 0);
+		tileState = glm::vec4(1, 0, 0, 1);
 		break;
 	case 5:
-		tileState = glm::vec3(1, 0, 0);
+		tileState = glm::vec4(1, 0, 0, 1);
 		break;
 	default:
-		tileState = glm::vec3(0, 0, 1);
+		tileState = glm::vec4(0, 0, 1, 1);
 		break;
 	}
 }

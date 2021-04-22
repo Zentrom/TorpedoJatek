@@ -1,149 +1,187 @@
-#include <iostream>
+
 #include "gCamera.h"
-#include <glm/gtc/matrix_transform.hpp>
-#include <math.h>
 
-/// <summary>
-/// Initializes a new instance of the <see cref="gCamera"/> class.
-/// </summary>
-gCamera::gCamera(void) : m_eye(0.0f, 20.0f, 20.0f), m_at(0.0f), m_up(0.0f, 1.0f, 0.0f), m_speed(16.0f), m_goFw(0), m_goRight(0), m_slow(false)
+// Initializes a new instance of the gCamera class.
+gCamera::gCamera(glm::vec3 pos) : camEye(pos), boundaryX(100.0f), boundaryY(100.0f), boundaryZ(100.0f),
+camAt(0.0f), camUp(0.0f, 1.0f, 0.0f), speed(16.0f), goFw(0), goRight(0), slow(false)
 {
-	SetView( m_eye, m_at, m_up);
-
-	m_dist = glm::length( m_at - m_eye );	
-
-	SetProj(45.0f, 640/480.0f, 0.001f, 1000.0f);
+	SetView(camEye * TorpedoGLOBAL::Scale, camAt, camUp);
+	dist = glm::length(camAt - camEye);
+	SetProj(45.0f, 640 / 480.0f, 0.001f, 1000.0f);
 }
 
-gCamera::gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up) : m_speed(16.0f), m_goFw(0), m_goRight(0), m_dist(10), m_slow(false)
-{
-	SetView(_eye, _at, _up);
-}
+//gCamera::gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up) : m_speed(16.0f), m_goFw(0), m_goRight(0), m_dist(10), m_slow(false)
+//{
+//	SetView(_eye, _at, _up);
+//}
 
 gCamera::~gCamera(void)
 {
 }
 
-void gCamera::SetView(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up)
+//Beállítja a kamera határait
+void gCamera::SetBoundaries(float bX, float bY, float bZ)
 {
-	m_eye	= _eye;
-	m_at	= _at;
-	m_up	= _up;
+	boundaryX = bX;
+	boundaryY = bY;
+	boundaryZ = bZ;
 
-	m_fw  = glm::normalize( m_at - m_eye  );
-	m_st = glm::normalize( glm::cross( m_fw, m_up ) );
-
-	m_dist = glm::length( m_at - m_eye );	
-
-	m_u = atan2f( m_fw.z, m_fw.x );
-	m_v = acosf( m_fw.y );
+	CameraResetCheck();
 }
 
-void gCamera::SetProj(float _angle, float _aspect, float _zn, float _zf)
+//Beállítja a nézését meg a járását
+void gCamera::SetView(glm::vec3 eye, glm::vec3 at, glm::vec3 up)
 {
-	m_matProj = glm::perspective( _angle, _aspect, _zn, _zf);
-	m_matViewProj = m_matProj * m_viewMatrix;
+	camEye = eye;
+	camAt = at;
+	camUp = up;
+
+	camFw = glm::normalize(camAt - camEye);
+	camSt = glm::normalize(glm::cross(camFw, camUp));
+
+	dist = glm::length(camAt - camEye);
+
+	camU = atan2f(camFw.z, camFw.x);
+	camV = acosf(camFw.y);
 }
 
+void gCamera::SetProj(float angle, float aspect, float zn, float zf)
+{
+	matProj = glm::perspective(angle, aspect, zn, zf);
+	matViewProj = matProj * viewMatrix;
+}
+
+//Gets the view matrix.
 glm::mat4 gCamera::GetViewMatrix()
 {
-	return m_viewMatrix;
+	return viewMatrix;
 }
 
-void gCamera::Update(float _deltaTime)
+//Kamara mozgását kezeli
+void gCamera::Update(float deltaTime)
 {
-	m_eye += (m_goFw*m_fw + m_goRight*m_st)*m_speed*_deltaTime;
-	m_at  += (m_goFw*m_fw + m_goRight*m_st)*m_speed*_deltaTime;
+	if (BoundaryCheckNextFrame(deltaTime)) {
+		camEye += (goFw*camFw + goRight*camSt)*speed*deltaTime;
+		camAt += (goFw*camFw + goRight*camSt)*speed*deltaTime;
+	}
 
-	m_viewMatrix = glm::lookAt( m_eye, m_at, m_up);
-	m_matViewProj = m_matProj * m_viewMatrix;
+	viewMatrix = glm::lookAt(camEye, camAt, camUp);
+	matViewProj = matProj * viewMatrix;
 }
 
+//Megnézi,hogy a következõ képkockára a kamera már kiesne-e a játéktérbõl
+bool gCamera::BoundaryCheckNextFrame(float deltaTime)
+{
+	if (TorpedoGLOBAL::CameraBounds) {
+		glm::vec3 tmpEye = camEye + (goFw*camFw + goRight*camSt)*speed*deltaTime;
+		if (tmpEye.x > boundaryX || tmpEye.x < -boundaryX || tmpEye.y > boundaryY || tmpEye.y < -boundaryY / 8.0f
+			|| tmpEye.z > boundaryZ || tmpEye.z < -boundaryZ)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+//Resets the camera if it's out of bounds
+void gCamera::CameraResetCheck()
+{
+	if (TorpedoGLOBAL::CameraBounds) {
+		if (camEye.x > boundaryX || camEye.x < -boundaryX || camEye.y > boundaryY || camEye.y < -boundaryY / 8.0f
+			|| camEye.z > boundaryZ || camEye.z < -boundaryZ)
+		{
+			camEye = glm::vec3(boundaryX / 2.0f, boundaryY / 2.0f, boundaryZ / 2.0f);
+			SetView(camEye, camAt, camUp);
+		}
+	}
+}
+
+//Updates the UV
 void gCamera::UpdateUV(float du, float dv)
 {
-	m_u		+= du;
-	m_v		 = glm::clamp<float>(m_v + dv, 0.1f, 3.1f);
+	camU += du;
+	camV = glm::clamp<float>(camV + dv, 0.1f, 3.1f);
 
-	m_at = m_eye + m_dist*glm::vec3(	cosf(m_u)*sinf(m_v), 
-										cosf(m_v), 
-										sinf(m_u)*sinf(m_v) );
+	camAt = camEye + dist*glm::vec3(cosf(camU)*sinf(camV),
+		cosf(camV),
+		sinf(camU)*sinf(camV));
 
-	m_fw = glm::normalize( m_at - m_eye );
-	m_st = glm::normalize( glm::cross( m_fw, m_up ) );
+	camFw = glm::normalize(camAt - camEye);
+	camSt = glm::normalize(glm::cross(camFw, camUp));
 }
 
-void gCamera::SetSpeed(float _val)
+void gCamera::SetSpeed(float val)
 {
-	m_speed = _val;
+	speed = val;
 }
 
-void gCamera::Resize(int _w, int _h)
+void gCamera::Resize(float w, float h, float fov, float viewDist)
 {
-	m_matProj = glm::perspective(	45.0f, _w/(float)_h, 0.01f, 1000.0f);
+	matProj = glm::perspective(fov, w / h, 0.01f, viewDist);
 
-	m_matViewProj = m_matProj * m_viewMatrix;
+	matViewProj = matProj * viewMatrix;
 }
 
 void gCamera::KeyboardDown(SDL_KeyboardEvent& key)
 {
-	switch ( key.keysym.sym )
+	switch (key.keysym.sym)
 	{
 	case SDLK_LSHIFT:
 	case SDLK_RSHIFT:
-		if ( !m_slow )
+		if (!slow)
 		{
-			m_slow = true;
-			m_speed /= 4.0f;
+			slow = true;
+			speed /= 4.0f;
 		}
 		break;
 	case SDLK_w:
-			m_goFw = 1;
+		goFw = 1;
 		break;
 	case SDLK_s:
-			m_goFw = -1;
+		goFw = -1;
 		break;
 	case SDLK_a:
-			m_goRight = -1;
+		goRight = -1;
 		break;
 	case SDLK_d:
-			m_goRight = 1;
+		goRight = 1;
 		break;
 	}
 }
 
 void gCamera::KeyboardUp(SDL_KeyboardEvent& key)
 {
-	switch ( key.keysym.sym )
+	switch (key.keysym.sym)
 	{
 	case SDLK_LSHIFT:
 	case SDLK_RSHIFT:
-		if ( m_slow )
+		if (slow)
 		{
-			m_slow = false;
-			m_speed *= 4.0f;
+			slow = false;
+			speed *= 4.0f;
 		}
 		break;
 	case SDLK_w:
 	case SDLK_s:
-			m_goFw = 0;
+		goFw = 0;
 		break;
 	case SDLK_a:
 	case SDLK_d:
-			m_goRight = 0;
+		goRight = 0;
 		break;
 	}
 }
 
 void gCamera::MouseMove(SDL_MouseMotionEvent& mouse)
 {
-	if ( mouse.state & SDL_BUTTON_LMASK )
+	if (mouse.state & SDL_BUTTON_LMASK)
 	{
-		UpdateUV(mouse.xrel/100.0f, mouse.yrel/100.0f);
+		UpdateUV(mouse.xrel / 100.0f, mouse.yrel / 100.0f);
 	}
 }
 
-void gCamera::LookAt(glm::vec3 _at)
+void gCamera::LookAt(glm::vec3 at)
 {
-	SetView(m_eye, _at, m_up);
+	SetView(camEye, at, camUp);
 }
 

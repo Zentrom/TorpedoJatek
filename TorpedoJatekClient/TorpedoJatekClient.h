@@ -27,10 +27,10 @@ private:
 	//State GLOBAL_STATE = State::GLOBAL_MENU; //Menüben kezdünk
 
 	SDL_Window *win = 0;	//Windows ablak
-	const unsigned int rightOffset = 100;	//Jobbra mozgazás
-	const unsigned int downOffset = 100;	//le mozgatás
-	const unsigned int widthWindow = 800;	//ablak szélessés
-	const unsigned int heightWindow = 600;	//magasság
+	const int rightOffset = 100;	//Jobbra mozgazás
+	const int downOffset = 100;	//le mozgatás
+	const int widthWindow = 800;	//ablak szélessés
+	const int heightWindow = 600;	//magasság
 	const Uint32 flagsWindow = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE; //win ablakhoz tartozó SDL flagek.
 	std::stringstream window_title;	//Ablak szöveg a címsorban
 
