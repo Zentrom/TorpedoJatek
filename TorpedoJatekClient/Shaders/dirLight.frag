@@ -12,7 +12,7 @@ vec3 light_start = vec3(1, 1,-1);
 vec3 La = vec3(0.2f, 0.2f, 0.2f);
 vec3 Ld = vec3(0.8f, 0.8f, 0.8f);
 vec3 Ls = vec3(1, 1, 0.4f);
-float specular_power = 64;
+float specular_power = 128;
 
 uniform vec3 eye_pos = vec3(0, 20, 20);
 uniform bool hasTexture = false;

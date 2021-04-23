@@ -77,7 +77,7 @@
     <Image Include="Resources\Normals\ground_normal.bmp" />
     <Image Include="Resources\Normals\suzanne_normal.bmp" />
     <Image Include="Resources\Normals\top_normal.bmp" />
-    <Image Include="Resources\Textures\ground_texture.bmp" />
+    <Image Include="Resources\Textures\groundTexture.bmp" />
     <Image Include="Resources\Textures\gomb_texture.bmp" />
     <Image Include="Resources\Textures\texture_1.bmp" />
     <Image Include="Resources\Textures\suzanne_texture.bmp" />

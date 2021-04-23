@@ -29,6 +29,7 @@ public:
 	PlayTile& getTile(const std::pair<char, int> &pos);
 	std::array<PlayTile*, 4> getFreeBacks(const PlayTile &tile, int backDistance);
 	void PlaceShip(PlayTile *front, PlayTile *back);
+	void HitFleet(std::pair<char, int> hitPos);
 
 	std::array<int, 4>& getUnplacedShipCount();
 	std::vector<std::pair<char, int>> getActiveTilePositions();

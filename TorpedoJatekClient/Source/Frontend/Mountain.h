@@ -23,8 +23,10 @@ public:
 	static float getHeight();
 
 protected:
+	const int mountainResolution = 44; //hány darab négyzetbõl álljon a hegy egy sora/oszlopa
 	gVertexBuffer	vb_mountain; //grafikai adatok
-	static const float heightY;
+
+	static const float heightY; //magasság
 	static const float widthX; //Hegy szélessége X tengelyen
 	const glm::vec3 mountain_translate = glm::vec3(0, 0, 0) * TorpedoGLOBAL::Scale; //mozgatás
 	float mountain_rotate = 0.0f; //forgatás

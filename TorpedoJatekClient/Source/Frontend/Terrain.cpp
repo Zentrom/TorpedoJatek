@@ -34,7 +34,7 @@ void Terrain::Init()
 	for (Ground &ground : myGrounds) {
 		ground.Init();
 	}
-	groundTextureID = TextureFromFile("Resources/Textures/ground_texture.bmp");
+	groundTextureID = TextureFromFile("Resources/Textures/groundTexture.bmp");
 }
 
 //A földdarabok kirajzolása

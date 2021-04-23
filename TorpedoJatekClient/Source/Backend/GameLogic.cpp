@@ -224,6 +224,10 @@ ResponseState GameLogic::GetShoot()
 	processableTile = PlayTile(clientHandler.ReceiveShot());
 	newState = clientHandler.getRecShotState();
 
+	if (newState != ResponseState::CONTINUE_MATCH) {
+		myFleet->HitFleet(processableTile.getPos());
+	}
+
 	if (processableTile.getPos().first == '0') {
 		std::cout << "The enemy left the game!" << std::endl;
 	}

@@ -42,57 +42,118 @@ void Ship::Init()
 	vb_ship.AddAttribute(1, 4);
 	vb_ship.AddAttribute(2, 3);
 
-	vb_ship.AddData(0, -0.5f, -0.5f, 0.5f);
-	vb_ship.AddData(0, 0.5f, -0.5f, 0.5f);
-	vb_ship.AddData(0, -0.5f, 0.5f, 0.5f);
-	vb_ship.AddData(0, 0.5f, 0.5f, 0.5f);
-	vb_ship.AddData(0, -0.5f, -0.5f, -0.5f);
-	vb_ship.AddData(0, 0.5f, -0.5f, -0.5f);
-	vb_ship.AddData(0, -0.5f, 0.5f, -0.5f);
-	vb_ship.AddData(0, 0.5f, 0.5f, -0.5f);
+	//Hajó alsó palást
+	vb_ship.AddData(0, -0.5f, 0, 0);
+	vb_ship.AddData(0, -0.25f, -0.25f, 0);
+	vb_ship.AddData(0, -0.25f, 0, 0.25f);
+	vb_ship.AddData(0, -0.25f, 0, 0.25f);
+	vb_ship.AddData(0, -0.25f, -0.25f, 0);
+	vb_ship.AddData(0, 0.25f, 0, 0.25f);
+	vb_ship.AddData(0, 0.25f, 0, 0.25f);
+	vb_ship.AddData(0, -0.25f, -0.25f, 0);
+	vb_ship.AddData(0, 0.25f, -0.25f, 0);
+	vb_ship.AddData(0, 0.25f, 0, 0.25f);
+	vb_ship.AddData(0, 0.25f, -0.25f, 0);
+	vb_ship.AddData(0, 0.5f, 0, 0);
+	//palást másik oldala
+	vb_ship.AddData(0, 0.5f, 0, 0);
+	vb_ship.AddData(0, 0.25f, -0.25f, 0);
+	vb_ship.AddData(0, 0.25f, 0, -0.25f);
+	vb_ship.AddData(0, 0.25f, 0, -0.25f);
+	vb_ship.AddData(0, 0.25f, -0.25f, 0);
+	vb_ship.AddData(0, -0.25f, 0, -0.25f);
+	vb_ship.AddData(0, -0.25f, 0, -0.25f);
+	vb_ship.AddData(0, 0.25f, -0.25f, 0);
+	vb_ship.AddData(0, -0.25f, -0.25f, 0);
+	vb_ship.AddData(0, -0.25f, 0, -0.25f);
+	vb_ship.AddData(0, -0.25f, -0.25f, 0);
+	vb_ship.AddData(0, -0.5f, 0, 0);
+	//Fedõlap
+	vb_ship.AddData(0, -0.25f, 0, -0.25f);
+	vb_ship.AddData(0, -0.5f, 0, 0);
+	vb_ship.AddData(0, -0.25f, 0, 0.25f);
+	vb_ship.AddData(0, -0.25f, 0, -0.25f);
+	vb_ship.AddData(0, -0.25f, 0, 0.25f);
+	vb_ship.AddData(0, 0.25f, 0, 0.25f);
+	vb_ship.AddData(0, 0.25f, 0, 0.25f);
+	vb_ship.AddData(0, 0.25f, 0, -0.25f);
+	vb_ship.AddData(0, -0.25f, 0, -0.25f);
+	vb_ship.AddData(0, 0.25f, 0, -0.25f);
+	vb_ship.AddData(0, 0.25f, 0, 0.25f);
+	vb_ship.AddData(0, 0.5f, 0, 0);
+	//Gúlasátor
+	vb_ship.AddData(0, -0.25f, 0, 0);
+	vb_ship.AddData(0, 0, 0, 0.25f);
+	vb_ship.AddData(0, 0, 0.25f, 0);
+	vb_ship.AddData(0, 0, 0.25f, 0);
+	vb_ship.AddData(0, 0, 0, 0.25f);
+	vb_ship.AddData(0, 0.25f, 0, 0);
+	vb_ship.AddData(0, 0.25f, 0, 0);
+	vb_ship.AddData(0, 0, 0, -0.25f);
+	vb_ship.AddData(0, 0, 0.25f, 0);
+	vb_ship.AddData(0, 0, 0.25f, 0);
+	vb_ship.AddData(0, 0, 0, -0.25f);
+	vb_ship.AddData(0, -0.25f, 0, 0);
 
 	if (!isAlly) {
-		vb_ship.AddData(1, 1.0f, 0, 0, 1);
-		vb_ship.AddData(1, 1.0f, 0, 0, 1);
-		vb_ship.AddData(1, 1.0f, 0, 0, 1);
-		vb_ship.AddData(1, 1.0f, 0, 0, 1);
-		vb_ship.AddData(1, 1.0f, 0, 0, 1);
-		vb_ship.AddData(1, 1.0f, 0, 0, 1);
-		vb_ship.AddData(1, 1.0f, 0, 0, 1);
-		vb_ship.AddData(1, 1.0f, 0, 0, 1);
+		for (int i = 0; i < 48; i++) {
+			vb_ship.AddData(1, 1.0f, 0, 0, 1);
+		}
 	}
 	else {
-		vb_ship.AddData(1, 0, 1.0f, 0, 1);
-		vb_ship.AddData(1, 0, 1.0f, 0, 1);
-		vb_ship.AddData(1, 0, 1.0f, 0, 1);
-		vb_ship.AddData(1, 0, 1.0f, 0, 1);
-		vb_ship.AddData(1, 0, 1.0f, 0, 1);
-		vb_ship.AddData(1, 0, 1.0f, 0, 1);
-		vb_ship.AddData(1, 0, 1.0f, 0, 1);
-		vb_ship.AddData(1, 0, 1.0f, 0, 1);
+		for (int i = 0; i < 48; i++) {
+			vb_ship.AddData(1, 0, 1.0f, 0, 1);
+		}
 	}
 
-	vb_ship.AddData(2, -0.5f, -0.5f, 0.5f);
-	vb_ship.AddData(2, 0.5f, -0.5f, 0.5f);
-	vb_ship.AddData(2, -0.5f, 0.5f, 0.5f);
-	vb_ship.AddData(2, 0.5f, 0.5f, 0.5f);
-	vb_ship.AddData(2, -0.5f, -0.5f, -0.5f);
-	vb_ship.AddData(2, 0.5f, -0.5f, -0.5f);
-	vb_ship.AddData(2, -0.5f, 0.5f, -0.5f);
-	vb_ship.AddData(2, 0.5f, 0.5f, -0.5f);
-
-	vb_ship.AddIndex(1, 2, 0);
-	vb_ship.AddIndex(1, 3, 2);
-	vb_ship.AddIndex(5, 3, 1);
-	vb_ship.AddIndex(5, 7, 3);
-	vb_ship.AddIndex(4, 7, 5);
-	vb_ship.AddIndex(4, 6, 7);
-	vb_ship.AddIndex(0, 6, 4);
-	vb_ship.AddIndex(0, 2, 6);
-	vb_ship.AddIndex(3, 6, 2);
-	vb_ship.AddIndex(3, 7, 6);
-	vb_ship.AddIndex(5, 0, 4);
-	vb_ship.AddIndex(5, 1, 0);
+	vb_ship.AddData(2, -0.5f, 0, 0);
+	vb_ship.AddData(2, -0.25f, -0.25f, 0);
+	vb_ship.AddData(2, -0.25f, 0, 0.25f);
+	vb_ship.AddData(2, -0.25f, 0, 0.25f);
+	vb_ship.AddData(2, -0.25f, -0.25f, 0);
+	vb_ship.AddData(2, 0.25f, 0, 0.25f);
+	vb_ship.AddData(2, 0.25f, 0, 0.25f);
+	vb_ship.AddData(2, -0.25f, -0.25f, 0);
+	vb_ship.AddData(2, 0.25f, -0.25f, 0);
+	vb_ship.AddData(2, 0.25f, 0, 0.25f);
+	vb_ship.AddData(2, 0.25f, -0.25f, 0);
+	vb_ship.AddData(2, 0.5f, 0, 0);
+	vb_ship.AddData(2, 0.5f, 0, 0);
+	vb_ship.AddData(2, 0.25f, -0.25f, 0);
+	vb_ship.AddData(2, 0.25f, 0, -0.25f);
+	vb_ship.AddData(2, 0.25f, 0, -0.25f);
+	vb_ship.AddData(2, 0.25f, -0.25f, 0);
+	vb_ship.AddData(2, -0.25f, 0, -0.25f);
+	vb_ship.AddData(2, -0.25f, 0, -0.25f);
+	vb_ship.AddData(2, 0.25f, -0.25f, 0);
+	vb_ship.AddData(2, -0.25f, -0.25f, 0);
+	vb_ship.AddData(2, -0.25f, 0, -0.25f);
+	vb_ship.AddData(2, -0.25f, -0.25f, 0);
+	vb_ship.AddData(2, -0.5f, 0, 0);
+	vb_ship.AddData(2, -0.25f, 0, -0.25f);
+	vb_ship.AddData(2, -0.5f, 0, 0);
+	vb_ship.AddData(2, -0.25f, 0, 0.25f);
+	vb_ship.AddData(2, -0.25f, 0, -0.25f);
+	vb_ship.AddData(2, -0.25f, 0, 0.25f);
+	vb_ship.AddData(2, 0.25f, 0, 0.25f);
+	vb_ship.AddData(2, 0.25f, 0, 0.25f);
+	vb_ship.AddData(2, 0.25f, 0, -0.25f);
+	vb_ship.AddData(2, -0.25f, 0, -0.25f);
+	vb_ship.AddData(2, 0.25f, 0, -0.25f);
+	vb_ship.AddData(2, 0.25f, 0, 0.25f);
+	vb_ship.AddData(2, 0.5f, 0, 0);
+	vb_ship.AddData(2, -0.25f, 0, 0);
+	vb_ship.AddData(2, 0, 0, 0.25f);
+	vb_ship.AddData(2, 0, 0.25f, 0);
+	vb_ship.AddData(2, 0, 0.25f, 0);
+	vb_ship.AddData(2, 0, 0, 0.25f);
+	vb_ship.AddData(2, 0.25f, 0, 0);
+	vb_ship.AddData(2, 0.25f, 0, 0);
+	vb_ship.AddData(2, 0, 0, -0.25f);
+	vb_ship.AddData(2, 0, 0.25f, 0);
+	vb_ship.AddData(2, 0, 0.25f, 0);
+	vb_ship.AddData(2, 0, 0, -0.25f);
+	vb_ship.AddData(2, -0.25f, 0, 0);
 
 	vb_ship.InitBuffers();
 }
@@ -100,8 +161,8 @@ void Ship::Init()
 //Egy hajó kirajzolása
 void Ship::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
-
-	glm::mat4 matWorld = glm::translate(ship_translate) * glm::rotate(ship_rotate, ship_rotate_angle) * glm::scale(ship_scale);
+	glm::mat4 matWorld = glm::translate(ship_translate) * glm::rotate(ship_rotate, ship_rotate_angle) * glm::scale(ship_scale)
+		* glm::translate(ship_abovesea_trans);
 	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
 	glm::mat4 mvp = camera.GetViewProj() *matWorld;
 
@@ -114,11 +175,21 @@ void Ship::Draw(gCamera &camera, gShaderProgram &sh_program)
 	//m_program.SetTexture("texNormal", 1, m_groundNormalMapID);
 
 	vb_ship.On();
-	vb_ship.DrawIndexed(GL_TRIANGLES, 0, 36, 0);
+	vb_ship.Draw(GL_TRIANGLES, 0, 48);
 	vb_ship.Off();
 }
 
 std::vector<PlayTile*>& Ship::getPlayTiles()
 {
 	return playTiles;
+}
+
+bool Ship::isDestroyed()
+{
+	return destroyed;
+}
+
+void Ship::setDestroyed(bool dis)
+{
+	destroyed = dis;
 }

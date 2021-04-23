@@ -40,12 +40,12 @@ void Fleet::InitTiles(const std::vector<PlayTile> &tiles)
 //Játékos hajóinak kirajzolása
 void Fleet::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
-
 	for (Ship &ship : ships) {
-		ship.Draw(camera, sh_program);
+		if (!ship.isDestroyed()) {
+			ship.Draw(camera, sh_program);
+		}
 	}
 	battleShip.Draw(camera, sh_program);
-
 }
 
 //Megnezi hogy szabad-e a játékmezõ
@@ -184,13 +184,42 @@ void Fleet::PlaceShip(PlayTile *front, PlayTile *back)
 	}
 }
 
+void Fleet::HitFleet(std::pair<char, int> hitPos)
+{
+	bool found = false;
+	for (Ship &sh : ships) {
+		if (!sh.isDestroyed()) {
+			for (PlayTile *pt : sh.getPlayTiles()) {
+				if (pt->getPos() == hitPos) {
+					pt->ClearPosition();
+					found = true;
+					break;
+				}
+			}
+			bool notAll = false;
+			for (PlayTile *pt : sh.getPlayTiles()) {
+				if (pt->getPos().first != '0') {
+					notAll = true;
+					break;
+				}
+			}
+			if (!notAll) {
+				sh.setDestroyed(true);
+			}
+			if (found) {
+				break;
+			}
+		}
+	}
+}
+
 //Visszaadja a le nem rakott hajók számát méret alapján(1x1,2x2,stb.)
 std::array<int, 4>& Fleet::getUnplacedShipCount()
 {
 	return unplacedShipCount;
 }
 
-//Visszaadja azoknak a mezõknek a koordinátáit amin van hajó
+//Visszaadja azoknak a mezõknek a koordinátáit amin van hajó, kilõttek is akár
 std::vector<std::pair<char, int>> Fleet::getActiveTilePositions()
 {
 	std::vector<std::pair<char, int>> result;
@@ -201,3 +230,4 @@ std::vector<std::pair<char, int>> Fleet::getActiveTilePositions()
 	}
 	return result;
 }
+

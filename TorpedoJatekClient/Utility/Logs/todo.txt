@@ -1,3 +1,4 @@
+Mountaint dispacement mappinggel vagy valami profibb módon. Beta után.
 Megoldani egy tényleges visszakapcsolódást a serverre,lementett állapottal, 60sec timeout.EZT majd beta körül.
 std::exit()-ektõl lehetõleg megszabadulni. Beta verziónál.
 std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
@@ -8,10 +9,11 @@ Freetype vagy SDL rtf/ttf betuknek
 CHECKSOCKET clientOldalon megfontolandó majd, 3D pickingtõl kezdve.
 Addig Threadet elõbb is el lehetne inditani.(ez elmarad)
 
-Hogy jelenjenek meg az ellenfél hajói?
-Ha piros mezõre lövünk,az maradjon piros.
-Ha zöld hajó minden pontja kilõve,akkor tünjön el.
+Outlineolni kéne a PlayTileokat(004)
+Hogy jelenjenek meg az ellenfél hajói?(lövés animációnál majd 004vagy005)
 
 Vertexbufferek lehetnének static-ok talán?
-Tesztelni Scale,mapSize,seaTilesize és groundSize változtatást.
-SeaTile és Ground darabokat egy Vertexbufferbe(+Vertexbuffert egyszer initelni)/Instancing/Deferred shading.
+Tesztelni Scale,mapSize,seaTilesize és groundSize változtatást.003
+SeaTile és Ground darabokat egy Vertexbufferbe(+Vertexbuffert egyszer initelni)/Instancing/Deferred shading.004+
+Ground darabszáma seatile darabszámtól függjön.003
+Fleet-be és más osztályokba a const & parameteres osztályok nem referenciát adnak át,ezért copy készül.003

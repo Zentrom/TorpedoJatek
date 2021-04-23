@@ -14,6 +14,7 @@ public:
 	void setState(int newState = 3);
 	void setIndex(int newIndex = 0);
 	void setUsed(bool used = true);
+	void ClearPosition();
 
 	int getIndex() const;
 	std::pair<char, int> getPos() const;

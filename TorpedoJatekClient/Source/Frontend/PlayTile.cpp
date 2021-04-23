@@ -41,19 +41,21 @@ void PlayTile::Draw(gCamera &camera, gShaderProgram &sh_program)
 void PlayTile::setState(int newState)
 {
 	switch (newState) {
-	case 1:
+	case 1: //hit
 		tileState = glm::vec4(1, 0, 0, 1);
 		break;
-	case 2:
-		tileState = glm::vec4(1, 1, 0, 1);
+	case 2: //miss
+		if (tileState.x != 1) {
+			tileState = glm::vec4(1, 1, 0, 1);
+		}
 		break;
-	case 3:
+	case 3: //default
 		tileState = glm::vec4(0, 0, 1, 1);
 		break;
-	case 4:
+	case 4: //winPlayerOne
 		tileState = glm::vec4(1, 0, 0, 1);
 		break;
-	case 5:
+	case 5: //winPlayerTwo
 		tileState = glm::vec4(1, 0, 0, 1);
 		break;
 	default:
@@ -70,6 +72,12 @@ void PlayTile::setIndex(int newIndex)
 void PlayTile::setUsed(bool used)
 {
 	usedTile = used;
+}
+
+//Kinullázza a játékmezõ koordinátáját
+void PlayTile::ClearPosition()
+{
+	position = std::pair<char, int>('0', 0);
 }
 
 int PlayTile::getIndex() const

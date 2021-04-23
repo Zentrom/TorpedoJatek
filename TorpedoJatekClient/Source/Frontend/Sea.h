@@ -11,8 +11,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-#include <cmath>
-
 //Tenger osztálya-2játékos játékmezõi+többi tengermezõ
 class Sea
 {

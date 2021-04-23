@@ -20,45 +20,38 @@ void Mountain::Init()
 	vb_mountain.AddAttribute(1, 4);
 	vb_mountain.AddAttribute(2, 3);
 
-	vb_mountain.AddData(0, -0.5f, -0.5f, 0.5f);
-	vb_mountain.AddData(0, 0.5f, -0.5f, 0.5f);
-	vb_mountain.AddData(0, -0.5f, 0.5f, 0.5f);
-	vb_mountain.AddData(0, 0.5f, 0.5f, 0.5f);
-	vb_mountain.AddData(0, -0.5f, -0.5f, -0.5f);
-	vb_mountain.AddData(0, 0.5f, -0.5f, -0.5f);
-	vb_mountain.AddData(0, -0.5f, 0.5f, -0.5f);
-	vb_mountain.AddData(0, 0.5f, 0.5f, -0.5f);
+	float vertexStep = 1.0f / static_cast<float>(mountainResolution);
+	float xAxis;
+	float zAxis;
+	float yAxis;
+	for (int x = 0; x <= mountainResolution; ++x) {
+		for (int z = 0; z <= mountainResolution; ++z) {
 
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
-	vb_mountain.AddData(1, 1.0f, 1.0f, 0, 1);
+			xAxis = vertexStep * x - 0.5f;
+			zAxis = vertexStep * z - 0.5f;
+			yAxis = glm::cos(glm::pi<float>() * xAxis) * glm::cos(glm::pi<float>() * zAxis) - 0.5f;
 
-	vb_mountain.AddData(2, -0.5f, -0.5f, 0.5f);
-	vb_mountain.AddData(2, 0.5f, -0.5f, 0.5f);
-	vb_mountain.AddData(2, -0.5f, 0.5f, 0.5f);
-	vb_mountain.AddData(2, 0.5f, 0.5f, 0.5f);
-	vb_mountain.AddData(2, -0.5f, -0.5f, -0.5f);
-	vb_mountain.AddData(2, 0.5f, -0.5f, -0.5f);
-	vb_mountain.AddData(2, -0.5f, 0.5f, -0.5f);
-	vb_mountain.AddData(2, 0.5f, 0.5f, -0.5f);
+			vb_mountain.AddData(0, xAxis, yAxis, zAxis);
+			vb_mountain.AddData(1, 0.5f, 0.5f, 0, 1);
+			vb_mountain.AddData(2, xAxis, glm::abs(yAxis), zAxis);
+		}
+	}
 
-	vb_mountain.AddIndex(1, 2, 0);
-	vb_mountain.AddIndex(1, 3, 2);
-	vb_mountain.AddIndex(5, 3, 1);
-	vb_mountain.AddIndex(5, 7, 3);
-	vb_mountain.AddIndex(4, 7, 5);
-	vb_mountain.AddIndex(4, 6, 7);
-	vb_mountain.AddIndex(0, 6, 4);
-	vb_mountain.AddIndex(0, 2, 6);
-	vb_mountain.AddIndex(3, 6, 2);
-	vb_mountain.AddIndex(3, 7, 6);
-	vb_mountain.AddIndex(5, 0, 4);
-	vb_mountain.AddIndex(5, 1, 0);
+	// az indexek meghatározása minden négyzethez
+	for (int i = 0; i < mountainResolution; ++i) {
+		for (int j = 0; j < mountainResolution; ++j) {
+			// az egyik háromszög a négyzet egyik fele
+			vb_mountain.AddIndex((i + 1) + (j) * (mountainResolution + 1),
+				(i) + (j + 1) * (mountainResolution + 1),
+				(i)+(j) * (mountainResolution + 1)
+			);
+			// a másik háromszög a négyzet másik fele
+			vb_mountain.AddIndex((i + 1) + (j + 1) * (mountainResolution + 1),
+				(i) + (j + 1) * (mountainResolution + 1),
+				(i + 1) + (j) * (mountainResolution + 1)
+			);
+		}
+	}
 
 	vb_mountain.InitBuffers();
 }
@@ -79,7 +72,7 @@ void Mountain::Draw(gCamera &camera, gShaderProgram &sh_program)
 	//m_program.SetTexture("texNormal", 1, m_groundNormalMapID);
 
 	vb_mountain.On();
-	vb_mountain.DrawIndexed(GL_TRIANGLES, 0, 36, 0);
+	vb_mountain.DrawIndexed(GL_TRIANGLES, 0, 2 * 3 * mountainResolution * mountainResolution, 0);
 	vb_mountain.Off();
 }
 

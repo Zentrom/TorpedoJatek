@@ -225,7 +225,7 @@
     <Image Include="Resources\Textures\texture_1.bmp">
       <Filter>Resource Files\Textures</Filter>
     </Image>
-    <Image Include="Resources\Textures\ground_texture.bmp">
+    <Image Include="Resources\Textures\groundTexture.bmp">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

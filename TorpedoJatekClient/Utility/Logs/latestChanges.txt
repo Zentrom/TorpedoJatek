@@ -1,6 +1,6 @@
-v0.0.2d-Sea And Terrain Expansion
+v0.0.2e-Ship&Mountain Remodelling
 --------------------------------------------------------------------------------
--The Camera is now clamped to certain bounds it cannot pass through.
--The Terrain is now expanded and textured.
--The Sea is now expanded and made transparent.
--Tweaked light parameters a little.
+-Ships now have a new model.
+-The Mountain now has a new model,generated using angle function equation.
+-Shooting at the same tile that was previously a hit now doesn't recolor it to yellow.
+-Player's own ship now disappears when all it's tiles are hit.
