@@ -4,13 +4,14 @@
 GameInstance::GameInstance(float viewportW, float viewportH) : viewportWidth(viewportW),viewportHeight(viewportH),
 	cam_mainCamera(glm::vec3(0,20.0f,20.0f))
 {
-	cam_mainCamera.SetBoundaries(terrain.getTerrainScale() * Ground::getScaleXZ() / 3.0f,
-		Mountain::getHeight() * 4.0f, terrain.getTerrainScale() * Ground::getScaleXZ() / 3.0f);
+	cam_mainCamera.SetBoundaries(terrain.getTerrainScale() * Ground::getScaleXZ() / 3.0f * TorpedoGLOBAL::Scale,
+		Mountain::getHeight() * 4.0f * TorpedoGLOBAL::Scale, 
+		terrain.getTerrainScale() * Ground::getScaleXZ() / 3.0f * TorpedoGLOBAL::Scale);
 	cam_mainCamera.SetProj(fieldOfView, viewportWidth / viewportHeight, 0.01f, viewDistance);
-	/*
-	m_coneTextureID = 0;
-	m_coneNormalMapID = 0;
-	m_mesh = 0;*/
+	
+	///m_coneTextureID = 0;
+	///m_coneNormalMapID = 0;
+	///m_mesh = 0;
 }
 
 GameInstance::~GameInstance(void)
@@ -59,24 +60,15 @@ bool GameInstance::Init()
 		return false;
 	}
 
-	
-	// textúrák betöltése
-	//GLuint m_coneTextureID = TextureFromFile("Resources/Textures/cylinder_texture.bmp");
-	//m_coneNormalMapID = TextureFromFile("Resources/Normals/cylinder_normal.bmp");
-
-	// mesh betöltés
-	//m_mesh = ObjParser::parse("Resources/suzanne.obj");
-	//m_mesh->initBuffers();
-	
+	/// mesh betöltés
+	///m_mesh = ObjParser::parse("Resources/suzanne.obj");
+	///m_mesh->initBuffers();
 
 	return true;
 }
 
 void GameInstance::Clean()
 {
-	/*glDeleteTextures(1, &m_coneTextureID);
-	glDeleteTextures(1, &m_coneNormalMapID);*/
-
 	sh_dirLight.Clean();
 	sh_skybox.Clean();
 }

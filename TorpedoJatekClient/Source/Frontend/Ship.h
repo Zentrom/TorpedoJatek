@@ -37,7 +37,7 @@ private:
 	glm::vec3 ship_translate = glm::vec3(0, 0, 0)* TorpedoGLOBAL::Scale; //mozgatás
 	float ship_rotate = 0.0f; //forgatás
 	glm::vec3 ship_rotate_angle = glm::vec3(0, 1.0f, 0); //forgatás tengelye
-	glm::vec3 ship_scale = glm::vec3(1.5f * SeaTile::getScaleXZ(), 1.25f, 0.75f * SeaTile::getScaleXZ()) 
+	glm::vec3 ship_scale = glm::vec3(1.5f * SeaTile::getScaleXZ(), 2.0f, 0.75f * SeaTile::getScaleXZ()) 
 		* TorpedoGLOBAL::Scale; //nagyítás(ez most a battleship scale-je)
 
 };

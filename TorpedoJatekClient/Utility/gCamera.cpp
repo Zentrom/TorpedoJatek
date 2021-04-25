@@ -90,7 +90,7 @@ void gCamera::CameraResetCheck()
 		if (camEye.x > boundaryX || camEye.x < -boundaryX || camEye.y > boundaryY || camEye.y < -boundaryY / 8.0f
 			|| camEye.z > boundaryZ || camEye.z < -boundaryZ)
 		{
-			camEye = glm::vec3(boundaryX / 2.0f, boundaryY / 2.0f, boundaryZ / 2.0f);
+			camEye = glm::vec3(-boundaryX / 2.0f, boundaryY / 2.0f, boundaryZ / 2.0f);
 			SetView(camEye, camAt, camUp);
 		}
 	}

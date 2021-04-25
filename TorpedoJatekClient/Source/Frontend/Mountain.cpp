@@ -1,7 +1,7 @@
 
 #include "Mountain.h"
 
-const float Mountain::heightY = 6.0f;
+const float Mountain::heightY = 8.0f;
 const float Mountain::widthX = 6.0f;
 
 Mountain::Mountain(void)

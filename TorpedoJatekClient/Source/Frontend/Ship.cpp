@@ -21,7 +21,7 @@ Ship::Ship(const std::vector<PlayTile*> &tiles, bool ally) : isAlly(ally), playT
 		glm::vec3 backTranslation = tiles[tiles.size() - 1]->getTranslate();
 		ship_translate = (frontTranslation + backTranslation) / 2.0f;
 		ship_scale = glm::vec3(0.8f * tiles.size() * SeaTile::getScaleXZ(),
-			0.6f + 0.4f*tiles.size(), (0.3f + 0.12f*tiles.size()) * SeaTile::getScaleXZ() ) 
+			0.6f + 0.4f*tiles.size() * SeaTile::getScaleXZ(), (0.3f + 0.12f*tiles.size()) * SeaTile::getScaleXZ() ) 
 			* TorpedoGLOBAL::Scale;
 		if (tiles.size() > 1) {
 			if (tiles[0]->getPos().first != tiles[1]->getPos().first) {

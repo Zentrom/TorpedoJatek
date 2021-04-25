@@ -50,9 +50,9 @@ void Sea::InitSeaTiles()
 	glm::vec3 seatileResult = glm::vec3(0.0f);
 	for (int i = 0; i < seaTileCount; i++) {
 		seatile_transX = ((i % seaTileScale) * SeaTile::getScaleXZ() * TorpedoGLOBAL::Scale)
-			- (SeaTile::getScaleXZ() * seaTileScale / 2.0f * TorpedoGLOBAL::Scale) + (SeaTile::getScaleXZ() / 2.0f);
+			- (SeaTile::getScaleXZ() * seaTileScale / 2.0f * TorpedoGLOBAL::Scale) + TorpedoGLOBAL::Scale;//Ide ezkell,hogy extra tileok kijöjjenek
 		seatile_transZ = ((i / seaTileScale) * SeaTile::getScaleXZ() * TorpedoGLOBAL::Scale)
-			- (SeaTile::getScaleXZ() * seaTileScale / 2.0f * TorpedoGLOBAL::Scale);//Itt nemkell,hogy az extra tileokat ki lehessen szedni + (SeaTile::getScaleXZ() / 2.0f);
+			- (SeaTile::getScaleXZ() * seaTileScale / 2.0f * TorpedoGLOBAL::Scale);//Itt nemkell,hogy az extra tileokat ki lehessen szedni
 
 		seatileResult += glm::vec3(seatile_transX, 0, seatile_transZ);
 
@@ -89,6 +89,13 @@ void Sea::InitPlayTiles(int inMapSize)
 //Kiszedi a azokat az extra tengermezõket,amik a játékmezõk helyén vannak
 void Sea::RemoveExtraSeaTiles()
 {
+	///for (SeaTile &tile : seaTiles) {
+	///	std::cout << "SeaTile : " << tile.getTranslate().x << ' ' << tile.getTranslate().z << '\n';
+	///}
+	///for (PlayTile &tile : myTiles) {
+	///	std::cout << "PlayTile : " << tile.getTranslate().x << ' ' << tile.getTranslate().z << '\n';
+	///}
+
 	int initialSize = seaTiles.size();
 	bool foundInMyTiles;
 	for (std::vector<SeaTile>::iterator it = seaTiles.begin(); it != seaTiles.end();++it) 
@@ -132,7 +139,8 @@ glm::vec3 Sea::calcTranslate(int rowNr, int columnNr, bool ally) const
 	float tile_transZ = 0;
 	glm::vec3 tileResult = glm::vec3(0.0f);
 	tile_transX = columnNr * SeaTile::getScaleXZ() * TorpedoGLOBAL::Scale;
-	tile_transZ = (rowNr * SeaTile::getScaleXZ() * TorpedoGLOBAL::Scale) - ((mapSize - 1)*TorpedoGLOBAL::Scale);
+	tile_transZ = (rowNr * SeaTile::getScaleXZ() * TorpedoGLOBAL::Scale) 
+		- ((mapSize - 1) * SeaTile::getScaleXZ() / 2.0f * TorpedoGLOBAL::Scale);
 
 	tileResult += glm::vec3(mountaincenter_border_Xoffset, 0, 0) +
 		glm::vec3(mountain_tile_offset, 0, 0) +

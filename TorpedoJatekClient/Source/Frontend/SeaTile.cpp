@@ -1,7 +1,7 @@
 
 #include "SeaTile.h"
 
-const float SeaTile::scaleXZ = 2.0f;
+const float SeaTile::scaleXZ = 2.0f; //ez most 1 és 2-re megy
 
 SeaTile::SeaTile(void)
 {
