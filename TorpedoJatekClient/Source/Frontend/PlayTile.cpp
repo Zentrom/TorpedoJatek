@@ -24,8 +24,9 @@ void PlayTile::Draw(gCamera &camera, gShaderProgram &sh_program)
 	sh_program.SetUniform("world", matWorld);
 	sh_program.SetUniform("worldIT", matWorldIT);
 	sh_program.SetUniform("MVP", mvp);
-	sh_program.SetUniform("tile_state", tileState);
 	sh_program.SetUniform("is_playtile", true);
+	sh_program.SetUniform("tile_state", tileState);
+	sh_program.SetUniform("tile_index", index + indexOffset);
 
 	//m_program.SetTexture("texImage", 0, m_groundTextureID);
 	//m_program.SetTexture("texNormal", 1, m_groundNormalMapID);
@@ -42,24 +43,24 @@ void PlayTile::setState(int newState)
 {
 	switch (newState) {
 	case 1: //hit
-		tileState = glm::vec4(1, 0, 0, 1);
+		tileState = glm::vec3(1, 0, 0);
 		break;
 	case 2: //miss
 		if (tileState.x != 1) {
-			tileState = glm::vec4(1, 1, 0, 1);
+			tileState = glm::vec3(1, 1, 0);
 		}
 		break;
 	case 3: //default
-		tileState = glm::vec4(0, 0, 1, 1);
+		tileState = glm::vec3(0, 0, 1);
 		break;
 	case 4: //winPlayerOne
-		tileState = glm::vec4(1, 0, 0, 1);
+		tileState = glm::vec3(1, 0, 0);
 		break;
 	case 5: //winPlayerTwo
-		tileState = glm::vec4(1, 0, 0, 1);
+		tileState = glm::vec3(1, 0, 0);
 		break;
 	default:
-		tileState = glm::vec4(0, 0, 1, 1);
+		tileState = glm::vec3(0, 0, 1);
 		break;
 	}
 }

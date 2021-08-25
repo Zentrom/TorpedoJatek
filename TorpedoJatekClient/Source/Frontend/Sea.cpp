@@ -18,16 +18,19 @@ void Sea::Init(int inMapSize)
 }
 
 //Kirajzolja a játékmezõket
-void Sea::Draw(gCamera &camera, gShaderProgram &sh_program)
+void Sea::Draw(gCamera &camera, gShaderProgram &sh_program, float pointedTile)
 {
 	glDisable(GL_CULL_FACE);
+	sh_program.SetUniform("read_index", static_cast<int>(pointedTile));
 	for (int i = 0; i < (mapSize*mapSize); i++) {
 		enemyTiles[i].Draw(camera, sh_program);
 		myTiles[i].Draw(camera, sh_program);
 	}
+	glEnable(GL_BLEND);
 	for (SeaTile &tile : seaTiles) {
 		tile.Draw(camera, sh_program);
 	}
+	glDisable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 }
 

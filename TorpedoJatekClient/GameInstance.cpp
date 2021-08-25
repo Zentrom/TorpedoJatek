@@ -9,15 +9,23 @@ GameInstance::GameInstance(float viewportW, float viewportH) : viewportWidth(vie
 		terrain.getTerrainScale() * Ground::getScaleXZ() / 3.0f * TorpedoGLOBAL::Scale);
 	cam_mainCamera.SetProj(fieldOfView, viewportWidth / viewportHeight, 0.01f, viewDistance);
 	
-	///m_coneTextureID = 0;
-	///m_coneNormalMapID = 0;
-	///m_mesh = 0;
+	mousePointedData = new float[4];
+	mousePointedData[3] = 0.0f; //ez hogy legyen alapértéke mikor kell neki 3d pickinghez
 }
 
 GameInstance::~GameInstance(void)
 {
 	if (!TorpedoGLOBAL::Debug) {
 		SDL_WaitThread(inputThread, nullptr);
+	}
+
+	delete[] mousePointedData;
+
+	if (dirL_frameBufferCreated)
+	{
+		glDeleteRenderbuffers(1, &dirL_depthBuffer);
+		glDeleteTextures(1, &dirL_colorBuffer);
+		glDeleteFramebuffers(1, &dirL_frameBuffer);
 	}
 }
 
@@ -35,12 +43,33 @@ bool GameInstance::Init()
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-	glEnable(GL_BLEND);
+
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	CreateFrameBuffer(viewportWidth, viewportHeight);
+	m_fbo_vbo.AddAttribute(0, 3);
+	m_fbo_vbo.AddAttribute(1, 2);
+	m_fbo_vbo.AddData(0, -1, -1, 0);
+	m_fbo_vbo.AddData(0, 1, -1, 0);
+	m_fbo_vbo.AddData(0, -1, 1, 0);
+	m_fbo_vbo.AddData(0, 1, 1, 0);
+	m_fbo_vbo.AddData(1, 0, 0);
+	m_fbo_vbo.AddData(1, 1, 0);
+	m_fbo_vbo.AddData(1, 0, 1);
+	m_fbo_vbo.AddData(1, 1, 1);
+	m_fbo_vbo.InitBuffers();
 
 	skybox.Init();
 	mountain.Init();
 	terrain.Init();
+
+	sh_default.AttachShader(GL_VERTEX_SHADER, "Shaders/default.vert");
+	sh_default.AttachShader(GL_FRAGMENT_SHADER, "Shaders/default.frag");
+	sh_default.BindAttribLoc(0, "vs_in_pos");
+	sh_default.BindAttribLoc(1, "vs_in_tex");
+	if (!sh_default.LinkProgram()) {
+		return false;
+	}
 
 	sh_dirLight.AttachShader(GL_VERTEX_SHADER, "Shaders/dirLight.vert");
 	sh_dirLight.AttachShader(GL_FRAGMENT_SHADER, "Shaders/dirLight.frag");
@@ -69,6 +98,7 @@ bool GameInstance::Init()
 
 void GameInstance::Clean()
 {
+	sh_default.Clean();
 	sh_dirLight.Clean();
 	sh_skybox.Clean();
 }
@@ -99,6 +129,7 @@ void GameInstance::Update()
 //Rajzolási hívás
 void GameInstance::Render()
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, dirL_frameBuffer);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// megjelenítés módja
@@ -123,8 +154,21 @@ void GameInstance::Render()
 	sh_skybox.Off();
 
 	sh_dirLight.On();
-	sea.Draw(cam_mainCamera, sh_dirLight);
+	sea.Draw(cam_mainCamera, sh_dirLight, mousePointedData[3]);
 	sh_dirLight.Off();
+
+	//glReadPixels(viewportWidth / 2, viewportHeight / 2, 1, 1, GL_RGBA, GL_FLOAT, (void*)mousePointedData);
+	//std::cout << mousePointedData[3] << std::endl;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	sh_default.On();
+	sh_default.SetTexture("quadTexture", 0, dirL_colorBuffer);
+	m_fbo_vbo.On();
+	m_fbo_vbo.Draw(GL_TRIANGLE_STRIP, 0, 4);
+	m_fbo_vbo.Off();
+	sh_default.Off();
 }
 
 void GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
@@ -140,10 +184,19 @@ void GameInstance::KeyboardUp(SDL_KeyboardEvent& key)
 void GameInstance::MouseMove(SDL_MouseMotionEvent& mouse)
 {
 	cam_mainCamera.MouseMove(mouse);
+	//std::cout << mouse.x << " and " << mouse.y << std::endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, dirL_frameBuffer);
+	glReadPixels(mouse.x, viewportHeight - mouse.y - 1, 1, 1, GL_RGBA, GL_FLOAT, (void*)mousePointedData);
+	//std::cout << mousePointedData[3] << std::endl;
 }
 
 void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 {
+	//if (mouse.button == SDL_BUTTON_LEFT) {
+	//	if (SDL_GetRelativeMouseMode() == SDL_bool(false)) {
+	//		SDL_SetRelativeMouseMode(SDL_bool(true));
+	//	}
+	//}
 }
 
 void GameInstance::MouseUp(SDL_MouseButtonEvent& mouse)
@@ -159,5 +212,74 @@ void GameInstance::Resize(int w, int h)
 {
 	glViewport(0, 0, w, h);
 
+	viewportWidth = w;
+	viewportHeight = h;
+
 	cam_mainCamera.Resize(w, h, fieldOfView, viewDistance);
+	CreateFrameBuffer(w, h);
+}
+
+//Custom Framebuffer létrehozása
+void GameInstance::CreateFrameBuffer(int width, int height) 
+{
+	if (dirL_frameBufferCreated)
+	{
+		glDeleteRenderbuffers(1, &dirL_depthBuffer);
+		glDeleteTextures(1, &dirL_colorBuffer);
+		glDeleteFramebuffers(1, &dirL_frameBuffer);
+	}
+
+	glGenFramebuffers(1, &dirL_frameBuffer);
+	glGenTextures(1, &dirL_colorBuffer);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, dirL_frameBuffer);
+	glBindTexture(GL_TEXTURE_2D, dirL_colorBuffer);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, dirL_colorBuffer, 0);
+	if (glGetError() != GL_NO_ERROR)
+	{
+		std::cout << "Error creating color attachment" << std::endl;
+		char ch; std::cin >> ch;
+		exit(1);
+	}
+
+	glGenRenderbuffers(1, &dirL_depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, dirL_depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, dirL_depthBuffer);
+	if (glGetError() != GL_NO_ERROR)
+	{
+		std::cout << "Error creating depth attachment" << std::endl;
+		char ch; 
+		std::cin >> ch;
+		exit(1);
+	}
+
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE)
+	{
+		std::cout << "Incomplete framebuffer (";
+		switch (status) {
+		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+			std::cout << "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+			std::cout << "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
+			break;
+		case GL_FRAMEBUFFER_UNSUPPORTED:
+			std::cout << "GL_FRAMEBUFFER_UNSUPPORTED";
+			break;
+		}
+		std::cout << ")" << std::endl;
+		char ch;
+		std::cin >> ch;
+		exit(1);
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	dirL_frameBufferCreated = true;
 }

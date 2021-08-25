@@ -3,7 +3,6 @@
 in vec3 vs_out_pos;
 in vec4 vs_out_color;
 in vec3 vs_out_normal;
-//in vec2 vs_out_tex0;
 in vec2 vs_out_tex;
 
 out vec4 fs_out_col;
@@ -17,6 +16,11 @@ float specular_power = 128;
 uniform vec3 eye_pos = vec3(0, 20, 20);
 uniform bool hasTexture = false;
 uniform sampler2D texImage;
+
+uniform bool is_playtile = false;
+uniform vec3 tile_state;
+uniform int tile_index = 1024;
+uniform int read_index = 512; //mindegy
 
 void main()
 {
@@ -37,4 +41,11 @@ void main()
 
 	fs_out_col = light * ( hasTexture ? texture(texImage, vs_out_tex.st) : vs_out_color );
 
+	if(is_playtile){
+		if(tile_index  == read_index){
+			fs_out_col = light * vec4(1, 1, 1, read_index);
+		}else{
+			fs_out_col = light * vec4(tile_state, tile_index);
+		}
+	}
 }

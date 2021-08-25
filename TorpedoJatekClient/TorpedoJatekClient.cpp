@@ -143,8 +143,14 @@ int TorpedoJatekClient::StartGameInstance()
 				quit = true;
 				break;
 			case SDL_KEYDOWN:
-				if (ev.key.keysym.sym == SDLK_ESCAPE)
-					quit = true;
+				if (ev.key.keysym.sym == SDLK_ESCAPE) {
+					//if (SDL_GetRelativeMouseMode() == SDL_bool(true)) {
+					//	SDL_SetRelativeMouseMode(SDL_bool(false));
+					//}
+					//else {
+						quit = true;
+					//}
+				}
 				gameInstance.KeyboardDown(ev.key);
 				break;
 			case SDL_KEYUP:

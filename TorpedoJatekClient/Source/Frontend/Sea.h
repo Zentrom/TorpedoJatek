@@ -19,7 +19,7 @@ public:
 	~Sea(void);
 
 	void Init(int inMapSize = 7);
-	void Draw(gCamera &camera, gShaderProgram &sh_program);
+	void Draw(gCamera &camera, gShaderProgram &sh_program, float pointedTile);
 
 	std::vector<PlayTile>& getTiles(bool ally = true);
 

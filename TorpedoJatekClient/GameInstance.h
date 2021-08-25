@@ -44,15 +44,26 @@ public:
 	void MouseWheel(SDL_MouseWheelEvent& wheel);
 	void Resize(int w, int h);
 protected:
-	const float viewportWidth; //Ablak canvaszának szélessége
-	const float viewportHeight; //Ablak canvaszának magassága
+	void CreateFrameBuffer(int width, int height);
+
+	float viewportWidth; //Ablak canvaszának szélessége
+	float viewportHeight; //Ablak canvaszának magassága
 	const float fieldOfView = 45.0f; //Kamera látószöge
 	const float viewDistance = 200.0f * TorpedoGLOBAL::Scale; //Milyen távolságon belül rajzolunk ki dolgokat
+
+	// framebuffer dolgok
+	gVertexBuffer m_fbo_vbo;
+	bool dirL_frameBufferCreated;
+	GLuint dirL_depthBuffer;
+	GLuint dirL_colorBuffer;
+	GLuint dirL_frameBuffer;
+	float* mousePointedData; //Melyik játékmezõre mutat az egér
 
 	SDL_Thread* inputThread; //Thread az inputkezeléshez
 
 	gCamera	cam_mainCamera; //Kamera
-	gShaderProgram	sh_dirLight; //Alap shader
+	gShaderProgram  sh_default; //Alap shader+postprocess
+	gShaderProgram	sh_dirLight; //Ide rajzoljuk a 3D-s teret
 	gShaderProgram  sh_skybox; //Skybox shadere
 
 	Skybox skybox; //Pályát körülvevõ skybox

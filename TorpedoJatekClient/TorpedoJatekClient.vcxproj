@@ -66,6 +66,8 @@
     <ClInclude Include="Utility\ObjParser_OGL3.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\default.frag" />
+    <None Include="Shaders\default.vert" />
     <None Include="Shaders\dirLight.frag" />
     <None Include="Shaders\dirLight.vert" />
     <None Include="Shaders\skybox.frag" />
