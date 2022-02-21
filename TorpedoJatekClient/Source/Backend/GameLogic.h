@@ -30,8 +30,14 @@ public:
 	int Init(Fleet *player, Fleet *enemy, Sea *sea);
 	void ConnectionSetup();
 	void InitGame();
-	void PlaceShips();
+	void DisplayMessage(GameState gameState, void *relatedData);
+	void DisplayError(GameState gameState, void *relatedData);
+	bool CheckForUnplacedShips(int shipSize);
+	bool CheckAnyUnplacedShipLeft();
+	bool PlaceShip(int tileIndex, int shipSize);
+
 	void StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile> &enemyTiles);
+	void StopGame();
 
 	ResponseState Shoot();
 	ResponseState GetShoot();
@@ -47,12 +53,16 @@ protected:
 	int ConvertCoordToTileIndex(const std::pair<char, int> &tile);
 
 	std::string output = "Torpedo Jatek";
-	std::string ship1PlaceText = "Where do you want to place your ship?(a1-";
-	std::string shipFPlaceText = "Where do you want the front of the ship to be?(a1-";
-	std::string shipBPlaceText = "Where do you want the back of the ship to be?\nChoices are:";
+	//std::string ship1PlaceText = "Where do you want to place your ship?(a1-";
+	//std::string shipFPlaceText = "Where do you want the front of the ship to be?(a1-";
+	//std::string shipBPlaceText = "Where do you want the back of the ship to be?\nChoices are:";
 
-	std::string shipFront;	//Hajó végeit tároló inputadat
-	std::string shipBack;
+	//std::string shipFront;	//Hajó végeit tároló inputadat
+	//std::string shipBack;
+	PlayTile *shipFront;
+	PlayTile *shipBack;
+	bool shipFrontPlaced = false; //Leraktuk-e már egy hajó elejét
+	std::array<PlayTile*, 4> freeChoices; //Hajó hátának megfelelõ pozíciók
 
 	std::string ip = "127.0.0.1";	//A szerver-ip szöveges alakja
 	int port = 27015; //szerver port
@@ -61,7 +71,9 @@ protected:
 	Fleet *enemyFleet;	//Pointer az ellenfél hajóseregére
 	Sea *mySea;	//Pointer a tengerre
 
-	int mapSize = 7;	//Tárolt pályaméret
+	std::array<int, 4> &unplacedShips = std::array<int, 4>(); //Hány hajó nincs még lerakva(külön méretekben)
+
+	int mapSize = 7;	//Tárolt pályaméret DEBUG módhoz
 	int choice = 0; //Felhasználói input,mikor dönteni kell
 
 	int playerNum;	//Ha 1 akkor mi kezdünk,ha 2 akkor nem

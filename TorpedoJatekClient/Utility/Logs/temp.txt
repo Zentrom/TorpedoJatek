@@ -1,3 +1,112 @@
+//if (!TorpedoGLOBAL::Debug) {
+	//	inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);
+	//}
+
+
+//A thread hívja meg ezt a függvényt,hogy lehessen meccs közbe gépelni consoleba
+//int GameInstance::threadFunction(void *ptr)
+//{
+//	if (ptr) {
+//		GameInstance* pointr = static_cast<GameInstance *>(ptr);
+//		pointr->gameLogic.StartMatch(pointr->sea.getTiles(true), pointr->sea.getTiles(false));
+//	}
+//	std::cout << "The match is over,input thread stopped." << std::endl;
+//	return 1;
+//
+//}
+
+gameLogic.cpp PlaceShips v2
+----------------------------------------------
+//Lerakja a mi hajóinkat a pályára
+//void GameLogic::PlaceShips()
+//{
+//
+//	
+//
+//	PlayTile tmpFront;
+//	PlayTile tmpBack;
+//
+//	PlayTile* frontPos;
+//	PlayTile* backPos;
+//	do {
+//
+//		backPos = nullptr;
+//
+//		std::cout << '\n' <<
+//			output << '\n'
+//			<< "1. - 1tile ships left: " << unplacedShips.at(0) << '\n'
+//			<< "2. - 2tile ships left: " << unplacedShips.at(1) << '\n'
+//			<< "3. - 3tile ships left: " << unplacedShips.at(2) << '\n'
+//			<< "4. - 4tile ships left: " << unplacedShips.at(3) << '\n'
+//			<< "0. - Quit game!" << std::endl;
+//
+//		//std::cin >> choice;
+//
+//		if (choice > 0 && choice <= 4) {
+//			if (unplacedShips.at(choice - 1) > 0) {
+//				std::cout << (choice == 1 ? ship1PlaceText : shipFPlaceText) << std::endl;
+//				std::cin >> shipFront;
+//
+//				if (CheckString(shipFront)) {
+//					tmpFront = ProcessString(shipFront);
+//					if (myFleet->CheckTile(tmpFront)) {
+//						frontPos = &myFleet->getTile(tmpFront.getPos());
+//						if (choice > 1) {
+//							std::array<PlayTile*, 4> freeChoices = myFleet->getFreeBacks(*frontPos, choice - 1);
+//							if (std::none_of(freeChoices.cbegin(), freeChoices.cend(), [](PlayTile* ptr) {return ptr; }))
+//							{
+//								std::cout << "No position available for the back of the ship!" << std::endl;
+//								continue;
+//							}
+//							else {
+//								bool foundInputInChoices = false;
+//								while (!foundInputInChoices) {
+//									std::cout << shipBPlaceText;
+//									for (PlayTile* choisz : freeChoices) {
+//										if (choisz) {
+//											std::cout << ' ' << choisz->getPos().first << choisz->getPos().second;
+//										}
+//									}
+//									std::cout << std::endl;
+//									std::cin >> shipBack;
+//
+//									if (CheckString(shipBack)) {
+//										tmpBack = ProcessString(shipBack);
+//										backPos = &myFleet->getTile(tmpBack.getPos());
+//										for (PlayTile* choisz : freeChoices) {
+//											if (choisz && choisz == backPos) {
+//												foundInputInChoices = true;
+//											}
+//										}
+//									}
+//								}
+//							}
+//						}
+//						myFleet->PlaceShip(frontPos, backPos);
+//						--unplacedShips.at(choice - 1);
+//					}
+//					else {
+//						std::cout << "Tile is not empty!" << std::endl;
+//					}
+//				}
+//			}
+//			else {
+//				std::cout << "You can't place down any more ships of " << choice << " size!" << std::endl;
+//			}
+//		}
+//		else if (choice == 0 && !std::cin.fail()) {
+//			clientHandler.quitGame();
+//		}
+//		else {
+//			std::cin.clear();
+//			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+//			std::cout << "You need to choose between 0-4!" << std::endl;
+//		}
+//
+//	} while (std::any_of(unplacedShips.cbegin(), unplacedShips.cend(), [](int i) {return i != 0; }));
+//}
+
+
 gameLogic.cpp PlaceShips
 ----------------------------------------------
 //std::pair<char,int> tmpTile;

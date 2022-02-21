@@ -1,6 +1,6 @@
-
 #include "GameInstance.h"
 
+//Kamera és más változók inicializálása
 GameInstance::GameInstance(float viewportW, float viewportH) : viewportWidth(viewportW),viewportHeight(viewportH),
 	cam_mainCamera(glm::vec3(0,20.0f,20.0f))
 {
@@ -11,13 +11,27 @@ GameInstance::GameInstance(float viewportW, float viewportH) : viewportWidth(vie
 	
 	mousePointedData = new float[4];
 	mousePointedData[3] = 0.0f; //ez hogy legyen alapértéke mikor kell neki 3d pickinghez
+
+	gameState = GameState::INITIAL;
+	isError = false;
+	outputWritten = false;
+
+	stateRelatedData.push_back(NULL);
+	stateRelatedData.push_back(NULL);
+	stateRelatedData.push_back(&shipSizeInput);
+	stateRelatedData.push_back(&shipSizeInput);
+
+	//temp- nemjó eza DisplayMessage-staterelatedData megoldás annyira,függ enum mérettõ
+	stateRelatedData.push_back(&shipSizeInput);
+	stateRelatedData.push_back(&shipSizeInput);
 }
 
+//Memória felszabadítás
 GameInstance::~GameInstance(void)
 {
-	if (!TorpedoGLOBAL::Debug) {
-		SDL_WaitThread(inputThread, nullptr);
-	}
+	//if (!TorpedoGLOBAL::Debug) {
+	//	SDL_WaitThread(inputThread, nullptr);
+	//}
 
 	delete[] mousePointedData;
 
@@ -35,9 +49,10 @@ bool GameInstance::Init()
 	mapSize = gameLogic.Init(&playerFleet, &enemyFleet, &sea);
 	gameLogic.InitGame();
 
-	if (!TorpedoGLOBAL::Debug) {
-		inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);
-	}
+	//gameLogic.StartMatch(sea.getTiles(true), sea.getTiles(false));
+	//if (!TorpedoGLOBAL::Debug) {
+	//	inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);
+	//}
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 
 	glEnable(GL_CULL_FACE);
@@ -104,16 +119,16 @@ void GameInstance::Clean()
 }
 
 //A thread hívja meg ezt a függvényt,hogy lehessen meccs közbe gépelni consoleba
-int GameInstance::threadFunction(void *ptr)
-{
-	if (ptr) {
-		GameInstance* pointr = static_cast<GameInstance *>(ptr);
-		pointr->gameLogic.StartMatch(pointr->sea.getTiles(true), pointr->sea.getTiles(false));
-	}
-	std::cout << "The match is over,input thread stopped." << std::endl;
-	return 1;
-
-}
+//int GameInstance::threadFunction(void *ptr)
+//{
+//	if (ptr) {
+//		GameInstance* pointr = static_cast<GameInstance *>(ptr);
+//		pointr->gameLogic.StartMatch(pointr->sea.getTiles(true), pointr->sea.getTiles(false));
+//	}
+//	std::cout << "The match is over,input thread stopped." << std::endl;
+//	return 1;
+//
+//}
 
 //Adatok frissítése minden kirajzolásnál
 void GameInstance::Update()
@@ -124,6 +139,21 @@ void GameInstance::Update()
 	cam_mainCamera.Update(delta_time);
 	last_time = SDL_GetTicks();
 
+	if (!TorpedoGLOBAL::Debug && !outputWritten) {
+		if (isError) {
+			if (gameState == GameState::SHIP_SIZE_INPUT) {
+				gameLogic.DisplayError(gameState, stateRelatedData.at(gameState));
+				shipSizeInput = 0;
+				gameState = GameState::INITIAL;
+			}
+		}
+
+		gameLogic.DisplayMessage(gameState, stateRelatedData.at(gameState));
+		if (gameState == GameState::INITIAL) {
+			gameState = GameState::SHIP_SIZE_INPUT;
+		}
+		outputWritten = true;
+	}
 }
 
 //Rajzolási hívás
@@ -171,9 +201,46 @@ void GameInstance::Render()
 	sh_default.Off();
 }
 
-void GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
+//true-val tér vissza ha be akarjuk zárni a programot alacsonyabb szintrõl
+bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 {
 	cam_mainCamera.KeyboardDown(key);
+
+	if ((key.keysym.sym == SDLK_ESCAPE) && TorpedoGLOBAL::Debug) {
+		return 1;
+	}
+
+	if (gameState == GameState::SHIP_SIZE_INPUT) {
+		switch (key.keysym.sym)
+		{
+		case SDLK_1:
+			shipSizeInput = 1;
+			break;
+		case SDLK_2:
+			shipSizeInput = 2;
+			break;
+		case SDLK_3:
+			shipSizeInput = 3;
+			break;
+		case SDLK_4:
+			shipSizeInput = 4;
+			break;
+		case SDLK_ESCAPE:
+			gameLogic.StopGame();
+			return 1;
+			break;
+		}
+		if (shipSizeInput) {
+			if (gameLogic.CheckForUnplacedShips(shipSizeInput)) {
+				gameState = GameState::PLACING_SHIP;
+			}
+			else {
+				isError = true;
+			}
+			outputWritten = false;
+		}
+	}
+	return 0;
 }
 
 void GameInstance::KeyboardUp(SDL_KeyboardEvent& key)
@@ -192,11 +259,24 @@ void GameInstance::MouseMove(SDL_MouseMotionEvent& mouse)
 
 void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 {
-	//if (mouse.button == SDL_BUTTON_LEFT) {
-	//	if (SDL_GetRelativeMouseMode() == SDL_bool(false)) {
-	//		SDL_SetRelativeMouseMode(SDL_bool(true));
-	//	}
-	//}
+	if (gameState == GameState::PLACING_SHIP) {
+		if (mouse.button == SDL_BUTTON_LEFT) {
+			//	if (SDL_GetRelativeMouseMode() == SDL_bool(false)) {
+			//		SDL_SetRelativeMouseMode(SDL_bool(true));
+			//	}
+			if (gameLogic.PlaceShip(static_cast<int>(mousePointedData[3]), shipSizeInput)) {
+				if (gameLogic.CheckAnyUnplacedShipLeft()) {
+					gameState = GameState::INITIAL;
+				}
+				else {
+					std::cout << "JAVÍTANI KELL AZ ALAPJÁN H KI KEZD" << std::endl;
+					gameState = GameState::SHOOTING_AT_ENEMY; //JAVÍTANI KELL AZ ALAPJÁN H KI KEZD
+				}
+				shipSizeInput = 0;
+				outputWritten = false;
+			}
+		}
+	}
 }
 
 void GameInstance::MouseUp(SDL_MouseButtonEvent& mouse)

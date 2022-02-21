@@ -31,12 +31,12 @@ public:
 	bool Init();
 	void Clean();
 
-	int static threadFunction(void* ptr);
+	//int static threadFunction(void* ptr);
 
 	void Update();
 	void Render();
 
-	void KeyboardDown(SDL_KeyboardEvent& key);
+	bool KeyboardDown(SDL_KeyboardEvent& key);
 	void KeyboardUp(SDL_KeyboardEvent& key);
 	void MouseMove(SDL_MouseMotionEvent& mouse);
 	void MouseDown(SDL_MouseButtonEvent& mouse);
@@ -51,6 +51,11 @@ protected:
 	const float fieldOfView = 45.0f; //Kamera látószöge
 	const float viewDistance = 200.0f * TorpedoGLOBAL::Scale; //Milyen távolságon belül rajzolunk ki dolgokat
 
+	GameState gameState; //jelenlegi játékállapot
+	std::vector<void*> stateRelatedData; //játékállapothoz kapcsolódó adat
+	bool isError; //van-e error a jelenlegi állapotban
+	bool outputWritten; //kiirtuk-e már az üzenetet
+
 	// framebuffer dolgok
 	gVertexBuffer m_fbo_vbo;
 	bool dirL_frameBufferCreated;
@@ -59,7 +64,7 @@ protected:
 	GLuint dirL_frameBuffer;
 	float* mousePointedData; //Melyik játékmezõre mutat az egér
 
-	SDL_Thread* inputThread; //Thread az inputkezeléshez
+	//SDL_Thread* inputThread; //Thread az inputkezeléshez
 
 	gCamera	cam_mainCamera; //Kamera
 	gShaderProgram  sh_default; //Alap shader+postprocess
@@ -78,5 +83,6 @@ protected:
 
 	int mapSize;	//Játékpálya mérete
 
+	int shipSizeInput = 0; //Mekkora hajót készülünk lerakni
 };
 

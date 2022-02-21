@@ -45,6 +45,16 @@ std::vector<PlayTile>& Sea::getTiles(bool ally)
 	}
 }
 
+//Játékmezõ indexe alapján adja vissza a játékmezõt
+PlayTile& Sea::getTileByIndex(int index)
+{
+	for (PlayTile &tile : myTiles) {
+		if (tile.getIndex() == index) {
+			return tile;
+		}
+	}
+}
+
 //Tenger összes mezõjét inicializálja
 void Sea::InitSeaTiles()
 {
@@ -84,7 +94,7 @@ void Sea::InitPlayTiles(int inMapSize)
 		for (int j = 0; j < mapSize; j++) {
 			enemyTiles.push_back(PlayTile(std::pair<char, int>(static_cast<char>('a' + i), 1 + j)));
 			enemyTiles[i*mapSize + j].setTranslate(calcTranslate(i, j, false));
-			enemyTiles[i*mapSize + j].setIndex(i*mapSize + j);
+			enemyTiles[i*mapSize + j].setIndex(i*mapSize + j + enemyTilesIndexOffset);
 		}
 	}
 }

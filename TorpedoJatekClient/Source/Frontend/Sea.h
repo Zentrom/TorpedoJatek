@@ -22,6 +22,7 @@ public:
 	void Draw(gCamera &camera, gShaderProgram &sh_program, float pointedTile);
 
 	std::vector<PlayTile>& getTiles(bool ally = true);
+	PlayTile& getTileByIndex(int index);
 
 protected:
 	void InitSeaTiles();
@@ -38,6 +39,7 @@ protected:
 	int playTileCount;	//játékMezõk száma
 	std::vector<PlayTile> myTiles;	//kliens játékmezõi
 	std::vector<PlayTile> enemyTiles; //ellenfél játékmezõi
+	int enemyTilesIndexOffset = 100; //offsetelni az ellenfélmezõ indexeket
 
 	const float mountain_tile_offset = (2 * SeaTile::getScaleXZ())*TorpedoGLOBAL::Scale; //hegy és elsõ játékmezõ közti táv
 	const float mountaincenter_border_Xoffset = Mountain::getWidth() / 2.0f*TorpedoGLOBAL::Scale; //hegy közepe és széle közti táv

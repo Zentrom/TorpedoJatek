@@ -22,7 +22,7 @@ public:
 	~Fleet(void);
 
 	void Init(int inMapSize = 7, bool ally = true);
-	void InitTiles(const std::vector<PlayTile> &tiles);
+	void InitTiles(std::vector<PlayTile> &tiles);
 	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
 	bool CheckTile(const PlayTile &tile);
@@ -33,11 +33,12 @@ public:
 
 	std::array<int, 4>& getUnplacedShipCount();
 	std::vector<std::pair<char, int>> getActiveTilePositions();
+	//void TempGetTileStates();
 private:
 	std::array<int, 4> unplacedShipCount;	//1x1,2x2,stb. méretû hajókból még hányat NEM raktunk le
 
 	std::vector<Ship> ships;	//Játékos hajói
-	std::vector<PlayTile> playTiles; //Játékos oldalán lévõ játékmezõk
+	std::vector<PlayTile> *playTiles; //Játékos oldalán lévõ játékmezõk
 	Ship battleShip;	//Játékos hajója amit nem lehet kilõni,hanem ez lõ majd.
 
 	bool isAlly = true;	//Kliens szemszögébõl eza mi Fleet-ünke

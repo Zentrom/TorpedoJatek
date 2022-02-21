@@ -4,5 +4,22 @@
 namespace TorpedoGLOBAL {
 	const bool CameraBounds = true; //Legyen-e bekorlátozva a kamera a játéktérre.
 	const float Scale = 1.0f;	//globális grafikai skálázás
-	const bool Debug = true;	//Ha ez igaz,akkor a kliens DEBUG módba fut,nem csatlakozik szerverhez. Jó grafikai teszteléskor.
+	const bool Debug = false;	//Ha ez igaz,akkor a kliens DEBUG módba fut,nem csatlakozik szerverhez. Jó grafikai teszteléskor.
 }
+
+//Játék kliens állapota
+enum GameState {
+	INITIAL = 1,
+	SHIP_SIZE_INPUT,
+	PLACING_SHIP,
+	SHOOTING_AT_ENEMY,
+	GETTING_SHOT,
+	//WON_GAME,
+	//LOST_GAME,
+};
+
+//Van-e kíírandó error
+//enum ErrorState {
+//	NONE = 0,
+//	NO_UNPLACED_SHIPS_LEFT,
+//};

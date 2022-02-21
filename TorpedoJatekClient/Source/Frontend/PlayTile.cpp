@@ -59,6 +59,9 @@ void PlayTile::setState(int newState)
 	case 5: //winPlayerTwo
 		tileState = glm::vec3(1, 0, 0);
 		break;
+	case 6: //Back of the ship placeable here
+		tileState = glm::vec3(0, 1, 0);
+		break;
 	default:
 		tileState = glm::vec3(0, 0, 1);
 		break;
@@ -99,4 +102,14 @@ bool PlayTile::isUsed() const
 glm::vec3 PlayTile::getTranslate() const
 {
 	return seatile_translate;
+}
+
+int PlayTile::getIndexOffset() const
+{
+	return indexOffset;
+}
+
+glm::vec3 PlayTile::getState() const
+{
+	return tileState;
 }

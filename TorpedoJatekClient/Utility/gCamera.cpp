@@ -174,7 +174,7 @@ void gCamera::KeyboardUp(SDL_KeyboardEvent& key)
 
 void gCamera::MouseMove(SDL_MouseMotionEvent& mouse)
 {
-	if (mouse.state & SDL_BUTTON_LMASK)
+	if (mouse.state & SDL_BUTTON_RMASK)
 	{
 		UpdateUV(mouse.xrel / 100.0f, mouse.yrel / 100.0f);
 	}

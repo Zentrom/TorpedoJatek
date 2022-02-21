@@ -143,15 +143,17 @@ int TorpedoJatekClient::StartGameInstance()
 				quit = true;
 				break;
 			case SDL_KEYDOWN:
-				if (ev.key.keysym.sym == SDLK_ESCAPE) {
+				//if (ev.key.keysym.sym == SDLK_ESCAPE) {
 					//if (SDL_GetRelativeMouseMode() == SDL_bool(true)) {
 					//	SDL_SetRelativeMouseMode(SDL_bool(false));
 					//}
 					//else {
-						quit = true;
+					//	quit = true;
 					//}
+				//}
+				if (gameInstance.KeyboardDown(ev.key)) {
+					quit = true;
 				}
-				gameInstance.KeyboardDown(ev.key);
 				break;
 			case SDL_KEYUP:
 				gameInstance.KeyboardUp(ev.key);
@@ -178,8 +180,7 @@ int TorpedoJatekClient::StartGameInstance()
 		}
 
 		//FPS limiter
-		if (!enableVsync) {
-			if (enableFpsLimit) {
+		if (!enableVsync && enableFpsLimit) {
 				ftime_diff = SDL_GetTicks() - last_render_time;
 
 				if (ftime_diff + frmMod >= frmtime) {
@@ -190,17 +191,8 @@ int TorpedoJatekClient::StartGameInstance()
 					last_render_time = SDL_GetTicks();
 					frmMod = (ftime_diff + frmMod) - frmtime;
 				}
-			}
-			else {
-				gameInstance.Update();
-				gameInstance.Render();
-				SDL_GL_SwapWindow(win);
-				++frame_count;
-			}
-
 		}
-
-		else {
+		else{
 			gameInstance.Update();
 			gameInstance.Render();
 			SDL_GL_SwapWindow(win);

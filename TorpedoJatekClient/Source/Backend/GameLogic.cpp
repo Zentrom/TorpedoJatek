@@ -24,6 +24,14 @@ int GameLogic::Init(Fleet *player, Fleet *enemy, Sea *sea)
 		ConnectionSetup();
 		playerNum = clientHandler.GetPlayerNum();
 		mapSize = clientHandler.GetMapSize();
+
+		//ship1PlaceText.push_back(static_cast<char>('a' + mapSize - 1));
+		//ship1PlaceText.push_back(static_cast<char>('0' + mapSize));
+		//ship1PlaceText.push_back(')');
+		//
+		//shipFPlaceText.push_back(static_cast<char>('a' + mapSize - 1));
+		//shipFPlaceText.push_back(static_cast<char>('0' + mapSize));
+		//shipFPlaceText.push_back(')');
 	}
 
 	return mapSize;
@@ -51,38 +59,24 @@ void GameLogic::InitGame()
 
 	enemyFleet->Init(mapSize, false);
 	enemyFleet->InitTiles(mySea->getTiles(false));
-	if (!TorpedoGLOBAL::Debug) {
-		PlaceShips();
-		clientHandler.SendFleet(myFleet->getActiveTilePositions());
+	//if (!TorpedoGLOBAL::Debug) {
+	//	PlaceShips();
+	//	clientHandler.SendFleet(myFleet->getActiveTilePositions());
+	//}
+	//else {
+	if (TorpedoGLOBAL::Debug) {
+		PlaceShipsINDEBUG();
 	}
 	else {
-		PlaceShipsINDEBUG();
+		unplacedShips = myFleet->getUnplacedShipCount();
 	}
 }
 
-//Lerakja a mi hajóinkat a pályára
-void GameLogic::PlaceShips()
+//Üzenet kiirása.
+void GameLogic::DisplayMessage(GameState gameState, void *relatedData)
 {
-	ship1PlaceText.push_back(static_cast<char>('a' + mapSize - 1));
-	ship1PlaceText.push_back(static_cast<char>('0' + mapSize));
-	ship1PlaceText.push_back(')');
-
-	shipFPlaceText.push_back(static_cast<char>('a' + mapSize - 1));
-	shipFPlaceText.push_back(static_cast<char>('0' + mapSize));
-	shipFPlaceText.push_back(')');
-
-	output = "Place your ships!/nChoose what kind of ship do you want to place down:";
-
-	std::array<int, 4> &unplacedShips = myFleet->getUnplacedShipCount();
-
-	PlayTile tmpFront;
-	PlayTile tmpBack;
-
-	PlayTile* frontPos;
-	PlayTile* backPos;
-	do {
-
-		backPos = nullptr;
+	if (gameState == GameState::INITIAL){
+		output = "Place your ships!\nChoose what kind of ship do you want to place down.\nPress the length number on your keyboard while the game window is focused.(1-4)";
 
 		std::cout << '\n' <<
 			output << '\n'
@@ -90,73 +84,210 @@ void GameLogic::PlaceShips()
 			<< "2. - 2tile ships left: " << unplacedShips.at(1) << '\n'
 			<< "3. - 3tile ships left: " << unplacedShips.at(2) << '\n'
 			<< "4. - 4tile ships left: " << unplacedShips.at(3) << '\n'
-			<< "0. - Quit game!" << std::endl;
+			<< "ESC - Quit game! \n" << std::endl;
+	}
+	else if (gameState == GameState::PLACING_SHIP) {
+		int* shipSizePointer = static_cast<int*>(relatedData);
+		if (*shipSizePointer == 1) {
+			std::cout << "Place your ship on a free tile on your side of the map!(with LeftMouseButton)" << std::endl;
+		}
+		else {
+			std::cout << "Place the front of your ship on a free tile on your side of the map!(with LeftMouseButton)" << std::endl;
+		}
+	}
+}
 
-		std::cin >> choice;
+//Hiba kiirása
+void GameLogic::DisplayError(GameState gameState, void *relatedData) 
+{
+	if (gameState == GameState::SHIP_SIZE_INPUT) {
+		int* shipSizePointer = static_cast<int*>(relatedData);
+		std::cout << "You can't place down any more ships of " << *shipSizePointer << " size!" << std::endl;
+	}
+}
 
-		if (choice > 0 && choice <= 4) {
-			if (unplacedShips.at(choice - 1) > 0) {
-				std::cout << (choice == 1 ? ship1PlaceText : shipFPlaceText) << std::endl;
-				std::cin >> shipFront;
+//Megnézi, hogy le kell-e rakni még egy adott méretû hajót
+bool GameLogic::CheckForUnplacedShips(int shipSize)
+{
+	if (unplacedShips.at(shipSize - 1) > 0) {
+		return true;
+	}
+	return false;
+}
 
-				if (CheckString(shipFront)) {
-					tmpFront = ProcessString(shipFront);
-					if (myFleet->CheckTile(tmpFront)) {
-						frontPos = &myFleet->getTile(tmpFront.getPos());
-						if (choice > 1) {
-							std::array<PlayTile*, 4> freeChoices = myFleet->getFreeBacks(*frontPos, choice - 1);
-							if (std::none_of(freeChoices.cbegin(), freeChoices.cend(), [](PlayTile* ptr) {return ptr; }))
-							{
-								std::cout << "No position available for the back of the ship!" << std::endl;
-								continue;
-							}
-							else {
-								bool foundInputInChoices = false;
-								while (!foundInputInChoices) {
-									std::cout << shipBPlaceText;
-									for (PlayTile* choisz : freeChoices) {
-										if (choisz) {
-											std::cout << ' ' << choisz->getPos().first << choisz->getPos().second;
-										}
-									}
-									std::cout << std::endl;
-									std::cin >> shipBack;
+//Le kell-e még rakni bármekkora hajót
+bool GameLogic::CheckAnyUnplacedShipLeft()
+{
+	return std::any_of(unplacedShips.cbegin(), unplacedShips.cend(), [](int i) {return i != 0; });
+}
 
-									if (CheckString(shipBack)) {
-										tmpBack = ProcessString(shipBack);
-										backPos = &myFleet->getTile(tmpBack.getPos());
-										for (PlayTile* choisz : freeChoices) {
-											if (choisz && choisz == backPos) {
-												foundInputInChoices = true;
-											}
-										}
-									}
-								}
-							}
-						}
-						myFleet->PlaceShip(frontPos, backPos);
-						--unplacedShips.at(choice - 1);
+//Lerak egy hajót ha üres a kijelölt mezõ
+bool GameLogic::PlaceShip(int tileIndex, int shipSize)
+{
+	int offset = mySea->getTileByIndex(0).getIndexOffset();
+	if (tileIndex - offset < mapSize * mapSize && tileIndex - offset >= 0) {
+		if (!shipFrontPlaced) {
+			shipFront = &mySea->getTileByIndex(tileIndex - offset);
+			if (myFleet->CheckTile(*shipFront)) {
+				if (shipSize == 1) {
+					myFleet->PlaceShip(shipFront, NULL);
+					std::cout << "--------\n"
+						"Ship placed at " << shipFront->getPos().first << shipFront->getPos().second <<
+						"\n--------" << std::endl;
+					--unplacedShips.at(shipSize - 1);
+					return true;
+				}
+				else {
+					freeChoices = myFleet->getFreeBacks(*shipFront, shipSize - 1);
+					if (std::none_of(freeChoices.cbegin(), freeChoices.cend(), [](PlayTile* ptr) {return ptr; }))
+					{
+						std::cout << "No position available for the back of the ship!\n Try another position." << std::endl;
+						return false;
 					}
 					else {
-						std::cout << "Tile is not empty!" << std::endl;
+						std::cout << "--------\n"
+							"Ship Front location saved at " << shipFront->getPos().first << shipFront->getPos().second <<
+							"\n--------" << std::endl;
+						std::cout << "Select one of the possible locations for the back of the ship!(marked with green)" << std::endl;
+						for (PlayTile* choice : freeChoices) {
+							if (choice) {
+								choice->setState(6); //green recoloring
+								std::cout << choice->getPos().first << choice->getPos().second << " " << choice->getState().r
+									<< choice->getState().g << choice->getState().b << std::endl;
+							}
+						}
+						//std::cout << "Mysea " << mySea->getTileByIndex(freeChoices[0]->getIndex()).getState().g << std::endl;
+						//myFleet->TempGetTileStates();
+						shipFrontPlaced = true;
+						return false;
 					}
+
 				}
 			}
 			else {
-				std::cout << "You can't place down any more ships of " << choice << " size!" << std::endl;
+				std::cout << "Tile is not empty!" << std::endl;
 			}
 		}
-		else if (choice == 0 && !std::cin.fail()) {
-			clientHandler.quitGame();
-		}
 		else {
-			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			std::cout << "You need to choose between 0-4!" << std::endl;
-		}
+			shipBack = &mySea->getTileByIndex(tileIndex - offset);
+			bool foundInputInChoices = false;
+			for (PlayTile* choisz : freeChoices) {
+				//std::cout << "choice: " << choisz->getIndex() << std::endl << shipBack->getIndex() << std::endl;
+				if (choisz && choisz->getIndex() == shipBack->getIndex()) {
+					foundInputInChoices = true;
+					break;
+				}
+			}
+			if (foundInputInChoices) {
+				myFleet->PlaceShip(shipFront, shipBack);
+				std::cout << "--------\n"
+					"Ship placed at " << shipFront->getPos().first << shipFront->getPos().second <<
+					"/" << shipBack->getPos().first << shipBack->getPos().second <<
+					"\n--------" << std::endl;
+				--unplacedShips.at(shipSize - 1);
 
-	} while (std::any_of(unplacedShips.cbegin(), unplacedShips.cend(), [](int i) {return i != 0; }));
+				for (PlayTile* choice : freeChoices) {
+					if (choice) {
+						choice->setState(3); //blue recoloring
+						choice = NULL;
+					}
+				}
+				shipFrontPlaced = false;
+				return true;
+			}
+		}
+	}
+	return false;
 }
+
+//Lerakja a mi hajóinkat a pályára
+//void GameLogic::PlaceShips()
+//{
+//
+//	
+//
+//	PlayTile tmpFront;
+//	PlayTile tmpBack;
+//
+//	PlayTile* frontPos;
+//	PlayTile* backPos;
+//	do {
+//
+//		backPos = nullptr;
+//
+//		std::cout << '\n' <<
+//			output << '\n'
+//			<< "1. - 1tile ships left: " << unplacedShips.at(0) << '\n'
+//			<< "2. - 2tile ships left: " << unplacedShips.at(1) << '\n'
+//			<< "3. - 3tile ships left: " << unplacedShips.at(2) << '\n'
+//			<< "4. - 4tile ships left: " << unplacedShips.at(3) << '\n'
+//			<< "0. - Quit game!" << std::endl;
+//
+//		//std::cin >> choice;
+//
+//		if (choice > 0 && choice <= 4) {
+//			if (unplacedShips.at(choice - 1) > 0) {
+//				std::cout << (choice == 1 ? ship1PlaceText : shipFPlaceText) << std::endl;
+//				std::cin >> shipFront;
+//
+//				if (CheckString(shipFront)) {
+//					tmpFront = ProcessString(shipFront);
+//					if (myFleet->CheckTile(tmpFront)) {
+//						frontPos = &myFleet->getTile(tmpFront.getPos());
+//						if (choice > 1) {
+//							std::array<PlayTile*, 4> freeChoices = myFleet->getFreeBacks(*frontPos, choice - 1);
+//							if (std::none_of(freeChoices.cbegin(), freeChoices.cend(), [](PlayTile* ptr) {return ptr; }))
+//							{
+//								std::cout << "No position available for the back of the ship!" << std::endl;
+//								continue;
+//							}
+//							else {
+//								bool foundInputInChoices = false;
+//								while (!foundInputInChoices) {
+//									std::cout << shipBPlaceText;
+//									for (PlayTile* choisz : freeChoices) {
+//										if (choisz) {
+//											std::cout << ' ' << choisz->getPos().first << choisz->getPos().second;
+//										}
+//									}
+//									std::cout << std::endl;
+//									std::cin >> shipBack;
+//
+//									if (CheckString(shipBack)) {
+//										tmpBack = ProcessString(shipBack);
+//										backPos = &myFleet->getTile(tmpBack.getPos());
+//										for (PlayTile* choisz : freeChoices) {
+//											if (choisz && choisz == backPos) {
+//												foundInputInChoices = true;
+//											}
+//										}
+//									}
+//								}
+//							}
+//						}
+//						myFleet->PlaceShip(frontPos, backPos);
+//						--unplacedShips.at(choice - 1);
+//					}
+//					else {
+//						std::cout << "Tile is not empty!" << std::endl;
+//					}
+//				}
+//			}
+//			else {
+//				std::cout << "You can't place down any more ships of " << choice << " size!" << std::endl;
+//			}
+//		}
+//		else if (choice == 0 && !std::cin.fail()) {
+//			clientHandler.quitGame();
+//		}
+//		else {
+//			std::cin.clear();
+//			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+//			std::cout << "You need to choose between 0-4!" << std::endl;
+//		}
+//
+//	} while (std::any_of(unplacedShips.cbegin(), unplacedShips.cend(), [](int i) {return i != 0; }));
+//}
 
 //Elkezdi a játékmenetet két játékos között
 void GameLogic::StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile> &enemyTiles)
@@ -322,4 +453,9 @@ void GameLogic::PlaceShipsINDEBUG() {
 		&myFleet->getTile(std::pair<char, int>('c', 7)));
 	myFleet->PlaceShip(&myFleet->getTile(std::pair<char, int>('e', 3)),
 		&myFleet->getTile(std::pair<char, int>('e', 7)));
+}
+
+//Lezárja a kapcsolatot a szerverrel
+void GameLogic::StopGame() {
+	clientHandler.quitGame();
 }

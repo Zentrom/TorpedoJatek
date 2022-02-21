@@ -32,9 +32,9 @@ void Fleet::Init(int inMapSize, bool ally)
 }
 
 //Elkéri a játékos játékmezõit
-void Fleet::InitTiles(const std::vector<PlayTile> &tiles)
+void Fleet::InitTiles(std::vector<PlayTile> &tiles)
 {
-	playTiles = tiles;
+	playTiles = &tiles;
 }
 
 //Játékos hajóinak kirajzolása
@@ -51,9 +51,11 @@ void Fleet::Draw(gCamera &camera, gShaderProgram &sh_program)
 //Megnezi hogy szabad-e a játékmezõ
 bool Fleet::CheckTile(const PlayTile &tile)
 {
-	for (PlayTile &playTile : playTiles) {
-		if (tile.getPos() == playTile.getPos() && playTile.isUsed()) {
-			return false;
+	for (PlayTile &playTile : *playTiles) {
+		if (tile.getPos() == playTile.getPos()) {
+			if (playTile.isUsed()) {
+				return false;
+			}
 		}
 	}
 	return true;
@@ -62,12 +64,12 @@ bool Fleet::CheckTile(const PlayTile &tile)
 //Koordináta alapján visszaad egy játékmezõt
 PlayTile& Fleet::getTile(const std::pair<char, int> &pos)
 {
-	for (PlayTile &playTile : playTiles) {
+	for (PlayTile &playTile : *playTiles) {
 		if (pos == playTile.getPos()) {
 			return playTile;
 		}
 	}
-	return playTiles[0];
+	return playTiles->at(0);
 }
 
 //Visszaadja azokat a mezõket,ahova egy hajó másik vége lerakható lenne
@@ -94,47 +96,47 @@ std::array<PlayTile*, 4> Fleet::getFreeBacks(const PlayTile &tile, int backDista
 
 	for (int i = backDistance; i > 0; i--) {
 		if (rightFree) {
-			if (playTiles.at(tile.getIndex() + i).isUsed()) {
+			if (playTiles->at(tile.getIndex() + i).isUsed()) {
 				rightFree = false;
 			}
 		}
 		if (leftFree) {
-			if (playTiles.at(tile.getIndex() - i).isUsed()) {
+			if (playTiles->at(tile.getIndex() - i).isUsed()) {
 				leftFree = false;
 			}
 		}
 		if (downFree) {
-			if (playTiles.at(tile.getIndex() + i*mapSize).isUsed()) {
+			if (playTiles->at(tile.getIndex() + i*mapSize).isUsed()) {
 				downFree = false;
 			}
 		}
 		if (upFree) {
-			if (playTiles.at(tile.getIndex() - i*mapSize).isUsed()) {
+			if (playTiles->at(tile.getIndex() - i*mapSize).isUsed()) {
 				upFree = false;
 			}
 		}
 	}
 
 	if (rightFree) {
-		result[0] = &playTiles.at(tile.getIndex() + backDistance);
+		result[0] = &playTiles->at(tile.getIndex() + backDistance);
 	}
 	else {
 		result[0] = nullptr;
 	}
 	if (leftFree) {
-		result[1] = &playTiles.at(tile.getIndex() - backDistance);
+		result[1] = &playTiles->at(tile.getIndex() - backDistance);
 	}
 	else {
 		result[1] = nullptr;
 	}
 	if (downFree) {
-		result[2] = &playTiles.at(tile.getIndex() + backDistance*mapSize);
+		result[2] = &playTiles->at(tile.getIndex() + backDistance*mapSize);
 	}
 	else {
 		result[2] = nullptr;
 	}
 	if (upFree) {
-		result[3] = &playTiles.at(tile.getIndex() - backDistance*mapSize);
+		result[3] = &playTiles->at(tile.getIndex() - backDistance*mapSize);
 	}
 	else {
 		result[3] = nullptr;
@@ -149,7 +151,7 @@ void Fleet::PlaceShip(PlayTile *front, PlayTile *back)
 	std::vector<PlayTile*> shipTiles;
 
 	if (front) {
-		PlayTile* tmpTile = &playTiles[front->getIndex()];
+		PlayTile* tmpTile = &playTiles->at(front->getIndex());
 		if (!back) {
 			shipTiles.push_back(tmpTile);
 		}
@@ -177,13 +179,20 @@ void Fleet::PlaceShip(PlayTile *front, PlayTile *back)
 			shipTiles.push_back(back);
 		}
 
-		for (PlayTile *tile : shipTiles) {
-			tile->setUsed(true);
+		//Ez valamiért csak így megy,ha csak shipTiles-os for van akkor a shipBack tile nem lesz used
+		for (PlayTile *til : shipTiles) {
+			for (PlayTile &tile : *playTiles) {
+				if (til->getIndex() == tile.getIndex()) {
+					tile.setUsed(true);
+					break;
+				}
+			}
 		}
 		ships.push_back(Ship(shipTiles, isAlly));
 	}
 }
 
+//Lekezel ellenséges lövést
 void Fleet::HitFleet(std::pair<char, int> hitPos)
 {
 	bool found = false;
@@ -230,4 +239,12 @@ std::vector<std::pair<char, int>> Fleet::getActiveTilePositions()
 	}
 	return result;
 }
+
+//void Fleet::TempGetTileStates()
+//{
+//	for (PlayTile tile : playTiles) {
+//		std::cout << tile.getPos().first << tile.getPos().second << " " << tile.getState().r << tile.getState().g
+//			<< tile.getState().b << std::endl;
+//	}
+//}
 
