@@ -53,6 +53,16 @@ PlayTile& Sea::getTileByIndex(int index)
 			return tile;
 		}
 	}
+	for (PlayTile &tile : enemyTiles) {
+		if (tile.getIndex() == index) {
+			return tile;
+		}
+	}
+}
+
+int Sea::getEnemyIndexOffset()
+{
+	return enemyTilesIndexOffset;
 }
 
 //Tenger összes mezõjét inicializálja

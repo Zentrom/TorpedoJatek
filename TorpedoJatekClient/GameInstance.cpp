@@ -24,6 +24,9 @@ GameInstance::GameInstance(float viewportW, float viewportH) : viewportWidth(vie
 	//temp- nemjó eza DisplayMessage-staterelatedData megoldás annyira,függ enum mérettõ
 	stateRelatedData.push_back(&shipSizeInput);
 	stateRelatedData.push_back(&shipSizeInput);
+	stateRelatedData.push_back(&shipSizeInput);
+	stateRelatedData.push_back(&shipSizeInput);
+	stateRelatedData.push_back(&winnerPlayerNum);
 }
 
 //Memória felszabadítás
@@ -154,6 +157,32 @@ void GameInstance::Update()
 		}
 		outputWritten = true;
 	}
+
+	if (gameState == GameState::STARTING_MATCH) {
+		if (gameLogic.CheckStartSignal()) {
+			if (gameLogic.getPlayerNum() == 1) {
+				gameState = GameState::SHOOTING_AT_ENEMY;
+			}
+			else if (gameLogic.getPlayerNum() == 2) {
+				gameState = GameState::GETTING_SHOT;
+			}
+			outputWritten = false;
+		}
+	}
+	else if (gameState == GameState::GETTING_SHOT) {
+		if (gameLogic.GetShoot()) {
+			gameState = GameState::SHOOTING_AT_ENEMY;
+			
+			winnerPlayerNum = gameLogic.CheckVictoryState();
+			if (winnerPlayerNum) {
+				gameState = GameState::MATCH_ENDING;
+			}
+
+			outputWritten = false;
+		}
+	}
+
+
 }
 
 //Rajzolási hívás
@@ -210,6 +239,12 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 		return 1;
 	}
 
+	if((key.keysym.sym == SDLK_ESCAPE) &&
+		(gameState == GameState::SHOOTING_AT_ENEMY || gameState == GameState::GETTING_SHOT
+			|| gameState == GameState::MATCH_ENDING)) {
+		return 1;
+	}
+
 	if (gameState == GameState::SHIP_SIZE_INPUT) {
 		switch (key.keysym.sym)
 		{
@@ -259,8 +294,8 @@ void GameInstance::MouseMove(SDL_MouseMotionEvent& mouse)
 
 void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 {
-	if (gameState == GameState::PLACING_SHIP) {
-		if (mouse.button == SDL_BUTTON_LEFT) {
+	if (mouse.button == SDL_BUTTON_LEFT) {
+		if (gameState == GameState::PLACING_SHIP) {
 			//	if (SDL_GetRelativeMouseMode() == SDL_bool(false)) {
 			//		SDL_SetRelativeMouseMode(SDL_bool(true));
 			//	}
@@ -269,10 +304,24 @@ void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 					gameState = GameState::INITIAL;
 				}
 				else {
-					std::cout << "JAVÍTANI KELL AZ ALAPJÁN H KI KEZD" << std::endl;
-					gameState = GameState::SHOOTING_AT_ENEMY; //JAVÍTANI KELL AZ ALAPJÁN H KI KEZD
+					gameLogic.SendFleetToServer();
+					gameState = GameState::STARTING_MATCH;
 				}
 				shipSizeInput = 0;
+				outputWritten = false;
+			}
+		}
+
+		if (gameState == GameState::SHOOTING_AT_ENEMY) {
+			if (gameLogic.Shoot(static_cast<int>(mousePointedData[3]))) {
+
+				winnerPlayerNum = gameLogic.CheckVictoryState();
+				if (winnerPlayerNum) {
+					gameState = GameState::MATCH_ENDING;
+				}
+				else {
+					gameState = GameState::GETTING_SHOT;
+				}
 				outputWritten = false;
 			}
 		}

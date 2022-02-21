@@ -12,6 +12,11 @@ public:
 	static void ResolveHost(IPaddress *address, const char *host, Uint16 port);
 	static TCPsocket TCP_Open(IPaddress *ip);
 
+	static SDLNet_SocketSet AllocSocketSet(int maxSockets = 16);
+	static void TCP_AddSocket(SDLNet_SocketSet &set, TCPsocket &socket);
+	static bool CheckSocket(SDLNet_SocketSet &set, Uint32 timeout);
+	static bool SocketReady(TCPsocket &socket);
+
 	static void ReceiveText(TCPsocket &socket, void* data, const int length);
 	static void ReceiveBinary(TCPsocket &socket, void* dest, const int size);
 
@@ -23,6 +28,8 @@ protected:
 	enum ErrorCode {
 		SDLNET_INIT = 1,
 		RESOLVE_HOST,
+		ALLOC_SET,
+		CHECK_SOCKETS,
 		OPEN,
 		RECEIVE,
 		SEND,

@@ -19,11 +19,15 @@ ClientHandler::~ClientHandler(void)
 //Visszaadja,hogy egyeztek-e a verziók
 bool ClientHandler::Init(std::string ipString, int portNr)
 {
+	socketSet = ConnectionHandler::AllocSocketSet(maxSockets);
+
 	ResolveHost(&ip, ipString.c_str(), static_cast<Uint16>(portNr));
 
 	std::cout << "Connecting to server..." << std::endl;
 	mySocket = TCP_Open(&ip);
 	std::cout << "Connected!" << std::endl;
+
+	ConnectionHandler::TCP_AddSocket(socketSet, mySocket);
 
 	std::cout << "Sending client version..." << std::endl;
 	SendBinary(mySocket, &clientVersion, sizeof(TorpedoVersion));
@@ -80,11 +84,28 @@ int ClientHandler::GetPlayerNum()
 }
 
 //Vár a szerverre,hogy jelezzen,hogy indulhat a meccs
-void ClientHandler::GetStartSignal()
+bool ClientHandler::GetStartSignal()
 {
 	int startSignal;
-	ReceiveBinary(mySocket, &startSignal, sizeof(int));
-	std::cout << "Match Started!" << std::endl;
+	if (ConnectionHandler::CheckSocket(socketSet, static_cast<Uint32>(0))) {
+		if (ConnectionHandler::SocketReady(mySocket)) {
+			ReceiveBinary(mySocket, &startSignal, sizeof(int));
+			std::cout << "Match Started!" << std::endl;
+			return true;
+		}
+	}
+	return false;
+}
+
+//Megnézi hogy jön-e üzenet a szervertõl
+bool ClientHandler::CheckForResponse()
+{
+	if (ConnectionHandler::CheckSocket(socketSet, static_cast<Uint32>(0))) {
+		if (ConnectionHandler::SocketReady(mySocket)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 //Elküldi a szervernek,hogy mely mezõkoordinátára lövünk

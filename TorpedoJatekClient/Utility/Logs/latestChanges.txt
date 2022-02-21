@@ -1,5 +1,6 @@
-v0.0.3b-3D Picking Ship Placement
+v0.0.3c-3D Picking Gameplay
 --------------------------------------------------------------------------------
--Implemented the ship placement part of the 3D picking.
--Removed ship placement using the Console.
--Changed camera rotation to work using RMB.
+-Finished the match/gameplay part of 3D picking.
+-Removed gameplay interaction using the Console.
+-The client doesn't wait for server response anymore, it checks it every cycle instead.
+-The extra thread that handled the console input in v003 is now not needed and was removed.

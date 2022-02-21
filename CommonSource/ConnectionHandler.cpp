@@ -40,6 +40,50 @@ TCPsocket ConnectionHandler::TCP_Open(IPaddress *ip)
 	ReportErrorAndExit("SDLNet_TCP_Open", ErrorCode::OPEN);
 }
 
+//Egy socketcsoport foglalása a memóriába
+SDLNet_SocketSet ConnectionHandler::AllocSocketSet(int maxSockets)
+{
+	SDLNet_SocketSet socketSet;
+	socketSet = SDLNet_AllocSocketSet(maxSockets);
+	if (!socketSet) {
+		ReportErrorAndExit("SDLNet_AllocSocketSet", ErrorCode::ALLOC_SET);
+	}
+	return socketSet;
+}
+
+//Socket hozzáadása egy csoporthoz
+//Ez csak akkor dobhat hibát,ha nem fér el a socketsetben a socket
+void ConnectionHandler::TCP_AddSocket(SDLNet_SocketSet &set, TCPsocket &socket)
+{
+	if (SDLNet_TCP_AddSocket(set, socket) == -1) {
+		std::cerr << "SDLNet_TCP_AddSocket" << SDLNet_GetError() << std::endl;
+	}
+}
+
+//Megnézi,hogy bármely socketen a csoportba,van-e aktivitás
+bool ConnectionHandler::CheckSocket(SDLNet_SocketSet &set, Uint32 timeout)
+{
+	if (SDLNet_CheckSockets(set, timeout) == -1) {
+		perror("SDLNet_CheckSockets");
+		ReportErrorAndExit("SDLNet_CheckSockets", ErrorCode::CHECK_SOCKETS);
+	}
+	else {
+		return true;
+	}
+}
+
+//Van-e aktivitás egy socketen
+bool ConnectionHandler::SocketReady(TCPsocket &socket)
+{
+	if (SDLNet_SocketReady(socket)) {
+		return true;
+	}
+	else {
+		//ReportErrorAndExit("SDLNet_SocketReady", ErrorCode::SOCKET_READY);
+		return false;
+	}
+}
+
 //Szöveg fogadása hálózaton
 void ConnectionHandler::ReceiveText(TCPsocket &socket, void *data, const int length)
 {

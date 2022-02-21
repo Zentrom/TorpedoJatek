@@ -95,6 +95,26 @@ void GameLogic::DisplayMessage(GameState gameState, void *relatedData)
 			std::cout << "Place the front of your ship on a free tile on your side of the map!(with LeftMouseButton)" << std::endl;
 		}
 	}
+	else if (gameState == GameState::STARTING_MATCH) {
+		std::cout << "Waiting for server to start the match..." << std::endl;
+	}
+	else if (gameState == GameState::SHOOTING_AT_ENEMY) {
+		std::cout << "\nIt's your turn! Shoot at an enemy tile!(with LeftMouseButton)" <<
+			"\n(ESC - Quit)" << std::endl;
+	}
+	else if (gameState == GameState::GETTING_SHOT) {
+		std::cout << "\nWaiting for enemy to shoot..." <<
+			"\n(ESC - Quit)" << std::endl;
+	}
+	else if (gameState == GameState::MATCH_ENDING) {
+		int* winnerNum = static_cast<int*>(relatedData);
+		if (*winnerNum == playerNum) {
+			std::cout << "You've won the match!\n(ESC-Quit)" << std::endl;
+		}
+		else{
+			std::cout << "You've lost the match!\n(ESC-Quit)" << std::endl;
+		}
+	}
 }
 
 //Hiba kiirása
@@ -152,8 +172,8 @@ bool GameLogic::PlaceShip(int tileIndex, int shipSize)
 						for (PlayTile* choice : freeChoices) {
 							if (choice) {
 								choice->setState(6); //green recoloring
-								std::cout << choice->getPos().first << choice->getPos().second << " " << choice->getState().r
-									<< choice->getState().g << choice->getState().b << std::endl;
+								std::cout << choice->getPos().first << choice->getPos().second << std::endl; //" " << choice->getState().r
+									//<< choice->getState().g << choice->getState().b << std::endl;
 							}
 						}
 						//std::cout << "Mysea " << mySea->getTileByIndex(freeChoices[0]->getIndex()).getState().g << std::endl;
@@ -198,6 +218,11 @@ bool GameLogic::PlaceShip(int tileIndex, int shipSize)
 		}
 	}
 	return false;
+}
+
+void GameLogic::SendFleetToServer()
+{
+	clientHandler.SendFleet(myFleet->getActiveTilePositions());
 }
 
 //Lerakja a mi hajóinkat a pályára
@@ -289,85 +314,123 @@ bool GameLogic::PlaceShip(int tileIndex, int shipSize)
 //	} while (std::any_of(unplacedShips.cbegin(), unplacedShips.cend(), [](int i) {return i != 0; }));
 //}
 
-//Elkezdi a játékmenetet két játékos között
-void GameLogic::StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile> &enemyTiles)
+bool GameLogic::CheckStartSignal() 
 {
-	std::cout << "Waiting for server to start the match." << std::endl;
-	clientHandler.GetStartSignal();
-
-	ResponseState processableTileState = ResponseState::START_OF_GAME; //statenel 1-piros 2-sarga 3-kek 4-nyert 5-vesztett
-	if (playerNum == 1) {
-		processableTileState = Shoot();
-		enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
-	}
-
-	while (processableTileState != ResponseState::WIN_PLAYER_ONE && processableTileState != ResponseState::WIN_PLAYER_TWO) {
-		processableTileState = GetShoot();
-		myTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
-		if (processableTileState != ResponseState::WIN_PLAYER_ONE && processableTileState != ResponseState::WIN_PLAYER_TWO) {
-			processableTileState = Shoot();
-			enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
-		}
-	}
-
-	clientHandler.~ClientHandler();
-
-	if ((processableTileState == ResponseState::WIN_PLAYER_ONE && playerNum == 1) || (processableTileState == ResponseState::WIN_PLAYER_TWO && playerNum == 2)) {
-		std::cout << "You've won the match!" << std::endl;
-	}
-	else if ((processableTileState == ResponseState::WIN_PLAYER_TWO && playerNum == 1) || (processableTileState == ResponseState::WIN_PLAYER_ONE && playerNum == 2)) {
-		std::cout << "You've lost the match!" << std::endl;
-	}
-
+	return clientHandler.GetStartSignal();
 }
 
+//Elkezdi a játékmenetet két játékos között
+//void GameLogic::StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile> &enemyTiles)
+//{
+//	std::cout << "Waiting for server to start the match." << std::endl;
+//	clientHandler.GetStartSignal();
+//
+//	ResponseState processableTileState = ResponseState::START_OF_GAME; //statenel 1-piros 2-sarga 3-kek 4-nyert 5-vesztett
+//	if (playerNum == 1) {
+//		processableTileState = Shoot();
+//		enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
+//	}
+//
+//	while (processableTileState != ResponseState::WIN_PLAYER_ONE && processableTileState != ResponseState::WIN_PLAYER_TWO) {
+//		processableTileState = GetShoot();
+//		myTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
+//		if (processableTileState != ResponseState::WIN_PLAYER_ONE && processableTileState != ResponseState::WIN_PLAYER_TWO) {
+//			processableTileState = Shoot();
+//			enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
+//		}
+//	}
+//
+//	clientHandler.~ClientHandler();
+//
+//	if ((processableTileState == ResponseState::WIN_PLAYER_ONE && playerNum == 1) || (processableTileState == ResponseState::WIN_PLAYER_TWO && playerNum == 2)) {
+//		std::cout << "You've won the match!" << std::endl;
+//	}
+//	else if ((processableTileState == ResponseState::WIN_PLAYER_TWO && playerNum == 1) || (processableTileState == ResponseState::WIN_PLAYER_ONE && playerNum == 2)) {
+//		std::cout << "You've lost the match!" << std::endl;
+//	}
+//
+//}
+
 //Bekéri a játékostól,hogy hova akar lõni,majd küldi a szervernek
-ResponseState GameLogic::Shoot()
+bool GameLogic::Shoot(int tileindex)
 {
-	std::string shoot;
-	ResponseState newState;
-	while (1) {
-		std::cout << "Where do you want to shoot?(a1-" << static_cast<char>('a' + mapSize - 1)
-			<< mapSize << ")\n(Or enter 0 to quit!)" << std::endl;
-		std::cin >> shoot;
-		if (shoot == "0") {
-			clientHandler.quitGame();
-		}
-		if (CheckString(shoot)) {
-			processableTile = ProcessString(shoot);
-			newState = clientHandler.SendShot(processableTile.getPos());
-			break;
-		}
+	std::string shootPos;
+	//ResponseState newState;
+	PlayTile *target;
+	//while (1) {
+	//	std::cout << "Where do you want to shoot?(a1-" << static_cast<char>('a' + mapSize - 1)
+	//		<< mapSize << ")\n(Or enter 0 to quit!)" << std::endl;
+	//	std::cin >> shoot;
+	//	if (shoot == "0") {
+	//		clientHandler.quitGame();
+	//	}
+	//	if (CheckString(shoot)) {
+	//		processableTile = ProcessString(shoot);
+	//		newState = clientHandler.SendShot(processableTile.getPos());
+	//		break;
+	//	}
+	//}
+
+	int offset = mySea->getTileByIndex(0).getIndexOffset();
+	int enemyOffset = mySea->getEnemyIndexOffset();
+	if (tileindex - enemyOffset - offset < mapSize * mapSize && tileindex - enemyOffset - offset >= 0) {
+		target = &mySea->getTileByIndex(tileindex - offset);
+		matchState = clientHandler.SendShot(target->getPos());
+		target->setState(static_cast<int>(matchState));
+
+		shootPos = ProcessTile(target->getPos());
+		std::cout << "Your shot to " << shootPos << " was a "
+			<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+		return true;
 	}
 
-	std::cout << "Your shot to " << shoot << " was a "
-		<< (newState == ResponseState::CONTINUE_MATCH ? "miss." : (newState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
-
-	return newState;
+	return false;
 }
 
 //Kapunk egy lövést az ellenféltõl
-ResponseState GameLogic::GetShoot()
+bool GameLogic::GetShoot()
 {
-	std::string shoot;
-	ResponseState newState;
+	if (clientHandler.CheckForResponse()) {
+		std::string shootPos;
+		std::pair<char,int> shootCoord = clientHandler.ReceiveShot();
 
-	processableTile = PlayTile(clientHandler.ReceiveShot());
-	newState = clientHandler.getRecShotState();
+		if (shootCoord.first == '0') {
+			std::cout << "The enemy left the game!" << std::endl;
+		}
+		else {
+			PlayTile* target = &myFleet->getTile(shootCoord);
+			matchState = clientHandler.getRecShotState();
+			shootPos = ProcessTile(target->getPos());
 
-	if (newState != ResponseState::CONTINUE_MATCH) {
-		myFleet->HitFleet(processableTile.getPos());
+			//Ez az if kinullázza a pozíciót,az alapján nézi meg hogy kikell-e még rajzolni egy hajót
+			if (matchState != ResponseState::CONTINUE_MATCH) {
+				myFleet->HitFleet(target->getPos());
+			}
+			target->setState(static_cast<int>(matchState));
+			std::cout << "Enemy's shot to " << shootPos << " was a "
+				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+		}
+		return true;
 	}
+	return false;
+}
 
-	if (processableTile.getPos().first == '0') {
-		std::cout << "The enemy left the game!" << std::endl;
+int GameLogic::CheckVictoryState()
+{
+	if (matchState == ResponseState::WIN_PLAYER_ONE) {
+		clientHandler.~ClientHandler();
+		return 1;
 	}
-	else {
-		shoot = ProcessTile(processableTile.getPos());
-		std::cout << "Enemy's shot to " << shoot << " was a "
-			<< (newState == ResponseState::CONTINUE_MATCH ? "miss." : (newState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+	else if (matchState == ResponseState::WIN_PLAYER_TWO) {
+		clientHandler.~ClientHandler();
+		return 2;
 	}
-	return newState;
+	return 0;
+}
+
+int GameLogic::getPlayerNum()
+{
+	return playerNum;
 }
 
 //Hibamentes szöveges koordinátát konvertál át egy ideiglenes játékmezõvé

@@ -24,7 +24,8 @@ public:
 	void SendFleet(const std::vector<std::pair<char, int>> &activeTilePositions);
 	int GetMapSize();
 	int GetPlayerNum();
-	void GetStartSignal();
+	bool GetStartSignal();
+	bool CheckForResponse();
 	ResponseState SendShot(const std::pair<char, int> &tile);
 	std::pair<char, int> ReceiveShot();
 	void quitGame();
@@ -34,6 +35,8 @@ public:
 protected:
 	IPaddress ip;	//ip-cím
 	TCPsocket mySocket;	//kliens oldali socket
+	SDLNet_SocketSet socketSet = nullptr; //socket csoport
+	const int maxSockets = 1; //maximum hány socket lehet egy socketcsoportban
 
 	int receivedBytes = 0;	//szervertõl érkezett byte mennyisége
 	int sentBytes = 0; //szervernek átküldött byte mennyisége

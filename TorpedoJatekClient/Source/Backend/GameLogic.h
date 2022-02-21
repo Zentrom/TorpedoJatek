@@ -35,12 +35,17 @@ public:
 	bool CheckForUnplacedShips(int shipSize);
 	bool CheckAnyUnplacedShipLeft();
 	bool PlaceShip(int tileIndex, int shipSize);
+	void SendFleetToServer();
 
-	void StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile> &enemyTiles);
+	bool CheckStartSignal();
+	//void StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile> &enemyTiles);
 	void StopGame();
 
-	ResponseState Shoot();
-	ResponseState GetShoot();
+	bool Shoot(int tileindex);
+	bool GetShoot();
+	int CheckVictoryState();
+
+	int getPlayerNum();
 protected:
 	ClientHandler clientHandler;	//A hálózati kapcsolat kliens-oldali vezérlõje
 
@@ -78,5 +83,6 @@ protected:
 
 	int playerNum;	//Ha 1 akkor mi kezdünk,ha 2 akkor nem
 
-	PlayTile processableTile; //Feldolgozásra váró játékmezõ
+	ResponseState matchState = ResponseState::START_OF_GAME; //Szerverrel való kommunikáció fázisa
+	//PlayTile processableTile; //Feldolgozásra váró játékmezõ
 };

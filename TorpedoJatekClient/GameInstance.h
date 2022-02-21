@@ -84,5 +84,6 @@ protected:
 	int mapSize;	//Játékpálya mérete
 
 	int shipSizeInput = 0; //Mekkora hajót készülünk lerakni
+	int winnerPlayerNum = 0; //Nyertes játékos+boolként is mûködik ha senki nem nyert még
 };
 

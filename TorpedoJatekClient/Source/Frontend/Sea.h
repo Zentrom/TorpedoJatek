@@ -24,6 +24,7 @@ public:
 	std::vector<PlayTile>& getTiles(bool ally = true);
 	PlayTile& getTileByIndex(int index);
 
+	int getEnemyIndexOffset();
 protected:
 	void InitSeaTiles();
 	void InitPlayTiles(int inMapSize);
