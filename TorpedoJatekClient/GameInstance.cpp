@@ -136,12 +136,14 @@ void GameInstance::Clean()
 //Adatok frissítése minden kirajzolásnál
 void GameInstance::Update()
 {
-	// kameramozgatáshoz
+	//mozgatások/animációk
 	static Uint32 last_time = SDL_GetTicks();
 	float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
 	cam_mainCamera.Update(delta_time);
+	sea.Update(delta_time);
 	last_time = SDL_GetTicks();
 
+	//Real-time backend frissítések
 	if (!TorpedoGLOBAL::Debug && !outputWritten) {
 		if (isError) {
 			if (gameState == GameState::SHIP_SIZE_INPUT) {

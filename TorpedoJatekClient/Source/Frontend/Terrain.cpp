@@ -1,6 +1,5 @@
 
 #include "Terrain.h"
-#include "../../Utility/GLUtils.hpp"
 
 Terrain::Terrain(void)
 {
@@ -34,7 +33,7 @@ void Terrain::Init()
 	for (Ground &ground : myGrounds) {
 		ground.Init();
 	}
-	groundTextureID = TextureFromFile("Resources/Textures/groundTexture.bmp");
+	groundTextureID = GLUtils::TextureFromFile("Resources/Textures/groundTexture.bmp");
 }
 
 //A földdarabok kirajzolása

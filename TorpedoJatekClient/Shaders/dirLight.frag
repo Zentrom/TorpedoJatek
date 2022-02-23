@@ -12,11 +12,14 @@ vec3 La = vec3(0.2f, 0.2f, 0.2f);
 vec3 Ld = vec3(0.8f, 0.8f, 0.8f);
 vec3 Ls = vec3(1, 1, 0.4f);
 float specular_power = 128;
+vec4 transparency = vec4(1, 1, 1, 0.7f);
 
 uniform vec3 eye_pos = vec3(0, 20, 20);
 uniform bool hasTexture = false;
 uniform sampler2D texImage;
 
+uniform bool is_seatile = false;
+uniform float seatileOffset = 0.0f;
 uniform bool is_playtile = false;
 uniform vec3 tile_state;
 uniform int tile_index = 1024;
@@ -39,13 +42,18 @@ void main()
 
 	vec4 light = vec4(ambient+diffuse+specular, 1.0f);
 
-	fs_out_col = light * ( hasTexture ? texture(texImage, vs_out_tex.st) : vs_out_color );
-
-	if(is_playtile){
+	if(is_seatile){
+		vec2 newSeatexturePos = vec2(vs_out_tex.s + seatileOffset, vs_out_tex.t);
+		fs_out_col = transparency * vec4(ambient + diffuse, 1.0f) * texture(texImage, newSeatexturePos);
+	}
+	else if(is_playtile){
 		if(tile_index  == read_index){
 			fs_out_col = light * vec4(1, 1, 1, read_index);
 		}else{
 			fs_out_col = light * vec4(tile_state, tile_index);
 		}
+	}else{
+		fs_out_col = light * ( hasTexture ? texture(texImage, vs_out_tex.st) : vs_out_color );
 	}
+
 }

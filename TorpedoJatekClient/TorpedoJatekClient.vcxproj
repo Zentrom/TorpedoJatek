@@ -35,6 +35,7 @@
     <ClCompile Include="Source\Frontend\Terrain.cpp" />
     <ClCompile Include="TorpedoJatekClient.cpp" />
     <ClCompile Include="Utility\gCamera.cpp" />
+    <ClCompile Include="Utility\GLUtils.cpp" />
     <ClCompile Include="Utility\gShaderProgram.cpp" />
     <ClCompile Include="Utility\gVertexBuffer.cpp" />
     <ClCompile Include="Utility\Mesh_OGL3.cpp" />
@@ -59,7 +60,7 @@
     <ClInclude Include="Source\Globals.hpp" />
     <ClInclude Include="TorpedoJatekClient.h" />
     <ClInclude Include="Utility\gCamera.h" />
-    <ClInclude Include="Utility\GLUtils.hpp" />
+    <ClInclude Include="Utility\GLUtils.h" />
     <ClInclude Include="Utility\gShaderProgram.h" />
     <ClInclude Include="Utility\gVertexBuffer.h" />
     <ClInclude Include="Utility\Mesh_OGL3.h" />
@@ -80,7 +81,8 @@
     <Image Include="Resources\Normals\suzanne_normal.bmp" />
     <Image Include="Resources\Normals\top_normal.bmp" />
     <Image Include="Resources\Textures\groundTexture.bmp" />
-    <Image Include="Resources\Textures\gomb_texture.bmp" />
+    <Image Include="Resources\Textures\mountainTexture.bmp" />
+    <Image Include="Resources\Textures\seaTexture.bmp" />
     <Image Include="Resources\Textures\texture_1.bmp" />
     <Image Include="Resources\Textures\suzanne_texture.bmp" />
     <Image Include="Resources\Textures\top_texture.bmp" />

@@ -1,41 +1,27 @@
-#pragma once
+#include "GLUtils.h"
 
-#include <stdio.h>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <vector>
-
-#include <GL/glew.h>
-
-#include <SDL_image.h>
-
-//EZT A FÁJLT CSAK CPP-be lehet beincludeolni!!
-
-/* 
-
+/*
 Az http://www.opengl-tutorial.org/ oldal alapján.
-
 */
-GLuint loadShader(GLenum _shaderType, const char* _fileName)
+GLuint GLUtils::loadShader(GLenum _shaderType, const char* _fileName)
 {
 	// shader azonosito letrehozasa
-	GLuint loadedShader = glCreateShader( _shaderType );
+	GLuint loadedShader = glCreateShader(_shaderType);
 
 	// ha nem sikerult hibauzenet es -1 visszaadasa
-	if ( loadedShader == 0 )
+	if (loadedShader == 0)
 	{
 		fprintf(stderr, "Hiba a shader inicializálásakor (glCreateShader)!", _fileName);
 		return 0;
 	}
-	
+
 	// shaderkod betoltese _fileName fajlbol
 	std::string shaderCode = "";
 
 	// _fileName megnyitasa
 	std::ifstream shaderStream(_fileName);
 
-	if ( !shaderStream.is_open() )
+	if (!shaderStream.is_open())
 	{
 		fprintf(stderr, "Hiba a %s shader fájl betöltésekor!", _fileName);
 		return 0;
@@ -43,7 +29,7 @@ GLuint loadShader(GLenum _shaderType, const char* _fileName)
 
 	// file tartalmanak betoltese a shaderCode string-be
 	std::string line = "";
-	while ( std::getline(shaderStream, line) )
+	while (std::getline(shaderStream, line))
 	{
 		shaderCode += line + "\n";
 	}
@@ -52,20 +38,20 @@ GLuint loadShader(GLenum _shaderType, const char* _fileName)
 
 	// fajlbol betoltott kod hozzarendelese a shader-hez
 	const char* sourcePointer = shaderCode.c_str();
-	glShaderSource( loadedShader, 1, &sourcePointer, NULL );
+	glShaderSource(loadedShader, 1, &sourcePointer, NULL);
 
 	// shader leforditasa
-	glCompileShader( loadedShader );
+	glCompileShader(loadedShader);
 
 	// ellenorizzuk, h minden rendben van-e
 	GLint result = GL_FALSE;
-    int infoLogLength;
+	int infoLogLength;
 
 	// forditas statuszanak lekerdezese
 	glGetShaderiv(loadedShader, GL_COMPILE_STATUS, &result);
 	glGetShaderiv(loadedShader, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-	if ( GL_FALSE == result )
+	if (GL_FALSE == result)
 	{
 		// hibauzenet elkerese es kiirasa
 		std::vector<char> VertexShaderErrorMessage(infoLogLength);
@@ -77,15 +63,15 @@ GLuint loadShader(GLenum _shaderType, const char* _fileName)
 	return loadedShader;
 }
 
-GLuint loadProgramVSGSFS(const char* _fileNameVS, const char* _fileNameGS, const char* _fileNameFS)
+GLuint GLUtils::loadProgramVSGSFS(const char* _fileNameVS, const char* _fileNameGS, const char* _fileNameFS)
 {
 	// a vertex, geometry es fragment shaderek betoltese
-	GLuint vs_ID = loadShader(GL_VERTEX_SHADER,		_fileNameVS);
-	GLuint gs_ID = loadShader(GL_GEOMETRY_SHADER,	_fileNameGS);
-	GLuint fs_ID = loadShader(GL_FRAGMENT_SHADER,	_fileNameFS);
+	GLuint vs_ID = loadShader(GL_VERTEX_SHADER, _fileNameVS);
+	GLuint gs_ID = loadShader(GL_GEOMETRY_SHADER, _fileNameGS);
+	GLuint fs_ID = loadShader(GL_FRAGMENT_SHADER, _fileNameFS);
 
 	// ha barmelyikkel gond volt programot sem tudunk csinalni, 0 vissza
-	if ( vs_ID == 0 || gs_ID == 0 || fs_ID == 0 )
+	if (vs_ID == 0 || gs_ID == 0 || fs_ID == 0)
 	{
 		return 0;
 	}
@@ -105,85 +91,86 @@ GLuint loadProgramVSGSFS(const char* _fileNameVS, const char* _fileNameGS, const
 
 	glGetProgramiv(program_ID, GL_LINK_STATUS, &result);
 	glGetProgramiv(program_ID, GL_INFO_LOG_LENGTH, &infoLogLength);
-	if ( GL_FALSE == result)
+	if (GL_FALSE == result)
 	{
-		std::vector<char> ProgramErrorMessage( infoLogLength );
+		std::vector<char> ProgramErrorMessage(infoLogLength);
 		glGetProgramInfoLog(program_ID, infoLogLength, NULL, &ProgramErrorMessage[0]);
 		fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
 	}
 
 	// mar nincs ezekre szukseg
-	glDeleteShader( vs_ID );
-	glDeleteShader( gs_ID );
-	glDeleteShader( fs_ID );
+	glDeleteShader(vs_ID);
+	glDeleteShader(gs_ID);
+	glDeleteShader(fs_ID);
 
 	// adjuk vissza a program azonositojat
 	return program_ID;
 }
 
-GLuint TextureFromFile(const char* filename)
+//EZ CSAK BMP-vel mûködik,meg talán PNG
+GLuint GLUtils::TextureFromFile(const char* filename)
 {
 	SDL_Surface* loaded_img = IMG_Load(filename);
-  
+
 	int img_mode = 0;
-	
-	if ( loaded_img == 0 )
+
+	if (loaded_img == 0)
 	{
 		std::cout << "[TextureFromFile] Hiba a kép betöltése közben: " << filename << std::endl;
 		return 0;
 	}
 
-	#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-		if ( loaded_img->format->BytesPerPixel == 4 )
-			img_mode = GL_BGRA;
-		else
-			img_mode = GL_BGR;
-	#else
-		if ( loaded_img->format->BytesPerPixel == 4 )
-			img_mode = GL_RGBA;
-		else
-			img_mode = GL_RGB;
-	#endif
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+	if (loaded_img->format->BytesPerPixel == 4)
+		img_mode = GL_BGRA;
+	else
+		img_mode = GL_BGR;
+#else
+	if (loaded_img->format->BytesPerPixel == 4)
+		img_mode = GL_RGBA;
+	else
+		img_mode = GL_RGB;
+#endif
 
-    GLuint tex;
-    glGenTextures(1, &tex);
-  
-    glBindTexture(GL_TEXTURE_2D, tex);
+	GLuint tex;
+	glGenTextures(1, &tex);
+
+	glBindTexture(GL_TEXTURE_2D, tex);
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, loaded_img->w, loaded_img->h, img_mode, GL_UNSIGNED_BYTE, loaded_img->pixels);
-  
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-  
-	SDL_FreeSurface( loaded_img );
 
-    return tex;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	SDL_FreeSurface(loaded_img);
+
+	return tex;
 }
 
-void TextureFromFileAttach(const char* filename, GLuint role)
+void GLUtils::TextureFromFileAttach(const char* filename, GLuint role)
 {
 	SDL_Surface* loaded_img = IMG_Load(filename);
-  
+
 	int img_mode = 0;
-	
-	if ( loaded_img == 0 )
+
+	if (loaded_img == 0)
 	{
 		std::cout << "[TextureFromFile] Hiba a kép betöltése közben: " << filename << std::endl;
 		return;
 	}
 
-	#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-		if ( loaded_img->format->BytesPerPixel == 4 )
-			img_mode = GL_BGRA;
-		else
-			img_mode = GL_BGR;
-	#else
-		if ( loaded_img->format->BytesPerPixel == 4 )
-			img_mode = GL_RGBA;
-		else
-			img_mode = GL_RGB;
-	#endif
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+	if (loaded_img->format->BytesPerPixel == 4)
+		img_mode = GL_BGRA;
+	else
+		img_mode = GL_BGR;
+#else
+	if (loaded_img->format->BytesPerPixel == 4)
+		img_mode = GL_RGBA;
+	else
+		img_mode = GL_RGB;
+#endif
 
-	glTexImage2D(role, 0, GL_RGBA, loaded_img->w, loaded_img->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, loaded_img->pixels );
-    
-	SDL_FreeSurface( loaded_img );
+	glTexImage2D(role, 0, GL_RGBA, loaded_img->w, loaded_img->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, loaded_img->pixels);
+
+	SDL_FreeSurface(loaded_img);
 }

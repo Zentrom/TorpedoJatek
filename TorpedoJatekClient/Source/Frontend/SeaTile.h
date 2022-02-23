@@ -19,7 +19,7 @@ public:
 	~SeaTile(void);
 
 	void Init();
-	void Draw(gCamera &camera, gShaderProgram &sh_playtile);
+	void Draw(gCamera &camera, gShaderProgram &sh_playtile, GLuint &textureID);
 	void setTranslate(const glm::vec3 &trans);
 	static float getScaleXZ();
 	glm::vec3 getTranslate() const;

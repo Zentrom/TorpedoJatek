@@ -111,6 +111,9 @@
     <ClCompile Include="Source\Frontend\Skybox.cpp">
       <Filter>Source Files\Frontend</Filter>
     </ClCompile>
+    <ClCompile Include="Utility\GLUtils.cpp">
+      <Filter>Utility\gClasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TorpedoJatekClient.h">
@@ -149,9 +152,6 @@
     <ClInclude Include="Utility\gCamera.h">
       <Filter>Utility\gClasses</Filter>
     </ClInclude>
-    <ClInclude Include="Utility\GLUtils.hpp">
-      <Filter>Utility\gClasses</Filter>
-    </ClInclude>
     <ClInclude Include="Utility\gShaderProgram.h">
       <Filter>Utility\gClasses</Filter>
     </ClInclude>
@@ -181,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="..\CommonSource\TorpedoVersion.hpp">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\GLUtils.h">
+      <Filter>Utility\gClasses</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -219,9 +222,6 @@
     <Image Include="Resources\Normals\top_normal.bmp">
       <Filter>Resource Files\NormalMaps</Filter>
     </Image>
-    <Image Include="Resources\Textures\gomb_texture.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
     <Image Include="Resources\Textures\suzanne_texture.bmp">
       <Filter>Resource Files\Textures</Filter>
     </Image>
@@ -232,6 +232,12 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Resources\Textures\groundTexture.bmp">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\mountainTexture.bmp">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\seaTexture.bmp">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

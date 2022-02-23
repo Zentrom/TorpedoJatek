@@ -508,7 +508,8 @@ int GameLogic::ConvertCoordToTileIndex(const std::pair<char, int> &tile)
 void GameLogic::PlaceShipsINDEBUG() {
 	myFleet->PlaceShip(&myFleet->getTile(std::pair<char, int>('a', 1)), nullptr);
 
-	enemyFleet->PlaceShip(&enemyFleet->getTile(std::pair<char, int>('a', 1)), nullptr);
+	//EZT JAVÍTANI KELL HOGY MENJEN
+	//enemyFleet->PlaceShip(&enemyFleet->getTile(std::pair<char, int>('a', 1)), nullptr);
 
 	myFleet->PlaceShip(&myFleet->getTile(std::pair<char, int>('c', 2)),
 		&myFleet->getTile(std::pair<char, int>('d', 2)));

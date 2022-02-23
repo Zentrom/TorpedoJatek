@@ -1,6 +1,4 @@
-v0.0.3c-3D Picking Gameplay
+v0.0.3d-Sea&Mountain Texture
 --------------------------------------------------------------------------------
--Finished the match/gameplay part of 3D picking.
--Removed gameplay interaction using the Console.
--The client doesn't wait for server response anymore, it checks it every cycle instead.
--The extra thread that handled the console input in v003 is now not needed and was removed.
+-Added and animated SeaTile texture.
+-Added Mountain texture.

@@ -6,11 +6,8 @@ std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
 OpenAl vagy SDLAudio(havan 3d) hangoknak
 Freetype vagy SDL rtf/ttf betuknek
 
-CHECKSOCKET clientOldalon megfontolandó majd, 3D pickingtõl kezdve.
-Addig Threadet elõbb is el lehetne inditani.(ez elmarad)
-
 Outlineolni kéne a PlayTileokat(004)
-Hogy jelenjenek meg az ellenfél hajói?(lövés animációnál majd 004vagy005)
+Hogy jelenjenek meg az ellenfél hajói?(lövés animációnál majd 005)
 
 Vertexbufferek lehetnének static-ok talán?
 Javítani seaTilesize és Mountain::width változtatást.

@@ -5,6 +5,7 @@
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
 #include "../../Utility/gCamera.h"
+#include "../../Utility/GLUtils.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -23,8 +24,9 @@ public:
 	static float getHeight();
 
 protected:
-	const int mountainResolution = 44; //hány darab négyzetbõl álljon a hegy egy sora/oszlopa
+	const int mountainResolution = 32; //hány darab négyzetbõl álljon a hegy egy sora/oszlopa
 	gVertexBuffer	vb_mountain; //grafikai adatok
+	GLuint mountainTextureID; //Hegy textúra azonosítója
 
 	static const float heightY; //magasság
 	static const float widthX; //Hegy szélessége X tengelyen

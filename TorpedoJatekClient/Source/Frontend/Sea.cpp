@@ -15,6 +15,14 @@ void Sea::Init(int inMapSize)
 	InitSeaTiles();
 	InitPlayTiles(inMapSize);
 	RemoveExtraSeaTiles();
+	
+	seaTileTextureID = GLUtils::TextureFromFile("Resources/Textures/seaTexture.bmp");
+}
+
+//Tenger animációhoz kellõ számítások
+void Sea::Update(float deltatime)
+{
+	textureAnimationOffset += deltatime;
 }
 
 //Kirajzolja a játékmezõket
@@ -27,8 +35,9 @@ void Sea::Draw(gCamera &camera, gShaderProgram &sh_program, float pointedTile)
 		myTiles[i].Draw(camera, sh_program);
 	}
 	glEnable(GL_BLEND);
+	sh_program.SetUniform("seatileOffset", textureAnimationOffset);
 	for (SeaTile &tile : seaTiles) {
-		tile.Draw(camera, sh_program);
+		tile.Draw(camera, sh_program, seaTileTextureID);
 	}
 	glDisable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
