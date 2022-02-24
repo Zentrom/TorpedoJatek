@@ -3,7 +3,7 @@
 
 // Initializes a new instance of the gCamera class.
 gCamera::gCamera(glm::vec3 pos) : camEye(pos), boundaryX(100.0f), boundaryY(100.0f), boundaryZ(100.0f),
-camAt(0.0f), camUp(0.0f, 1.0f, 0.0f), speed(16.0f), goFw(0), goRight(0), slow(false)
+camAt(0.0f), camUp(0.0f, 1.0f, 0.0f), speed(4.0f), goFw(0), goRight(0), fast(false)
 {
 	SetView(camEye * TorpedoGLOBAL::Scale, camAt, camUp);
 	dist = glm::length(camAt - camEye);
@@ -128,10 +128,10 @@ void gCamera::KeyboardDown(SDL_KeyboardEvent& key)
 	{
 	case SDLK_LSHIFT:
 	case SDLK_RSHIFT:
-		if (!slow)
+		if (!fast)
 		{
-			slow = true;
-			speed /= 4.0f;
+			fast = true;
+			speed *= 4.0f;
 		}
 		break;
 	case SDLK_w:
@@ -155,10 +155,10 @@ void gCamera::KeyboardUp(SDL_KeyboardEvent& key)
 	{
 	case SDLK_LSHIFT:
 	case SDLK_RSHIFT:
-		if (slow)
+		if (fast)
 		{
-			slow = false;
-			speed *= 4.0f;
+			fast = false;
+			speed /= 4.0f;
 		}
 		break;
 	case SDLK_w:
@@ -176,7 +176,7 @@ void gCamera::MouseMove(SDL_MouseMotionEvent& mouse)
 {
 	if (mouse.state & SDL_BUTTON_RMASK)
 	{
-		UpdateUV(mouse.xrel / 100.0f, mouse.yrel / 100.0f);
+		UpdateUV(mouse.xrel / 200.0f, mouse.yrel / 200.0f);
 	}
 }
 

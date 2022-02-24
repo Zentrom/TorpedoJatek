@@ -10,7 +10,9 @@ public:
 	PlayTile(const std::pair<char, int> &pos);
 	~PlayTile(void);
 
-	void Draw(gCamera &camera, gShaderProgram &sh_playtile);
+	void PreProcess(gCamera &camera, gShaderProgram &sh_program);
+	void Draw(gCamera &camera, gShaderProgram &sh_program, GLuint &textureID);
+	void OutlineDraw(gCamera &camera, gShaderProgram &sh_program);
 	void setState(int newState = 3);
 	void setIndex(int newIndex = 0);
 	void setUsed(bool used = true);
@@ -29,6 +31,7 @@ private:
 	int indexOffset = 100; //offsetelni az indexet,hogy ne 0-1 legyen AMÉG ALPHA színbe írom az indexet
 	std::pair<char, int> position;	//Koordináta (pl. A7)
 	bool usedTile = false;	//Van-e hajó rajta
-	glm::vec3 tileState = glm::vec3(0, 0, 1); //3kek,2sarga,1piros-sárga=nemtalált,piros=talált
-
+	glm::vec3 tileState = glm::vec3(1, 1, 1); //Alap kijelölés szín
+	bool isStateChanged = false; //Eltér-e az alap színtõl a mezõ állapota
+	float outlineWidth = 0.2f; //Kijelölõ négyzet vastagsága
 };

@@ -25,21 +25,45 @@ void Sea::Update(float deltatime)
 	textureAnimationOffset += deltatime;
 }
 
-//Kirajzolja a játékmezõket
-void Sea::Draw(gCamera &camera, gShaderProgram &sh_program, float pointedTile)
+//Egy elõrajzolás,ami szükséges hogy tudjuk melyik játékmezõre mutatunk az egérrel
+void Sea::PreProcess(gCamera &camera, gShaderProgram &sh_program)
 {
 	glDisable(GL_CULL_FACE);
-	sh_program.SetUniform("read_index", static_cast<int>(pointedTile));
 	for (int i = 0; i < (mapSize*mapSize); i++) {
-		enemyTiles[i].Draw(camera, sh_program);
-		myTiles[i].Draw(camera, sh_program);
+		enemyTiles[i].PreProcess(camera, sh_program);
+		myTiles[i].PreProcess(camera, sh_program);
 	}
+	glEnable(GL_CULL_FACE);
+}
+
+//Kirajzolja a játékmezõket
+void Sea::Draw(gCamera &camera, gShaderProgram &sh_program)//, float pointedTile)
+{
+	glDisable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
+	glStencilMask(0xFF);
+	//sh_program.SetUniform("read_index", static_cast<int>(pointedTile));
 	sh_program.SetUniform("seatileOffset", textureAnimationOffset);
+	for (int i = 0; i < (mapSize*mapSize); i++) {
+		enemyTiles[i].Draw(camera, sh_program, seaTileTextureID);
+		myTiles[i].Draw(camera, sh_program, seaTileTextureID);
+	}
+	glStencilMask(0x00);
 	for (SeaTile &tile : seaTiles) {
 		tile.Draw(camera, sh_program, seaTileTextureID);
 	}
 	glDisable(GL_BLEND);
+	glEnable(GL_CULL_FACE);
+}
+
+void Sea::OutlineDraw(gCamera &camera, gShaderProgram &sh_program, float pointedTile)
+{
+	glDisable(GL_CULL_FACE);
+	sh_program.SetUniform("read_index", static_cast<int>(pointedTile));
+	for (int i = 0; i < (mapSize*mapSize); i++) {
+		enemyTiles[i].OutlineDraw(camera, sh_program);
+		myTiles[i].OutlineDraw(camera, sh_program);
+	}
 	glEnable(GL_CULL_FACE);
 }
 

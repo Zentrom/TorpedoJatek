@@ -14,7 +14,7 @@
 #include <GL/glew.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include <SDL_thread.h>
+//#include <SDL_thread.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
@@ -59,17 +59,21 @@ protected:
 	// framebuffer dolgok
 	gVertexBuffer m_fbo_vbo;
 	bool dirL_frameBufferCreated;
-	GLuint dirL_depthBuffer;
+	GLuint dirL_depthStencilBuffer;
 	GLuint dirL_colorBuffer;
 	GLuint dirL_frameBuffer;
+
+	Sint32 mouseX; //Egér relatív X koord
+	Sint32 mouseY; //Egér relatív Y koord
 	float* mousePointedData; //Melyik játékmezõre mutat az egér
 
 	//SDL_Thread* inputThread; //Thread az inputkezeléshez
 
 	gCamera	cam_mainCamera; //Kamera
-	gShaderProgram  sh_default; //Alap shader+postprocess
-	gShaderProgram	sh_dirLight; //Ide rajzoljuk a 3D-s teret
-	gShaderProgram  sh_skybox; //Skybox shadere
+	gShaderProgram sh_default; //Alap shader+postprocess
+	gShaderProgram sh_playtile; //PlayTile pre-postprocess shader
+	gShaderProgram sh_dirLight; //Ide rajzoljuk a 3D-s teret
+	gShaderProgram sh_skybox; //Skybox shadere
 
 	Skybox skybox; //Pályát körülvevõ skybox
 	Mountain mountain;	//Hegy

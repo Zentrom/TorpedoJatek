@@ -1,3 +1,8 @@
+Jelenleg 3 fõ rendering call van + 1 a default FBO quadra:
+1.PlayTile-okba beírja az indexeket alpha-ba. Ebbõl Mousemove-nál kiolvassuk mire mutatunk. Utána Töröljük.
+2.Kirajzolunk mindent, PlayTileok kicsinyítve, alap transparency értéket kapnak alphaba. Stencil bufferbe mentünk.
+3.Kirajzoljuk PlayTileokat stencil buffert használva, tile_state színnel.
+
 TCP OR UDP?
 These functions are used to work with TCP Sockets. TCP is used with a full connection, 
 whereas UDP is connectionless. TCP also ensures that all packets reach the destionation (when possible). 

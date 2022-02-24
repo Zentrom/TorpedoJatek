@@ -50,6 +50,7 @@ protected:
 	ClientHandler clientHandler;	//A hálózati kapcsolat kliens-oldali vezérlõje
 
 	void PlaceShipsINDEBUG();
+	void SetTilesINDEBUG();
 
 	bool CheckString(std::string coord);
 	PlayTile ProcessString(std::string coord);

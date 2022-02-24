@@ -1,4 +1,8 @@
-v0.0.3d-Sea&Mountain Texture
+v0.0.3e-PlayTile Outlines
 --------------------------------------------------------------------------------
--Added and animated SeaTile texture.
--Added Mountain texture.
+-Added and animated Playtile textures.
+-Added grid outlines to the Playtiles using stencil buffer.
+(Outlines are drawn in the 3rd render call)
+-Created separate rendering call to render PlayTile indexes into alpha values. (1st call)
+-Fixed some errors related to disconnection.
+-Slowed down the camera moving/turning speed.

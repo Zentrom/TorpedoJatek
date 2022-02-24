@@ -232,6 +232,15 @@ void TorpedoJatekServer::HandleClientState(Client *client)
 				client->state = ClientState::NOT_CONNECTED;
 			}
 		}
+		else if (client->state == ClientState::IN_MATCH_SHOOTER || client->state == ClientState::IN_MATCH_TAKER) {
+			receivedType = ServerHandler::ReceiveMessageType(client->socket);
+			if (receivedType == MessageType::QUIT) {
+				std::cout << client->name.str() << " has left the server!!" << std::endl;
+				SDLNet_TCP_DelSocket(socketSet, client->socket);
+				SDLNet_TCP_Close(client->socket);
+				client->state = ClientState::NOT_CONNECTED;
+			}
+		}
 		else {
 			std::cout << "Unwanted socket activity detected(maybe client aborted): ";
 			std::cout << client->name.str() << "\nClosing connection." << std::endl;
@@ -318,7 +327,7 @@ void TorpedoJatekServer::HandleShot(Client &shooter, Client &taker)
 		}
 		//Ez lekezeli ha kilép az aki nem lõ éppen
 		else {
-			receivedType = ServerHandler::ReceiveMessageType(shooter.socket);
+			receivedType = ServerHandler::ReceiveMessageType(taker.socket);
 			ServerHandler::ReceiveBinary(taker.socket, &targetTile, sizeof(std::pair<char, int>));
 			ServerHandler::SendBinary(taker.socket, &responseState, sizeof(ResponseState));
 		}

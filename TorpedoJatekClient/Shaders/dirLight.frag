@@ -19,11 +19,12 @@ uniform bool hasTexture = false;
 uniform sampler2D texImage;
 
 uniform bool is_seatile = false;
+uniform bool tilestate_changed = false;
 uniform float seatileOffset = 0.0f;
-uniform bool is_playtile = false;
 uniform vec3 tile_state;
-uniform int tile_index = 1024;
-uniform int read_index = 512; //mindegy
+//uniform bool is_playtile = false;
+//uniform int tile_index = 1024;
+//uniform int read_index = 512; //mindegy
 
 void main()
 {
@@ -40,18 +41,39 @@ void main()
 	float si = pow( max( dot(viewDir, reflection), 0.0f), specular_power );
 	vec3 specular = Ls * si;
 
-	vec4 light = vec4(ambient+diffuse+specular, 1.0f);
+	vec4 lightNoSpecular = vec4(ambient + diffuse, 1.0f);
+	vec4 light = vec4(ambient + diffuse + specular, 1.0f);
 
 	if(is_seatile){
 		vec2 newSeatexturePos = vec2(vs_out_tex.s + seatileOffset, vs_out_tex.t);
-		fs_out_col = transparency * vec4(ambient + diffuse, 1.0f) * texture(texImage, newSeatexturePos);
-	}
-	else if(is_playtile){
-		if(tile_index  == read_index){
-			fs_out_col = light * vec4(1, 1, 1, read_index);
+		vec4 texture_col = texture(texImage, newSeatexturePos);
+		if(tilestate_changed){
+			vec4 final_col = mix(texture_col, vec4(tile_state, 1), 0.5f);
+			fs_out_col = transparency * lightNoSpecular * final_col;
 		}else{
-			fs_out_col = light * vec4(tile_state, tile_index);
+			fs_out_col = transparency * lightNoSpecular * texture_col;
 		}
+
+
+	//}
+	//else if(is_playtile){
+	//	vec2 newSeatexturePos = vec2(vs_out_tex.s + seatileOffset, vs_out_tex.t);
+	//	vec4 texture_col = texture(texImage, newSeatexturePos);
+	//	fs_out_col = transparency * lightNoSpecular * texture_col;
+		//if(tile_index  == read_index){
+		//	vec4 final_col = mix(texture_col, vec4(1, 1, 1, 1), 0.5f);
+		//	fs_out_col = lightNoSpecular * vec4(final_col.rgb, read_index);
+		//}else{
+		//	if(tile_state.b < 1.0f){
+		//		vec4 final_col = mix(texture_col, vec4(tile_state, 1), 0.5f);
+		//		fs_out_col = lightNoSpecular * vec4(final_col.rgb, tile_index);
+		//	}else{
+		//		fs_out_col = lightNoSpecular * vec4(texture_col.rgb, tile_index);
+		//	}
+		//}
+
+
+
 	}else{
 		fs_out_col = light * ( hasTexture ? texture(texImage, vs_out_tex.st) : vs_out_color );
 	}

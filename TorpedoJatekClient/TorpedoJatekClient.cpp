@@ -52,6 +52,7 @@ int TorpedoJatekClient::Init()
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	// mélységi puffer hány bites legyen
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
 	// antialiasing - ha kell
 	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,  1);

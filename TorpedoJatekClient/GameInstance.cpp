@@ -40,7 +40,7 @@ GameInstance::~GameInstance(void)
 
 	if (dirL_frameBufferCreated)
 	{
-		glDeleteRenderbuffers(1, &dirL_depthBuffer);
+		glDeleteRenderbuffers(1, &dirL_depthStencilBuffer);
 		glDeleteTextures(1, &dirL_colorBuffer);
 		glDeleteFramebuffers(1, &dirL_frameBuffer);
 	}
@@ -60,6 +60,7 @@ bool GameInstance::Init()
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -86,6 +87,14 @@ bool GameInstance::Init()
 	sh_default.BindAttribLoc(0, "vs_in_pos");
 	sh_default.BindAttribLoc(1, "vs_in_tex");
 	if (!sh_default.LinkProgram()) {
+		return false;
+	}
+
+	sh_playtile.AttachShader(GL_VERTEX_SHADER, "Shaders/playtile.vert");
+	sh_playtile.AttachShader(GL_FRAGMENT_SHADER, "Shaders/playtile.frag");
+	sh_playtile.BindAttribLoc(0, "vs_in_pos");
+	sh_playtile.BindAttribLoc(1, "vs_in_col");
+	if (!sh_playtile.LinkProgram()) {
 		return false;
 	}
 
@@ -191,7 +200,13 @@ void GameInstance::Update()
 void GameInstance::Render()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, dirL_frameBuffer);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	//glStencilMask(0x00);
+	sh_playtile.On();
+	sea.PreProcess(cam_mainCamera, sh_playtile);
+	sh_playtile.Off();
+	glReadPixels(mouseX, viewportHeight - mouseY - 1, 1, 1, GL_RGBA, GL_FLOAT, (void*)mousePointedData);
 
 	// megjelenítés módja
 	//if (is_filled) {
@@ -202,6 +217,8 @@ void GameInstance::Render()
 	//	glDisable(GL_CULL_FACE);
 	//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//}
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glStencilMask(0x00);
 
 	sh_dirLight.On();
 	mountain.Draw(cam_mainCamera, sh_dirLight);
@@ -214,9 +231,26 @@ void GameInstance::Render()
 	skybox.Draw(cam_mainCamera, sh_skybox);
 	sh_skybox.Off();
 
+	glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	
 	sh_dirLight.On();
-	sea.Draw(cam_mainCamera, sh_dirLight, mousePointedData[3]);
+	sea.Draw(cam_mainCamera, sh_dirLight);
 	sh_dirLight.Off();
+
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	
+	//glStencilOp(GL_ZERO, GL_KEEP, GL_ZERO);
+	glStencilMask(0xFF);
+	//glDisable(GL_DEPTH_TEST);
+
+	sh_playtile.On();
+	sea.OutlineDraw(cam_mainCamera, sh_playtile, mousePointedData[3]);
+	sh_playtile.Off();
+	//glStencilMask(0x00);
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	//glEnable(GL_DEPTH_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
 	//glReadPixels(viewportWidth / 2, viewportHeight / 2, 1, 1, GL_RGBA, GL_FLOAT, (void*)mousePointedData);
 	//std::cout << mousePointedData[3] << std::endl;
@@ -242,8 +276,11 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 	}
 
 	if((key.keysym.sym == SDLK_ESCAPE) &&
-		(gameState == GameState::SHOOTING_AT_ENEMY || gameState == GameState::GETTING_SHOT
+		(gameState == GameState::SHOOTING_AT_ENEMY || gameState == GameState::GETTING_SHOT || gameState == GameState::STARTING_MATCH
 			|| gameState == GameState::MATCH_ENDING)) {
+		if (gameState != GameState::MATCH_ENDING) {
+			gameLogic.StopGame();
+		}
 		return 1;
 	}
 
@@ -287,10 +324,13 @@ void GameInstance::KeyboardUp(SDL_KeyboardEvent& key)
 
 void GameInstance::MouseMove(SDL_MouseMotionEvent& mouse)
 {
+	mouseX = mouse.x;
+	mouseY = mouse.y;
+
 	cam_mainCamera.MouseMove(mouse);
 	//std::cout << mouse.x << " and " << mouse.y << std::endl;
-	glBindFramebuffer(GL_FRAMEBUFFER, dirL_frameBuffer);
-	glReadPixels(mouse.x, viewportHeight - mouse.y - 1, 1, 1, GL_RGBA, GL_FLOAT, (void*)mousePointedData);
+	//glBindFramebuffer(GL_FRAMEBUFFER, dirL_frameBuffer);
+	//glReadPixels(mouse.x, viewportHeight - mouse.y - 1, 1, 1, GL_RGBA, GL_FLOAT, (void*)mousePointedData);
 	//std::cout << mousePointedData[3] << std::endl;
 }
 
@@ -355,7 +395,7 @@ void GameInstance::CreateFrameBuffer(int width, int height)
 {
 	if (dirL_frameBufferCreated)
 	{
-		glDeleteRenderbuffers(1, &dirL_depthBuffer);
+		glDeleteRenderbuffers(1, &dirL_depthStencilBuffer);
 		glDeleteTextures(1, &dirL_colorBuffer);
 		glDeleteFramebuffers(1, &dirL_frameBuffer);
 	}
@@ -378,14 +418,14 @@ void GameInstance::CreateFrameBuffer(int width, int height)
 		exit(1);
 	}
 
-	glGenRenderbuffers(1, &dirL_depthBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, dirL_depthBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, dirL_depthBuffer);
+	glGenRenderbuffers(1, &dirL_depthStencilBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, dirL_depthStencilBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, dirL_depthStencilBuffer);
 	if (glGetError() != GL_NO_ERROR)
 	{
-		std::cout << "Error creating depth attachment" << std::endl;
-		char ch; 
+		std::cout << "Error creating depth/stencil attachment" << std::endl;
+		char ch;
 		std::cin >> ch;
 		exit(1);
 	}

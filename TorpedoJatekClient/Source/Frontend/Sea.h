@@ -21,7 +21,9 @@ public:
 
 	void Init(int inMapSize = 7);
 	void Update(float deltatime);
-	void Draw(gCamera &camera, gShaderProgram &sh_program, float pointedTile);
+	void PreProcess(gCamera &camera, gShaderProgram &sh_program);
+	void Draw(gCamera &camera, gShaderProgram &sh_program);//, float pointedTile);
+	void OutlineDraw(gCamera &camera, gShaderProgram &sh_program, float pointedTile);
 
 	std::vector<PlayTile>& getTiles(bool ally = true);
 	PlayTile& getTileByIndex(int index);

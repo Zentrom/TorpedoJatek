@@ -71,7 +71,7 @@ private:
 	glm::mat4 viewMatrix;
 	glm::mat4 matViewProj;
 
-	bool slow;
+	bool fast;
 
 	// The camera position.
 	glm::vec3 camEye;

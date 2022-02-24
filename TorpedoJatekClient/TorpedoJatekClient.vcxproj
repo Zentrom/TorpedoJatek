@@ -71,6 +71,8 @@
     <None Include="Shaders\default.vert" />
     <None Include="Shaders\dirLight.frag" />
     <None Include="Shaders\dirLight.vert" />
+    <None Include="Shaders\playtile.frag" />
+    <None Include="Shaders\playtile.vert" />
     <None Include="Shaders\skybox.frag" />
     <None Include="Shaders\skybox.vert" />
   </ItemGroup>
