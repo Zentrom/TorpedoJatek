@@ -62,7 +62,6 @@ void SeaTile::Draw(gCamera &camera, gShaderProgram &sh_program, GLuint &textureI
 	sh_program.SetUniform("world", matWorld);
 	sh_program.SetUniform("worldIT", matWorldIT);
 	sh_program.SetUniform("MVP", mvp);
-	//sh_playtile.SetUniform("tile_state", glm::vec3(0, 0, 1));
 
 	sh_program.SetUniform("is_seatile", true);
 	sh_program.SetUniform("hasTexture", true);

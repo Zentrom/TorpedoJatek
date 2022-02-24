@@ -32,10 +32,6 @@ GameInstance::GameInstance(float viewportW, float viewportH) : viewportWidth(vie
 //Memória felszabadítás
 GameInstance::~GameInstance(void)
 {
-	//if (!TorpedoGLOBAL::Debug) {
-	//	SDL_WaitThread(inputThread, nullptr);
-	//}
-
 	delete[] mousePointedData;
 
 	if (dirL_frameBufferCreated)
@@ -52,10 +48,6 @@ bool GameInstance::Init()
 	mapSize = gameLogic.Init(&playerFleet, &enemyFleet, &sea);
 	gameLogic.InitGame();
 
-	//gameLogic.StartMatch(sea.getTiles(true), sea.getTiles(false));
-	//if (!TorpedoGLOBAL::Debug) {
-	//	inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);
-	//}
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 
 	glEnable(GL_CULL_FACE);
@@ -130,17 +122,7 @@ void GameInstance::Clean()
 	sh_skybox.Clean();
 }
 
-//A thread hívja meg ezt a függvényt,hogy lehessen meccs közbe gépelni consoleba
-//int GameInstance::threadFunction(void *ptr)
-//{
-//	if (ptr) {
-//		GameInstance* pointr = static_cast<GameInstance *>(ptr);
-//		pointr->gameLogic.StartMatch(pointr->sea.getTiles(true), pointr->sea.getTiles(false));
-//	}
-//	std::cout << "The match is over,input thread stopped." << std::endl;
-//	return 1;
-//
-//}
+
 
 //Adatok frissítése minden kirajzolásnál
 void GameInstance::Update()
@@ -202,21 +184,11 @@ void GameInstance::Render()
 	glBindFramebuffer(GL_FRAMEBUFFER, dirL_frameBuffer);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	//glStencilMask(0x00);
 	sh_playtile.On();
 	sea.PreProcess(cam_mainCamera, sh_playtile);
 	sh_playtile.Off();
 	glReadPixels(mouseX, viewportHeight - mouseY - 1, 1, 1, GL_RGBA, GL_FLOAT, (void*)mousePointedData);
 
-	// megjelenítés módja
-	//if (is_filled) {
-		//glEnable(GL_CULL_FACE);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//}
-	//else {
-	//	glDisable(GL_CULL_FACE);
-	//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glStencilMask(0x00);
 
@@ -239,21 +211,13 @@ void GameInstance::Render()
 	sh_dirLight.Off();
 
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	
-	//glStencilOp(GL_ZERO, GL_KEEP, GL_ZERO);
 	glStencilMask(0xFF);
-	//glDisable(GL_DEPTH_TEST);
 
 	sh_playtile.On();
 	sea.OutlineDraw(cam_mainCamera, sh_playtile, mousePointedData[3]);
 	sh_playtile.Off();
-	//glStencilMask(0x00);
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
-	//glEnable(GL_DEPTH_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-
-	//glReadPixels(viewportWidth / 2, viewportHeight / 2, 1, 1, GL_RGBA, GL_FLOAT, (void*)mousePointedData);
-	//std::cout << mousePointedData[3] << std::endl;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -328,10 +292,6 @@ void GameInstance::MouseMove(SDL_MouseMotionEvent& mouse)
 	mouseY = mouse.y;
 
 	cam_mainCamera.MouseMove(mouse);
-	//std::cout << mouse.x << " and " << mouse.y << std::endl;
-	//glBindFramebuffer(GL_FRAMEBUFFER, dirL_frameBuffer);
-	//glReadPixels(mouse.x, viewportHeight - mouse.y - 1, 1, 1, GL_RGBA, GL_FLOAT, (void*)mousePointedData);
-	//std::cout << mousePointedData[3] << std::endl;
 }
 
 void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)

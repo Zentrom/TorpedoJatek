@@ -22,9 +22,6 @@ uniform bool is_seatile = false;
 uniform bool tilestate_changed = false;
 uniform float seatileOffset = 0.0f;
 uniform vec3 tile_state;
-//uniform bool is_playtile = false;
-//uniform int tile_index = 1024;
-//uniform int read_index = 512; //mindegy
 
 void main()
 {
@@ -53,27 +50,6 @@ void main()
 		}else{
 			fs_out_col = transparency * lightNoSpecular * texture_col;
 		}
-
-
-	//}
-	//else if(is_playtile){
-	//	vec2 newSeatexturePos = vec2(vs_out_tex.s + seatileOffset, vs_out_tex.t);
-	//	vec4 texture_col = texture(texImage, newSeatexturePos);
-	//	fs_out_col = transparency * lightNoSpecular * texture_col;
-		//if(tile_index  == read_index){
-		//	vec4 final_col = mix(texture_col, vec4(1, 1, 1, 1), 0.5f);
-		//	fs_out_col = lightNoSpecular * vec4(final_col.rgb, read_index);
-		//}else{
-		//	if(tile_state.b < 1.0f){
-		//		vec4 final_col = mix(texture_col, vec4(tile_state, 1), 0.5f);
-		//		fs_out_col = lightNoSpecular * vec4(final_col.rgb, tile_index);
-		//	}else{
-		//		fs_out_col = lightNoSpecular * vec4(texture_col.rgb, tile_index);
-		//	}
-		//}
-
-
-
 	}else{
 		fs_out_col = light * ( hasTexture ? texture(texImage, vs_out_tex.st) : vs_out_color );
 	}

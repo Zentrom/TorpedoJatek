@@ -56,6 +56,7 @@ void Sea::Draw(gCamera &camera, gShaderProgram &sh_program)//, float pointedTile
 	glEnable(GL_CULL_FACE);
 }
 
+//Mindegyik játékmezõre meghívja a körvonal rajzolást
 void Sea::OutlineDraw(gCamera &camera, gShaderProgram &sh_program, float pointedTile)
 {
 	glDisable(GL_CULL_FACE);
@@ -93,6 +94,7 @@ PlayTile& Sea::getTileByIndex(int index)
 	}
 }
 
+//Az ellenfél játékmezõindexei el vannak tolva,hogy mikor kiolvassuk akkor lehessen tudni
 int Sea::getEnemyIndexOffset()
 {
 	return enemyTilesIndexOffset;
@@ -145,13 +147,6 @@ void Sea::InitPlayTiles(int inMapSize)
 //Kiszedi a azokat az extra tengermezõket,amik a játékmezõk helyén vannak
 void Sea::RemoveExtraSeaTiles()
 {
-	///for (SeaTile &tile : seaTiles) {
-	///	std::cout << "SeaTile : " << tile.getTranslate().x << ' ' << tile.getTranslate().z << '\n';
-	///}
-	///for (PlayTile &tile : myTiles) {
-	///	std::cout << "PlayTile : " << tile.getTranslate().x << ' ' << tile.getTranslate().z << '\n';
-	///}
-
 	int initialSize = seaTiles.size();
 	bool foundInMyTiles;
 	for (std::vector<SeaTile>::iterator it = seaTiles.begin(); it != seaTiles.end();++it) 
@@ -182,6 +177,7 @@ void Sea::RemoveExtraSeaTiles()
 	}
 }
 
+//Két játékmezõ elmozgatását nézi meg hogy float közelítõleg egyenlõ-e
 bool Sea::CompareTileTranslations(SeaTile &sTile, PlayTile &pTile)
 {
 	return (round(sTile.getTranslate().x) == round(pTile.getTranslate().x)

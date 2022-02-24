@@ -137,12 +137,7 @@ void ClientHandler::quitGame()
 	sentMessageType = MessageType::QUIT;
 	SendBinary(mySocket, &sentMessageType, sizeof(MessageType));
 
-	std::cout << "You left the game!" << std::endl; //Press enter while console is focused to exit..." << std::endl;
-	//std::cin.clear();
-	//std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	//std::cin.get();
-	//std::exit(99);
-
+	std::cout << "You left the game!" << std::endl;
 }
 
 //Megkérdi a szervert,hogy miután kaptunk egy lövést,milyen állapotba lesz a játék

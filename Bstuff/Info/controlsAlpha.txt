@@ -1,13 +1,18 @@
-Windows window
----------------------
-Move with WASD
-Drag the mouse on the screen to look around.
-Hold Shift to move slower.
+-----------------------------
+Windows window - Interaction
+-----------------------------
+Move with WASD.
+Drag the mouse on the screen to look around while holding Right Mouse Button.
+Hold Shift to move faster.
 Press ESC to quit.
+
+1.After connecting to a server, press 1-4 based on the size of the ship you want to place down.
+2.Place down the ship front on a PlayTile using Left Mouse Button. Then do the same with the back.
+3.After you placed all ships, wait for the server to start the game.
+4.Shoot on enemy PlayTiles where you think enemy ships are.
+5.Continue until the Console says you won or lost.
 ---------------------
-Console
+Console - Info Output (+ connecting to a server)
 ---------------------
-1.Type ip,then port.(ex. 127.0.0.1 and 27015)
-2.Place ships one by one,by typing it's size,then a coordinate.(ex. a5)
-3.After all ships have been placed,type a coordinate to shoot at,when the console asks you to.
-Continue this until you,or the enemy loses all the ships.
+Type ip,then port to connect to a server.(ex. 127.0.0.1 and 27015).
+Check the appearing messages to know what to do next.

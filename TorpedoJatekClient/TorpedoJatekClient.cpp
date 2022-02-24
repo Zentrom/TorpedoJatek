@@ -148,9 +148,6 @@ int TorpedoJatekClient::StartGameInstance()
 					//if (SDL_GetRelativeMouseMode() == SDL_bool(true)) {
 					//	SDL_SetRelativeMouseMode(SDL_bool(false));
 					//}
-					//else {
-					//	quit = true;
-					//}
 				//}
 				if (gameInstance.KeyboardDown(ev.key)) {
 					quit = true;

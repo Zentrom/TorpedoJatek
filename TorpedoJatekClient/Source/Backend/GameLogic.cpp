@@ -24,14 +24,6 @@ int GameLogic::Init(Fleet *player, Fleet *enemy, Sea *sea)
 		ConnectionSetup();
 		playerNum = clientHandler.GetPlayerNum();
 		mapSize = clientHandler.GetMapSize();
-
-		//ship1PlaceText.push_back(static_cast<char>('a' + mapSize - 1));
-		//ship1PlaceText.push_back(static_cast<char>('0' + mapSize));
-		//ship1PlaceText.push_back(')');
-		//
-		//shipFPlaceText.push_back(static_cast<char>('a' + mapSize - 1));
-		//shipFPlaceText.push_back(static_cast<char>('0' + mapSize));
-		//shipFPlaceText.push_back(')');
 	}
 
 	return mapSize;
@@ -59,12 +51,9 @@ void GameLogic::InitGame()
 
 	enemyFleet->Init(mapSize, false);
 	enemyFleet->InitTiles(mySea->getTiles(false));
-	//if (!TorpedoGLOBAL::Debug) {
-	//	PlaceShips();
-	//	clientHandler.SendFleet(myFleet->getActiveTilePositions());
-	//}
-	//else {
+
 	if (TorpedoGLOBAL::Debug) {
+		std::cout << "Disclamer: You are currently running the DEBUG version of the game,\nwhich is only good for graphics testing." << std::endl;
 		PlaceShipsINDEBUG();
 		SetTilesINDEBUG();
 	}
@@ -73,7 +62,7 @@ void GameLogic::InitGame()
 	}
 }
 
-//Üzenet kiirása.
+//Üzenet kiirása
 void GameLogic::DisplayMessage(GameState gameState, void *relatedData)
 {
 	if (gameState == GameState::INITIAL){
@@ -175,12 +164,9 @@ bool GameLogic::PlaceShip(int tileIndex, int shipSize)
 						for (PlayTile* choice : freeChoices) {
 							if (choice) {
 								choice->setState(6); //green recoloring
-								std::cout << choice->getPos().first << choice->getPos().second << std::endl; //" " << choice->getState().r
-									//<< choice->getState().g << choice->getState().b << std::endl;
+								std::cout << choice->getPos().first << choice->getPos().second << std::endl;
 							}
 						}
-						//std::cout << "Mysea " << mySea->getTileByIndex(freeChoices[0]->getIndex()).getState().g << std::endl;
-						//myFleet->TempGetTileStates();
 						shipFrontPlaced = true;
 						return false;
 					}
@@ -195,7 +181,6 @@ bool GameLogic::PlaceShip(int tileIndex, int shipSize)
 			shipBack = &mySea->getTileByIndex(tileIndex - offset);
 			bool foundInputInChoices = false;
 			for (PlayTile* choisz : freeChoices) {
-				//std::cout << "choice: " << choisz->getIndex() << std::endl << shipBack->getIndex() << std::endl;
 				if (choisz && choisz->getIndex() == shipBack->getIndex()) {
 					foundInputInChoices = true;
 					break;
@@ -224,156 +209,23 @@ bool GameLogic::PlaceShip(int tileIndex, int shipSize)
 	return false;
 }
 
+//Elküldi a lerakott hajóink pozícióit
 void GameLogic::SendFleetToServer()
 {
 	clientHandler.SendFleet(myFleet->getActiveTilePositions());
 }
 
-//Lerakja a mi hajóinkat a pályára
-//void GameLogic::PlaceShips()
-//{
-//
-//	
-//
-//	PlayTile tmpFront;
-//	PlayTile tmpBack;
-//
-//	PlayTile* frontPos;
-//	PlayTile* backPos;
-//	do {
-//
-//		backPos = nullptr;
-//
-//		std::cout << '\n' <<
-//			output << '\n'
-//			<< "1. - 1tile ships left: " << unplacedShips.at(0) << '\n'
-//			<< "2. - 2tile ships left: " << unplacedShips.at(1) << '\n'
-//			<< "3. - 3tile ships left: " << unplacedShips.at(2) << '\n'
-//			<< "4. - 4tile ships left: " << unplacedShips.at(3) << '\n'
-//			<< "0. - Quit game!" << std::endl;
-//
-//		//std::cin >> choice;
-//
-//		if (choice > 0 && choice <= 4) {
-//			if (unplacedShips.at(choice - 1) > 0) {
-//				std::cout << (choice == 1 ? ship1PlaceText : shipFPlaceText) << std::endl;
-//				std::cin >> shipFront;
-//
-//				if (CheckString(shipFront)) {
-//					tmpFront = ProcessString(shipFront);
-//					if (myFleet->CheckTile(tmpFront)) {
-//						frontPos = &myFleet->getTile(tmpFront.getPos());
-//						if (choice > 1) {
-//							std::array<PlayTile*, 4> freeChoices = myFleet->getFreeBacks(*frontPos, choice - 1);
-//							if (std::none_of(freeChoices.cbegin(), freeChoices.cend(), [](PlayTile* ptr) {return ptr; }))
-//							{
-//								std::cout << "No position available for the back of the ship!" << std::endl;
-//								continue;
-//							}
-//							else {
-//								bool foundInputInChoices = false;
-//								while (!foundInputInChoices) {
-//									std::cout << shipBPlaceText;
-//									for (PlayTile* choisz : freeChoices) {
-//										if (choisz) {
-//											std::cout << ' ' << choisz->getPos().first << choisz->getPos().second;
-//										}
-//									}
-//									std::cout << std::endl;
-//									std::cin >> shipBack;
-//
-//									if (CheckString(shipBack)) {
-//										tmpBack = ProcessString(shipBack);
-//										backPos = &myFleet->getTile(tmpBack.getPos());
-//										for (PlayTile* choisz : freeChoices) {
-//											if (choisz && choisz == backPos) {
-//												foundInputInChoices = true;
-//											}
-//										}
-//									}
-//								}
-//							}
-//						}
-//						myFleet->PlaceShip(frontPos, backPos);
-//						--unplacedShips.at(choice - 1);
-//					}
-//					else {
-//						std::cout << "Tile is not empty!" << std::endl;
-//					}
-//				}
-//			}
-//			else {
-//				std::cout << "You can't place down any more ships of " << choice << " size!" << std::endl;
-//			}
-//		}
-//		else if (choice == 0 && !std::cin.fail()) {
-//			clientHandler.quitGame();
-//		}
-//		else {
-//			std::cin.clear();
-//			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-//			std::cout << "You need to choose between 0-4!" << std::endl;
-//		}
-//
-//	} while (std::any_of(unplacedShips.cbegin(), unplacedShips.cend(), [](int i) {return i != 0; }));
-//}
-
+//Megnézi hogy a szerver el akarja-e indítani a játékot
 bool GameLogic::CheckStartSignal() 
 {
 	return clientHandler.GetStartSignal();
 }
 
-//Elkezdi a játékmenetet két játékos között
-//void GameLogic::StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile> &enemyTiles)
-//{
-//	std::cout << "Waiting for server to start the match." << std::endl;
-//	clientHandler.GetStartSignal();
-//
-//	ResponseState processableTileState = ResponseState::START_OF_GAME; //statenel 1-piros 2-sarga 3-kek 4-nyert 5-vesztett
-//	if (playerNum == 1) {
-//		processableTileState = Shoot();
-//		enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
-//	}
-//
-//	while (processableTileState != ResponseState::WIN_PLAYER_ONE && processableTileState != ResponseState::WIN_PLAYER_TWO) {
-//		processableTileState = GetShoot();
-//		myTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
-//		if (processableTileState != ResponseState::WIN_PLAYER_ONE && processableTileState != ResponseState::WIN_PLAYER_TWO) {
-//			processableTileState = Shoot();
-//			enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
-//		}
-//	}
-//
-//	clientHandler.~ClientHandler();
-//
-//	if ((processableTileState == ResponseState::WIN_PLAYER_ONE && playerNum == 1) || (processableTileState == ResponseState::WIN_PLAYER_TWO && playerNum == 2)) {
-//		std::cout << "You've won the match!" << std::endl;
-//	}
-//	else if ((processableTileState == ResponseState::WIN_PLAYER_TWO && playerNum == 1) || (processableTileState == ResponseState::WIN_PLAYER_ONE && playerNum == 2)) {
-//		std::cout << "You've lost the match!" << std::endl;
-//	}
-//
-//}
-
 //Bekéri a játékostól,hogy hova akar lõni,majd küldi a szervernek
 bool GameLogic::Shoot(int tileindex)
 {
 	std::string shootPos;
-	//ResponseState newState;
 	PlayTile *target;
-	//while (1) {
-	//	std::cout << "Where do you want to shoot?(a1-" << static_cast<char>('a' + mapSize - 1)
-	//		<< mapSize << ")\n(Or enter 0 to quit!)" << std::endl;
-	//	std::cin >> shoot;
-	//	if (shoot == "0") {
-	//		clientHandler.quitGame();
-	//	}
-	//	if (CheckString(shoot)) {
-	//		processableTile = ProcessString(shoot);
-	//		newState = clientHandler.SendShot(processableTile.getPos());
-	//		break;
-	//	}
-	//}
 
 	int offset = mySea->getTileByIndex(0).getIndexOffset();
 	int enemyOffset = mySea->getEnemyIndexOffset();
@@ -419,6 +271,7 @@ bool GameLogic::GetShoot()
 	return false;
 }
 
+//Lövések után megnézi,hogy a szerver jelezte-e,hogy nyert valaki
 int GameLogic::CheckVictoryState()
 {
 	if (matchState == ResponseState::WIN_PLAYER_ONE) {
@@ -432,6 +285,7 @@ int GameLogic::CheckVictoryState()
 	return 0;
 }
 
+//Játékosszám
 int GameLogic::getPlayerNum()
 {
 	return playerNum;

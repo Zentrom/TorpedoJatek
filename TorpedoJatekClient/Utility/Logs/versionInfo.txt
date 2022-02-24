@@ -1,4 +1,6 @@
-DEBUG+VSync:[RAM Usage] 149 MB [FPS] 52
+INDEBUG+VSyncOff:
+[RAM Usage] 157 MB [FPS] 38
+---------------------------------------
 Backendes
 -Ha debugolni akarsz szerverkapcsolódás nélkül,akkor Globals.h-ba a TorpedoGlobal::Debug-ot true-ra kell tenni.
 -Lehet tobbszor ugyanoda lõni.

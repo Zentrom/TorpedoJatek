@@ -33,7 +33,6 @@ public:
 
 	std::array<int, 4>& getUnplacedShipCount();
 	std::vector<std::pair<char, int>> getActiveTilePositions();
-	//void TempGetTileStates();
 private:
 	std::array<int, 4> unplacedShipCount;	//1x1,2x2,stb. méretû hajókból még hányat NEM raktunk le
 

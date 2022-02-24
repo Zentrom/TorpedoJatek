@@ -240,11 +240,3 @@ std::vector<std::pair<char, int>> Fleet::getActiveTilePositions()
 	return result;
 }
 
-//void Fleet::TempGetTileStates()
-//{
-//	for (PlayTile tile : playTiles) {
-//		std::cout << tile.getPos().first << tile.getPos().second << " " << tile.getState().r << tile.getState().g
-//			<< tile.getState().b << std::endl;
-//	}
-//}
-

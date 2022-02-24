@@ -18,9 +18,3 @@ enum GameState {
 	CHECKING_VICTORY_CONDITION,
 	MATCH_ENDING,
 };
-
-//Van-e kíírandó error
-//enum ErrorState {
-//	NONE = 0,
-//	NO_UNPLACED_SHIPS_LEFT,
-//};

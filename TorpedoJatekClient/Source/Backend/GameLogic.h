@@ -38,7 +38,6 @@ public:
 	void SendFleetToServer();
 
 	bool CheckStartSignal();
-	//void StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile> &enemyTiles);
 	void StopGame();
 
 	bool Shoot(int tileindex);
@@ -49,6 +48,7 @@ public:
 protected:
 	ClientHandler clientHandler;	//A hálózati kapcsolat kliens-oldali vezérlõje
 
+	//Debug módban beégetett dolgok
 	void PlaceShipsINDEBUG();
 	void SetTilesINDEBUG();
 
@@ -59,14 +59,9 @@ protected:
 	int ConvertCoordToTileIndex(const std::pair<char, int> &tile);
 
 	std::string output = "Torpedo Jatek";
-	//std::string ship1PlaceText = "Where do you want to place your ship?(a1-";
-	//std::string shipFPlaceText = "Where do you want the front of the ship to be?(a1-";
-	//std::string shipBPlaceText = "Where do you want the back of the ship to be?\nChoices are:";
 
-	//std::string shipFront;	//Hajó végeit tároló inputadat
-	//std::string shipBack;
-	PlayTile *shipFront;
-	PlayTile *shipBack;
+	PlayTile *shipFront; //Hajó elejét foglaló mezõ
+	PlayTile *shipBack; //Hajó hátát foglaló mezõ
 	bool shipFrontPlaced = false; //Leraktuk-e már egy hajó elejét
 	std::array<PlayTile*, 4> freeChoices; //Hajó hátának megfelelõ pozíciók
 
@@ -85,5 +80,4 @@ protected:
 	int playerNum;	//Ha 1 akkor mi kezdünk,ha 2 akkor nem
 
 	ResponseState matchState = ResponseState::START_OF_GAME; //Szerverrel való kommunikáció fázisa
-	//PlayTile processableTile; //Feldolgozásra váró játékmezõ
 };

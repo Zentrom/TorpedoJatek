@@ -1,3 +1,52 @@
+gameInstance.cpp  threadFunction
+-----------------------------------------------
+//	inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);
+//A thread hívja meg ezt a függvényt,hogy lehessen meccs közbe gépelni consoleba
+//int GameInstance::threadFunction(void *ptr)
+//{
+//	if (ptr) {
+//		GameInstance* pointr = static_cast<GameInstance *>(ptr);
+//		pointr->gameLogic.StartMatch(pointr->sea.getTiles(true), pointr->sea.getTiles(false));
+//	}
+//	std::cout << "The match is over,input thread stopped." << std::endl;
+//	return 1;
+//
+//}
+
+gameLogic.cpp StartMatch
+-----------------------------------------------
+//Elkezdi a játékmenetet két játékos között
+//void GameLogic::StartMatch(std::vector<PlayTile> &myTiles, std::vector<PlayTile> &enemyTiles)
+//{
+//	std::cout << "Waiting for server to start the match." << std::endl;
+//	clientHandler.GetStartSignal();
+//
+//	ResponseState processableTileState = ResponseState::START_OF_GAME; //statenel 1-piros 2-sarga 3-kek 4-nyert 5-vesztett
+//	if (playerNum == 1) {
+//		processableTileState = Shoot();
+//		enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
+//	}
+//
+//	while (processableTileState != ResponseState::WIN_PLAYER_ONE && processableTileState != ResponseState::WIN_PLAYER_TWO) {
+//		processableTileState = GetShoot();
+//		myTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
+//		if (processableTileState != ResponseState::WIN_PLAYER_ONE && processableTileState != ResponseState::WIN_PLAYER_TWO) {
+//			processableTileState = Shoot();
+//			enemyTiles[ConvertCoordToTileIndex(processableTile.getPos())].setState(static_cast<int>(processableTileState));
+//		}
+//	}
+//
+//	clientHandler.~ClientHandler();
+//
+//	if ((processableTileState == ResponseState::WIN_PLAYER_ONE && playerNum == 1) || (processableTileState == ResponseState::WIN_PLAYER_TWO && playerNum == 2)) {
+//		std::cout << "You've won the match!" << std::endl;
+//	}
+//	else if ((processableTileState == ResponseState::WIN_PLAYER_TWO && playerNum == 1) || (processableTileState == ResponseState::WIN_PLAYER_ONE && playerNum == 2)) {
+//		std::cout << "You've lost the match!" << std::endl;
+//	}
+//
+//}
+
 //if (!TorpedoGLOBAL::Debug) {
 	//	inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);
 	//}

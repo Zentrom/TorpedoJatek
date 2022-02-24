@@ -45,7 +45,6 @@ void PlayTile::Draw(gCamera &camera, gShaderProgram &sh_program, GLuint &texture
 	sh_program.SetUniform("is_seatile", true);
 	sh_program.SetUniform("tilestate_changed", isStateChanged);
 	sh_program.SetUniform("tile_state", tileState);
-	//sh_program.SetUniform("tile_index", index + indexOffset);
 
 	sh_program.SetUniform("hasTexture", true);
 	sh_program.SetTexture("texImage", 0, textureID);
@@ -59,6 +58,7 @@ void PlayTile::Draw(gCamera &camera, gShaderProgram &sh_program, GLuint &texture
 	sh_program.SetUniform("tilestate_changed", false);
 }
 
+//Körvonalakat rajzolja ki a játékmezõk köré
 void PlayTile::OutlineDraw(gCamera &camera, gShaderProgram &sh_program)
 {
 	glm::mat4 matWorld = glm::translate(seatile_translate) * glm::rotate(seatile_rotate, seatile_rotate_angle) * glm::scale(seatile_scale);
@@ -138,6 +138,7 @@ std::pair<char, int> PlayTile::getPos() const
 	return position;
 }
 
+//Van-e hajó a mezõn
 bool PlayTile::isUsed() const
 {
 	return usedTile;

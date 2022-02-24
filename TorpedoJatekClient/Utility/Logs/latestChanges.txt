@@ -1,8 +1,16 @@
-v0.0.3e-PlayTile Outlines
---------------------------------------------------------------------------------
--Added and animated Playtile textures.
--Added grid outlines to the Playtiles using stencil buffer.
-(Outlines are drawn in the 3rd render call)
--Created separate rendering call to render PlayTile indexes into alpha values. (1st call)
--Fixed some errors related to disconnection.
--Slowed down the camera moving/turning speed.
+v0.0.4<->3D Picking
+-----------------------------------------------------------------------------------------
+[FEATURES]
+-The game window is now interactive thanks to 3D Picking. Use LMB.
+(The console is now only used for joining a server and to read what to do next)
+-Added and animated Sea texture.
+-Added Mountain texture.
+-Added grid outlines to the PlayTiles.
+-The PlayField is now transparent like the Sea.
+[FIXES]
+-The console input thread that caused problems is removed.
+-Client doesn't get locked by waiting for Server response anymore.
+-The camera is now slower by default.
+-Changed camera rotation to RMB.
+-Fixed some disconnection errors.
+-The Sea doesn't have specular light anymore.

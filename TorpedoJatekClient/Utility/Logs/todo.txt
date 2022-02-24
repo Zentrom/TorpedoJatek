@@ -6,7 +6,6 @@ std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
 OpenAl vagy SDLAudio(havan 3d) hangoknak
 Freetype vagy SDL rtf/ttf betuknek
 
-Outlineolni kéne a PlayTileokat(004)
 Hogy jelenjenek meg az ellenfél hajói?(lövés animációnál majd 005)
 
 Vertexbufferek lehetnének static-ok talán?
@@ -14,3 +13,5 @@ Javítani seaTilesize és Mountain::width változtatást.
 SeaTile és Ground darabokat egy Vertexbufferbe(+Vertexbuffert egyszer initelni)/Instancing/Deferred shading.004+
 SeaTile darabszáma groundscale-tõl függjön.
 Fleet-be és más osztályokba a const & parameteres osztályok nem referenciát adnak át,ezért copy készül.
+GameInstance-be stateRelatedData-t okosabban(006)
+INDEBUG-ba lehessen enemy hajót is letenni(Placeship javítás)

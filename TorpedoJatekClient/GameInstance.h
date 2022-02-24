@@ -14,7 +14,6 @@
 #include <GL/glew.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
-//#include <SDL_thread.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
@@ -30,8 +29,6 @@ public:
 
 	bool Init();
 	void Clean();
-
-	//int static threadFunction(void* ptr);
 
 	void Update();
 	void Render();
@@ -66,8 +63,6 @@ protected:
 	Sint32 mouseX; //Egér relatív X koord
 	Sint32 mouseY; //Egér relatív Y koord
 	float* mousePointedData; //Melyik játékmezõre mutat az egér
-
-	//SDL_Thread* inputThread; //Thread az inputkezeléshez
 
 	gCamera	cam_mainCamera; //Kamera
 	gShaderProgram sh_default; //Alap shader+postprocess
