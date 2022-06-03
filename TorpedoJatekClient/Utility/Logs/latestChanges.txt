@@ -1,16 +1,4 @@
-v0.0.4<->3D Picking
+v0.0.4a-Ship Flags
 -----------------------------------------------------------------------------------------
-[FEATURES]
--The game window is now interactive thanks to 3D Picking. Use LMB.
-(The console is now only used for joining a server and to read what to do next)
--Added and animated Sea texture.
--Added Mountain texture.
--Added grid outlines to the PlayTiles.
--The PlayField is now transparent like the Sea.
-[FIXES]
--The console input thread that caused problems is removed.
--Client doesn't get locked by waiting for Server response anymore.
--The camera is now slower by default.
--Changed camera rotation to RMB.
--Fixed some disconnection errors.
--The Sea doesn't have specular light anymore.
+-Added Ship textures.
+-Added ShipFlags to distinctiate allied and enemy ships.

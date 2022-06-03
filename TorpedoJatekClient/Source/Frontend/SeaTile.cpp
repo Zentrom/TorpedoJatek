@@ -21,10 +21,10 @@ SeaTile::~SeaTile(void)
 //Inicializálja a tengermezõ grafikai modelljét
 void SeaTile::Init()
 {
-	vb_seatile.AddAttribute(0, 3);
-	vb_seatile.AddAttribute(1, 4);
-	vb_seatile.AddAttribute(2, 3);
-	vb_seatile.AddAttribute(3, 2);
+	vb_seatile.AddAttribute(0, 3); //pozíció
+	vb_seatile.AddAttribute(1, 4); //szín+transparency
+	vb_seatile.AddAttribute(2, 3); //normálvektor
+	vb_seatile.AddAttribute(3, 2); //textúra koord
 
 	vb_seatile.AddData(0, -0.5f, 0, -0.5f);
 	vb_seatile.AddData(0, 0.5f, 0, -0.5f);

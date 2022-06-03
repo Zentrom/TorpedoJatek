@@ -1,11 +1,14 @@
 #pragma once
 
+#include "ShipFlag.h"
+
 #include "../Globals.hpp"
 #include "../Frontend/PlayTile.h"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
 #include "../../Utility/gCamera.h"
+#include "../../Utility/GLUtils.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -20,14 +23,18 @@ public:
 	Ship(const std::vector<PlayTile*> &tiles, bool ally = true);
 	~Ship(void);
 
-	void Init();
 	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
 	std::vector<PlayTile*>& getPlayTiles();
 	bool isDestroyed();
 	void setDestroyed(bool dis);
 private:
+	void Init();
+
 	gVertexBuffer	vb_ship; //Hajó grafikai modell adatai
+	GLuint shipBottomTextureID; //Hajó aljának textúra azonosítója
+	GLuint shipTopTextureID; //Hajó tetejének textúra azonosítója
+	ShipFlag* shipFlag;
 
 	bool isAlly; //Kliens szempontjából mi hajónk-e
 	bool destroyed = false; //Ki lett-e lõve a hajó

@@ -9,12 +9,14 @@ Ship::Ship(void)
 Ship::Ship(bool ally, const glm::vec3 &battleShipTranslate) : isAlly(ally)
 {
 	Init();
+	shipFlag = new ShipFlag(ally);
 	ship_translate = glm::vec3((ally ? -1 : 1), 1, 1) * battleShipTranslate;
 }
 
 Ship::Ship(const std::vector<PlayTile*> &tiles, bool ally) : isAlly(ally), playTiles(tiles)
 {
 	Init();
+	shipFlag = new ShipFlag(ally);
 
 	if (tiles[0]) {
 		glm::vec3 frontTranslation = tiles[0]->getTranslate();
@@ -38,9 +40,10 @@ Ship::~Ship(void)
 //Hajó modell adatainak inicializálása
 void Ship::Init()
 {
-	vb_ship.AddAttribute(0, 3);
-	vb_ship.AddAttribute(1, 4);
-	vb_ship.AddAttribute(2, 3);
+	vb_ship.AddAttribute(0, 3); //pozíció
+	vb_ship.AddAttribute(1, 4); //szín
+	vb_ship.AddAttribute(2, 3); //normálvektor
+	vb_ship.AddAttribute(3, 2); //textúrakoord
 
 	//Hajó alsó palást
 	vb_ship.AddData(0, -0.5f, 0, 0);
@@ -155,7 +158,63 @@ void Ship::Init()
 	vb_ship.AddData(2, 0, 0, -0.25f);
 	vb_ship.AddData(2, -0.25f, 0, 0);
 
+	//Hajó alsó palást
+	vb_ship.AddData(3, 0, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);;
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);
+	vb_ship.AddData(3, 0.75f, 1.0f);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.75f, 1.0f);
+	vb_ship.AddData(3, 1.0f, 0);
+	//palást másik oldala
+	vb_ship.AddData(3, 0, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);;
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);
+	vb_ship.AddData(3, 0.75f, 1.0f);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.75f, 1.0f);
+	vb_ship.AddData(3, 1.0f, 0);
+	//Fedõlap
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0, 0.5f);
+	vb_ship.AddData(3, 0.25f, 1.0f);
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.75f, 1.0f);
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0.75f, 1.0f);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 1.0f, 0.5f);
+	//Gúlasátor
+	vb_ship.AddData(3, 0, 1.0f);
+	vb_ship.AddData(3, 0.5f, 1.0f);
+	vb_ship.AddData(3, 0.5f, 0);
+	vb_ship.AddData(3, 0.5f, 0);
+	vb_ship.AddData(3, 0.5f, 1.0f);
+	vb_ship.AddData(3, 1.0f, 1.0f);
+	vb_ship.AddData(3, 1.0f, 1.0f);
+	vb_ship.AddData(3, 0.5f, 1.0f);
+	vb_ship.AddData(3, 0.5f, 0);
+	vb_ship.AddData(3, 0.5f, 0);
+	vb_ship.AddData(3, 0.5f, 1.0f);
+	vb_ship.AddData(3, 0, 1.0f);
+
 	vb_ship.InitBuffers();
+
+	shipBottomTextureID = GLUtils::TextureFromFile("Resources/Textures/shipBottomTexture.bmp");
+	shipTopTextureID = GLUtils::TextureFromFile("Resources/Textures/shipTopTexture.bmp");
 }
 
 //Egy hajó kirajzolása
@@ -171,12 +230,16 @@ void Ship::Draw(gCamera &camera, gShaderProgram &sh_program)
 	sh_program.SetUniform("MVP", mvp);
 	sh_program.SetUniform("eye_pos", camera.GetEye());
 
-	//m_program.SetTexture("texImage", 0, m_groundTextureID);
-	//m_program.SetTexture("texNormal", 1, m_groundNormalMapID);
+	sh_program.SetUniform("hasTexture", true);
+	sh_program.SetTexture("texImage", 0, shipBottomTextureID);
 
 	vb_ship.On();
-	vb_ship.Draw(GL_TRIANGLES, 0, 48);
+	vb_ship.Draw(GL_TRIANGLES, 0, 36);
+	sh_program.SetTexture("texImage", 0, shipTopTextureID);
+	vb_ship.Draw(GL_TRIANGLES, 36, 12);
 	vb_ship.Off();
+	sh_program.SetUniform("hasTexture", false);
+	shipFlag->Draw();
 }
 
 std::vector<PlayTile*>& Ship::getPlayTiles()

@@ -15,3 +15,6 @@ SeaTile darabszáma groundscale-tõl függjön.
 Fleet-be és más osztályokba a const & parameteres osztályok nem referenciát adnak át,ezért copy készül.
 GameInstance-be stateRelatedData-t okosabban(006)
 INDEBUG-ba lehessen enemy hajót is letenni(Placeship javítás)
+
+Csata után a vesztesnek kirajzolja a gyõztes túlélõ hajóit?
+Icon az exenek?
