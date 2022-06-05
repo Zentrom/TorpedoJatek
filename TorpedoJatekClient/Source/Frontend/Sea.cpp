@@ -120,7 +120,7 @@ void Sea::InitSeaTiles()
 	}
 }
 
-//Játékmezõket inicializálja
+//Játékmezõket inicializálja - mapSize*mapSize, enemyjé offsetelve 100al
 void Sea::InitPlayTiles(int inMapSize)
 {
 	mapSize = inMapSize;

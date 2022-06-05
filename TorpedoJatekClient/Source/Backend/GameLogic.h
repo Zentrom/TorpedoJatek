@@ -40,8 +40,8 @@ public:
 	bool CheckStartSignal();
 	void StopGame();
 
-	bool Shoot(int tileindex);
-	bool GetShoot();
+	PlayTile* Shoot(int tileindex);
+	PlayTile* GetShoot();
 	int CheckVictoryState();
 
 	int getPlayerNum();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Ship.h"
+#include "BattleShip.h"
 #include "Mountain.h"
 #include "../../../CommonSource/CommonGlobals.hpp"
 
@@ -33,12 +34,13 @@ public:
 
 	std::array<int, 4>& getUnplacedShipCount();
 	std::vector<std::pair<char, int>> getActiveTilePositions();
+	BattleShip& getBattleShip();
 private:
 	std::array<int, 4> unplacedShipCount;	//1x1,2x2,stb. méretû hajókból még hányat NEM raktunk le
 
 	std::vector<Ship> ships;	//Játékos hajói
 	std::vector<PlayTile> *playTiles; //Játékos oldalán lévõ játékmezõk
-	Ship battleShip;	//Játékos hajója amit nem lehet kilõni,hanem ez lõ majd.
+	BattleShip battleShip;	//Játékos hajója amit nem lehet kilõni,hanem ez lõ majd.
 
 	bool isAlly = true;	//Kliens szemszögébõl eza mi Fleet-ünke
 	int mapSize;	//Szervertõl átjött pályaméret

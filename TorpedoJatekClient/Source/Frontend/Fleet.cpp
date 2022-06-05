@@ -28,7 +28,7 @@ void Fleet::Init(int inMapSize, bool ally)
 
 	firstTile_battleShipOffset = ((SeaTile::getScaleXZ() * mapSize) + 1.0f) * TorpedoGLOBAL::Scale;
 	glm::vec3 battleShipOffset = glm::vec3(firstTile_battleShipOffset, 0, 0) + glm::vec3(mountaincenter_border_Xoffset + mountain_tile_offset, 0, 0);
-	battleShip = Ship(isAlly, battleShipOffset);
+	battleShip = BattleShip(isAlly, battleShipOffset);
 }
 
 //Elkéri a játékos játékmezõit
@@ -238,5 +238,10 @@ std::vector<std::pair<char, int>> Fleet::getActiveTilePositions()
 		}
 	}
 	return result;
+}
+
+BattleShip& Fleet::getBattleShip()
+{
+	return battleShip;
 }
 

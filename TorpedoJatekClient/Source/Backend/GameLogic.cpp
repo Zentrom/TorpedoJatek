@@ -222,7 +222,7 @@ bool GameLogic::CheckStartSignal()
 }
 
 //Bekéri a játékostól,hogy hova akar lõni,majd küldi a szervernek
-bool GameLogic::Shoot(int tileindex)
+PlayTile* GameLogic::Shoot(int tileindex)
 {
 	std::string shootPos;
 	PlayTile *target;
@@ -237,14 +237,14 @@ bool GameLogic::Shoot(int tileindex)
 		shootPos = ProcessTile(target->getPos());
 		std::cout << "Your shot to " << shootPos << " was a "
 			<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
-		return true;
+		return target;
 	}
 
-	return false;
+	return nullptr;
 }
 
 //Kapunk egy lövést az ellenféltõl
-bool GameLogic::GetShoot()
+PlayTile* GameLogic::GetShoot()
 {
 	if (clientHandler.CheckForResponse()) {
 		std::string shootPos;
@@ -265,10 +265,10 @@ bool GameLogic::GetShoot()
 			target->setState(static_cast<int>(matchState));
 			std::cout << "Enemy's shot to " << shootPos << " was a "
 				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+			return target;
 		}
-		return true;
 	}
-	return false;
+	return nullptr;
 }
 
 //Lövések után megnézi,hogy a szerver jelezte-e,hogy nyert valaki

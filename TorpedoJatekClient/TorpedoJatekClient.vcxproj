@@ -23,7 +23,11 @@
     <ClCompile Include="GameInstance.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Backend\ClientHandler.cpp" />
+    <ClCompile Include="Source\Backend\EventHandler.cpp" />
     <ClCompile Include="Source\Backend\GameLogic.cpp" />
+    <ClCompile Include="Source\Frontend\BattleShip.cpp" />
+    <ClCompile Include="Source\Frontend\BShipCannon.cpp" />
+    <ClCompile Include="Source\Frontend\BShipProjectile.cpp" />
     <ClCompile Include="Source\Frontend\Fleet.cpp" />
     <ClCompile Include="Source\Frontend\Ground.cpp" />
     <ClCompile Include="Source\Frontend\Mountain.cpp" />
@@ -48,7 +52,11 @@
     <ClInclude Include="..\CommonSource\TorpedoVersion.hpp" />
     <ClInclude Include="GameInstance.h" />
     <ClInclude Include="Source\Backend\ClientHandler.h" />
+    <ClInclude Include="Source\Backend\EventHandler.h" />
     <ClInclude Include="Source\Backend\GameLogic.h" />
+    <ClInclude Include="Source\Frontend\BattleShip.h" />
+    <ClInclude Include="Source\Frontend\BShipCannon.h" />
+    <ClInclude Include="Source\Frontend\BShipProjectile.h" />
     <ClInclude Include="Source\Frontend\Fleet.h" />
     <ClInclude Include="Source\Frontend\Ground.h" />
     <ClInclude Include="Source\Frontend\Mountain.h" />
@@ -84,10 +92,12 @@
     <Image Include="Resources\Normals\ground_normal.bmp" />
     <Image Include="Resources\Normals\suzanne_normal.bmp" />
     <Image Include="Resources\Normals\top_normal.bmp" />
+    <Image Include="Resources\Textures\cannonTexture.bmp" />
     <Image Include="Resources\Textures\groundTexture.bmp" />
     <Image Include="Resources\Textures\mountainTexture.bmp" />
     <Image Include="Resources\Textures\seaTexture.bmp" />
-    <Image Include="Resources\Textures\texture_1.bmp" />
+    <Image Include="Resources\Textures\shipBottomTexture.bmp" />
+    <Image Include="Resources\Textures\shipTopTexture.bmp" />
     <Image Include="Resources\Textures\suzanne_texture.bmp" />
     <Image Include="Resources\Textures\top_texture.bmp" />
   </ItemGroup>

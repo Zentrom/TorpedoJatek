@@ -5,14 +5,6 @@ Ship::Ship(void)
 {
 }
 
-//Ez a csatahajónak fenntartott konstruktor
-Ship::Ship(bool ally, const glm::vec3 &battleShipTranslate) : isAlly(ally)
-{
-	Init();
-	shipFlag = new ShipFlag(ally);
-	ship_translate = glm::vec3((ally ? -1 : 1), 1, 1) * battleShipTranslate;
-}
-
 Ship::Ship(const std::vector<PlayTile*> &tiles, bool ally) : isAlly(ally), playTiles(tiles)
 {
 	Init();

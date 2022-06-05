@@ -1,4 +1,8 @@
-v0.0.4a-Ship Flags
+v0.0.4b-BattleShip Animation
 -----------------------------------------------------------------------------------------
--Added Ship textures.
--Added ShipFlags to distinctiate allied and enemy ships.
+-Added a Cannon to the BattleShip.
+-Added Projectile to the Cannon.
+-Animated the BattleShip firing using the Projectile.
+-Created EventHandler which can lock the input handling if needed.
+-Players can't shoot while there is a firing animation in progress.
+-Created BattleShip class which inherits from Ship.

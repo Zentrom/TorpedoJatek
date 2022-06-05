@@ -19,7 +19,6 @@ class Ship
 {
 public:
 	Ship(void);
-	Ship(bool ally, const glm::vec3 &battleShipTranslate);
 	Ship(const std::vector<PlayTile*> &tiles, bool ally = true);
 	~Ship(void);
 
@@ -28,7 +27,7 @@ public:
 	std::vector<PlayTile*>& getPlayTiles();
 	bool isDestroyed();
 	void setDestroyed(bool dis);
-private:
+protected:
 	void Init();
 
 	gVertexBuffer	vb_ship; //Hajó grafikai modell adatai
@@ -44,7 +43,6 @@ private:
 	glm::vec3 ship_translate = glm::vec3(0, 0, 0)* TorpedoGLOBAL::Scale; //mozgatás
 	float ship_rotate = 0.0f; //forgatás
 	glm::vec3 ship_rotate_angle = glm::vec3(0, 1.0f, 0); //forgatás tengelye
-	glm::vec3 ship_scale = glm::vec3(1.5f * SeaTile::getScaleXZ(), 2.0f, 0.75f * SeaTile::getScaleXZ()) 
-		* TorpedoGLOBAL::Scale; //nagyítás(ez most a battleship scale-je)
+	glm::vec3 ship_scale = glm::vec3(1.0f); //nagyítás
 
 };

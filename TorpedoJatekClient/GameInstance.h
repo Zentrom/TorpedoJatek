@@ -6,6 +6,7 @@
 #include "Source/Frontend/Sea.h"
 #include "Source/Frontend/Skybox.h"
 #include "Source/BackEnd/GameLogic.h"
+#include "Source/Backend/EventHandler.h"
 
 #include "Utility/gCamera.h"
 #include "Utility/gShaderProgram.h"
@@ -79,9 +80,11 @@ protected:
 	Sea sea;	//Játék és tengermezõk
 
 	GameLogic gameLogic;	//Háttérlogika
+	EventHandler eventHandler; //Eseménykezelés
 
 	int mapSize;	//Játékpálya mérete
 
+	bool shotReceived = false; //Küldött-e már lövést a szerver nekünk
 	int shipSizeInput = 0; //Mekkora hajót készülünk lerakni
 	int winnerPlayerNum = 0; //Nyertes játékos+boolként is mûködik ha senki nem nyert még
 };

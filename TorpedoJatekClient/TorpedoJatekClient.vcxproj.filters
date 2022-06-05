@@ -117,6 +117,18 @@
     <ClCompile Include="Source\Frontend\ShipFlag.cpp">
       <Filter>Source Files\Frontend</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Frontend\BattleShip.cpp">
+      <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\BShipCannon.cpp">
+      <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\BShipProjectile.cpp">
+      <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Backend\EventHandler.cpp">
+      <Filter>Source Files\Backend</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TorpedoJatekClient.h">
@@ -191,6 +203,18 @@
     <ClInclude Include="Source\Frontend\ShipFlag.h">
       <Filter>Header Files\Frontend</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Frontend\BattleShip.h">
+      <Filter>Header Files\Frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\BShipCannon.h">
+      <Filter>Header Files\Frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\BShipProjectile.h">
+      <Filter>Header Files\Frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Backend\EventHandler.h">
+      <Filter>Header Files\Backend</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\dirLight.frag">
@@ -240,9 +264,6 @@
     <Image Include="Resources\Textures\top_texture.bmp">
       <Filter>Resource Files\Textures</Filter>
     </Image>
-    <Image Include="Resources\Textures\texture_1.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
     <Image Include="Resources\Textures\groundTexture.bmp">
       <Filter>Resource Files\Textures</Filter>
     </Image>
@@ -250,6 +271,15 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Resources\Textures\seaTexture.bmp">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\cannonTexture.bmp">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\shipBottomTexture.bmp">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\shipTopTexture.bmp">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

@@ -132,6 +132,7 @@ void GameInstance::Update()
 	float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
 	cam_mainCamera.Update(delta_time);
 	sea.Update(delta_time);
+	eventHandler.Update(delta_time);
 	last_time = SDL_GetTicks();
 
 	//Real-time backend frissítések
@@ -163,14 +164,21 @@ void GameInstance::Update()
 		}
 	}
 	else if (gameState == GameState::GETTING_SHOT) {
-		if (gameLogic.GetShoot()) {
+		if (shotReceived && !eventHandler.IsProjectileAnimation()) {
 			gameState = GameState::SHOOTING_AT_ENEMY;
-			
-			winnerPlayerNum = gameLogic.CheckVictoryState();
-			if (winnerPlayerNum) {
-				gameState = GameState::MATCH_ENDING;
+			shotReceived = false;
+			outputWritten = false;
+		}
+		else if (!shotReceived){
+			PlayTile* shotTile = gameLogic.GetShoot();
+			if (shotTile) {
+				shotReceived = true;
+				eventHandler.FireProjectile(enemyFleet, shotTile);
 			}
-
+		}
+		winnerPlayerNum = gameLogic.CheckVictoryState();
+		if (winnerPlayerNum && !eventHandler.IsProjectileAnimation()) {
+			gameState = GameState::MATCH_ENDING;
 			outputWritten = false;
 		}
 	}
@@ -278,6 +286,12 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 			outputWritten = false;
 		}
 	}
+
+	//Lövés teszt DEBUGban
+	if ((key.keysym.sym == SDLK_f) && TorpedoGLOBAL::Debug) {
+		eventHandler.FireProjectile(playerFleet, &sea.getTileByIndex(121));
+	}
+
 	return 0;
 }
 
@@ -315,16 +329,20 @@ void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 		}
 
 		if (gameState == GameState::SHOOTING_AT_ENEMY) {
-			if (gameLogic.Shoot(static_cast<int>(mousePointedData[3]))) {
+			if (!eventHandler.IsProjectileAnimation()) {
+				PlayTile* shotTile = gameLogic.Shoot(static_cast<int>(mousePointedData[3]));
+				if (shotTile) {
+					eventHandler.FireProjectile(playerFleet, shotTile);
 
-				winnerPlayerNum = gameLogic.CheckVictoryState();
-				if (winnerPlayerNum) {
-					gameState = GameState::MATCH_ENDING;
+					winnerPlayerNum = gameLogic.CheckVictoryState();
+					if (winnerPlayerNum) {
+						gameState = GameState::MATCH_ENDING;
+					}
+					else {
+						gameState = GameState::GETTING_SHOT;
+					}
+					outputWritten = false;
 				}
-				else {
-					gameState = GameState::GETTING_SHOT;
-				}
-				outputWritten = false;
 			}
 		}
 	}
