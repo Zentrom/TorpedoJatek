@@ -209,11 +209,25 @@ void Ship::Init()
 	shipTopTextureID = GLUtils::TextureFromFile("Resources/Textures/shipTopTexture.bmp");
 }
 
+//Hajó adatok frissítése real-time
+void Ship::Update(float deltatime)
+{
+	if (visible && destroyed) {
+		sinkElapsed += deltatime;
+		if (sinkElapsed > sinkTime) {
+			visible = false;
+		}
+	}
+}
+
 //Egy hajó kirajzolása
 void Ship::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
+	sinkTranslate = glm::translate(glm::vec3(0, -(sinkElapsed / sinkTime) / 2.0f, 0));
+	sinkRotate = glm::rotate((sinkElapsed / sinkTime) * glm::half_pi<float>() / 2.0f, glm::vec3(0, 0, 1.0f));
+
 	glm::mat4 matWorld = glm::translate(ship_translate) * glm::rotate(ship_rotate, ship_rotate_angle) * glm::scale(ship_scale)
-		* glm::translate(ship_abovesea_trans);
+		* glm::translate(ship_abovesea_trans) * sinkTranslate * sinkRotate;
 	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
 	glm::mat4 mvp = camera.GetViewProj() *matWorld;
 
@@ -247,4 +261,9 @@ bool Ship::isDestroyed()
 void Ship::setDestroyed(bool dis)
 {
 	destroyed = dis;
+}
+
+bool Ship::isVisible()
+{
+	return visible;
 }

@@ -23,7 +23,14 @@ BattleShip::~BattleShip(void)
 void BattleShip::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
 	Ship::Draw(camera, sh_program);
-	cannon->Draw(camera, sh_program);
+	cannon->Draw(camera, sh_program, sinkTranslate * sinkRotate);
+}
+
+//DEBUG módhoz visszaállítja a hajót
+void BattleShip::ResetForDEBUG()
+{
+	visible = true;
+	sinkElapsed = 0.0f;
 }
 
 BShipCannon& BattleShip::getCannon()

@@ -12,6 +12,7 @@ public:
 	~BattleShip(void);
 
 	void Draw(gCamera &camera, gShaderProgram &sh_program);
+	void ResetForDEBUG();
 	BShipCannon& getCannon();
 private:
 	BShipCannon* cannon;

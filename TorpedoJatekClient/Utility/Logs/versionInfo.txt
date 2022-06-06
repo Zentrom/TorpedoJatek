@@ -3,6 +3,8 @@ INDEBUG+VSyncOff:
 ---------------------------------------
 Backendes
 -Ha debugolni akarsz szerverkapcsolódás nélkül,akkor Globals.h-ba a TorpedoGlobal::Debug-ot true-ra kell tenni.
--Debug módba 'F'-el lehet lövés animációt tesztelni.
+-Debug módba: 
+	'F'-el lehet lövés animációt tesztelni.
+	'G'-vel lehet hajó elsüllyedést tesztelni.
 -Lehet tobbszor ugyanoda lõni.
 -A Grafikai dolgok ebben a verzióban direkt nem lettek optimalizálva még.

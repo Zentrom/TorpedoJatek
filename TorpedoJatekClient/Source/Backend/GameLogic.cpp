@@ -100,9 +100,11 @@ void GameLogic::DisplayMessage(GameState gameState, void *relatedData)
 	else if (gameState == GameState::MATCH_ENDING) {
 		int* winnerNum = static_cast<int*>(relatedData);
 		if (*winnerNum == playerNum) {
+			enemyFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've won the match!\n(ESC-Quit)" << std::endl;
 		}
 		else{
+			myFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've lost the match!\n(ESC-Quit)" << std::endl;
 		}
 	}

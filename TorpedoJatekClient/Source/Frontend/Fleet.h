@@ -24,6 +24,7 @@ public:
 
 	void Init(int inMapSize = 7, bool ally = true);
 	void InitTiles(std::vector<PlayTile> &tiles);
+	void Update(float deltatime);
 	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
 	bool CheckTile(const PlayTile &tile);

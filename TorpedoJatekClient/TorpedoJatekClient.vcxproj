@@ -31,6 +31,7 @@
     <ClCompile Include="Source\Frontend\Fleet.cpp" />
     <ClCompile Include="Source\Frontend\Ground.cpp" />
     <ClCompile Include="Source\Frontend\Mountain.cpp" />
+    <ClCompile Include="Source\Frontend\ParticleGroup.cpp" />
     <ClCompile Include="Source\Frontend\PlayTile.cpp" />
     <ClCompile Include="Source\Frontend\Sea.cpp" />
     <ClCompile Include="Source\Frontend\SeaTile.cpp" />
@@ -60,6 +61,7 @@
     <ClInclude Include="Source\Frontend\Fleet.h" />
     <ClInclude Include="Source\Frontend\Ground.h" />
     <ClInclude Include="Source\Frontend\Mountain.h" />
+    <ClInclude Include="Source\Frontend\ParticleGroup.h" />
     <ClInclude Include="Source\Frontend\PlayTile.h" />
     <ClInclude Include="Source\Frontend\Sea.h" />
     <ClInclude Include="Source\Frontend\SeaTile.h" />
@@ -81,6 +83,8 @@
     <None Include="Shaders\default.vert" />
     <None Include="Shaders\dirLight.frag" />
     <None Include="Shaders\dirLight.vert" />
+    <None Include="Shaders\projectile.frag" />
+    <None Include="Shaders\projectile.vert" />
     <None Include="Shaders\playtile.frag" />
     <None Include="Shaders\playtile.vert" />
     <None Include="Shaders\skybox.frag" />

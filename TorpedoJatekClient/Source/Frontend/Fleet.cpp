@@ -37,15 +37,26 @@ void Fleet::InitTiles(std::vector<PlayTile> &tiles)
 	playTiles = &tiles;
 }
 
+//Fleet adatok frissítése real-time
+void Fleet::Update(float deltatime)
+{
+	for (Ship &sh : ships) {
+		sh.Update(deltatime);
+	}
+	battleShip.Update(deltatime);
+}
+
 //Játékos hajóinak kirajzolása
 void Fleet::Draw(gCamera &camera, gShaderProgram &sh_program)
 {
 	for (Ship &ship : ships) {
-		if (!ship.isDestroyed()) {
+		if (ship.isVisible()) {
 			ship.Draw(camera, sh_program);
 		}
 	}
-	battleShip.Draw(camera, sh_program);
+	if (battleShip.isVisible()) {
+		battleShip.Draw(camera, sh_program);
+	}
 }
 
 //Megnezi hogy szabad-e a játékmezõ

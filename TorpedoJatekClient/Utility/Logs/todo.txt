@@ -6,7 +6,7 @@ std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
 OpenAl vagy SDLAudio(havan 3d) hangoknak
 Freetype vagy SDL rtf/ttf betuknek
 
-Hogy jelenjenek meg az ellenfél hajói?(lövés animációnál majd 005)
+Hogy jelenjenek meg az ellenfél hajói?(006)
 
 Vertexbufferek lehetnének static-ok talán?
 Javítani seaTilesize és Mountain::width változtatást.
@@ -19,10 +19,12 @@ INDEBUG-ba lehessen enemy hajót is letenni(Placeship javítás)
 Csata után a vesztesnek kirajzolja a gyõztes túlélõ hajóit?
 Icon az exenek?
 Vertexbuffer Drawindexbe a default parameter declarationbe kell, first argument nem csinál semmit
-Debug módba tesztelni a progit 006
+Debug buildbe módba tesztelni a progit 006
 006-nál eldönteni hogy mikor pass-by-pointer, pass-by-reference
 006 Ha már kilött hajó pozíciójára lövök akkor 00 koordra ir miss-t(csak aki kapja a lövést ott irja rosszul)
 Lövés animáció kezdetekor már kiirja hogy hova löttünk meg átszinezi a tile-t,végén kéne.
-
-005 Particles to projectile
-005 Sinking ships
+006 Frontent osztályokat mappákba
+Ne tünjön el a particle miután a lövedék célba ér
+Beta után Particleeknek legyen mozgása + transparency/szín változása
+Particle - Cylindrical Billboaring -> Spherical
+Ellenfél oldalán a hajók rossz irányba süllyednek Z tengelyen. *-1 kell

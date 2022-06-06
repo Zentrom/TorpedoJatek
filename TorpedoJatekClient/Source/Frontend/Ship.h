@@ -22,10 +22,12 @@ public:
 	Ship(const std::vector<PlayTile*> &tiles, bool ally = true);
 	~Ship(void);
 
+	void Update(float deltatime);
 	void Draw(gCamera &camera, gShaderProgram &sh_program);
 
 	std::vector<PlayTile*>& getPlayTiles();
 	bool isDestroyed();
+	bool isVisible();
 	void setDestroyed(bool dis);
 protected:
 	void Init();
@@ -38,6 +40,12 @@ protected:
 	bool isAlly; //Kliens szempontjából mi hajónk-e
 	bool destroyed = false; //Ki lett-e lõve a hajó
 	std::vector<PlayTile*> playTiles;	//Mely játékmezõkön van a hajó
+
+	bool visible = true; //Ki kell-e még rajzolni
+	float sinkElapsed = 0.0f; //Eltelt idõ
+	float sinkTime = 30.0f; //Elsüllyedés ideje
+	glm::mat4 sinkTranslate; //Süllyedési mozgás
+	glm::mat4 sinkRotate; //Süllyedési forgás
 
 	glm::vec3 ship_abovesea_trans = glm::vec3(0, 0.12f,0); //korrigáló transz,hogy a hajó lebegjen a vizen.
 	glm::vec3 ship_translate = glm::vec3(0, 0, 0)* TorpedoGLOBAL::Scale; //mozgatás

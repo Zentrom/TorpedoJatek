@@ -132,6 +132,8 @@ void GameInstance::Update()
 	float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
 	cam_mainCamera.Update(delta_time);
 	sea.Update(delta_time);
+	playerFleet.Update(delta_time);
+	enemyFleet.Update(delta_time);
 	eventHandler.Update(delta_time);
 	last_time = SDL_GetTicks();
 
@@ -287,9 +289,20 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 		}
 	}
 
-	//Lövés teszt DEBUGban
-	if ((key.keysym.sym == SDLK_f) && TorpedoGLOBAL::Debug) {
-		eventHandler.FireProjectile(playerFleet, &sea.getTileByIndex(121));
+	//Tesztek DEBUGban
+	if(TorpedoGLOBAL::Debug){
+		//Lövés F - Süllyedés G 
+		if (key.keysym.sym == SDLK_f) {
+			eventHandler.FireProjectile(playerFleet, &sea.getTileByIndex(115));
+		}
+		else if (key.keysym.sym == SDLK_g) {
+			if (!playerFleet.getBattleShip().isVisible()) {
+				playerFleet.getBattleShip().ResetForDEBUG();
+			}
+			else {
+				playerFleet.getBattleShip().setDestroyed(true);
+			}
+		}
 	}
 
 	return 0;

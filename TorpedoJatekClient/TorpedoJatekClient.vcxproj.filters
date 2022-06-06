@@ -129,6 +129,9 @@
     <ClCompile Include="Source\Backend\EventHandler.cpp">
       <Filter>Source Files\Backend</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Frontend\ParticleGroup.cpp">
+      <Filter>Source Files\Frontend</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TorpedoJatekClient.h">
@@ -215,6 +218,9 @@
     <ClInclude Include="Source\Backend\EventHandler.h">
       <Filter>Header Files\Backend</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Frontend\ParticleGroup.h">
+      <Filter>Header Files\Frontend</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\dirLight.frag">
@@ -239,6 +245,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\playtile.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\projectile.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\projectile.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

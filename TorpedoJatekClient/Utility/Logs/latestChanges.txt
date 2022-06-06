@@ -1,8 +1,7 @@
-v0.0.4b-BattleShip Animation
+v0.0.4c-Particles
 -----------------------------------------------------------------------------------------
--Added a Cannon to the BattleShip.
--Added Projectile to the Cannon.
--Animated the BattleShip firing using the Projectile.
--Created EventHandler which can lock the input handling if needed.
--Players can't shoot while there is a firing animation in progress.
--Created BattleShip class which inherits from Ship.
+-Added tracing Particles to the Projectile.
+-Player Ships now sink when destroyed.
+-Losing player's BattleShip sinks when game ends.
+-Fixed bad Projectile route on the Z axis.
+-Removed light calculations on Projectile.

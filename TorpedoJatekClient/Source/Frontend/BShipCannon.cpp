@@ -82,9 +82,9 @@ void BShipCannon::Init()
 }
 
 //Ágyú kirajzolása
-void BShipCannon::Draw(gCamera &camera, gShaderProgram &sh_program)
+void BShipCannon::Draw(gCamera &camera, gShaderProgram &sh_program, glm::mat4 sharedtrans)
 {
-	glm::mat4 matWorld = projectileSharedTrans * glm::rotate(cannonRotate, cannonRotateAngle) 
+	glm::mat4 matWorld = projectileSharedTrans * sharedtrans * glm::rotate(cannonRotate, cannonRotateAngle)
 		* glm::scale(cannonScale); 
 	
 	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
@@ -103,7 +103,9 @@ void BShipCannon::Draw(gCamera &camera, gShaderProgram &sh_program)
 	vb_cannon.Off();
 	sh_program.SetUniform("hasTexture", false);
 
-	projectile->Draw(camera, sh_program);
+	sh_program.Off();
+	projectile->Draw(camera, sharedtrans);
+	sh_program.On();
 }
 
 BShipProjectile& BShipCannon::getProjectile()
