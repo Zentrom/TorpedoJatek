@@ -7,6 +7,9 @@ TorpedoJatekClient::TorpedoJatekClient(void)
 
 TorpedoJatekClient::~TorpedoJatekClient(void)
 {
+	Mix_Quit();
+	Mix_CloseAudio();
+
 	SDL_Quit();
 	std::cout << "Press enter to exit..." << std::endl;
 	std::cin.clear();
@@ -32,7 +35,7 @@ int TorpedoJatekClient::Start()
 //Inicializálja a segédkönyvtárakat
 int TorpedoJatekClient::Init()
 {
-	if (SDL_Init(SDL_INIT_VIDEO) == -1)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1)
 	{
 		std::cout << "[SDL indítása]Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
 		return 1;
@@ -57,6 +60,20 @@ int TorpedoJatekClient::Init()
 	// antialiasing - ha kell
 	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,  1);
 	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,  2);
+
+	//Mixer API inicializálása
+	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
+		printf("Mix_OpenAudio error: %s\n", SDL_GetError());
+		return 1;
+	}
+
+	//Hangformátum dll-ek inicializálása
+	int audioFormats = MIX_INIT_OGG | MIX_INIT_MP3;
+	if (Mix_Init(audioFormats) & audioFormats != audioFormats) {
+		printf("Mix_Init error: Failed to init required ogg and mp3 support!\n");
+		printf("Mix_Init error: %s\n", SDL_GetError());
+	}
+
 	return 0;
 }
 

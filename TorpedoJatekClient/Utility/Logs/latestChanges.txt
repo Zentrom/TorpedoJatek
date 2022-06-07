@@ -1,4 +1,3 @@
-v0.0.4d-OGLPack Update
+v0.0.4e-SDL Fix
 -----------------------------------------------------------------------------------------
--Added SDL_Mixer library to the project.
--Fixed OGLPack runtime binaries and libs being gitignored.
+-Updated SDL library to the latest version to make SDL_Mixer work.
