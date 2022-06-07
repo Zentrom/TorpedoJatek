@@ -1,7 +1,4 @@
-v0.0.4c-Particles
+v0.0.4d-OGLPack Update
 -----------------------------------------------------------------------------------------
--Added tracing Particles to the Projectile.
--Player Ships now sink when destroyed.
--Losing player's BattleShip sinks when game ends.
--Fixed bad Projectile route on the Z axis.
--Removed light calculations on Projectile.
+-Added SDL_Mixer library to the project.
+-Fixed OGLPack runtime binaries and libs being gitignored.
