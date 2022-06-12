@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "../CommonSource/TorpedoVersion.hpp"
+#include "Source/Globals.hpp"
 
 #include <GL/glew.h>
 #include <SDL.h>
@@ -36,6 +37,7 @@ private:
 	std::stringstream window_title;	//Ablak szöveg a címsorban
 
 	SDL_GLContext	context;	//OpenGL beállítási állapot
+	Mix_Music* music; //Zeneadatra mutató pointer
 
 	const int enableVsync = 1;	//Függõleges szinkronizáció bekapcsolása.
 	const int fpsLimit = 120;	//Ha van FPSlimit,akkor mennyi legyen a maximum

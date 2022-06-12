@@ -1,3 +1,6 @@
-v0.0.4e-SDL Fix
+v0.0.4f-Audio
 -----------------------------------------------------------------------------------------
--Updated SDL library to the latest version to make SDL_Mixer work.
+-Added game music and distance based fire/miss sounds.
+-Added music mute button 'm' and AudioEnabled global variable.
+-Fixed Camera look position to be a direction(1 unit long)
+-Fixed enemy BattleShip projectile route on the Z axis.

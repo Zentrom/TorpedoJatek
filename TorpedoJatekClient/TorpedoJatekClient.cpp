@@ -7,7 +7,9 @@ TorpedoJatekClient::TorpedoJatekClient(void)
 
 TorpedoJatekClient::~TorpedoJatekClient(void)
 {
-	Mix_Quit();
+	Mix_HaltMusic();
+	Mix_FreeMusic(music);
+	//Mix_Quit(); Elrontja
 	Mix_CloseAudio();
 
 	SDL_Quit();
@@ -62,13 +64,13 @@ int TorpedoJatekClient::Init()
 	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,  2);
 
 	//Mixer API inicializálása
-	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
 		printf("Mix_OpenAudio error: %s\n", SDL_GetError());
 		return 1;
 	}
 
 	//Hangformátum dll-ek inicializálása
-	int audioFormats = MIX_INIT_OGG | MIX_INIT_MP3;
+	int audioFormats = MIX_INIT_MP3; //| MIX_INIT_OGG
 	if (Mix_Init(audioFormats) & audioFormats != audioFormats) {
 		printf("Mix_Init error: Failed to init required ogg and mp3 support!\n");
 		printf("Mix_Init error: %s\n", SDL_GetError());
@@ -151,6 +153,18 @@ int TorpedoJatekClient::StartGameInstance()
 	float frmtime = 1000.0f / fpsLimit;
 	float frmMod = 0;
 
+	music = Mix_LoadMUS("Resources/Audio/mainMusic.ogg");
+	if (!music) {
+		printf("Mix_LoadMUS(\"mainMusic.ogg\"): %s\n", Mix_GetError());
+	}
+	if (TorpedoGLOBAL::AudioEnabled) {
+		Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
+	}
+	else {
+		Mix_VolumeMusic(0);
+	}
+	Mix_PlayMusic(music, 3);
+
 	while (!quit)
 	{
 		while (SDL_PollEvent(&ev))
@@ -166,6 +180,15 @@ int TorpedoJatekClient::StartGameInstance()
 					//	SDL_SetRelativeMouseMode(SDL_bool(false));
 					//}
 				//}
+				if (ev.key.keysym.sym == SDLK_m) {
+					if (Mix_PausedMusic())
+					{
+						Mix_ResumeMusic();
+					}
+					else {
+						Mix_PauseMusic();
+					}
+				}
 				if (gameInstance.KeyboardDown(ev.key)) {
 					quit = true;
 				}

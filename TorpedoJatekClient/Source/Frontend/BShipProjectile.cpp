@@ -71,7 +71,7 @@ void BShipProjectile::Fire(glm::vec3 shottilepos)
 	//dist.z = glm::distance<float>(projectileCurrentPos.z, projectileTargetPos.z);
 
 	dist.x *= (isAlly ? 1.0f : -1.0f);
-	dist.z *= (isAlly ? 1.0f : -1.0f);
+	//dist.z *= (isAlly ? 1.0f : -1.0f); VALSZEG NEMKELL HA EDDIG MENT
 }
 
 //Animáció - igazat ad vissza ha még tart

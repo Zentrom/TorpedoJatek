@@ -267,3 +267,8 @@ bool Ship::isVisible()
 {
 	return visible;
 }
+
+glm::vec3 Ship::getShipTranslate()
+{
+	return ship_translate;
+}

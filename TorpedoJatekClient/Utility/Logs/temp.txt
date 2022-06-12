@@ -1,3 +1,33 @@
+gameInstance.cpp 3D Positional audio
+-----------------------------------------------
+float distX = cam_mainCamera.GetAt().x - playerFleet.getBattleShip().getShipTranslate().x;
+float distZ = cam_mainCamera.GetAt().z - playerFleet.getBattleShip().getShipTranslate().z;
+glm::vec3 dis = glm::normalize(glm::vec3(distX, 0, distZ));
+//glm::vec3 objectUp = glm::cross(glm::vec3(1,0,0), dis);
+float angle = glm::dot(glm::vec3(1,0,0), dis);
+float acf;
+
+if (cam_mainCamera.GetEye().x < playerFleet.getBattleShip().getShipTranslate().x) {
+	if (cam_mainCamera.GetAt().z < 0) {
+		acf = (acos(angle) * 180 / 3.14f);
+	}
+	else {
+		acf = 180 + (180 - (acos(angle) * 180 / 3.14f));
+	}
+}
+else {
+	if (cam_mainCamera.GetAt().z > 0) {
+		acf = (acos(angle) * 180 / 3.14f);
+	}
+	else {
+		acf = 180 + (180 - (acos(angle) * 180 / 3.14f));
+	}
+}
+//HA PÁRHUZAMOSAN NÉZÜNK A HAJÓ LOOKATJE FELÉ AKKOR NEMJO SZERINTEM
+//LEHET NEM IS KÉNE A STEREO PANNING?
+std::cout << acf << " " << angle << " " << len << " " << ds << std::endl;
+Mix_SetPosition(1, acf, ds);
+
 gameInstance.cpp  threadFunction
 -----------------------------------------------
 //	inputThread = SDL_CreateThread(threadFunction, "inputThread", (void*)this);

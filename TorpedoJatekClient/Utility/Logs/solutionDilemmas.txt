@@ -21,3 +21,5 @@ Time measureing with chrono?
 Try-catch exception handling with stack unwinding?
 Move-asignments?
 std::cin-el kapcsolatos dolgok learnCpp jegyzetben.
+
+3D positional audio legyen-e egyáltalán vagy marad a distance?

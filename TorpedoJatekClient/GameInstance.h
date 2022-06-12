@@ -15,6 +15,7 @@
 #include <GL/glew.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <SDL_mixer.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
@@ -70,6 +71,8 @@ protected:
 	gShaderProgram sh_playtile; //PlayTile pre-postprocess shader
 	gShaderProgram sh_dirLight; //Ide rajzoljuk a 3D-s teret
 	gShaderProgram sh_skybox; //Skybox shadere
+
+	Mix_Chunk* cannonFireSound; //Hajó lövés hangadatra mutató pointer
 
 	Skybox skybox; //Pályát körülvevõ skybox
 	Mountain mountain;	//Hegy

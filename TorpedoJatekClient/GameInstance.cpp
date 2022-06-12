@@ -32,6 +32,8 @@ GameInstance::GameInstance(float viewportW, float viewportH) : viewportWidth(vie
 //Memória felszabadítás
 GameInstance::~GameInstance(void)
 {
+	Mix_FreeChunk(cannonFireSound);
+
 	delete[] mousePointedData;
 
 	if (dirL_frameBufferCreated)
@@ -47,6 +49,14 @@ bool GameInstance::Init()
 {
 	mapSize = gameLogic.Init(&playerFleet, &enemyFleet, &sea);
 	gameLogic.InitGame();
+
+	cannonFireSound = Mix_LoadWAV("Resources/Audio/cannonFire.wav");
+	if (!cannonFireSound) {
+		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
+	}
+	if (!TorpedoGLOBAL::AudioEnabled) {
+		Mix_VolumeChunk(cannonFireSound, 0);
+	}
 
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 
@@ -134,7 +144,7 @@ void GameInstance::Update()
 	sea.Update(delta_time);
 	playerFleet.Update(delta_time);
 	enemyFleet.Update(delta_time);
-	eventHandler.Update(delta_time);
+	eventHandler.Update(delta_time, cam_mainCamera.GetEye());
 	last_time = SDL_GetTicks();
 
 	//Real-time backend frissítések
@@ -175,7 +185,16 @@ void GameInstance::Update()
 			PlayTile* shotTile = gameLogic.GetShoot();
 			if (shotTile) {
 				shotReceived = true;
+				//std::cout << "YOLOOO:   " << shotTile->getIndex() << std::endl;
 				eventHandler.FireProjectile(enemyFleet, shotTile);
+
+				float scannedDistance = 40.0f;
+				float len = glm::length(glm::vec3(cam_mainCamera.GetEye().x - enemyFleet.getBattleShip().getShipTranslate().x
+					, 0
+					, cam_mainCamera.GetEye().z - enemyFleet.getBattleShip().getShipTranslate().z));
+				int ds = (len > scannedDistance ? (scannedDistance - 1) : len) * 256 / scannedDistance;
+				Mix_SetDistance(1, ds);
+				Mix_PlayChannel(1, cannonFireSound, 0);
 			}
 		}
 		winnerPlayerNum = gameLogic.CheckVictoryState();
@@ -293,7 +312,17 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 	if(TorpedoGLOBAL::Debug){
 		//Lövés F - Süllyedés G 
 		if (key.keysym.sym == SDLK_f) {
-			eventHandler.FireProjectile(playerFleet, &sea.getTileByIndex(115));
+			if (!eventHandler.IsProjectileAnimation()) {
+				eventHandler.FireProjectile(playerFleet, &sea.getTileByIndex(115));
+				
+				float scannedDistance = 40.0f;
+				float len = glm::length(glm::vec3(cam_mainCamera.GetEye().x - playerFleet.getBattleShip().getShipTranslate().x
+					, 0
+					, cam_mainCamera.GetEye().z - playerFleet.getBattleShip().getShipTranslate().z));
+				int ds = (len > scannedDistance ? (scannedDistance - 1) : len) * 256 / scannedDistance;
+				Mix_SetDistance(1, ds);
+				Mix_PlayChannel(1, cannonFireSound, 0);
+			}
 		}
 		else if (key.keysym.sym == SDLK_g) {
 			if (!playerFleet.getBattleShip().isVisible()) {
@@ -346,6 +375,13 @@ void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 				PlayTile* shotTile = gameLogic.Shoot(static_cast<int>(mousePointedData[3]));
 				if (shotTile) {
 					eventHandler.FireProjectile(playerFleet, shotTile);
+					float scannedDistance = 40.0f;
+					float len = glm::length(glm::vec3(cam_mainCamera.GetEye().x - playerFleet.getBattleShip().getShipTranslate().x
+						, 0
+						, cam_mainCamera.GetEye().z - playerFleet.getBattleShip().getShipTranslate().z));
+					int ds = (len > scannedDistance ? (scannedDistance - 1) : len) * 256 / scannedDistance;
+					Mix_SetDistance(1, ds);
+					Mix_PlayChannel(1, cannonFireSound, 0);
 
 					winnerPlayerNum = gameLogic.CheckVictoryState();
 					if (winnerPlayerNum) {

@@ -29,6 +29,7 @@ public:
 	bool isDestroyed();
 	bool isVisible();
 	void setDestroyed(bool dis);
+	glm::vec3 getShipTranslate();
 protected:
 	void Init();
 

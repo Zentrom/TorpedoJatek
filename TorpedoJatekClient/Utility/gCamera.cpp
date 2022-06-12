@@ -5,9 +5,12 @@
 gCamera::gCamera(glm::vec3 pos) : camEye(pos), boundaryX(100.0f), boundaryY(100.0f), boundaryZ(100.0f),
 camAt(0.0f), camUp(0.0f, 1.0f, 0.0f), speed(4.0f), goFw(0), goRight(0), fast(false)
 {
-	SetView(camEye * TorpedoGLOBAL::Scale, camAt, camUp);
+	SetView(camEye * TorpedoGLOBAL::Scale,
+		//camAt
+		glm::normalize(camAt-camEye)
+		, camUp);
 	dist = glm::length(camAt - camEye);
-	SetProj(45.0f, 640 / 480.0f, 0.001f, 1000.0f);
+	SetProj(45.0f, 800 / 600.0f, 0.001f, 1000.0f);
 }
 
 //gCamera::gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up) : m_speed(16.0f), m_goFw(0), m_goRight(0), m_dist(10), m_slow(false)

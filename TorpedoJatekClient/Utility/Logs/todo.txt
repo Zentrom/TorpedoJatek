@@ -28,3 +28,5 @@ Ne tünjön el a particle miután a lövedék célba ér
 Beta után Particleeknek legyen mozgása + transparency/szín változása
 Particle - Cylindrical Billboaring -> Spherical
 Ellenfél oldalán a hajók rossz irányba süllyednek Z tengelyen. *-1 kell
+Megoldani hogy menjen a találat hangja is006
+A mute gomb minden hangot muteoljon
