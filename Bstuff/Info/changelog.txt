@@ -1,4 +1,17 @@
 -----------------------------------------------------------------------------------------
+v0.0.5<->Audio And Animations
+-----------------------------------------------------------------------------------------
+[FEATURES]
+-Added Ship textures.
+-Added ShipFlags to distinctiate allied and enemy ships.
+-BattleShip now has a Cannon which fires an animated projectile.
+-Players can't shoot while there is a firing animation in progress.
+-Added tracing Particles to the Projectile.
+-Player Ships now sink when destroyed.
+-Losing player's BattleShip sinks when game ends.
+-Added Game Music and distance based fire/miss sounds.
+-Added music mute button 'm'
+-----------------------------------------------------------------------------------------
 v0.0.4<->3D Picking
 -----------------------------------------------------------------------------------------
 [FEATURES]

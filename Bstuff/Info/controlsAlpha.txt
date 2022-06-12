@@ -5,6 +5,7 @@ Move with WASD.
 Drag the mouse on the screen to look around while holding Right Mouse Button.
 Hold Shift to move faster.
 Press ESC to quit.
+Press M to mute the Game Music.
 
 1.After connecting to a server, press 1-4 based on the size of the ship you want to place down.
 2.Place down the ship front on a PlayTile using Left Mouse Button. Then do the same with the back.
