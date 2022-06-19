@@ -55,7 +55,7 @@ void gCamera::SetProj(float angle, float aspect, float zn, float zf)
 }
 
 //Gets the view matrix.
-glm::mat4 gCamera::GetViewMatrix()
+const glm::mat4& gCamera::GetViewMatrix() const
 {
 	return viewMatrix;
 }

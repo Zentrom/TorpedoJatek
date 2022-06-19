@@ -23,12 +23,14 @@ void Sea::Init(int inMapSize)
 void Sea::Update(float deltatime)
 {
 	textureAnimationOffset += deltatime;
+	//std::cout << textureAnimationOffset << std::endl;
 }
 
 //Egy elõrajzolás,ami szükséges hogy tudjuk melyik játékmezõre mutatunk az egérrel
-void Sea::PreProcess(gCamera &camera, gShaderProgram &sh_program)
+void Sea::PreProcess(gCamera& camera, gShaderProgram& sh_program)
 {
 	glDisable(GL_CULL_FACE);
+	sh_program.SetUniform("is_preprocess", true);
 	for (int i = 0; i < (mapSize*mapSize); i++) {
 		enemyTiles[i].PreProcess(camera, sh_program);
 		myTiles[i].PreProcess(camera, sh_program);
@@ -37,30 +39,40 @@ void Sea::PreProcess(gCamera &camera, gShaderProgram &sh_program)
 }
 
 //Kirajzolja a játékmezõket
-void Sea::Draw(gCamera &camera, gShaderProgram &sh_program)//, float pointedTile)
+void Sea::Draw(gCamera& camera, gShaderProgram& sh_program)
 {
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glStencilMask(0xFF);
 	//sh_program.SetUniform("read_index", static_cast<int>(pointedTile));
 	sh_program.SetUniform("seatileOffset", textureAnimationOffset);
+
+	sh_program.SetUniform("is_seatile", true);
+	sh_program.SetUniform("hasTexture", true);
+	sh_program.SetTexture("texImage", 0, seaTileTextureID);
+
 	for (int i = 0; i < (mapSize*mapSize); i++) {
-		enemyTiles[i].Draw(camera, sh_program, seaTileTextureID);
-		myTiles[i].Draw(camera, sh_program, seaTileTextureID);
+		enemyTiles[i].Draw(camera, sh_program);
+		myTiles[i].Draw(camera, sh_program);
 	}
 	glStencilMask(0x00);
 	for (SeaTile &tile : seaTiles) {
-		tile.Draw(camera, sh_program, seaTileTextureID);
+		tile.Draw(camera, sh_program);
 	}
+	sh_program.SetUniform("is_seatile", false);
+	sh_program.SetUniform("hasTexture", false);
+
 	glDisable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 }
 
 //Mindegyik játékmezõre meghívja a körvonal rajzolást
-void Sea::OutlineDraw(gCamera &camera, gShaderProgram &sh_program, float pointedTile)
+void Sea::OutlineDraw(gCamera& camera, gShaderProgram& sh_program, float pointedTile)
 {
 	glDisable(GL_CULL_FACE);
 	sh_program.SetUniform("read_index", static_cast<int>(pointedTile));
+	//std::cout << pointedTile << std::endl;
+	sh_program.SetUniform("is_preprocess", false);
 	for (int i = 0; i < (mapSize*mapSize); i++) {
 		enemyTiles[i].OutlineDraw(camera, sh_program);
 		myTiles[i].OutlineDraw(camera, sh_program);
@@ -128,8 +140,9 @@ void Sea::InitPlayTiles(int inMapSize)
 	myTiles.reserve(playTileCount);
 	for (int i = 0; i < mapSize; i++) {
 		for (int j = 0; j < mapSize; j++) {
-			myTiles.push_back(PlayTile(std::pair<char, int>(static_cast<char>('a' + i), 1 + j)));
-			myTiles[i*mapSize + j].setTranslate(calcTranslate(i, j, true));
+			myTiles.push_back(PlayTile(std::pair<char, int>(static_cast<char>('a' + i), 1 + j),
+				calcTranslate(i, j, true)));
+			//myTiles[i*mapSize + j].setTranslate(calcTranslate(i, j, true));
 			myTiles[i*mapSize + j].setIndex(i*mapSize + j);
 		}
 	}
@@ -137,8 +150,9 @@ void Sea::InitPlayTiles(int inMapSize)
 	enemyTiles.reserve(playTileCount);
 	for (int i = 0; i < mapSize; i++) {
 		for (int j = 0; j < mapSize; j++) {
-			enemyTiles.push_back(PlayTile(std::pair<char, int>(static_cast<char>('a' + i), 1 + j)));
-			enemyTiles[i*mapSize + j].setTranslate(calcTranslate(i, j, false));
+			enemyTiles.push_back(PlayTile(std::pair<char, int>(static_cast<char>('a' + i), 1 + j),
+				calcTranslate(i, j, false)));
+			//enemyTiles[i*mapSize + j].setTranslate(calcTranslate(i, j, false));
 			enemyTiles[i*mapSize + j].setIndex(i*mapSize + j + enemyTilesIndexOffset);
 		}
 	}

@@ -1,12 +1,14 @@
 
 #include "Skybox.h"
 
-Skybox::Skybox(void)
+Skybox::Skybox()
 {
 }
 
-Skybox::~Skybox(void)
+Skybox::~Skybox()
 {
+	vb_skybox.Clean();
+	sh_skybox.Clean();
 	glDeleteTextures(1, &cubeTextureID);
 }
 
@@ -43,6 +45,18 @@ void Skybox::Init()
 	vb_skybox.AddIndex(3, 1, 0);
 
 	vb_skybox.InitBuffers();
+
+	sh_skybox.AttachShader(GL_VERTEX_SHADER, "Shaders/skybox.vert");
+	sh_skybox.AttachShader(GL_FRAGMENT_SHADER, "Shaders/skybox.frag");
+	sh_skybox.BindAttribLoc(0, "vs_in_pos");
+	if (!sh_skybox.LinkProgram()) {
+		std::cout << "[Shader_Link]Error during Shader compilation: sh_skybox" << std::endl;
+	}
+	else {
+		sh_skybox.On();
+		sh_skybox.SetCubeTexture("skyboxCube", 0, cubeTextureID);
+		sh_skybox.Off();
+	}
 }
 
 //Betölti és létrehozza a skybox oldalait
@@ -56,7 +70,7 @@ void Skybox::CreateCubeMap()
 		SDL_Surface* loaded_img = IMG_Load(facePaths[i].c_str());
 
 		if (!loaded_img) {
-			std::cout << "Couldn't load skybox face from path: " << facePaths[i] << '\n';
+			std::cout << "[IMG_Load]Couldn't load skybox face from path: " << facePaths[i] << '\n';
 			std::cout << IMG_GetError() << std::endl;
 			continue;
 		}
@@ -72,9 +86,10 @@ void Skybox::CreateCubeMap()
 
 		SDL_FreeSurface(loaded_img);
 	}
+	
 	//glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-
 	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -83,15 +98,18 @@ void Skybox::CreateCubeMap()
 }
 
 //Kirajzolja a skyboxot
-void Skybox::Draw(gCamera & camera, gShaderProgram & sh_program)
+void Skybox::Draw(const gCamera& camera)
 {
 	glDepthFunc(GL_LEQUAL);
-
 	glm::mat4 viewProj = camera.GetProj() * glm::mat4(glm::mat3(camera.GetViewMatrix()));
-	sh_program.SetUniform("viewProj", viewProj);
+
+	sh_skybox.On();
+	sh_skybox.SetUniform("viewProj", viewProj);
+
 	vb_skybox.On();
 	vb_skybox.DrawIndexed(GL_TRIANGLES, 0, 36, 0);
 	vb_skybox.Off();
+	sh_skybox.Off();
 
 	glDepthFunc(GL_LESS);
 }

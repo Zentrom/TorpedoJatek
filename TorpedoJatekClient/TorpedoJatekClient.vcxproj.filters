@@ -75,9 +75,6 @@
     <ClCompile Include="Source\Frontend\Terrain.cpp">
       <Filter>Source Files\Frontend</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Frontend\Ground.cpp">
-      <Filter>Source Files\Frontend</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Frontend\Fleet.cpp">
       <Filter>Source Files\Frontend</Filter>
     </ClCompile>
@@ -153,9 +150,6 @@
       <Filter>Header Files\Backend</Filter>
     </ClInclude>
     <ClInclude Include="Source\Frontend\Terrain.h">
-      <Filter>Header Files\Frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Frontend\Ground.h">
       <Filter>Header Files\Frontend</Filter>
     </ClInclude>
     <ClInclude Include="Source\Frontend\Fleet.h">

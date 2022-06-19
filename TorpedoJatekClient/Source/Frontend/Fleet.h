@@ -25,7 +25,7 @@ public:
 	void Init(int inMapSize = 7, bool ally = true);
 	void InitTiles(std::vector<PlayTile> &tiles);
 	void Update(float deltatime);
-	void Draw(gCamera &camera, gShaderProgram &sh_program);
+	void Draw(gCamera& camera, gShaderProgram& sh_program);
 
 	bool CheckTile(const PlayTile &tile);
 	PlayTile& getTile(const std::pair<char, int> &pos);
@@ -48,6 +48,6 @@ private:
 
 	float firstTile_battleShipOffset = SeaTile::getScaleXZ() * mapSize * TorpedoGLOBAL::Scale;	//Csatahajó és elsõ játékmezõ közti táv
 	const float mountain_tile_offset = (2.0f * SeaTile::getScaleXZ())* TorpedoGLOBAL::Scale; //Hegy és elsõ mezõ közti táv
-	const float mountaincenter_border_Xoffset = Mountain::getWidth() / 2.0f * TorpedoGLOBAL::Scale; //Hegy közepe és széle közti táv
+	const float mountaincenter_border_Xoffset = Mountain::getWidthX() / 2.0f * TorpedoGLOBAL::Scale; //Hegy közepe és széle közti táv
 
 };

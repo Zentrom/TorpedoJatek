@@ -2,6 +2,18 @@
 
 EventHandler::EventHandler()
 {
+	//music = Mix_LoadMUS("Resources/Audio/mainMusic.ogg");
+	//if (!music) {
+	//	printf("Mix_LoadMUS(\"mainMusic.ogg\"): %s\n", Mix_GetError());
+	//}
+	//if (TorpedoGLOBAL::AudioEnabled) {
+	//	Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
+	//}
+	//else {
+	//	Mix_VolumeMusic(0);
+	//}
+	//Mix_PlayMusic(music, 3);
+
 	hitSound = Mix_LoadWAV("Resources/Audio/hitSound.wav");
 	if (!hitSound) {
 		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
@@ -18,6 +30,8 @@ EventHandler::EventHandler()
 
 EventHandler::~EventHandler()
 {
+	//Mix_HaltMusic();
+	//Mix_FreeMusic(music);
 	Mix_FreeChunk(hitSound);
 	Mix_FreeChunk(missSound);
 }
@@ -41,9 +55,9 @@ void EventHandler::Update(float deltatime, glm::vec3 cameye)
 }
 
 //Lövedék animáció indítása
-void EventHandler::FireProjectile(Fleet &fleet, PlayTile *shotTile)
+void EventHandler::FireProjectile(Fleet*& fleet, PlayTile *shotTile)
 {
-	animatedProjectile = &fleet.getBattleShip().getCannon().getProjectile();
+	animatedProjectile = &fleet->getBattleShip().getCannon().getProjectile();
 	animatedProjectile->Fire(shotTile->getTranslate());
 	isProjectileAnimation = true;
 

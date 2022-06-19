@@ -20,7 +20,7 @@ public:
 	BShipCannon(const glm::vec3 &battleShipTranslate,bool ally, float battleShipScaleX);
 	~BShipCannon(void);
 
-	void Draw(gCamera &camera, gShaderProgram &sh_program, glm::mat4 sharedtrans);
+	void Draw(gCamera& camera, gShaderProgram& sh_program, glm::mat4 sharedtrans);
 	BShipProjectile& getProjectile();
 private:
 	void Init();

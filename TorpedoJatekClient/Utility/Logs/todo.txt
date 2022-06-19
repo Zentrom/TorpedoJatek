@@ -3,7 +3,6 @@ Megoldani egy tényleges visszakapcsolódást a serverre,lementett állapottal, 60se
 std::exit()-ektõl lehetõleg megszabadulni. Beta verziónál.
 std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
 
-OpenAl vagy SDLAudio(havan 3d) hangoknak
 Freetype vagy SDL rtf/ttf betuknek
 
 Hogy jelenjenek meg az ellenfél hajói?(006)
@@ -29,4 +28,14 @@ Beta után Particleeknek legyen mozgása + transparency/szín változása
 Particle - Cylindrical Billboaring -> Spherical
 Ellenfél oldalán a hajók rossz irányba süllyednek Z tengelyen. *-1 kell
 Megoldani hogy menjen a találat hangja is006
-A mute gomb minden hangot muteoljon
+A mute gomb minden hangot muteoljon. CameraBounds is gombra mûködjön
+Exception propagation - Forceolt destructor hívás?
+FPSlimitert tesztelni mikor lesz több fps
+Camera viewdistance+fog-al eltüntetni a map szélét
+
+SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE window flagek betánál
+Operator overloading?
+
+
+
+SEATILE ÁTNÉZVE,PLAYTILE VAN FOLYAMATBAN AZT KELL MEGEN!!

@@ -221,7 +221,7 @@ void Ship::Update(float deltatime)
 }
 
 //Egy hajó kirajzolása
-void Ship::Draw(gCamera &camera, gShaderProgram &sh_program)
+void Ship::Draw(gCamera& camera, gShaderProgram& sh_program)
 {
 	sinkTranslate = glm::translate(glm::vec3(0, -(sinkElapsed / sinkTime) / 2.0f, 0));
 	sinkRotate = glm::rotate((sinkElapsed / sinkTime) * glm::half_pi<float>() / 2.0f, glm::vec3(0, 0, 1.0f));

@@ -26,11 +26,11 @@
 class GameInstance
 {
 public:
-	GameInstance(float viewportW=800.0f, float viewportH=600.0f);
-	~GameInstance(void);
+	GameInstance(float viewport_w = 800.0f, float viewport_h = 600.0f);
+	~GameInstance();
 
 	bool Init();
-	void Clean();
+	//void Clean();
 
 	void Update();
 	void Render();
@@ -41,8 +41,8 @@ public:
 	void MouseDown(SDL_MouseButtonEvent& mouse);
 	void MouseUp(SDL_MouseButtonEvent& mouse);
 	void MouseWheel(SDL_MouseWheelEvent& wheel);
-	void Resize(int w, int h);
-protected:
+	void Resize(int width, int height);
+private:
 	void CreateFrameBuffer(int width, int height);
 
 	float viewportWidth; //Ablak canvaszának szélessége
@@ -51,13 +51,13 @@ protected:
 	const float viewDistance = 200.0f * TorpedoGLOBAL::Scale; //Milyen távolságon belül rajzolunk ki dolgokat
 
 	GameState gameState; //jelenlegi játékállapot
-	std::vector<void*> stateRelatedData; //játékállapothoz kapcsolódó adat
-	bool isError; //van-e error a jelenlegi állapotban
-	bool outputWritten; //kiirtuk-e már az üzenetet
+	//std::vector<void*> stateRelatedData; //játékállapothoz kapcsolódó adat
+	bool isError = false; //van-e error a jelenlegi állapotban
+	bool outputWritten = false; //kiirtuk-e már az üzenetet
 
-	// framebuffer dolgok
-	gVertexBuffer m_fbo_vbo;
-	bool dirL_frameBufferCreated;
+	//Framebuffer dolgok
+	gVertexBuffer vb_fbo;
+	bool dirL_frameBufferCreated = false;
 	GLuint dirL_depthStencilBuffer;
 	GLuint dirL_colorBuffer;
 	GLuint dirL_frameBuffer;
@@ -66,24 +66,23 @@ protected:
 	Sint32 mouseY; //Egér relatív Y koord
 	float* mousePointedData; //Melyik játékmezõre mutat az egér
 
-	gCamera	cam_mainCamera; //Kamera
+	gCamera* cam_mainCamera = new gCamera(glm::vec3(0, 20.0f, 20.0f)); //Kamera
 	gShaderProgram sh_default; //Alap shader+postprocess
 	gShaderProgram sh_playtile; //PlayTile pre-postprocess shader
 	gShaderProgram sh_dirLight; //Ide rajzoljuk a 3D-s teret
-	gShaderProgram sh_skybox; //Skybox shadere
 
-	Mix_Chunk* cannonFireSound; //Hajó lövés hangadatra mutató pointer
+	//Mix_Chunk* cannonFireSound; //Hajó lövés hangadatra mutató pointer
 
-	Skybox skybox; //Pályát körülvevõ skybox
-	Mountain mountain;	//Hegy
-	Terrain terrain;	//Föld
+	Skybox* skybox = new Skybox(); //Pályát körülvevõ skybox
+	Mountain* mountain = new Mountain(); //Hegy
+	Terrain* terrain = new Terrain(); //Föld
 
-	Fleet playerFleet;	//Játékos hajói
-	Fleet enemyFleet;	//Ellenfél hajói
-	Sea sea;	//Játék és tengermezõk
+	Fleet* playerFleet = new Fleet(); //Játékos hajói
+	Fleet* enemyFleet = new Fleet(); //Ellenfél hajói
+	Sea* sea = new Sea(); //Játék és tengermezõk
 
-	GameLogic gameLogic;	//Háttérlogika
-	EventHandler eventHandler; //Eseménykezelés
+	GameLogic* gameLogic = new GameLogic(); //Háttérlogika
+	EventHandler* eventHandler = new EventHandler(); //Eseménykezelés
 
 	int mapSize;	//Játékpálya mérete
 

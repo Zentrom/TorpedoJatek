@@ -11,7 +11,7 @@ public:
 	BattleShip(bool ally, const glm::vec3 &battleShipTranslate);
 	~BattleShip(void);
 
-	void Draw(gCamera &camera, gShaderProgram &sh_program);
+	void Draw(gCamera& camera, gShaderProgram& sh_program);
 	void ResetForDEBUG();
 	BShipCannon& getCannon();
 private:

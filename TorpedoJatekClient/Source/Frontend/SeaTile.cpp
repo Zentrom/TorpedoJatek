@@ -3,19 +3,21 @@
 
 const float SeaTile::scaleXZ = 2.0f; //ez most 1 és 2-re megy
 
-SeaTile::SeaTile(void)
+//SeaTile::SeaTile()
+//{
+//	Init();
+//}
+
+SeaTile::SeaTile(const glm::vec3 &trans) : seatileTranslate(trans),
+	matWorld(glm::translate(seatileTranslate) * glm::scale(seatileScale)),
+	matWorldIT(glm::transpose(glm::inverse(matWorld)))
 {
 	Init();
 }
 
-SeaTile::SeaTile(const glm::vec3 &trans)
+SeaTile::~SeaTile()
 {
-	seatile_translate += trans;
-	Init();
-}
-
-SeaTile::~SeaTile(void)
-{
+	//vb_seatile.Clean();
 }
 
 //Inicializálja a tengermezõ grafikai modelljét
@@ -53,31 +55,26 @@ void SeaTile::Init()
 }
 
 //Kirajzol egy tengermezõt
-void SeaTile::Draw(gCamera &camera, gShaderProgram &sh_program, GLuint &textureID)
+void SeaTile::Draw(const gCamera& camera, gShaderProgram& sh_program) const
 {
-	glm::mat4 matWorld = glm::translate(seatile_translate) * glm::rotate(seatile_rotate, seatile_rotate_angle) * glm::scale(seatile_scale);
-	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
-	glm::mat4 mvp = camera.GetViewProj() *matWorld;
+	glm::mat4 mvp = camera.GetViewProj() * matWorld;
 
 	sh_program.SetUniform("world", matWorld);
 	sh_program.SetUniform("worldIT", matWorldIT);
 	sh_program.SetUniform("MVP", mvp);
 
-	sh_program.SetUniform("is_seatile", true);
-	sh_program.SetUniform("hasTexture", true);
-	sh_program.SetTexture("texImage", 0, textureID);
-
 	vb_seatile.On();
 	vb_seatile.DrawIndexed(GL_TRIANGLES, 0, 6, 0);
 	vb_seatile.Off();
 
-	sh_program.SetUniform("is_seatile", false);
-	sh_program.SetUniform("hasTexture", false);
 }
 
 void SeaTile::setTranslate(const glm::vec3 &trans)
 {
-	seatile_translate = trans;
+	seatileTranslate = trans;
+
+	matWorld = glm::translate(seatileTranslate) * glm::scale(seatileScale);
+	matWorldIT = glm::transpose(glm::inverse(matWorld));
 }
 
 //Visszaadja a tengermezõ skálázását XZ tengely mentén
@@ -86,7 +83,7 @@ float SeaTile::getScaleXZ()
 	return scaleXZ;
 }
 
-glm::vec3 SeaTile::getTranslate() const
+const glm::vec3& SeaTile::getTranslate() const
 {
-	return seatile_translate;
+	return seatileTranslate;
 }

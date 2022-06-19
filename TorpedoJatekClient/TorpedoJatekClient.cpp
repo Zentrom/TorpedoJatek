@@ -1,26 +1,27 @@
 
 #include "TorpedoJatekClient.h"
 
-TorpedoJatekClient::TorpedoJatekClient(void)
+TorpedoJatekClient::TorpedoJatekClient()
 {
+	clientVersion = new TorpedoVersion();
 }
 
-TorpedoJatekClient::~TorpedoJatekClient(void)
+TorpedoJatekClient::~TorpedoJatekClient()
 {
-	Mix_HaltMusic();
-	Mix_FreeMusic(music);
-	//Mix_Quit(); Elrontja
+	//Mix_Quit();
 	Mix_CloseAudio();
 
+	delete gameInstance;
+	delete sdlEvent;
+	SDL_GL_DeleteContext(glContext);
+	SDL_DestroyWindow(gameWindow);
 	SDL_Quit();
-	std::cout << "Press enter to exit..." << std::endl;
-	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	std::cin.get();
+
+	delete clientVersion;
 }
 
 //Elindítja a klienst
-int TorpedoJatekClient::Start()
+int TorpedoJatekClient::Run()
 {
 	if (Init()) {
 		return 1;
@@ -39,27 +40,23 @@ int TorpedoJatekClient::Init()
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1)
 	{
-		std::cout << "[SDL indítása]Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
+		std::cout << "[SDL_Init]Error during SDL Video and Audio Init: " << SDL_GetError() << std::endl;
 		return 1;
 	}
 
-	//explicit OPENGL verzio beallitas
-	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-
-	// állítsuk be, hogy hány biten szeretnénk tárolni a piros, zöld, kék és átlátszatlansági információkat pixelenként
+	//hány biten szeretnénk tárolni a piros, zöld, kék és átlátszatlansági információkat pixelenként
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-	// duplapufferelés
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	// mélységi puffer hány bites legyen
+	// mélységi/stencil
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-
-	// antialiasing - ha kell
+	// duplapufferelés
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	
+	// antialiasing
 	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,  1);
 	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,  2);
 
@@ -70,10 +67,10 @@ int TorpedoJatekClient::Init()
 	}
 
 	//Hangformátum dll-ek inicializálása
-	int audioFormats = MIX_INIT_MP3; //| MIX_INIT_OGG
+	int audioFormats = MIX_INIT_MP3 | MIX_INIT_OGG;
 	if (Mix_Init(audioFormats) & audioFormats != audioFormats) {
-		printf("Mix_Init error: Failed to init required ogg and mp3 support!\n");
-		printf("Mix_Init error: %s\n", SDL_GetError());
+		std::cout << "[Mix_Init]Failed to init required Ogg and Mp3 support: " << SDL_GetError() << std::endl;
+		return 1;
 	}
 
 	return 0;
@@ -82,47 +79,43 @@ int TorpedoJatekClient::Init()
 //SDL-el lekér egy ablakot a Windowstól
 int TorpedoJatekClient::CreateGameWindow()
 {
+	window_title << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
+		<< "." << clientVersion->alphaVersion << clientVersion->experimentalVersion;
 
-	window_title << "TorpedoJatek v" << clientVersion.majorVersion << "." << clientVersion.betaVersion
-		<< "." << clientVersion.alphaVersion << clientVersion.experimentalVersion;
-
-	win = SDL_CreateWindow(window_title.str().c_str(),
+	gameWindow = SDL_CreateWindow(window_title.str().c_str(),
 		rightOffset, downOffset, widthWindow, heightWindow, flagsWindow);
 
-	if (win == 0)
+	if (gameWindow == 0)
 	{
-		std::cout << "[Ablak létrehozása]Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
+		std::cout << "[SDL_CreateWindow]Failed to create window: " << SDL_GetError() << std::endl;
 		return 1;
 	}
 
-	context = SDL_GL_CreateContext(win);
-	if (context == 0)
+	glContext = SDL_GL_CreateContext(gameWindow);
+	if (glContext == 0)
 	{
-		std::cout << "[OGL context létrehozása]Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
+		std::cout << "[SDL_GL_CreateContext]Failed to create GLcontext: " << SDL_GetError() << std::endl;
 		return 1;
 	}
 
 	//VSync
 	SDL_GL_SetSwapInterval(enableVsync);
 
-	GLenum error = glewInit();
-	if (error != GLEW_OK)
+	if (glewInit() != GLEW_OK)
 	{
-		std::cout << "[GLEW] Hiba az inicializálás során!" << std::endl;
+		std::cout << "[glewInit]Failed to init glew!" << std::endl;
 		return 1;
 	}
 
-	// kérdezzük le az OpenGL verziót
+	//OpenGL verzió
 	int glVersion[2] = { -1, -1 };
 	glGetIntegerv(GL_MAJOR_VERSION, &glVersion[0]);
 	glGetIntegerv(GL_MINOR_VERSION, &glVersion[1]);
-	std::cout << "Running OpenGL " << glVersion[0] << "." << glVersion[1] << std::endl;
+	std::cout << "Running OpenGL Version " << glVersion[0] << "." << glVersion[1] << std::endl;
 
 	if (glVersion[0] == -1 && glVersion[1] == -1)
 	{
-		SDL_GL_DeleteContext(context);
-		SDL_DestroyWindow(win);
-		std::cout << "[OGL context létrehozása] Nem sikerült létrehozni az OpenGL context-et! Lehet, hogy az SDL_GL_SetAttribute(...) hívásoknál az egyik beállítás helytelen." << std::endl;
+		std::cout << "[OGLcontext]Error creating OpenGL context! One of the SDL_GL_SetAttribute(...) calls might be wrong." << std::endl;
 		return 1;
 	}
 
@@ -132,15 +125,10 @@ int TorpedoJatekClient::CreateGameWindow()
 //Elindít egy játékmenetet
 int TorpedoJatekClient::StartGameInstance()
 {
-	bool quit = false;
-	SDL_Event ev;
-
-	GameInstance gameInstance(static_cast<float>(widthWindow),static_cast<float>(heightWindow));
-
-	if (!gameInstance.Init())
+	gameInstance = new GameInstance(static_cast<float>(widthWindow),static_cast<float>(heightWindow));
+	if (!gameInstance->Init())
 	{
-		SDL_DestroyWindow(win);
-		std::cout << "[app.Init] Az alkalmazás inicializálása közben hibatörtént!" << std::endl;
+		std::cout << "[GameInstance_Init] Game instance inicialization failed!" << std::endl;
 		return 1;
 	}
 
@@ -153,23 +141,14 @@ int TorpedoJatekClient::StartGameInstance()
 	float frmtime = 1000.0f / fpsLimit;
 	float frmMod = 0;
 
-	music = Mix_LoadMUS("Resources/Audio/mainMusic.ogg");
-	if (!music) {
-		printf("Mix_LoadMUS(\"mainMusic.ogg\"): %s\n", Mix_GetError());
-	}
-	if (TorpedoGLOBAL::AudioEnabled) {
-		Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
-	}
-	else {
-		Mix_VolumeMusic(0);
-	}
-	Mix_PlayMusic(music, 3);
-
+	//Fõ event ciklus
+	sdlEvent = new SDL_Event();
+	bool quit = false;
 	while (!quit)
 	{
-		while (SDL_PollEvent(&ev))
+		while (SDL_PollEvent(sdlEvent))
 		{
-			switch (ev.type)
+			switch (sdlEvent->type)
 			{
 			case SDL_QUIT:
 				quit = true;
@@ -180,38 +159,38 @@ int TorpedoJatekClient::StartGameInstance()
 					//	SDL_SetRelativeMouseMode(SDL_bool(false));
 					//}
 				//}
-				if (ev.key.keysym.sym == SDLK_m) {
-					if (Mix_PausedMusic())
-					{
-						Mix_ResumeMusic();
-					}
-					else {
-						Mix_PauseMusic();
-					}
-				}
-				if (gameInstance.KeyboardDown(ev.key)) {
+				//if (sdlEvent->key.keysym.sym == SDLK_m) {
+				//	if (Mix_PausedMusic())
+				//	{
+				//		Mix_ResumeMusic();
+				//	}
+				//	else {
+				//		Mix_PauseMusic();
+				//	}
+				//}
+				if (gameInstance->KeyboardDown(sdlEvent->key)) {
 					quit = true;
 				}
 				break;
 			case SDL_KEYUP:
-				gameInstance.KeyboardUp(ev.key);
+				gameInstance->KeyboardUp(sdlEvent->key);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				gameInstance.MouseDown(ev.button);
+				gameInstance->MouseDown(sdlEvent->button);
 				break;
 			case SDL_MOUSEBUTTONUP:
-				gameInstance.MouseUp(ev.button);
+				gameInstance->MouseUp(sdlEvent->button);
 				break;
 			case SDL_MOUSEWHEEL:
-				gameInstance.MouseWheel(ev.wheel);
+				gameInstance->MouseWheel(sdlEvent->wheel);
 				break;
 			case SDL_MOUSEMOTION:
-				gameInstance.MouseMove(ev.motion);
+				gameInstance->MouseMove(sdlEvent->motion);
 				break;
 			case SDL_WINDOWEVENT:
-				if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+				if (sdlEvent->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 				{
-					gameInstance.Resize(ev.window.data1, ev.window.data2);
+					gameInstance->Resize(sdlEvent->window.data1, sdlEvent->window.data2);
 				}
 				break;
 			}
@@ -222,18 +201,18 @@ int TorpedoJatekClient::StartGameInstance()
 				ftime_diff = SDL_GetTicks() - last_render_time;
 
 				if (ftime_diff + frmMod >= frmtime) {
-					gameInstance.Update();
-					gameInstance.Render();
-					SDL_GL_SwapWindow(win);
+					gameInstance->Update();
+					gameInstance->Render();
+					SDL_GL_SwapWindow(gameWindow);
 					++frame_count;
 					last_render_time = SDL_GetTicks();
 					frmMod = (ftime_diff + frmMod) - frmtime;
 				}
 		}
 		else{
-			gameInstance.Update();
-			gameInstance.Render();
-			SDL_GL_SwapWindow(win);
+			gameInstance->Update();
+			gameInstance->Render();
+			SDL_GL_SwapWindow(gameWindow);
 			++frame_count;
 		}
 
@@ -242,10 +221,10 @@ int TorpedoJatekClient::StartGameInstance()
 		if (time_diff >= 1000)
 		{
 			window_title.str(std::string());
-			window_title << "TorpedoJatek v" << clientVersion.majorVersion << "." << clientVersion.betaVersion
-				<< "." << clientVersion.alphaVersion << clientVersion.experimentalVersion
+			window_title << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
+				<< "." << clientVersion->alphaVersion << clientVersion->experimentalVersion
 				<< " | FPS:" << frame_count;
-			SDL_SetWindowTitle(win, window_title.str().c_str());
+			SDL_SetWindowTitle(gameWindow, window_title.str().c_str());
 
 			last_time = SDL_GetTicks();
 			time_diff = 0;
@@ -253,9 +232,5 @@ int TorpedoJatekClient::StartGameInstance()
 		}
 	}
 
-	gameInstance.Clean();
-
-	SDL_GL_DeleteContext(context);
-	SDL_DestroyWindow(win);
 	return 0;
 }

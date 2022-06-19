@@ -23,7 +23,7 @@ public:
 
 	void Fire(glm::vec3 shottilepos);
 	bool Animate(float deltatime);
-	void Draw(gCamera &camera, glm::mat4 sharedtrans);
+	void Draw(gCamera& camera, glm::mat4 sharedtrans);
 
 	ParticleGroup* getProjectileParticle();
 

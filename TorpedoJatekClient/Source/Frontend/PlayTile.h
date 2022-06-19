@@ -6,32 +6,46 @@
 class PlayTile : public SeaTile
 {
 public:
-	PlayTile(void);
-	PlayTile(const std::pair<char, int> &pos);
-	~PlayTile(void);
+	//PlayTile();
+	PlayTile(const std::pair<char, int>& pos, const glm::vec3& trans);
+	~PlayTile();
 
-	void PreProcess(gCamera &camera, gShaderProgram &sh_program);
-	void Draw(gCamera &camera, gShaderProgram &sh_program, GLuint &textureID);
-	void OutlineDraw(gCamera &camera, gShaderProgram &sh_program);
-	void setState(int newState = 3);
-	void setIndex(int newIndex = 0);
-	void setUsed(bool used = true);
+	void PreProcess(const gCamera& camera, gShaderProgram& sh_program) const;
+	void Draw(const gCamera& camera, gShaderProgram& sh_program) const;
+	void OutlineDraw(const gCamera& camera, gShaderProgram& sh_program) const;
+
 	void ClearPosition();
 
-	int getIndex() const;
-	std::pair<char, int> getPos() const;
+	void setState(int new_state = 3);
+	void setIndex(int new_index = 0);
+	void setUsed(bool used = true);
+	const int getIndex() const;
+	const std::pair<char, int> getPos() const;
 	bool isUsed() const;
-	glm::vec3 getTranslate() const;
 	int getIndexOffset() const;
-	glm::vec3 getState() const;
+	const glm::vec3& getStateColor() const;
 
 private:
+	enum TileState {
+		HIT = 1,
+		MISS,
+		DEFAULT,
+		WIN_PLAYER_ONE,
+		WIN_PLAYER_TWO,
+		BACK_OF_THE_SHIP_PLACEABLE_HERE,
+		CURSOR_SELECTION,
+		UNDEFINED,
+	};
+
+	void setStateColor();
 
 	int index; //Egy játékos játékmezõi közül hányas indexû
-	int indexOffset = 100; //offsetelni az indexet,hogy ne 0-1 legyen AMÉG ALPHA színbe írom az indexet
-	std::pair<char, int> position;	//Koordináta (pl. A7)
+	const int indexOffset = 100; //offsetelni az indexet,hogy ne 0-1 legyen AMÉG ALPHA színbe írom az indexet
+	std::pair<char, int> position; //Koordináta (pl. A7)
 	bool usedTile = false;	//Van-e hajó rajta
-	glm::vec3 tileState = glm::vec3(1, 1, 1); //Alap kijelölés szín
+
+	TileState state = DEFAULT;
+	glm::vec3 stateColor = glm::vec3(1, 1, 1); //Alap kijelölés szín
 	bool isStateChanged = false; //Eltér-e az alap színtõl a mezõ állapota
 	float outlineWidth = 0.2f; //Kijelölõ négyzet vastagsága
 };

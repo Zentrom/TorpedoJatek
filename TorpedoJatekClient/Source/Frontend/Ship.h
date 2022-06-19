@@ -23,7 +23,7 @@ public:
 	~Ship(void);
 
 	void Update(float deltatime);
-	void Draw(gCamera &camera, gShaderProgram &sh_program);
+	void Draw(gCamera& camera, gShaderProgram& sh_program);
 
 	std::vector<PlayTile*>& getPlayTiles();
 	bool isDestroyed();

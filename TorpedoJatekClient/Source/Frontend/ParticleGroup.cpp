@@ -43,7 +43,7 @@ void ParticleGroup::Init()
 }
 
 //Kamera felé nézõ forgatás - Cylindrical Billboarding
-glm::mat4 ParticleGroup::CalcToCameraRotation(gCamera &camera, glm::vec3 projectilepos)
+glm::mat4 ParticleGroup::CalcToCameraRotation(gCamera& camera, glm::vec3 projectilepos)
 {
 	//XZ-ben
 	glm::vec3 objectToCamera;
@@ -62,7 +62,7 @@ glm::mat4 ParticleGroup::CalcToCameraRotation(gCamera &camera, glm::vec3 project
 }
 
 //Részecskecsoport kirajzolása
-void ParticleGroup::Draw(gCamera &camera, gShaderProgram &sh_program, glm::vec3 projectilepos)
+void ParticleGroup::Draw(gCamera& camera, gShaderProgram &sh_program, glm::vec3 projectilepos)
 {
 	glm::mat4 matWorld = glm::translate(projectilepos) * CalcToCameraRotation(camera, projectilepos);
 	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));

@@ -4,13 +4,15 @@
 const float Mountain::heightY = 8.0f;
 const float Mountain::widthX = 6.0f;
 
-Mountain::Mountain(void)
+Mountain::Mountain() : mountainScale(glm::vec3(widthX, heightY, widthZ) * TorpedoGLOBAL::Scale),
+	matWorld(glm::scale(mountainScale)), matWorldIT(glm::transpose(glm::inverse(matWorld)))
 {
-
 }
 
-Mountain::~Mountain(void)
+Mountain::~Mountain()
 {
+	vb_mountain.Clean();
+	glDeleteTextures(1, &mountainTextureID);
 }
 
 //Inicializálja a hegy grafikai modelljét
@@ -39,18 +41,18 @@ void Mountain::Init()
 		}
 	}
 
-	// az indexek meghatározása minden négyzethez
+	//az indexek meghatározása minden négyzethez
 	for (int i = 0; i < mountainResolution; ++i) {
 		for (int j = 0; j < mountainResolution; ++j) {
-			// az egyik háromszög a négyzet egyik fele
-			vb_mountain.AddIndex((i + 1) + (j) * (mountainResolution + 1),
-				(i) + (j + 1) * (mountainResolution + 1),
-				(i)+(j) * (mountainResolution + 1)
+			//négyzet egyik fele
+			vb_mountain.AddIndex((i + 1) + j * (mountainResolution + 1),
+				i + (j + 1) * (mountainResolution + 1),
+				i + j * (mountainResolution + 1)
 			);
-			// a másik háromszög a négyzet másik fele
+			//négyzet másik fele
 			vb_mountain.AddIndex((i + 1) + (j + 1) * (mountainResolution + 1),
-				(i) + (j + 1) * (mountainResolution + 1),
-				(i + 1) + (j) * (mountainResolution + 1)
+				i + (j + 1) * (mountainResolution + 1),
+				(i + 1) + j * (mountainResolution + 1)
 			);
 		}
 	}
@@ -61,16 +63,15 @@ void Mountain::Init()
 }
 
 //Kirajzolja a hegyet
-void Mountain::Draw(gCamera &camera, gShaderProgram &sh_program)
+void Mountain::Draw(const gCamera& camera, gShaderProgram& sh_program) const
 {
-	glm::mat4 matWorld = glm::translate(mountain_translate) * glm::rotate(mountain_rotate, mountain_rotate_angle) * glm::scale(mountain_scale);
-	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
-	glm::mat4 mvp = camera.GetViewProj() *matWorld;
+	glm::mat4 mvp = camera.GetViewProj() * matWorld;
 
 	sh_program.SetUniform("world", matWorld);
 	sh_program.SetUniform("worldIT", matWorldIT);
 	sh_program.SetUniform("MVP", mvp);
 	sh_program.SetUniform("eye_pos", camera.GetEye());
+
 	sh_program.SetUniform("hasTexture", true);
 	sh_program.SetTexture("texImage", 0, mountainTextureID);
 
@@ -82,7 +83,7 @@ void Mountain::Draw(gCamera &camera, gShaderProgram &sh_program)
 }
 
 //Visszaadja hegy szélességét
-float Mountain::getWidth()
+float Mountain::getWidthX()
 {
 	return widthX;
 }
@@ -90,4 +91,9 @@ float Mountain::getWidth()
 float Mountain::getHeight()
 {
 	return heightY;
+}
+
+const float Mountain::getWidthZ() const
+{
+	return widthZ;
 }

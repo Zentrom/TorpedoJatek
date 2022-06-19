@@ -82,7 +82,7 @@ void BShipCannon::Init()
 }
 
 //Ágyú kirajzolása
-void BShipCannon::Draw(gCamera &camera, gShaderProgram &sh_program, glm::mat4 sharedtrans)
+void BShipCannon::Draw(gCamera& camera, gShaderProgram& sh_program, glm::mat4 sharedtrans)
 {
 	glm::mat4 matWorld = projectileSharedTrans * sharedtrans * glm::rotate(cannonRotate, cannonRotateAngle)
 		* glm::scale(cannonScale); 

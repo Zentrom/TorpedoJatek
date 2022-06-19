@@ -47,7 +47,7 @@ void Fleet::Update(float deltatime)
 }
 
 //Játékos hajóinak kirajzolása
-void Fleet::Draw(gCamera &camera, gShaderProgram &sh_program)
+void Fleet::Draw(gCamera& camera, gShaderProgram& sh_program)
 {
 	for (Ship &ship : ships) {
 		if (ship.isVisible()) {

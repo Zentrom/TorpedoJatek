@@ -15,24 +15,27 @@
 class Mountain
 {
 public:
-	Mountain(void);
-	~Mountain(void);
+	Mountain();
+	~Mountain();
 
 	void Init();
-	void Draw(gCamera &camera, gShaderProgram &sh_program);
-	static float getWidth();
-	static float getHeight();
+	void Draw(const gCamera& camera, gShaderProgram& sh_program) const;
 
-protected:
+	static float getHeight();
+	static float getWidthX();
+	const float getWidthZ() const;
+
+private:
 	const int mountainResolution = 32; //hány darab négyzetbõl álljon a hegy egy sora/oszlopa
-	gVertexBuffer	vb_mountain; //grafikai adatok
+	gVertexBuffer vb_mountain; //grafikai modell adatok
 	GLuint mountainTextureID; //Hegy textúra azonosítója
 
 	static const float heightY; //magasság
 	static const float widthX; //Hegy szélessége X tengelyen
-	const glm::vec3 mountain_translate = glm::vec3(0, 0, 0) * TorpedoGLOBAL::Scale; //mozgatás
-	float mountain_rotate = 0.0f; //forgatás
-	const glm::vec3 mountain_rotate_angle = glm::vec3(0, 1.0f, 0); //forgatás tengelye
-	const glm::vec3 mountain_scale = glm::vec3(widthX, heightY, 20.0f) * TorpedoGLOBAL::Scale; //nagyítás
+	const float widthZ = 20.0f; //Szélesség Z tengelyen
+	const glm::vec3 mountainScale; //nagyítás
+
+	const glm::mat4 matWorld; //világ transzformáció
+	const glm::mat4 matWorldIT; //VT inverze
 
 };

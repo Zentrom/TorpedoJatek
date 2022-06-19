@@ -27,11 +27,11 @@ public:
 	GameLogic(void);
 	~GameLogic(void);
 
-	int Init(Fleet *player, Fleet *enemy, Sea *sea);
+	int Init(Fleet*& player, Fleet*& enemy, Sea*& sea);
 	void ConnectionSetup();
 	void InitGame();
-	void DisplayMessage(GameState gameState, void *relatedData);
-	void DisplayError(GameState gameState, void *relatedData);
+	void DisplayMessage(GameState gameState, int related_data);
+	void DisplayError(GameState gameState, int related_data);
 	bool CheckForUnplacedShips(int shipSize);
 	bool CheckAnyUnplacedShipLeft();
 	bool PlaceShip(int tileIndex, int shipSize);
@@ -53,7 +53,7 @@ protected:
 	void SetTilesINDEBUG();
 
 	bool CheckString(std::string coord);
-	PlayTile ProcessString(std::string coord);
+	//PlayTile ProcessString(std::string coord);
 	std::string ProcessTile(const std::pair<char, int> &tile);
 	bool TileProcessable(const std::pair<char, int> &tile);
 	int ConvertCoordToTileIndex(const std::pair<char, int> &tile);

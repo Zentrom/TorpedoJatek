@@ -21,9 +21,9 @@ public:
 
 	void Init(int inMapSize = 7);
 	void Update(float deltatime);
-	void PreProcess(gCamera &camera, gShaderProgram &sh_program);
-	void Draw(gCamera &camera, gShaderProgram &sh_program);//, float pointedTile);
-	void OutlineDraw(gCamera &camera, gShaderProgram &sh_program, float pointedTile);
+	void PreProcess(gCamera& camera, gShaderProgram& sh_program);
+	void Draw(gCamera& camera, gShaderProgram& sh_program);
+	void OutlineDraw(gCamera& camera, gShaderProgram& sh_program, float pointedTile);
 
 	std::vector<PlayTile>& getTiles(bool ally = true);
 	PlayTile& getTileByIndex(int index);
@@ -49,6 +49,6 @@ protected:
 	float textureAnimationOffset = 0.0f; //jelenleg mennyire mozgatjuk el a textúrát
 
 	const float mountain_tile_offset = (2 * SeaTile::getScaleXZ())*TorpedoGLOBAL::Scale; //hegy és elsõ játékmezõ közti táv
-	const float mountaincenter_border_Xoffset = Mountain::getWidth() / 2.0f*TorpedoGLOBAL::Scale; //hegy közepe és széle közti táv
+	const float mountaincenter_border_Xoffset = Mountain::getWidthX() / 2.0f*TorpedoGLOBAL::Scale; //hegy közepe és széle közti táv
 
 };

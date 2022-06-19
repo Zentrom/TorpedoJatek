@@ -1,12 +1,11 @@
-v0.0.5<->Audio And Animations
+v0.0.5a-Frontend Optimization #1
 -----------------------------------------------------------------------------------------
-[FEATURES]
--Added Ship textures.
--Added ShipFlags to distinctiate allied and enemy ships.
--BattleShip now has a Cannon which fires an animated projectile.
--Players can't shoot while there is a firing animation in progress.
--Added tracing Particles to the Projectile.
--Player Ships now sink when destroyed.
--Losing player's BattleShip sinks when game ends.
--Added Game Music and distance based fire/miss sounds.
--Added music mute button 'm'
+-Game window is no longer resizeable.
+-All Terrain tile(Ground) data is now in a single VertexBuffer and in Terrain class.
+-The Terrain is now drawn out in 1 render call instead of 50*50.
+-Reviewed Skybox, Mountain, SeaTile implementation.
+-Moved some data from stack to heap.
+-Changed function parameters to references.
+-Fixed FBO quad to pass 2D data.
+-Fixed SeaTile and Ground alignment on the Z axis
+

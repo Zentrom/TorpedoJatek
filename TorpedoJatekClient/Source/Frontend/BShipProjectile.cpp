@@ -106,7 +106,7 @@ bool BShipProjectile::Animate(float deltatime)
 }
 
 //Lövedék kirajzolása
-void BShipProjectile::Draw(gCamera &camera, glm::mat4 sharedtrans)
+void BShipProjectile::Draw(gCamera& camera, glm::mat4 sharedtrans)
 {
 	glm::mat4 matWorld = glm::translate(projectileCurrentPos) * sharedtrans * glm::scale(projectileScale);
 	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));

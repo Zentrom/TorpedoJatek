@@ -12,8 +12,8 @@
 class gShaderProgram
 {
 public:
-	gShaderProgram(void);
-	~gShaderProgram(void);
+	gShaderProgram();
+	~gShaderProgram();
 
 	bool AttachShader(GLenum _shaderType, const char* _filename);
 	void BindAttribLoc(int _index, const char* _uniform);
@@ -27,11 +27,11 @@ public:
 
 	void Clean();
 
-	void SetUniform(const char* _uniform, glm::vec2& _vec);
-	void SetUniform(const char* _uniform, glm::vec3& _vec);
-	void SetUniform(const char* _uniform, glm::vec4& _vec);
-	void SetUniform(const char* _uniform, glm::mat4& _mat);
-	void SetUniform(const char* _uniform, int _i);
+	void SetUniform(const char* _uniform, const glm::vec2& _vec);
+	void SetUniform(const char* _uniform, const glm::vec3& _vec);
+	void SetUniform(const char* _uniform, const glm::vec4& _vec);
+	void SetUniform(const char* _uniform, const glm::mat4& _mat);
+	void SetUniform(const char* _uniform, const int _i);
 	void SetUniform(const char* _uniform, float _f);
 	void SetUniform(const char* _uniform, float _a, float _b, float _c, float _d);
 	void SetUniform(const char* _uniform, float _a, float _b, float _c);

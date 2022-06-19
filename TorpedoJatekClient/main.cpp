@@ -11,8 +11,15 @@ int main(int argc, char* args[]) {
 	std::srand(static_cast<unsigned int>(std::time(nullptr)));
 	std::rand();
 
-	TorpedoJatekClient torpedoJatek;
+	TorpedoJatekClient* torpedoJatek = new TorpedoJatekClient();
+	int isError = torpedoJatek->Run();
+	delete torpedoJatek;
 
-	return torpedoJatek.Start();
+	std::cout << "Press enter to exit..." << std::endl;
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	std::cin.get();
+
+	return isError;
 
 }

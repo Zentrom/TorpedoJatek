@@ -23,8 +23,9 @@ public:
 	void SetProj(float angle, float aspect, float zn, float zf);
 	void LookAt(glm::vec3 at);
 	void SetSpeed(float val);
-	glm::mat4 GetViewMatrix();
-	glm::vec3& GetEye()
+
+	const glm::mat4& GetViewMatrix() const;
+	const glm::vec3& GetEye() const
 	{
 		return camEye;
 	}
@@ -39,12 +40,12 @@ public:
 		return camUp;
 	}
 
-	glm::mat4 GetProj()
+	const glm::mat4& GetProj() const
 	{
 		return matProj;
 	}
 
-	glm::mat4 GetViewProj()
+	const glm::mat4& GetViewProj() const
 	{
 		return matViewProj;
 	}

@@ -3,9 +3,9 @@
 //Globális változók,amikre sok osztályba szükség van
 namespace TorpedoGLOBAL {
 	const bool AudioEnabled = true; //globális kapcsoló arra, hogy legyen-e hang/zene
-	const bool CameraBounds = true; //Legyen-e bekorlátozva a kamera a játéktérre.
+	const bool CameraBounds = false; //Legyen-e bekorlátozva a kamera a játéktérre.
 	const float Scale = 1.0f;	//globális grafikai skálázás
-	const bool Debug = false;	//Ha ez igaz,akkor a kliens DEBUG módba fut,nem csatlakozik szerverhez. Jó grafikai teszteléskor.
+	const bool Debug = true;	//Ha ez igaz,akkor a kliens DEBUG módba fut,nem csatlakozik szerverhez. Jó grafikai teszteléskor.
 }
 
 //Játék kliens állapota

@@ -9,7 +9,7 @@ GameLogic::~GameLogic(void)
 }
 
 //Inicializálja a háttérlogikát
-int GameLogic::Init(Fleet *player, Fleet *enemy, Sea *sea)
+int GameLogic::Init(Fleet*& player, Fleet*& enemy, Sea*& sea)
 {
 	std::cout << "-----------------------------------------------" << std::endl
 		<< output << std::endl
@@ -63,7 +63,7 @@ void GameLogic::InitGame()
 }
 
 //Üzenet kiirása
-void GameLogic::DisplayMessage(GameState gameState, void *relatedData)
+void GameLogic::DisplayMessage(GameState gameState, int related_data)
 {
 	if (gameState == GameState::INITIAL){
 		output = "Place your ships!\nChoose what kind of ship do you want to place down.\nPress the length number on your keyboard while the game window is focused.(1-4)";
@@ -77,8 +77,8 @@ void GameLogic::DisplayMessage(GameState gameState, void *relatedData)
 			<< "ESC - Quit game! \n" << std::endl;
 	}
 	else if (gameState == GameState::PLACING_SHIP) {
-		int* shipSizePointer = static_cast<int*>(relatedData);
-		if (*shipSizePointer == 1) {
+		//int* shipSizePointer = static_cast<int*>(relatedData);
+		if (related_data == 1) {
 			std::cout << "Place your ship on a free tile on your side of the map!(with LeftMouseButton)" << std::endl;
 		}
 		else {
@@ -98,8 +98,9 @@ void GameLogic::DisplayMessage(GameState gameState, void *relatedData)
 			"\n(ESC - Quit)" << std::endl;
 	}
 	else if (gameState == GameState::MATCH_ENDING) {
-		int* winnerNum = static_cast<int*>(relatedData);
-		if (*winnerNum == playerNum) {
+		//int* winnerNum = static_cast<int*>(relatedData);
+		if (//*winnerNum 
+			related_data == playerNum) {
 			enemyFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've won the match!\n(ESC-Quit)" << std::endl;
 		}
@@ -111,11 +112,12 @@ void GameLogic::DisplayMessage(GameState gameState, void *relatedData)
 }
 
 //Hiba kiirása
-void GameLogic::DisplayError(GameState gameState, void *relatedData) 
+void GameLogic::DisplayError(GameState gameState, int related_data) 
 {
 	if (gameState == GameState::SHIP_SIZE_INPUT) {
-		int* shipSizePointer = static_cast<int*>(relatedData);
-		std::cout << "You can't place down any more ships of " << *shipSizePointer << " size!" << std::endl;
+		//int* shipSizePointer = static_cast<int*>(relatedData);
+		std::cout << "You can't place down any more ships of " << related_data//<< *shipSizePointer 
+			<< " size!" << std::endl;
 	}
 }
 
@@ -294,13 +296,13 @@ int GameLogic::getPlayerNum()
 }
 
 //Hibamentes szöveges koordinátát konvertál át egy ideiglenes játékmezõvé
-PlayTile GameLogic::ProcessString(std::string coord)
-{
-	char coordShip[3];
-	strcpy_s(coordShip, coord.c_str());
-
-	return PlayTile(std::pair<char, int>(coordShip[0], atoi(&coordShip[1])));
-}
+//PlayTile GameLogic::ProcessString(std::string coord)
+//{
+//	char coordShip[3];
+//	strcpy_s(coordShip, coord.c_str());
+//
+//	return PlayTile(std::pair<char, int>(coordShip[0], atoi(&coordShip[1])));
+//}
 
 //Szöveges koordinátát ellenõriz,hogy jó-e
 bool GameLogic::CheckString(std::string coord)

@@ -29,7 +29,6 @@
     <ClCompile Include="Source\Frontend\BShipCannon.cpp" />
     <ClCompile Include="Source\Frontend\BShipProjectile.cpp" />
     <ClCompile Include="Source\Frontend\Fleet.cpp" />
-    <ClCompile Include="Source\Frontend\Ground.cpp" />
     <ClCompile Include="Source\Frontend\Mountain.cpp" />
     <ClCompile Include="Source\Frontend\ParticleGroup.cpp" />
     <ClCompile Include="Source\Frontend\PlayTile.cpp" />
@@ -59,7 +58,6 @@
     <ClInclude Include="Source\Frontend\BShipCannon.h" />
     <ClInclude Include="Source\Frontend\BShipProjectile.h" />
     <ClInclude Include="Source\Frontend\Fleet.h" />
-    <ClInclude Include="Source\Frontend\Ground.h" />
     <ClInclude Include="Source\Frontend\Mountain.h" />
     <ClInclude Include="Source\Frontend\ParticleGroup.h" />
     <ClInclude Include="Source\Frontend\PlayTile.h" />

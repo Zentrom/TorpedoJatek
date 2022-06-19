@@ -20,7 +20,7 @@ BattleShip::~BattleShip(void)
 }
 
 //Kirajzol egy csatahajót
-void BattleShip::Draw(gCamera &camera, gShaderProgram &sh_program)
+void BattleShip::Draw(gCamera& camera, gShaderProgram& sh_program)
 {
 	Ship::Draw(camera, sh_program);
 	cannon->Draw(camera, sh_program, sinkTranslate * sinkRotate);

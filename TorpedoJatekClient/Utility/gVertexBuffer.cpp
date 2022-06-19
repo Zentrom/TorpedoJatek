@@ -121,12 +121,12 @@ void gVertexBuffer::InitBuffers()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void gVertexBuffer::On()
+void gVertexBuffer::On() const
 {
 	glBindVertexArray(m_vao);
 }
 
-void gVertexBuffer::Off()
+void gVertexBuffer::Off() const
 {
 	glBindVertexArray(0);
 }
@@ -165,7 +165,7 @@ void gVertexBuffer::Draw(GLenum _mode, GLint _first, GLsizei _count)
 {
 	glDrawArrays(_mode, _first, _count);
 }
-void gVertexBuffer::DrawIndexed(GLenum _mode, GLint _first, GLsizei _count, const GLvoid* _indices = 0)
+void gVertexBuffer::DrawIndexed(GLenum _mode, GLint _first, GLsizei _count, const GLvoid* _indices = 0) const
 {
 	glDrawElements(_mode, _count, GL_UNSIGNED_INT, _indices);
 }
