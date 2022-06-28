@@ -3,8 +3,10 @@
 
 Terrain::Terrain() : terrainSizeXZ(terrainScale*terrainScale), matWorld(glm::mat4(1.0f)),
 	matWorldIT(glm::transpose(glm::inverse(matWorld))),
-	groundScaleXZ(SeaTile::getScaleXZ() * groundScaleToSeaTile * TorpedoGLOBAL::Scale)
+	groundScaleXZ(PlayTile::getScaleXZ() * groundScaleToSeaTile * TorpedoGLOBAL::Scale)
 {
+	//std::cout << groundScaleXZ << " SeaGS " << SeaTile::getScaleXZ() << " gsts " << groundScaleToSeaTile << " TGS "
+	//	<< TorpedoGLOBAL::Scale;
 	groundTileTrans.reserve(terrainSizeXZ);
 }
 
@@ -68,6 +70,7 @@ void Terrain::CalcGroundTileTransformations()
 			- (groundScaleXZ * terrainScale / 2.0f) + (groundScaleXZ / 4.0f);
 
 		groundResult += glm::vec3(ground_transX, groundMountainY, ground_transZ);
+		//std::cout << ground_transX << " ts "  << terrainScale << " gr " << groundScaleXZ << " ";
 		groundTileTrans.push_back(groundResult);
 		groundResult = glm::vec3(0.0f);
 	}

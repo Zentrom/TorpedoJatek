@@ -161,7 +161,7 @@ void gVertexBuffer::SetPatchVertices(int _n)
 {
 	glPatchParameteri(GL_PATCH_VERTICES, _n);
 }
-void gVertexBuffer::Draw(GLenum _mode, GLint _first, GLsizei _count)
+void gVertexBuffer::Draw(GLenum _mode, GLint _first, GLsizei _count) const
 {
 	glDrawArrays(_mode, _first, _count);
 }

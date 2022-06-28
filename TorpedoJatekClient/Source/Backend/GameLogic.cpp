@@ -388,6 +388,10 @@ void GameLogic::SetTilesINDEBUG()
 	mySea->getTileByIndex(0).setState(1);
 	mySea->getTileByIndex(1).setState(2);
 
+	mySea->getTileByIndex(11).setState(1);
+	mySea->getTileByIndex(14).setState(1);
+	mySea->getTileByIndex(7).setState(1);
+
 	mySea->getTileByIndex(0 + mySea->getEnemyIndexOffset()).setState(1);
 	mySea->getTileByIndex(1 + mySea->getEnemyIndexOffset()).setState(2);
 }

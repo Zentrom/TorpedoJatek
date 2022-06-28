@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Globals.hpp"
+
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
 #include "../../Utility/gCamera.h"
@@ -10,24 +12,26 @@
 
 #include <vector>
 
-//Részecske
+//Részecskék csoportja
 class ParticleGroup
 {
 public:
-	ParticleGroup(float genarea);
+	ParticleGroup(float generation_area);
 	~ParticleGroup();
 
-	void Draw(gCamera& camera,gShaderProgram &sh_program, glm::vec3 projectilepos);
+	void Draw(const gCamera& camera, gShaderProgram& sh_program, const glm::vec3& projectile_pos) const;
 private:
-	void GenerateGroup();
 	void Init();
-	glm::mat4 CalcToCameraRotation(gCamera& camera, glm::vec3 projectilepos);
+	void GenerateGroup();
+	const glm::mat4 CalcToCameraRotation(const gCamera& camera, const glm::vec3& projectile_pos) const;
 
 	gVertexBuffer vb_particles; //Részecskecsoport modell adatai
 	std::vector<glm::vec3> centerPoints; //Legenerált középpontok
 
+	const glm::vec3 objectLookAt = glm::vec3(0, 0, -1.0f); //Alapból merre néznek a részecskék
 	const int nrInGroup = 64; //Részecskeszám egy csoportban
-	float generationArea; //Mekkora tartományba generálunk egy részecskecsoportot
+	const float radius = 0.01f * TorpedoGLOBAL::Scale; //Egy részecske sugara
+	const float color = 0.8f; //Szín
 
-	const float pRadius = 0.01f; //Egy részecske sugara
+	const float generationArea; //Mekkora tartományba generálunk egy részecskecsoportot
 };

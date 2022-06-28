@@ -1,6 +1,6 @@
 #include "ParticleGroup.h"
 
-ParticleGroup::ParticleGroup(float genarea) : generationArea(genarea)
+ParticleGroup::ParticleGroup(float generation_area) : generationArea(generation_area)
 {
 	GenerateGroup();
 	Init();
@@ -8,13 +8,14 @@ ParticleGroup::ParticleGroup(float genarea) : generationArea(genarea)
 
 ParticleGroup::~ParticleGroup()
 {
+	vb_particles.Clean();
 }
 
 //Legenerál egy részecskecsoport középpontjait
 void ParticleGroup::GenerateGroup()
 {
 	glm::vec3 generatedPoint;
-	for (int i = 0; i < nrInGroup; i++) {
+	for (int i = 0; i < nrInGroup; ++i) {
 		generatedPoint.x = (generationArea * 2 * (std::rand() / (float)RAND_MAX)) - generationArea;
 		generatedPoint.y = (generationArea * 2 * (std::rand() / (float)RAND_MAX)) - generationArea;
 		generatedPoint.z = (generationArea * 2 * (std::rand() / (float)RAND_MAX)) - generationArea;
@@ -23,19 +24,20 @@ void ParticleGroup::GenerateGroup()
 	}
 }
 
+//Inicializálja a részecskecsoportot
 void ParticleGroup::Init()
 {
 	vb_particles.AddAttribute(0, 3); //pos
 	vb_particles.AddAttribute(1, 3); //color
 
-	for (int i = 0; i < nrInGroup; i++) {
-		vb_particles.AddData(0, centerPoints.at(i).x - pRadius, centerPoints.at(i).y + pRadius, centerPoints.at(i).z);
-		vb_particles.AddData(0, centerPoints.at(i).x + pRadius, centerPoints.at(i).y + pRadius, centerPoints.at(i).z);
-		vb_particles.AddData(0, centerPoints.at(i).x - pRadius, centerPoints.at(i).y - pRadius, centerPoints.at(i).z);
-		vb_particles.AddData(0, centerPoints.at(i).x + pRadius, centerPoints.at(i).y - pRadius, centerPoints.at(i).z);
+	for (int i = 0; i < nrInGroup; ++i) {
+		vb_particles.AddData(0, centerPoints.at(i).x - radius, centerPoints.at(i).y + radius, centerPoints.at(i).z);
+		vb_particles.AddData(0, centerPoints.at(i).x + radius, centerPoints.at(i).y + radius, centerPoints.at(i).z);
+		vb_particles.AddData(0, centerPoints.at(i).x - radius, centerPoints.at(i).y - radius, centerPoints.at(i).z);
+		vb_particles.AddData(0, centerPoints.at(i).x + radius, centerPoints.at(i).y - radius, centerPoints.at(i).z);
 
-		for (int i = 0; i < 4; i++) {
-			vb_particles.AddData(1, 0.8f, 0.8f, 0.8f);
+		for (int i = 0; i < 4; ++i) {
+			vb_particles.AddData(1, color, color, color);
 		}
 	}
 
@@ -43,14 +45,15 @@ void ParticleGroup::Init()
 }
 
 //Kamera felé nézõ forgatás - Cylindrical Billboarding
-glm::mat4 ParticleGroup::CalcToCameraRotation(gCamera& camera, glm::vec3 projectilepos)
+const glm::mat4 ParticleGroup::CalcToCameraRotation(const gCamera& camera, const glm::vec3& projectile_pos) const
 {
 	//XZ-ben
-	glm::vec3 objectToCamera;
-	objectToCamera.x = camera.GetEye().x - projectilepos.x;
-	objectToCamera.y = 0;
-	objectToCamera.z = camera.GetEye().z - projectilepos.z;
-	glm::vec3 objectLookAt = glm::vec3(0, 0, -1.0f);
+	glm::vec3 objectToCamera = glm::vec3(camera.GetEye().x - projectile_pos.x, 0,
+		camera.GetEye().z - projectile_pos.z);
+	//objectToCamera.x = camera.GetEye().x - projectile_pos.x;
+	//objectToCamera.y = 0;
+	//objectToCamera.z = camera.GetEye().z - projectile_pos.z;
+	//glm::vec3 objectLookAt = glm::vec3(0, 0, -1.0f);
 	glm::vec3 normalizedOTC = glm::normalize(objectToCamera);
 
 	glm::vec3 objectUp = glm::cross(objectLookAt, normalizedOTC);
@@ -62,11 +65,11 @@ glm::mat4 ParticleGroup::CalcToCameraRotation(gCamera& camera, glm::vec3 project
 }
 
 //Részecskecsoport kirajzolása
-void ParticleGroup::Draw(gCamera& camera, gShaderProgram &sh_program, glm::vec3 projectilepos)
+void ParticleGroup::Draw(const gCamera& camera, gShaderProgram& sh_program, const glm::vec3& projectilepos) const
 {
 	glm::mat4 matWorld = glm::translate(projectilepos) * CalcToCameraRotation(camera, projectilepos);
 	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
-	glm::mat4 mvp = camera.GetViewProj() *matWorld;
+	glm::mat4 mvp = camera.GetViewProj() * matWorld;
 
 	sh_program.SetUniform("world", matWorld);
 	sh_program.SetUniform("worldIT", matWorldIT);

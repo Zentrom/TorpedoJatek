@@ -26,15 +26,15 @@ public:
 	const float getWidthZ() const;
 
 private:
-	const int mountainResolution = 32; //hány darab négyzetbõl álljon a hegy egy sora/oszlopa
 	gVertexBuffer vb_mountain; //grafikai modell adatok
 	GLuint mountainTextureID; //Hegy textúra azonosítója
 
+	const int mountainResolution = 32; //hány darab négyzetbõl álljon a hegy egy sora/oszlopa
+	const float widthZ = 20.0f; //Szélesség Z tengelyen
+
 	static const float heightY; //magasság
 	static const float widthX; //Hegy szélessége X tengelyen
-	const float widthZ = 20.0f; //Szélesség Z tengelyen
 	const glm::vec3 mountainScale; //nagyítás
-
 	const glm::mat4 matWorld; //világ transzformáció
 	const glm::mat4 matWorldIT; //VT inverze
 

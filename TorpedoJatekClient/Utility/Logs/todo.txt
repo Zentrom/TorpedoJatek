@@ -36,6 +36,4 @@ Camera viewdistance+fog-al eltüntetni a map szélét
 SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE window flagek betánál
 Operator overloading?
 
-
-
-SEATILE ÁTNÉZVE,PLAYTILE VAN FOLYAMATBAN AZT KELL MEGEN!!
+007-be a Kiiratás már a Win ablakba legyen(legalább a játékmenetes,error nem muszáj)

@@ -31,7 +31,7 @@ public:
 
 	void SetPatchVertices(int _n);
 
-	void Draw(GLenum _mode, GLint _first, GLsizei _count);
+	void Draw(GLenum _mode, GLint _first, GLsizei _count) const;
 	void DrawIndexed(GLenum _mode, GLint _first, GLsizei _count, const GLvoid* _indices) const;
 
 	void InitBuffers();

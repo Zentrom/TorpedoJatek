@@ -7,13 +7,13 @@
 class BattleShip : public Ship
 {
 public:
-	BattleShip(void);
-	BattleShip(bool ally, const glm::vec3 &battleShipTranslate);
-	~BattleShip(void);
+	//BattleShip();
+	BattleShip(const glm::vec3& battle_ship_translate, bool ally);
+	~BattleShip();
 
-	void Draw(gCamera& camera, gShaderProgram& sh_program);
+	void Draw(const gCamera& camera, gShaderProgram& sh_program);
 	void ResetForDEBUG();
-	BShipCannon& getCannon();
+	const BShipCannon& getCannon() const;
 private:
 	BShipCannon* cannon;
 };

@@ -1,3 +1,59 @@
+Sea.cpp Régi 100*100 mezõs megoldás
+-----------------------------------------------
+glm::vec3 seatileResult = glm::vec3(0.0f);
+for (int i = 0; i < seaTileCount; ++i) {
+	seatile_transX = ((i % seaTileScale) * SeaTile::getScaleXZ() * TorpedoGLOBAL::Scale)
+		- (SeaTile::getScaleXZ() * seaTileScale / 2.0f * TorpedoGLOBAL::Scale) + TorpedoGLOBAL::Scale;//Ide ezkell,hogy extra tileok kijöjjenek
+	seatile_transZ = ((i / seaTileScale) * SeaTile::getScaleXZ() * TorpedoGLOBAL::Scale)
+		- (SeaTile::getScaleXZ() * seaTileScale / 2.0f * TorpedoGLOBAL::Scale);//Itt nemkell,hogy az extra tileokat ki lehessen szedni
+	
+	seatileResult += glm::vec3(seatile_transX, 0, seatile_transZ);
+	
+	seaTiles.push_back(new SeaTile(seatileResult));
+	
+	seatileResult = glm::vec3(0.0f);
+}
+
+//Kiszedi a azokat az extra tengermezõket,amik a játékmezõk helyén vannak
+void Sea::RemoveExtraSeaTiles()
+{
+	int initialSize = seaTiles.size();
+	//bool foundInMyTiles;
+	for (std::vector<SeaTile*>::iterator it = seaTiles.begin(); it != seaTiles.end();++it) 
+	{
+		//foundInMyTiles = false;
+		for (PlayTile pTile : myTiles) {
+			if (CompareTileTranslations(*it,pTile)) {
+				seaTiles.erase(it);
+				--it;
+				break;
+			}
+		}
+		//if (foundInMyTiles) {
+		//	foundInMyTiles = false;
+		//	continue;
+		//}
+		for (PlayTile pTile : enemyTiles) {
+			if (CompareTileTranslations(*it, pTile)) {
+				seaTiles.erase(it);
+				--it;
+				break;
+			}
+		}
+	}
+	if (initialSize - 2 * myTiles.size() != seaTiles.size()) {
+		std::cout << "[Sea::RemoveExtraSeaTiles]: Extra SeaTiles were not removed correctly! initial: " 
+			<< initialSize << " after: " << seaTiles.size() << std::endl;
+	}
+}
+
+//Két játékmezõ elmozgatását nézi meg hogy float közelítõleg egyenlõ-e
+bool Sea::CompareTileTranslations(const SeaTile* s_tile, const PlayTile &p_tile) const
+{
+	return (round(s_tile->getTranslate().x) == round(p_tile.getTranslate().x)
+		&& round(s_tile->getTranslate().z) == round(p_tile.getTranslate().z));
+}
+
 gameInstance.cpp 3D Positional audio
 -----------------------------------------------
 float distX = cam_mainCamera.GetAt().x - playerFleet.getBattleShip().getShipTranslate().x;

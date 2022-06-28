@@ -1,10 +1,5 @@
 #include "ShipFlag.h"
 
-ShipFlag::ShipFlag(void)
-{
-	Init();
-}
-
 ShipFlag::ShipFlag(bool ally) : isAlly(ally)
 {
 	Init();
@@ -12,6 +7,7 @@ ShipFlag::ShipFlag(bool ally) : isAlly(ally)
 
 ShipFlag::~ShipFlag(void)
 {
+	vb_flag.Clean();
 }
 
 //Hajó zászló modell adatainak inicializálása
@@ -20,9 +16,9 @@ void ShipFlag::Init()
 	vb_flag.AddAttribute(0, 3); //pozíció
 	vb_flag.AddAttribute(1, 3); //szín
 	vb_flag.AddAttribute(2, 3); //normálvektor
-
+	
 	int xInvert = (isAlly ? -1 : 1);
-
+	
 	//Oszlop
 	vb_flag.AddData(0, xInvert*0.25f, 0, 0);
 	vb_flag.AddData(0, xInvert*0.187f, 0, -0.063f);
@@ -35,7 +31,7 @@ void ShipFlag::Init()
 	vb_flag.AddData(0, xInvert*0.25f, 0.25f, 0);
 	vb_flag.AddData(0, xInvert*0.375f, 0.25f, 0);
 	vb_flag.AddData(0, xInvert*0.375f, 0.375f, 0);
-
+	
 	//Oszlop
 	vb_flag.AddData(1, 0.5f, 0.25f, 0.1f);
 	vb_flag.AddData(1, 0.5f, 0.25f, 0.1f);
@@ -56,7 +52,7 @@ void ShipFlag::Init()
 		vb_flag.AddData(1, 1.0f, 0, 0);
 		vb_flag.AddData(1, 1.0f, 0, 0);
 	}
-
+	
 	//Oszlop
 	vb_flag.AddData(2, 0.25f, 0, 0);
 	vb_flag.AddData(2, 0.187f, 0, -0.063f);
@@ -69,7 +65,7 @@ void ShipFlag::Init()
 	vb_flag.AddData(2, 0.25f, 0.25f, 0);
 	vb_flag.AddData(2, 0.375f, 0.25f, 0);
 	vb_flag.AddData(2, 0.375f, 0.375f, 0);
-
+	
 	//Oszlop
 	vb_flag.AddIndex(0, 2, 1);
 	vb_flag.AddIndex(0, 5, 2);
@@ -82,12 +78,12 @@ void ShipFlag::Init()
 	//Zászló
 	vb_flag.AddIndex(8, 6, 7);
 	vb_flag.AddIndex(8, 9, 6);
-
+	
 	vb_flag.InitBuffers();
 }
 
 //Egy hajó zászlójának kirajzolása
-void ShipFlag::Draw()
+void ShipFlag::Draw() const
 {
 	vb_flag.On();
 	glDisable(GL_CULL_FACE);

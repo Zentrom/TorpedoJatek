@@ -1,23 +1,20 @@
 #pragma once
 
 #include "../../Utility/gVertexBuffer.h"
-#include "../../Utility/gShaderProgram.h"
-#include "../../Utility/gCamera.h"
 
 //Hajó zászló osztálya
 class ShipFlag
 {
 public:
-	ShipFlag(void);
 	ShipFlag(bool ally);
-	~ShipFlag(void);
+	~ShipFlag();
 
-	void Draw();
+	void Draw() const;
 
 private:
 	void Init();
 
-	gVertexBuffer	vb_flag; //Hajó zászlójának modell adatai
+	gVertexBuffer vb_flag; //Hajó zászlójának modell adatai
 
-	bool isAlly = false;
+	const bool isAlly = false; //Játékos vagy ellenfél zászlója
 };

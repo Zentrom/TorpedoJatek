@@ -17,39 +17,40 @@
 class BShipProjectile
 {
 public:
-	BShipProjectile(void);
-	BShipProjectile(const glm::mat4 &cannonsharedtrans, bool ally);
-	~BShipProjectile(void);
+	//BShipProjectile();
+	BShipProjectile(const glm::mat4& cannon_shared_trans, bool ally);
+	~BShipProjectile();
 
-	void Fire(glm::vec3 shottilepos);
-	bool Animate(float deltatime);
-	void Draw(gCamera& camera, glm::mat4 sharedtrans);
+	void Fire(const glm::vec3& shot_tile_pos);
+	bool Animate(float delta_time);
+	void Draw(const gCamera& camera,const glm::mat4& shared_trans);
 
-	ParticleGroup* getProjectileParticle();
-
+	//const ParticleGroup* getProjectileParticle() const;
 private:
 	void Init();
 	glm::vec3 GetUV(float u, float v);
 
-	int circleResHor = 8; //körfelbontás vízszintesen
-	int circleResVert = 8; //körfelbontás függõlegesen
-
-	gVertexBuffer	vb_projectile; //Lövedék grafikai modell adatai
+	gVertexBuffer vb_projectile; //Lövedék grafikai modell adatai
 	gShaderProgram sh_projectile; //Részecskék shaderprogramja
-	ParticleGroup* projectileParticle; //Részecske
-	std::vector<std::pair<glm::vec3,float>> particles; //Lövedék utáni részecskék - <position,lifetime>
-	float particleLife = 1.5f; //Meddig él egy részecske
+	std::vector<std::pair<const glm::vec3,float>> particles; //Lövedék utáni részecskék - <position,lifetime>
 
-	bool isAlly = false; //Mi lövedékünk-e
-	glm::mat4 cannonSharedTrans; //Ágyúval közös transzformációk
-	glm::vec3 projectileStartPos; //Lövedék kiinduló pos
-	glm::vec3 projectileCurrentPos; //Lövedék jelenlegi pos
-	glm::vec3 projectileTargetPos; //Lövedék célpont
-	float elapsedTime = 0.0f; //Animációból eltelt idõ
+	const int circleResHor = 16; //körfelbontás vízszintesen
+	const int circleResVert = 16; //körfelbontás függõlegesen
 	const float animationTime = 4.0f; //Animáció ideje
+	float elapsedTime = 0.0f; //Animációból eltelt idõ
+	const float particleLife = 1.5f; //Meddig él egy részecske
 	float particleElapsed = 0.0f; //Részecskeanimációhoz
 	const float particleEmitTime = 0.05f; //Részecskeszórás ideje
-	glm::vec3 dist; //Kezdõ és célpont közti táv(y = x/4 -et kapja meg)
+	const float distHeightDivFactor = 4.0f; //Távolság függvényében mennyire magasra megyünk(osztási faktor)
 
-	glm::vec3 projectileScale = glm::vec3(0.125f) * TorpedoGLOBAL::Scale; //skálázás
+	const glm::vec3 projectileScale = glm::vec3(0.125f) * TorpedoGLOBAL::Scale; //skálázás
+
+	glm::vec3 dist; //Kezdõ és célpont közti táv(y = x/4 -et kapja meg)
+	glm::vec3 currentPos; //Lövedék jelenlegi pos
+	glm::vec3 targetPos; //Lövedék célpont
+
+	//const glm::mat4 cannonSharedTrans; //Ágyúval közös transzformációk
+	const glm::vec3 startPos; //Lövedék kiinduló pos
+	const bool isAlly; //Mi lövedékünk-e
+	ParticleGroup* const projectileParticle; //Részecskecsoport
 };

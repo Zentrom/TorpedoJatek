@@ -1,9 +1,8 @@
 #pragma once
 
-#include "ShipFlag.h"
-
 #include "../Globals.hpp"
-#include "../Frontend/PlayTile.h"
+#include "PlayTile.h"
+#include "ShipFlag.h"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
@@ -18,40 +17,46 @@
 class Ship
 {
 public:
-	Ship(void);
+	Ship(bool ally);
 	Ship(const std::vector<PlayTile*> &tiles, bool ally = true);
-	~Ship(void);
+	~Ship();
 
-	void Update(float deltatime);
-	void Draw(gCamera& camera, gShaderProgram& sh_program);
+	//Ship(const Ship&) = delete;
+	//Ship& operator=(const Ship&) = delete;
+
+	void Update(float delta_time);
+	void Draw(const gCamera& camera, gShaderProgram& sh_program) const;
 
 	std::vector<PlayTile*>& getPlayTiles();
-	bool isDestroyed();
-	bool isVisible();
+	bool isDestroyed() const;
+	bool isVisible() const;
 	void setDestroyed(bool dis);
 	glm::vec3 getShipTranslate();
 protected:
 	void Init();
 
-	gVertexBuffer	vb_ship; //Hajó grafikai modell adatai
+	gVertexBuffer vb_ship; //Hajó grafikai modell adatai
 	GLuint shipBottomTextureID; //Hajó aljának textúra azonosítója
 	GLuint shipTopTextureID; //Hajó tetejének textúra azonosítója
-	ShipFlag* shipFlag;
 
-	bool isAlly; //Kliens szempontjából mi hajónk-e
+	const float sinkTime = 30.0f; //Elsüllyedés ideje
+	const glm::vec3 shipAboveSeaTrans = glm::vec3(0, 0.12f, 0); //korrigáló transz,hogy a hajó lebegjen a vizen.
+
+	glm::mat4 sinkTranslate = glm::mat4(1.0f); //Süllyedési mozgás
+	glm::mat4 sinkRotate = glm::mat4(1.0f); //Süllyedési forgás
+	glm::vec3 shipTranslate = glm::vec3(0, 0, 0)* TorpedoGLOBAL::Scale; //mozgatás
+	float shipRotate = 0.0f; //forgatás
+	glm::vec3 shipRotateAngle = glm::vec3(0, 1.0f, 0); //forgatás tengelye
+	glm::vec3 shipScale = glm::vec3(1.0f); //nagyítás
+
 	bool destroyed = false; //Ki lett-e lõve a hajó
-	std::vector<PlayTile*> playTiles;	//Mely játékmezõkön van a hajó
-
 	bool visible = true; //Ki kell-e még rajzolni
 	float sinkElapsed = 0.0f; //Eltelt idõ
-	float sinkTime = 30.0f; //Elsüllyedés ideje
-	glm::mat4 sinkTranslate; //Süllyedési mozgás
-	glm::mat4 sinkRotate; //Süllyedési forgás
 
-	glm::vec3 ship_abovesea_trans = glm::vec3(0, 0.12f,0); //korrigáló transz,hogy a hajó lebegjen a vizen.
-	glm::vec3 ship_translate = glm::vec3(0, 0, 0)* TorpedoGLOBAL::Scale; //mozgatás
-	float ship_rotate = 0.0f; //forgatás
-	glm::vec3 ship_rotate_angle = glm::vec3(0, 1.0f, 0); //forgatás tengelye
-	glm::vec3 ship_scale = glm::vec3(1.0f); //nagyítás
+	std::vector<PlayTile*> playTiles;	//Mely játékmezõkön van a hajó
+	bool isAlly; //Kliens szempontjából mi hajónk-e
+	ShipFlag* const shipFlag; //Hajó zászlója
+	glm::mat4 matWorld; //Világ transzformáció
+	glm::mat4 matWorldIT; //VT inverze
 
 };

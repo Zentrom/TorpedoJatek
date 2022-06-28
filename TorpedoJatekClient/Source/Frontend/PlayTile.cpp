@@ -1,12 +1,19 @@
-
 #include "PlayTile.h"
+
+const float PlayTile::scaleXZ = 2.0f; //ez most 1 és 2-re megy
 
 //PlayTile::PlayTile()
 //{
 //}
 
-PlayTile::PlayTile(const std::pair<char, int>& pos, const glm::vec3& trans) : SeaTile::SeaTile(trans), position(pos)
+PlayTile::PlayTile(const std::pair<char, int>& pos, const glm::vec3& trans) : ptTranslate(trans), position(pos),
+	matWorld(glm::translate(ptTranslate) * glm::scale(ptScale)),
+	matWorldIT(glm::transpose(glm::inverse(matWorld))),
+	matWorldPlayTile(glm::translate(ptTranslate) * glm::scale(ptScale - outlineWidth)),
+	matWorldPlayTileIT(glm::transpose(glm::inverse(matWorldPlayTile)))
 {
+	//matWorldPlayTile = glm::translate(seatileTranslate) * glm::scale(seatileScale - outlineWidth);
+	//matWorldPlayTileIT = glm::transpose(glm::inverse(matWorldPlayTile));
 }
 
 PlayTile::~PlayTile()
@@ -14,7 +21,7 @@ PlayTile::~PlayTile()
 }
 
 //Játékmezõ indexét rajzoljuk ki az alpha színcsatornába
-void PlayTile::PreProcess(const gCamera& camera, gShaderProgram& sh_program) const
+void PlayTile::PreProcess(const gCamera& camera, gShaderProgram& sh_program, const gVertexBuffer& vb_buffer) const
 {
 	//glm::mat4 matWorldd = glm::translate(seatileTranslate) * glm::scale(seatileScale);
 	//glm::mat4 matWorldITd = glm::transpose(glm::inverse(matWorld));
@@ -26,29 +33,29 @@ void PlayTile::PreProcess(const gCamera& camera, gShaderProgram& sh_program) con
 	sh_program.SetUniform("is_preprocess", true);
 	sh_program.SetUniform("tile_index", index + indexOffset);
 
-	vb_seatile.On();
-	vb_seatile.DrawIndexed(GL_TRIANGLES, 0, 6, 0);
-	vb_seatile.Off();
+	vb_buffer.On();
+	vb_buffer.DrawIndexed(GL_TRIANGLES, 0, 6, 0);
+	vb_buffer.Off();
 }
 
 //Egy játékmezõ kirajzolása
-void PlayTile::Draw(const gCamera& camera, gShaderProgram& sh_program) const
+void PlayTile::Draw(const gCamera& camera, gShaderProgram& sh_program, const gVertexBuffer& vb_buffer) const
 {
 
-	glm::mat4 matWorld = glm::translate(seatileTranslate) * glm::scale(seatileScale - outlineWidth);
-	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
-	glm::mat4 mvp = camera.GetViewProj() * matWorld;
+	//glm::mat4 matWorldPlayTile = glm::translate(seatileTranslate) * glm::scale(seatileScale - outlineWidth);
+	//glm::mat4 matWorldPlayTileIT = glm::transpose(glm::inverse(matWorld));
+	glm::mat4 mvp = camera.GetViewProj() * matWorldPlayTile;
 
-	sh_program.SetUniform("world", matWorld);
-	sh_program.SetUniform("worldIT", matWorldIT);
+	sh_program.SetUniform("world", matWorldPlayTile);
+	sh_program.SetUniform("worldIT", matWorldPlayTileIT);
 	sh_program.SetUniform("MVP", mvp);
 	//sh_program.SetUniform("is_seatile", true);
 	sh_program.SetUniform("tilestate_changed", isStateChanged);
 	sh_program.SetUniform("tile_state", stateColor);
 
-	vb_seatile.On();
-	vb_seatile.DrawIndexed(GL_TRIANGLES, 0, 6, 0);
-	vb_seatile.Off();
+	vb_buffer.On();
+	vb_buffer.DrawIndexed(GL_TRIANGLES, 0, 6, 0);
+	vb_buffer.Off();
 
 	//sh_program.SetUniform("hasTexture", false);
 	//sh_program.SetUniform("is_seatile", false);
@@ -56,7 +63,7 @@ void PlayTile::Draw(const gCamera& camera, gShaderProgram& sh_program) const
 }
 
 //Körvonalakat rajzolja ki a játékmezõk köré
-void PlayTile::OutlineDraw(const gCamera& camera, gShaderProgram& sh_program) const
+void PlayTile::OutlineDraw(const gCamera& camera, gShaderProgram& sh_program, const gVertexBuffer& vb_buffer) const
 {
 	//glm::mat4 matWorld = glm::translate(seatileTranslate) *  glm::scale(seatileScale);
 	//glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
@@ -69,9 +76,9 @@ void PlayTile::OutlineDraw(const gCamera& camera, gShaderProgram& sh_program) co
 	sh_program.SetUniform("tile_state", stateColor);
 	sh_program.SetUniform("tile_index", index + indexOffset);
 
-	vb_seatile.On();
-	vb_seatile.DrawIndexed(GL_TRIANGLES, 0, 6, 0);
-	vb_seatile.Off();
+	vb_buffer.On();
+	vb_buffer.DrawIndexed(GL_TRIANGLES, 0, 6, 0);
+	vb_buffer.Off();
 }
 
 //Játékmezõ állapotának állítása
@@ -161,7 +168,18 @@ int PlayTile::getIndexOffset() const
 	return indexOffset;
 }
 
-const glm::vec3& PlayTile::getStateColor() const
+//const glm::vec3& PlayTile::getStateColor() const
+//{
+//	return stateColor;
+//}
+
+const glm::vec3& PlayTile::getTranslate() const
 {
-	return stateColor;
+	return seatileTranslate;
+}
+
+//Visszaadja a tengermezõ skálázását XZ tengely mentén
+float PlayTile::getScaleXZ()
+{
+	return scaleXZ;
 }

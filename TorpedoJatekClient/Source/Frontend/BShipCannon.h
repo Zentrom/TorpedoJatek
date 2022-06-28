@@ -16,27 +16,30 @@
 class BShipCannon
 {
 public:
-	BShipCannon(void);
-	BShipCannon(const glm::vec3 &battleShipTranslate,bool ally, float battleShipScaleX);
-	~BShipCannon(void);
+	//BShipCannon();
+	BShipCannon(const glm::vec3& battle_ship_translate,bool ally, float battle_ship_scale_x);
+	~BShipCannon();
 
-	void Draw(gCamera& camera, gShaderProgram& sh_program, glm::mat4 sharedtrans);
-	BShipProjectile& getProjectile();
+	void Draw(const gCamera& camera, gShaderProgram& sh_program, const glm::mat4& shared_trans) const;
+	BShipProjectile& getProjectile() const;
 private:
 	void Init();
 
 	BShipProjectile* projectile; //Lövedék pointer
-	glm::mat4 projectileSharedTrans; //Lövedékkel azonos transzformácók
-
-	int circleRes = 16; //körfelbontás
-
 	gVertexBuffer	vb_cannon; //Ágyú grafikai modell adatai
 	GLuint cannonTextureID; //Ágyú textúra azonosítója
 
-	float alliedRotation = 0.0f; //forgatási érték ha a mi ágyunk
-	glm::vec3 bShipTranslate; //csatahajó elmozgatása
-	float cannonTranslateX; //mozgatás
-	float cannonRotate = 0.25f * glm::pi<float>(); //forgatás
-	glm::vec3 cannonRotateAngle = glm::vec3(0, 0, 1.0f); //forgatás tengelye
-	glm::vec3 cannonScale = glm::vec3(0.125f, 0.5f, 0.125f) * TorpedoGLOBAL::Scale; //skálázás
+	const int circleRes = 16; //körfelbontás
+	const float cannonBShipDivFactor = 8.0f; //Ágyú mozgatása hajó területén belül(osztás)
+	const float cannonTranslateY = 0.25f; //Mozgatás Y tengelyen
+
+	const float cannonRotate = 0.25f * glm::pi<float>(); //forgatás
+	const glm::vec3 cannonRotateAngle = glm::vec3(0, 0, 1.0f); //forgatás tengelye
+	const glm::vec3 cannonScale = glm::vec3(0.125f, 0.5f, 0.125f) * TorpedoGLOBAL::Scale; //skálázás
+
+	glm::mat4 projectileSharedTrans; //Lövedékkel azonos transzformációk
+
+	const glm::vec3 bShipTranslate; //csatahajó elmozgatása
+	const float alliedRotation; //forgatási érték ha a mi ágyunk
+	const float cannonTranslateX; //mozgatás X tengelyen
 };

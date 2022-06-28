@@ -25,14 +25,19 @@ SDL_GetTicks64() hogy tovább futhasson?
 
 3D positional audio legyen-e egyáltalán vagy marad a distance? OpenAL esetleg?
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Coding conventions:
 -Function armunents: function(name_name)
 -Pointers: int* name
 -References: int& name
 -Member names: nameName
+-Transformations: nmTranslate
 -Vertexbuffer: vb_nameName - Ne legyen heapen(jól fel van építve containerekkel)
 -Shaderprog: sh_nameName - Ne legyen heapen
 -In Getter:Primitive return type = const int getFgv() / User defined return type = const T& getFgv()
+-In Class private: Functions first, then:UserDefinedStuff, const Settings, Translations, non-const, const Member inits(ez fontos)
+-std::vector<T*>.push_back() - Use pointers,otherwise push_back() copies,and delete gets called twice!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 Heapen lévõ adatra mutató dereferált pointert adok át függvényeknek referenciaként.
 Így csak függvény hívásnál kell dereferálni, lehet használni a "." operátort,

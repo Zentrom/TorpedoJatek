@@ -1,37 +1,46 @@
 
 #include "Ship.h"
 
-Ship::Ship(void)
+//BattleShip-nek fenntartva
+Ship::Ship(bool ally) : isAlly(ally), shipFlag(new ShipFlag(ally))
 {
 }
 
-Ship::Ship(const std::vector<PlayTile*> &tiles, bool ally) : isAlly(ally), playTiles(tiles)
+Ship::Ship(const std::vector<PlayTile*> &tiles, bool ally) : playTiles(tiles), isAlly(ally),
+	shipFlag(new ShipFlag(ally))
 {
-	Init();
-	shipFlag = new ShipFlag(ally);
-
-	if (tiles[0]) {
-		glm::vec3 frontTranslation = tiles[0]->getTranslate();
-		glm::vec3 backTranslation = tiles[tiles.size() - 1]->getTranslate();
-		ship_translate = (frontTranslation + backTranslation) / 2.0f;
-		ship_scale = glm::vec3(0.8f * tiles.size() * SeaTile::getScaleXZ(),
-			0.6f + 0.4f*tiles.size() * SeaTile::getScaleXZ(), (0.3f + 0.12f*tiles.size()) * SeaTile::getScaleXZ() ) 
+	if (tiles.at(0)) {
+		glm::vec3 frontTranslation = tiles.at(0)->getTranslate();
+		glm::vec3 backTranslation = tiles.at(tiles.size() - 1)->getTranslate();
+		shipTranslate = (frontTranslation + backTranslation) / 2.0f;
+		shipScale = glm::vec3(0.8f * tiles.size() * PlayTile::getScaleXZ(),
+			0.6f + 0.4f * tiles.size() * PlayTile::getScaleXZ(), (0.3f + 0.12f*tiles.size()) * PlayTile::getScaleXZ() )
 			* TorpedoGLOBAL::Scale;
 		if (tiles.size() > 1) {
-			if (tiles[0]->getPos().first != tiles[1]->getPos().first) {
-				ship_rotate = glm::half_pi<float>();
+			if (tiles.at(0)->getPos().first != tiles.at(1)->getPos().first) {
+				shipRotate = glm::half_pi<float>();
 			}
 		}
 	}
+	
+	Init();
 }
 
-Ship::~Ship(void)
+Ship::~Ship()
 {
+	delete shipFlag;
+	glDeleteTextures(1, &shipBottomTextureID);
+	glDeleteTextures(1, &shipTopTextureID);
+	vb_ship.Clean();
 }
 
 //Hajó modell adatainak inicializálása
 void Ship::Init()
 {
+	matWorld = glm::translate(shipTranslate) * glm::rotate(shipRotate, shipRotateAngle) * glm::scale(shipScale)
+		* glm::translate(shipAboveSeaTrans) * sinkTranslate * sinkRotate;
+	matWorldIT = glm::transpose(glm::inverse(matWorld));
+
 	vb_ship.AddAttribute(0, 3); //pozíció
 	vb_ship.AddAttribute(1, 4); //szín
 	vb_ship.AddAttribute(2, 3); //normálvektor
@@ -91,12 +100,12 @@ void Ship::Init()
 	vb_ship.AddData(0, -0.25f, 0, 0);
 
 	if (!isAlly) {
-		for (int i = 0; i < 48; i++) {
+		for (int i = 0; i < 48; ++i) {
 			vb_ship.AddData(1, 1.0f, 0, 0, 1);
 		}
 	}
 	else {
-		for (int i = 0; i < 48; i++) {
+		for (int i = 0; i < 48; ++i) {
 			vb_ship.AddData(1, 0, 1.0f, 0, 1);
 		}
 	}
@@ -210,26 +219,29 @@ void Ship::Init()
 }
 
 //Hajó adatok frissítése real-time
-void Ship::Update(float deltatime)
+void Ship::Update(float delta_time)
 {
 	if (visible && destroyed) {
-		sinkElapsed += deltatime;
+		sinkElapsed += delta_time;
 		if (sinkElapsed > sinkTime) {
 			visible = false;
 		}
+		sinkTranslate = glm::translate(glm::vec3(0, -(sinkElapsed / sinkTime) / 2.0f, 0));
+		sinkRotate = glm::rotate((sinkElapsed / sinkTime) * glm::half_pi<float>() / 2.0f, glm::vec3(0, 0, 1.0f));
+
+		matWorld = glm::translate(shipTranslate) * glm::rotate(shipRotate, shipRotateAngle) * glm::scale(shipScale)
+			* glm::translate(shipAboveSeaTrans) * sinkTranslate * sinkRotate;
+		matWorldIT = glm::transpose(glm::inverse(matWorld));
 	}
 }
 
 //Egy hajó kirajzolása
-void Ship::Draw(gCamera& camera, gShaderProgram& sh_program)
+void Ship::Draw(const gCamera& camera, gShaderProgram& sh_program) const
 {
-	sinkTranslate = glm::translate(glm::vec3(0, -(sinkElapsed / sinkTime) / 2.0f, 0));
-	sinkRotate = glm::rotate((sinkElapsed / sinkTime) * glm::half_pi<float>() / 2.0f, glm::vec3(0, 0, 1.0f));
-
-	glm::mat4 matWorld = glm::translate(ship_translate) * glm::rotate(ship_rotate, ship_rotate_angle) * glm::scale(ship_scale)
-		* glm::translate(ship_abovesea_trans) * sinkTranslate * sinkRotate;
-	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
-	glm::mat4 mvp = camera.GetViewProj() *matWorld;
+	//glm::mat4 matWorld = glm::translate(shipTranslate) * glm::rotate(shipRotate, shipRotateAngle) * glm::scale(shipScale)
+	//	* glm::translate(shipAboveSeaTrans) * sinkTranslate * sinkRotate;
+	//glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
+	glm::mat4 mvp = camera.GetViewProj() * matWorld;
 
 	sh_program.SetUniform("world", matWorld);
 	sh_program.SetUniform("worldIT", matWorldIT);
@@ -237,9 +249,9 @@ void Ship::Draw(gCamera& camera, gShaderProgram& sh_program)
 	sh_program.SetUniform("eye_pos", camera.GetEye());
 
 	sh_program.SetUniform("hasTexture", true);
-	sh_program.SetTexture("texImage", 0, shipBottomTextureID);
 
 	vb_ship.On();
+	sh_program.SetTexture("texImage", 0, shipBottomTextureID);
 	vb_ship.Draw(GL_TRIANGLES, 0, 36);
 	sh_program.SetTexture("texImage", 0, shipTopTextureID);
 	vb_ship.Draw(GL_TRIANGLES, 36, 12);
@@ -253,7 +265,7 @@ std::vector<PlayTile*>& Ship::getPlayTiles()
 	return playTiles;
 }
 
-bool Ship::isDestroyed()
+bool Ship::isDestroyed() const
 {
 	return destroyed;
 }
@@ -263,12 +275,12 @@ void Ship::setDestroyed(bool dis)
 	destroyed = dis;
 }
 
-bool Ship::isVisible()
+bool Ship::isVisible() const
 {
 	return visible;
 }
 
 glm::vec3 Ship::getShipTranslate()
 {
-	return ship_translate;
+	return shipTranslate;
 }

@@ -102,9 +102,6 @@
     <ClCompile Include="Source\Backend\ClientHandler.cpp">
       <Filter>Source Files\Backend</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Frontend\SeaTile.cpp">
-      <Filter>Source Files\Frontend</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Frontend\Skybox.cpp">
       <Filter>Source Files\Frontend</Filter>
     </ClCompile>
@@ -178,9 +175,6 @@
     </ClInclude>
     <ClInclude Include="Source\Backend\ClientHandler.h">
       <Filter>Header Files\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Frontend\SeaTile.h">
-      <Filter>Header Files\Frontend</Filter>
     </ClInclude>
     <ClInclude Include="Source\Globals.hpp">
       <Filter>Header Files</Filter>

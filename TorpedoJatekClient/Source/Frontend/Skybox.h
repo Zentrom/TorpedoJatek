@@ -21,6 +21,7 @@ public:
 	void Draw(const gCamera& camera);
 private:
 	void CreateCubeMap();
+
 	std::array<const std::string, 6> facePaths = { //A skybox oldalainak az elérési útvonalai
 		//"Resources/Textures/Skybox/right.jpg", "Resources/Textures/Skybox/left.jpg",
 		//"Resources/Textures/Skybox/top.jpg", "Resources/Textures/Skybox/bottom.jpg",
@@ -30,7 +31,6 @@ private:
 		"Resources/Textures/Skybox/ypos.png", "Resources/Textures/Skybox/yneg.png",
 		"Resources/Textures/Skybox/zpos.png", "Resources/Textures/Skybox/zneg.png"
 	};
-
 	gVertexBuffer vb_skybox; //grafikai adatok
 	gShaderProgram sh_skybox; //Skybox shadere
 	GLuint cubeTextureID; //textúra azonosító
