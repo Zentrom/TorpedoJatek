@@ -21,9 +21,6 @@ public:
 	Ship(const std::vector<PlayTile*> &tiles, bool ally = true);
 	~Ship();
 
-	//Ship(const Ship&) = delete;
-	//Ship& operator=(const Ship&) = delete;
-
 	void Update(float delta_time);
 	void Draw(const gCamera& camera, gShaderProgram& sh_program) const;
 
@@ -48,6 +45,8 @@ protected:
 	float shipRotate = 0.0f; //forgatás
 	glm::vec3 shipRotateAngle = glm::vec3(0, 1.0f, 0); //forgatás tengelye
 	glm::vec3 shipScale = glm::vec3(1.0f); //nagyítás
+	glm::mat4 matWorld; //Világ transzformáció
+	glm::mat4 matWorldIT; //VT inverze
 
 	bool destroyed = false; //Ki lett-e lõve a hajó
 	bool visible = true; //Ki kell-e még rajzolni
@@ -56,7 +55,5 @@ protected:
 	std::vector<PlayTile*> playTiles;	//Mely játékmezõkön van a hajó
 	bool isAlly; //Kliens szempontjából mi hajónk-e
 	ShipFlag* const shipFlag; //Hajó zászlója
-	glm::mat4 matWorld; //Világ transzformáció
-	glm::mat4 matWorldIT; //VT inverze
 
 };

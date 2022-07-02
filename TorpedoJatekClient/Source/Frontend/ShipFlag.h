@@ -16,5 +16,5 @@ private:
 
 	gVertexBuffer vb_flag; //Hajó zászlójának modell adatai
 
-	const bool isAlly = false; //Játékos vagy ellenfél zászlója
+	const bool isAlly = true; //Játékos vagy ellenfél zászlója
 };

@@ -1,9 +1,9 @@
 INDEBUG+VSyncOff:
 [RAM Usage] 175 MB [VRAM Usage] 100 MB [FPS] 38
 ---------------------------------------
-Backendes
 -Ha debugolni akarsz szerverkapcsolódás nélkül,akkor Globals.h-ba a TorpedoGlobal::Debug-ot true-ra kell tenni.
 -Debug módba: 
 	'F'-el lehet lövés animációt tesztelni.
 	'G'-vel lehet hajó elsüllyedést tesztelni.
+-Framelimiter mûködik rendesen.
 -Lehet tobbszor ugyanoda lõni.

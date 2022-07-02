@@ -14,7 +14,7 @@
 class PlayTile
 {
 public:
-	PlayTile(const std::pair<char, int>& pos, const glm::vec3& trans);
+	PlayTile(const std::pair<char, int>& pos, const glm::vec3& trans, const glm::vec3& scale, int ind, int ident_num);
 	~PlayTile();
 
 	void PreProcess(const gCamera& camera, gShaderProgram& sh_program, const gVertexBuffer& vb_buffer) const;
@@ -24,15 +24,12 @@ public:
 	void ClearPosition();
 
 	void setState(int new_state = 3);
-	void setIndex(int new_index = 0);
 	void setUsed(bool used = true);
+	const int getId() const;
 	const int getIndex() const;
 	const std::pair<char, int> getPos() const;
 	bool isUsed() const;
-	int getIndexOffset() const;
-	//const glm::vec3& getStateColor() const;
 	const glm::vec3& getTranslate() const;
-	static float getScaleXZ();
 
 private:
 	enum TileState {
@@ -48,20 +45,18 @@ private:
 
 	void setStateColor();
 
-	const float outlineWidth = 0.2f; //Kijelölõ négyzet vastagsága
-	const int indexOffset = 100; //offsetelni az indexet,hogy ne 0-1 legyen AMÉG ALPHA színbe írom az indexet
+	const float outlineWidth = 0.2f * TorpedoGLOBAL::Scale; //Kijelölõ négyzet vastagsága
 
-	glm::vec3 ptScale = glm::vec3(scaleXZ, 1.0f, scaleXZ) * TorpedoGLOBAL::Scale;
-
-	int index; //Egy játékos játékmezõi közül hányas indexû
-	std::pair<char, int> position; //Koordináta (pl. A7)
+	bool isStateChanged = false; //Eltér-e az alap színtõl a mezõ állapota
 	bool usedTile = false;	//Van-e hajó rajta
 	TileState state = DEFAULT; //Játékmezõ állapota
 	glm::vec3 stateColor = glm::vec3(1, 1, 1); //Alap kijelölés szín
-	bool isStateChanged = false; //Eltér-e az alap színtõl a mezõ állapota
 	
-	static const float scaleXZ; //tengermezõ skálázása XZ tengelyek mentén
-	glm::vec3 ptTranslate = glm::vec3(0);
+	std::pair<char, int> position; //Koordináta (pl. A7)
+	const int index; //std::vector<PlayTiles*>-ba hányadik indexü
+	const int id; //Játékmezõ azonosítója a 3D pickinghez
+	const glm::vec3 ptTranslate; //Mozgatás
+	const glm::vec3 ptScale; //Skálázás
 	const glm::mat4 matWorld; //Játékmezõ körvonallal együtti világ transzformáció
 	const glm::mat4 matWorldIT; //VT inverze
 	const glm::mat4 matWorldPlayTile; //Kissebb játékmezõ, hogy látszódjon a körvonal

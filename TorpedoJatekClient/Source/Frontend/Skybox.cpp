@@ -107,7 +107,7 @@ void Skybox::Draw(const gCamera& camera)
 	sh_skybox.SetUniform("viewProj", viewProj);
 
 	vb_skybox.On();
-	vb_skybox.DrawIndexed(GL_TRIANGLES, 0, 36, 0);
+	vb_skybox.DrawIndexed(GL_TRIANGLES, 0, 36);
 	vb_skybox.Off();
 	sh_skybox.Off();
 

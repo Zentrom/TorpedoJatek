@@ -16,7 +16,7 @@ public:
 
 	void AddAttribute(int _idx, int _comps);
 	
-	/// _idx: the attribute channel on which data is being supplied
+	// _idx: the attribute channel on which data is being supplied
 	void AddData(int _idx, float _x);
 	void AddData(int _idx, float _x, float _y);
 	void AddData(int _idx, float _x, float _y, float _z);
@@ -26,13 +26,13 @@ public:
 	void AddData(int _idx, glm::vec2& _v);
 	void AddIndex(unsigned int _a);
 	void AddIndex(unsigned int _a, unsigned int _b);
-	void AddIndex(unsigned int _a, unsigned int _b, int unsigned _c);
-	void AddIndex(unsigned int _a, unsigned int _b, int unsigned _c, int unsigned _d);
+	void AddIndex(unsigned int _a, unsigned int _b, unsigned int _c);
+	void AddIndex(unsigned int _a, unsigned int _b, unsigned int _c, unsigned int _d);
 
 	void SetPatchVertices(int _n);
 
 	void Draw(GLenum _mode, GLint _first, GLsizei _count) const;
-	void DrawIndexed(GLenum _mode, GLint _first, GLsizei _count, const GLvoid* _indices) const;
+	void DrawIndexed(GLenum _mode, GLint _first, GLsizei _count) const;
 
 	void InitBuffers();
 

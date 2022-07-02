@@ -30,7 +30,6 @@ public:
 	~GameInstance();
 
 	bool Init();
-	//void Clean();
 
 	void Update();
 	void Render();
@@ -44,50 +43,44 @@ public:
 	void Resize(int width, int height);
 private:
 	void CreateFrameBuffer(int width, int height);
-
-	float viewportWidth; //Ablak canvaszának szélessége
-	float viewportHeight; //Ablak canvaszának magassága
-	const float fieldOfView = 45.0f; //Kamera látószöge
-	const float viewDistance = 200.0f * TorpedoGLOBAL::Scale; //Milyen távolságon belül rajzolunk ki dolgokat
+	void HandleGameState();
 
 	GameState gameState; //jelenlegi játékállapot
-	//std::vector<void*> stateRelatedData; //játékállapothoz kapcsolódó adat
-	bool isError = false; //van-e error a jelenlegi állapotban
-	bool outputWritten = false; //kiirtuk-e már az üzenetet
+	Skybox* skybox = new Skybox(); //Pályát körülvevõ skybox
+	Mountain* mountain = new Mountain(); //Hegy
+	Terrain* terrain; //Föld
+	Fleet* playerFleet = new Fleet(true); //Játékos hajói
+	Fleet* enemyFleet = new Fleet(false); //Ellenfél hajói
+	Sea* sea = new Sea(); //Játék és tengermezõk
+	GameLogic* gameLogic; //Háttérlogika
+	EventHandler* eventHandler = new EventHandler(); //Eseménykezelés
 
-	//Framebuffer dolgok
-	gVertexBuffer vb_fbo;
-	bool dirL_frameBufferCreated = false;
-	GLuint dirL_depthStencilBuffer;
-	GLuint dirL_colorBuffer;
-	GLuint dirL_frameBuffer;
-
-	Sint32 mouseX; //Egér relatív X koord
-	Sint32 mouseY; //Egér relatív Y koord
-	float* mousePointedData; //Melyik játékmezõre mutat az egér
-
-	gCamera* cam_mainCamera = new gCamera(glm::vec3(0, 20.0f, 20.0f)); //Kamera
+	gVertexBuffer vb_fbo; //Custom Quad Framebufferbe rajzolandó négyzet adata
 	gShaderProgram sh_default; //Alap shader+postprocess
 	gShaderProgram sh_playtile; //PlayTile pre-postprocess shader
 	gShaderProgram sh_dirLight; //Ide rajzoljuk a 3D-s teret
+	GLuint dirL_depthStencilBuffer; //Custom Framebuffer mélység-stencil buffere
+	GLuint dirL_colorBuffer; //Custom Framebuffer színbuffere
+	GLuint dirL_frameBuffer; //Custom Framebuffer azonosító
+	Sint32 mouseX; //Egér relatív X koord
+	Sint32 mouseY; //Egér relatív Y koord
+	
+	const float fieldOfView = 45.0f; //Kamera látószöge
+	const float viewDistance = 200.0f * TorpedoGLOBAL::Scale; //Milyen távolságon belül rajzolunk ki dolgokat
+	const float cameraRestraintXZ = 4.0f; //Földterület hányadáig mehet a lockolt kamera
+	const float cameraRestraintY = 4.0f; //Hegymagasság hányszorosára mehet felfele a kamera
 
+	bool isError = false; //van-e error a jelenlegi állapotban
+	bool outputWritten = false; //kiirtuk-e már az üzenetet
+	bool dirL_frameBufferCreated = false;
+	float* mousePointedData; //Melyik játékmezõre mutat az egér
 	//Mix_Chunk* cannonFireSound; //Hajó lövés hangadatra mutató pointer
-
-	Skybox* skybox = new Skybox(); //Pályát körülvevõ skybox
-	Mountain* mountain = new Mountain(); //Hegy
-	Terrain* terrain = new Terrain(); //Föld
-
-	Fleet* playerFleet = new Fleet(); //Játékos hajói
-	Fleet* enemyFleet = new Fleet(); //Ellenfél hajói
-	Sea* sea = new Sea(); //Játék és tengermezõk
-
-	GameLogic* gameLogic = new GameLogic(); //Háttérlogika
-	EventHandler* eventHandler = new EventHandler(); //Eseménykezelés
-
-	int mapSize;	//Játékpálya mérete
-
 	bool shotReceived = false; //Küldött-e már lövést a szerver nekünk
 	int shipSizeInput = 0; //Mekkora hajót készülünk lerakni
 	int winnerPlayerNum = 0; //Nyertes játékos+boolként is mûködik ha senki nem nyert még
+
+	float viewportWidth; //Ablak canvaszának szélessége
+	float viewportHeight; //Ablak canvaszának magassága
+	gCamera* cam_mainCamera; //Kamera
 };
 

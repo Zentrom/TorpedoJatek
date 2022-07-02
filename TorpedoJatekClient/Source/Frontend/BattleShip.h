@@ -7,7 +7,6 @@
 class BattleShip : public Ship
 {
 public:
-	//BattleShip();
 	BattleShip(const glm::vec3& battle_ship_translate, bool ally);
 	~BattleShip();
 
@@ -15,5 +14,5 @@ public:
 	void ResetForDEBUG();
 	const BShipCannon& getCannon() const;
 private:
-	BShipCannon* cannon;
+	BShipCannon* cannon; //Ágyú
 };

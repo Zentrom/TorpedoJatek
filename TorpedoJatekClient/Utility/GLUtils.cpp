@@ -107,7 +107,7 @@ GLuint GLUtils::loadProgramVSGSFS(const char* _fileNameVS, const char* _fileName
 	return program_ID;
 }
 
-//EZ CSAK BMP-vel mûködik,meg talán PNG
+//EZ NEM MINDIG MEGY. Esély: BMP>PNG>JPG
 GLuint GLUtils::TextureFromFile(const char* filename)
 {
 	SDL_Surface* loaded_img = IMG_Load(filename);

@@ -1,46 +1,34 @@
 #include "GameInstance.h"
 
 //Kamera és más változók inicializálása
-GameInstance::GameInstance(float viewport_w, float viewport_h) : viewportWidth(viewport_w),viewportHeight(viewport_h)
+GameInstance::GameInstance(float viewport_w, float viewport_h) : viewportWidth(viewport_w),viewportHeight(viewport_h),
+	cam_mainCamera(new gCamera(glm::vec3(0, 20.0f, 20.0f), mountain->getHeightY()))
 {
-	cam_mainCamera->SetBoundaries(
-		terrain->getTerrainScale() * terrain->getGroundScaleXZ() / 3.0f * TorpedoGLOBAL::Scale,
-		Mountain::getHeight() * 4.0f * TorpedoGLOBAL::Scale, 
-		terrain->getTerrainScale() * terrain->getGroundScaleXZ() / 3.0f * TorpedoGLOBAL::Scale);
-	cam_mainCamera->SetProj(fieldOfView, viewportWidth / viewportHeight, 0.01f, viewDistance);
+	terrain = new Terrain(sea->getSeaTileRow(), mountain->getHeightY());
+	cam_mainCamera->SetBoundaries(glm::vec3(
+		terrain->getTerrainScale() * terrain->getGroundScaleXZ() / cameraRestraintXZ,
+		mountain->getHeightY() * cameraRestraintY * TorpedoGLOBAL::Scale, 
+		terrain->getTerrainScale() * terrain->getGroundScaleXZ() / cameraRestraintXZ));
+	cam_mainCamera->SetProj(fieldOfView, viewportWidth / viewportHeight, 0.001f, viewDistance);
 	
 	mousePointedData = new float[4];
 	mousePointedData[3] = 0.0f; //ez hogy legyen alapértéke mikor kell neki 3d pickinghez
 
 	gameState = GameState::INITIAL;
-
-	////EZ NAGYON NEMJÓ
-	//stateRelatedData.push_back(NULL);
-	//stateRelatedData.push_back(NULL);
-	//stateRelatedData.push_back(&shipSizeInput);
-	//stateRelatedData.push_back(&shipSizeInput);
-	//
-	////temp- nemjó eza DisplayMessage-staterelatedData megoldás annyira,függ enum mérettõ
-	//stateRelatedData.push_back(&shipSizeInput);//dump
-	//stateRelatedData.push_back(&shipSizeInput);//dump
-	//stateRelatedData.push_back(&shipSizeInput);//dump
-	//stateRelatedData.push_back(&shipSizeInput);//dump
-	//stateRelatedData.push_back(&winnerPlayerNum);
 }
 
 //Memória felszabadítás
-GameInstance::~GameInstance(void)
+GameInstance::~GameInstance()
 {
 	//Mix_FreeChunk(cannonFireSound);
 	//delete cannonFireSound; NEMKELL elrontja
 
+	vb_fbo.Clean();
 	sh_default.Clean();
 	sh_playtile.Clean();
 	sh_dirLight.Clean();
-	vb_fbo.Clean();
 	
 	delete[] mousePointedData;
-	
 	delete skybox;
 	delete mountain;
 	delete terrain;
@@ -64,8 +52,8 @@ GameInstance::~GameInstance(void)
 //Játékmenet inicializálása
 bool GameInstance::Init()
 {
-	mapSize = gameLogic->Init(playerFleet, enemyFleet, sea);
-	gameLogic->InitGame();
+	gameLogic = new GameLogic(*playerFleet, *enemyFleet, *sea);
+	gameLogic->Init();
 
 	//cannonFireSound = Mix_LoadWAV("Resources/Audio/cannonFire.wav");
 	//if (!cannonFireSound) {
@@ -87,18 +75,20 @@ bool GameInstance::Init()
 	CreateFrameBuffer(viewportWidth, viewportHeight);
 	vb_fbo.AddAttribute(0, 2); //position
 	vb_fbo.AddAttribute(1, 2); //textcoord
+
 	vb_fbo.AddData(0, -1, -1);
 	vb_fbo.AddData(0, 1, -1);
 	vb_fbo.AddData(0, -1, 1);
 	vb_fbo.AddData(0, 1, 1);
+
 	vb_fbo.AddData(1, 0, 0);
 	vb_fbo.AddData(1, 1, 0);
 	vb_fbo.AddData(1, 0, 1);
 	vb_fbo.AddData(1, 1, 1);
 	vb_fbo.InitBuffers();
 
-	mountain->Init();
 	terrain->Init();
+	mountain->Init();
 	skybox->Init();
 
 	sh_default.AttachShader(GL_VERTEX_SHADER, "Shaders/default.vert");
@@ -134,15 +124,6 @@ bool GameInstance::Init()
 	return true;
 }
 
-//void GameInstance::Clean()
-//{
-//	sh_default->Clean();
-//	sh_dirLight->Clean();
-//	sh_skybox->Clean();
-//}
-
-
-
 //Adatok frissítése minden kirajzolásnál
 void GameInstance::Update()
 {
@@ -156,9 +137,16 @@ void GameInstance::Update()
 	eventHandler->Update(deltaTime, cam_mainCamera->GetEye());
 	lastTime = SDL_GetTicks();
 
+	if(!TorpedoGLOBAL::Debug) {
+		HandleGameState();
+	}
+}
+
+void GameInstance::HandleGameState() 
+{
 	//Real-time backend frissítések
 	//Hajó lerakás szöveg és Játék vége szöveg
-	if (!TorpedoGLOBAL::Debug && !outputWritten) {
+	if (!outputWritten) {
 		if (isError) {
 			if (gameState == GameState::SHIP_SIZE_INPUT) {
 				gameLogic->DisplayError(gameState, shipSizeInput);//stateRelatedData.at(gameState));
@@ -197,7 +185,7 @@ void GameInstance::Update()
 			shotReceived = false;
 			outputWritten = false;
 		}
-		else if (!shotReceived){
+		else if (!shotReceived) {
 			PlayTile* shotTile = gameLogic->GetShoot();
 			if (shotTile) {
 				shotReceived = true;
@@ -218,8 +206,6 @@ void GameInstance::Update()
 			outputWritten = false;
 		}
 	}
-
-
 }
 
 //Rajzolási hívás
@@ -243,9 +229,7 @@ void GameInstance::Render()
 	enemyFleet->Draw(*cam_mainCamera, sh_dirLight);
 	sh_dirLight.Off();
 
-	//sh_skybox.On();
 	skybox->Draw(*cam_mainCamera);
-	//sh_skybox.Off();
 
 	glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
@@ -328,7 +312,7 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 		//Lövés F - Süllyedés G 
 		if (key.keysym.sym == SDLK_f) {
 			if (!eventHandler->IsProjectileAnimation()) {
-				eventHandler->FireProjectile(playerFleet, &sea->getTileByIndex(115));
+				eventHandler->FireProjectile(playerFleet, &sea->getTileByIndex(15, false));
 				
 				//float scannedDistance = 40.0f;
 				//float len = glm::length(glm::vec3(cam_mainCamera->GetEye().x - playerFleet->getBattleShip().getShipTranslate().x
@@ -455,7 +439,7 @@ void GameInstance::CreateFrameBuffer(int width, int height)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, dirL_colorBuffer, 0);
 	if (glGetError() != GL_NO_ERROR)
 	{
-		std::cout << "Error creating color attachment" << std::endl;
+		std::cout << "[Create_FBO]Error creating color attachment" << std::endl;
 		char ch; std::cin >> ch;
 		exit(1);
 	}
@@ -466,7 +450,7 @@ void GameInstance::CreateFrameBuffer(int width, int height)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, dirL_depthStencilBuffer);
 	if (glGetError() != GL_NO_ERROR)
 	{
-		std::cout << "Error creating depth/stencil attachment" << std::endl;
+		std::cout << "[Create_FBO]Error creating depth/stencil attachment" << std::endl;
 		char ch;
 		std::cin >> ch;
 		exit(1);
@@ -475,7 +459,7 @@ void GameInstance::CreateFrameBuffer(int width, int height)
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
 	{
-		std::cout << "Incomplete framebuffer (";
+		std::cout << "[Create_FBO]Incomplete framebuffer (";
 		switch (status) {
 		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
 			std::cout << "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";

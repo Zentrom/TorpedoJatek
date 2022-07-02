@@ -13,9 +13,9 @@ Ship::Ship(const std::vector<PlayTile*> &tiles, bool ally) : playTiles(tiles), i
 		glm::vec3 frontTranslation = tiles.at(0)->getTranslate();
 		glm::vec3 backTranslation = tiles.at(tiles.size() - 1)->getTranslate();
 		shipTranslate = (frontTranslation + backTranslation) / 2.0f;
-		shipScale = glm::vec3(0.8f * tiles.size() * PlayTile::getScaleXZ(),
-			0.6f + 0.4f * tiles.size() * PlayTile::getScaleXZ(), (0.3f + 0.12f*tiles.size()) * PlayTile::getScaleXZ() )
-			* TorpedoGLOBAL::Scale;
+		shipScale = glm::vec3(0.8f * tiles.size() * TorpedoGLOBAL::SeaTileScaleXZ,
+			0.6f + 0.4f * tiles.size() * TorpedoGLOBAL::SeaTileScaleXZ,
+			(0.3f + 0.12f*tiles.size()) * TorpedoGLOBAL::SeaTileScaleXZ )* TorpedoGLOBAL::Scale;
 		if (tiles.size() > 1) {
 			if (tiles.at(0)->getPos().first != tiles.at(1)->getPos().first) {
 				shipRotate = glm::half_pi<float>();
@@ -227,7 +227,8 @@ void Ship::Update(float delta_time)
 			visible = false;
 		}
 		sinkTranslate = glm::translate(glm::vec3(0, -(sinkElapsed / sinkTime) / 2.0f, 0));
-		sinkRotate = glm::rotate((sinkElapsed / sinkTime) * glm::half_pi<float>() / 2.0f, glm::vec3(0, 0, 1.0f));
+		sinkRotate = glm::rotate((isAlly ? 1 : -1) * (sinkElapsed / sinkTime) * glm::half_pi<float>() / 2.0f, 
+			glm::vec3(0, 0, 1.0f));
 
 		matWorld = glm::translate(shipTranslate) * glm::rotate(shipRotate, shipRotateAngle) * glm::scale(shipScale)
 			* glm::translate(shipAboveSeaTrans) * sinkTranslate * sinkRotate;

@@ -16,7 +16,6 @@
 class BShipCannon
 {
 public:
-	//BShipCannon();
 	BShipCannon(const glm::vec3& battle_ship_translate,bool ally, float battle_ship_scale_x);
 	~BShipCannon();
 

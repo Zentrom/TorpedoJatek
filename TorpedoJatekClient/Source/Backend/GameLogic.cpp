@@ -1,32 +1,46 @@
 #include "GameLogic.h"
 
-GameLogic::GameLogic(void)
-{
-}
-
-GameLogic::~GameLogic(void)
-{
-}
-
-//Inicializálja a háttérlogikát
-int GameLogic::Init(Fleet*& player, Fleet*& enemy, Sea*& sea)
+GameLogic::GameLogic(Fleet& player, Fleet& enemy, Sea& sea)
 {
 	std::cout << "-----------------------------------------------" << std::endl
 		<< output << std::endl
-		<< "-----------------------------------------------" << std::endl
-		<< std::endl;
+		<< "-----------------------------------------------" << std::endl;
 
-	myFleet = player;
-	enemyFleet = enemy;
-	mySea = sea;
+	pMyFleet = &player;
+	pEnemyFleet = &enemy;
+	pSea = &sea;
+}
 
+GameLogic::~GameLogic()
+{
+	delete clientHandler;
+}
+
+//Inicializálja a játékkal kapcsolatos háttéradatokat
+void GameLogic::Init()
+{
 	if (!TorpedoGLOBAL::Debug) {
 		ConnectionSetup();
-		playerNum = clientHandler.GetPlayerNum();
-		mapSize = clientHandler.GetMapSize();
+		playerNum = clientHandler->GetPlayerNum();
+		mapSize = clientHandler->GetMapSize();
 	}
 
-	return mapSize;
+	pSea->Init(mapSize, playZoneCenterOffset);
+
+	pMyFleet->Init(mapSize, playZoneCenterOffset);
+	pMyFleet->InitTiles(pSea->getTiles(pMyFleet->getIsAlly()));
+
+	pEnemyFleet->Init(mapSize, playZoneCenterOffset);
+	pEnemyFleet->InitTiles(pSea->getTiles(pEnemyFleet->getIsAlly()));
+
+	if (TorpedoGLOBAL::Debug) {
+		std::cout << "Disclamer: You are currently running the DEBUG version of the game,\nwhich is only good for graphics testing." << std::endl;
+		PlaceShipsINDEBUG();
+		SetTilesINDEBUG();
+	}
+	else {
+		unplacedShips = *pMyFleet->getUnplacedShipCount();
+	}
 }
 
 //Kapcsolatot létesít egy szerverrel
@@ -38,28 +52,7 @@ void GameLogic::ConnectionSetup()
 		std::cin >> ip;
 		std::cout << "Server port: ";
 		std::cin >> port;
-	} while (!clientHandler.Init(ip, port));
-}
-
-//Inicializálja a játékkal kapcsolatos háttéradatokat
-void GameLogic::InitGame()
-{
-	mySea->Init(mapSize);
-
-	myFleet->Init(mapSize, true);
-	myFleet->InitTiles(mySea->getTiles(true));
-
-	enemyFleet->Init(mapSize, false);
-	enemyFleet->InitTiles(mySea->getTiles(false));
-
-	if (TorpedoGLOBAL::Debug) {
-		std::cout << "Disclamer: You are currently running the DEBUG version of the game,\nwhich is only good for graphics testing." << std::endl;
-		PlaceShipsINDEBUG();
-		SetTilesINDEBUG();
-	}
-	else {
-		unplacedShips = myFleet->getUnplacedShipCount();
-	}
+	} while (!clientHandler->Init(ip, port));
 }
 
 //Üzenet kiirása
@@ -101,11 +94,11 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 		//int* winnerNum = static_cast<int*>(relatedData);
 		if (//*winnerNum 
 			related_data == playerNum) {
-			enemyFleet->getBattleShip().setDestroyed(true);
+			pEnemyFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've won the match!\n(ESC-Quit)" << std::endl;
 		}
 		else{
-			myFleet->getBattleShip().setDestroyed(true);
+			pMyFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've lost the match!\n(ESC-Quit)" << std::endl;
 		}
 	}
@@ -139,13 +132,18 @@ bool GameLogic::CheckAnyUnplacedShipLeft()
 //Lerak egy hajót ha üres a kijelölt mezõ
 bool GameLogic::PlaceShip(int tileIndex, int shipSize)
 {
-	int offset = mySea->getTileByIndex(0).getIndexOffset();
+	PlayTile* shipFront;
+	PlayTile* shipBack;
+	bool shipFrontPlaced = false;
+	std::array<PlayTile*, 4> freeChoices;
+
+	int offset = pSea->getAlphaOffset();
 	if (tileIndex - offset < mapSize * mapSize && tileIndex - offset >= 0) {
 		if (!shipFrontPlaced) {
-			shipFront = &mySea->getTileByIndex(tileIndex - offset);
-			if (myFleet->CheckTile(*shipFront)) {
+			shipFront = &pSea->getTileByIndex(tileIndex - offset);
+			if (pMyFleet->CheckTile(*shipFront)) {
 				if (shipSize == 1) {
-					myFleet->PlaceShip(shipFront, NULL);
+					pMyFleet->PlaceShip(shipFront, NULL);
 					std::cout << "--------\n"
 						"Ship placed at " << shipFront->getPos().first << shipFront->getPos().second <<
 						"\n--------" << std::endl;
@@ -153,7 +151,7 @@ bool GameLogic::PlaceShip(int tileIndex, int shipSize)
 					return true;
 				}
 				else {
-					freeChoices = myFleet->getFreeBacks(*shipFront, shipSize - 1);
+					freeChoices = pMyFleet->getFreeBacks(*shipFront, shipSize - 1);
 					if (std::none_of(freeChoices.cbegin(), freeChoices.cend(), [](PlayTile* ptr) {return ptr; }))
 					{
 						std::cout << "No position available for the back of the ship!\n Try another position." << std::endl;
@@ -182,16 +180,16 @@ bool GameLogic::PlaceShip(int tileIndex, int shipSize)
 			}
 		}
 		else {
-			shipBack = &mySea->getTileByIndex(tileIndex - offset);
+			shipBack = &pSea->getTileByIndex(tileIndex - offset);
 			bool foundInputInChoices = false;
 			for (PlayTile* choisz : freeChoices) {
-				if (choisz && choisz->getIndex() == shipBack->getIndex()) {
+				if (choisz && choisz->getId() == shipBack->getId()) {
 					foundInputInChoices = true;
 					break;
 				}
 			}
 			if (foundInputInChoices) {
-				myFleet->PlaceShip(shipFront, shipBack);
+				pMyFleet->PlaceShip(shipFront, shipBack);
 				std::cout << "--------\n"
 					"Ship placed at " << shipFront->getPos().first << shipFront->getPos().second <<
 					"/" << shipBack->getPos().first << shipBack->getPos().second <<
@@ -216,13 +214,13 @@ bool GameLogic::PlaceShip(int tileIndex, int shipSize)
 //Elküldi a lerakott hajóink pozícióit
 void GameLogic::SendFleetToServer()
 {
-	clientHandler.SendFleet(myFleet->getActiveTilePositions());
+	clientHandler->SendFleet(pMyFleet->getActiveTilePositions());
 }
 
 //Megnézi hogy a szerver el akarja-e indítani a játékot
 bool GameLogic::CheckStartSignal() 
 {
-	return clientHandler.GetStartSignal();
+	return clientHandler->GetStartSignal();
 }
 
 //Bekéri a játékostól,hogy hova akar lõni,majd küldi a szervernek
@@ -231,11 +229,11 @@ PlayTile* GameLogic::Shoot(int tileindex)
 	std::string shootPos;
 	PlayTile *target;
 
-	int offset = mySea->getTileByIndex(0).getIndexOffset();
-	int enemyOffset = mySea->getEnemyIndexOffset();
+	int offset = pSea->getAlphaOffset();
+	int enemyOffset = pSea->getEnemyIndexOffset();
 	if (tileindex - enemyOffset - offset < mapSize * mapSize && tileindex - enemyOffset - offset >= 0) {
-		target = &mySea->getTileByIndex(tileindex - offset);
-		matchState = clientHandler.SendShot(target->getPos());
+		target = &pSea->getTileByIndex(tileindex - offset);
+		matchState = clientHandler->SendShot(target->getPos());
 		target->setState(static_cast<int>(matchState));
 
 		shootPos = ProcessTile(target->getPos());
@@ -250,21 +248,21 @@ PlayTile* GameLogic::Shoot(int tileindex)
 //Kapunk egy lövést az ellenféltõl
 PlayTile* GameLogic::GetShoot()
 {
-	if (clientHandler.CheckForResponse()) {
+	if (clientHandler->CheckForResponse()) {
 		std::string shootPos;
-		std::pair<char,int> shootCoord = clientHandler.ReceiveShot();
-		matchState = clientHandler.getRecShotState();
+		std::pair<char,int> shootCoord = clientHandler->ReceiveShot();
+		matchState = clientHandler->getRecShotState();
 
 		if (shootCoord.first == '0') {
 			std::cout << "The enemy left the game!" << std::endl;
 		}
 		else {
-			PlayTile* target = &myFleet->getTile(shootCoord);
+			PlayTile* target = &pMyFleet->getTile(shootCoord);
 			shootPos = ProcessTile(target->getPos());
 
 			//Ez az if kinullázza a pozíciót,az alapján nézi meg hogy kikell-e még rajzolni egy hajót
 			if (matchState != ResponseState::CONTINUE_MATCH) {
-				myFleet->HitFleet(target->getPos());
+				pMyFleet->HitFleet(target->getPos());
 			}
 			target->setState(static_cast<int>(matchState));
 			std::cout << "Enemy's shot to " << shootPos << " was a "
@@ -279,11 +277,11 @@ PlayTile* GameLogic::GetShoot()
 int GameLogic::CheckVictoryState()
 {
 	if (matchState == ResponseState::WIN_PLAYER_ONE) {
-		clientHandler.~ClientHandler();
+		clientHandler->~ClientHandler();
 		return 1;
 	}
 	else if (matchState == ResponseState::WIN_PLAYER_TWO) {
-		clientHandler.~ClientHandler();
+		clientHandler->~ClientHandler();
 		return 2;
 	}
 	return 0;
@@ -294,15 +292,6 @@ int GameLogic::getPlayerNum()
 {
 	return playerNum;
 }
-
-//Hibamentes szöveges koordinátát konvertál át egy ideiglenes játékmezõvé
-//PlayTile GameLogic::ProcessString(std::string coord)
-//{
-//	char coordShip[3];
-//	strcpy_s(coordShip, coord.c_str());
-//
-//	return PlayTile(std::pair<char, int>(coordShip[0], atoi(&coordShip[1])));
-//}
 
 //Szöveges koordinátát ellenõriz,hogy jó-e
 bool GameLogic::CheckString(std::string coord)
@@ -369,34 +358,31 @@ int GameLogic::ConvertCoordToTileIndex(const std::pair<char, int> &tile)
 //Ha a játék DEBUG módba indítjuk,akkor beégetetten lerak nekünk néhány hajót
 void GameLogic::PlaceShipsINDEBUG() 
 {
-	myFleet->PlaceShip(&myFleet->getTile(std::pair<char, int>('a', 1)), nullptr);
+	pMyFleet->PlaceShip(&pMyFleet->getTile(std::pair<char, int>('a', 1)), nullptr);
+	pMyFleet->PlaceShip(&pMyFleet->getTile(std::pair<char, int>('g', 5)),
+		&pMyFleet->getTile(std::pair<char, int>('g', 7)));
+	pMyFleet->PlaceShip(&pMyFleet->getTile(std::pair<char, int>('d', 4)),
+		&pMyFleet->getTile(std::pair<char, int>('d', 6)));
 
-	//EZT JAVÍTANI KELL HOGY MENJEN
-	//enemyFleet->PlaceShip(&enemyFleet->getTile(std::pair<char, int>('a', 1)), nullptr);
-
-	myFleet->PlaceShip(&myFleet->getTile(std::pair<char, int>('c', 2)),
-		&myFleet->getTile(std::pair<char, int>('d', 2)));
-	myFleet->PlaceShip(&myFleet->getTile(std::pair<char, int>('c', 4)),
-		&myFleet->getTile(std::pair<char, int>('c', 7)));
-	myFleet->PlaceShip(&myFleet->getTile(std::pair<char, int>('e', 3)),
-		&myFleet->getTile(std::pair<char, int>('e', 7)));
+	pEnemyFleet->PlaceShip(&pEnemyFleet->getTile(std::pair<char, int>('a', 1)), nullptr);
+	pEnemyFleet->PlaceShip(&pEnemyFleet->getTile(std::pair<char, int>('c', 2)),
+		&pEnemyFleet->getTile(std::pair<char, int>('c', 3)));
 }
 
 //Ha a játék DEBUG módba indítjuk,akkor beégetetten átalakít néhány játékmezõ állapotot
 void GameLogic::SetTilesINDEBUG() 
 {
-	mySea->getTileByIndex(0).setState(1);
-	mySea->getTileByIndex(1).setState(2);
+	pSea->getTileByIndex(0, true).setState(1);
+	pSea->getTileByIndex(1, true).setState(2);
+	pSea->getTileByIndex(11, true).setState(1);
+	pSea->getTileByIndex(14, true).setState(1);
+	pSea->getTileByIndex(7, true).setState(1);
 
-	mySea->getTileByIndex(11).setState(1);
-	mySea->getTileByIndex(14).setState(1);
-	mySea->getTileByIndex(7).setState(1);
-
-	mySea->getTileByIndex(0 + mySea->getEnemyIndexOffset()).setState(1);
-	mySea->getTileByIndex(1 + mySea->getEnemyIndexOffset()).setState(2);
+	pSea->getTileByIndex(0, false).setState(1);
+	pSea->getTileByIndex(1, false).setState(2);
 }
 
 //Lezárja a kapcsolatot a szerverrel
 void GameLogic::StopGame() {
-	clientHandler.quitGame();
+	clientHandler->quitGame();
 }

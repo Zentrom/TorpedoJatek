@@ -87,7 +87,7 @@ void ShipFlag::Draw() const
 {
 	vb_flag.On();
 	glDisable(GL_CULL_FACE);
-	vb_flag.DrawIndexed(GL_TRIANGLES, 0, 30, 0);
+	vb_flag.DrawIndexed(GL_TRIANGLES, 0, 30);
 	glEnable(GL_CULL_FACE);
 	vb_flag.Off();
 }

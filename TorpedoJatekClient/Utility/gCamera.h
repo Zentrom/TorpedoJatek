@@ -6,100 +6,61 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <iostream>
 #include <math.h>
 
 class gCamera
 {
 public:
-	gCamera(glm::vec3 pos);
-	//gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up);
-	~gCamera(void);
+	gCamera(const glm::vec3& pos, float mountain_height_y);
+	~gCamera();
 
-	void Update(float deltaTime);
+	void Update(float delta_time);
 
-	void SetBoundaries(float bX, float bY, float bZ);
-	void SetView(glm::vec3 eye, glm::vec3 at, glm::vec3 up);
-	void SetProj(float angle, float aspect, float zn, float zf);
-	void LookAt(glm::vec3 at);
-	void SetSpeed(float val);
+	void SetBoundaries(const glm::vec3& bound);
+	void SetView(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
+	void SetProj(float angle, float aspect, float z_near, float z_far);
+	void SetLookAt(const glm::vec3& at);
 
-	const glm::mat4& GetViewMatrix() const;
-	const glm::vec3& GetEye() const
-	{
-		return camEye;
-	}
+	const glm::vec3& GetEye() const { return camEye; }
+	const glm::vec3& GetAt() const { return camAt; }
+	const glm::vec3& GetUp() const { return camUp; }
+	const glm::vec3& GetForwardDir() const { return camFw; }
+	const glm::mat4& GetViewMatrix() const { return viewMatrix; }
+	const glm::mat4& GetProj() const { return matProj; }
+	const glm::mat4& GetViewProj() const { return matViewProj; }
 
-	glm::vec3 GetAt()
-	{
-		return camAt;
-	}
-
-	glm::vec3 GetUp()
-	{
-		return camUp;
-	}
-
-	const glm::mat4& GetProj() const
-	{
-		return matProj;
-	}
-
-	const glm::mat4& GetViewProj() const
-	{
-		return matViewProj;
-	}
-
-	void Resize(float w, float h, float fov, float viewDist);
+	void Resize(float w, float h, float fov, float view_dist);
 
 	void KeyboardDown(SDL_KeyboardEvent& key);
 	void KeyboardUp(SDL_KeyboardEvent& key);
 	void MouseMove(SDL_MouseMotionEvent& mouse);
 
 private:
-	bool BoundaryCheckNextFrame(float deltaTime);
+	bool BoundaryCheckNextFrame(float delta_time);
 	void CameraResetCheck();
 	void UpdateUV(float du, float dv);
 
-	//Boundaries the camera cannot pass
-	float boundaryX;
-	float boundaryY;
-	float boundaryZ;
+	const float sensitivityDiv = 300.0f; //Minél nagyobb annál kissebb az egér sensitivity
+	const float shiftSpeedUp = 4.0f; //Shift gombra mennyit gyorsulunk
+	
+	glm::mat4 viewMatrix; //Nézeti mátrix
+	glm::mat4 matViewProj; //Projection*view
+	glm::mat4 matProj = glm::perspective(45.0f, 800/600.0f, 0.001f, 100.0f); //Csak vetítés - Biztonsági alapérték
+	glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f); //Felfelé mutató vektor
+	glm::vec3 camFw; //Nézet irányába mutató egységvektor
+	glm::vec3 camSt; //Jobbra mutató egységvektor
 
-	// The traversal speed of the camera
-	float speed;
-	// The view matrix of the camera
-	glm::mat4 viewMatrix;
-	glm::mat4 matViewProj;
-
-	bool fast;
-
-	// The camera position.
-	glm::vec3 camEye;
-	// The vector pointing upwards
-	glm::vec3 camUp;
-	// The camera look at point.
-	glm::vec3 camAt;
-
-	// The u spherical coordinate of the spherical coordinate pair (u,v) denoting the
-	// current viewing direction from the view position m_eye. 
-	float camU;
-
-	// The v spherical coordinate of the spherical coordinate pair (u,v) denoting the
-	// current viewing direction from the view position m_eye. 
-	float camV;
-
-	// The distance of the look at point from the camera. 
-	float dist;
-
-	// The unit vector pointing towards the viewing direction.
-	glm::vec3 camFw;
-	// The unit vector pointing to the 'right'
-	glm::vec3 camSt;
-
-	glm::mat4 matProj;
-
-	float goFw;
-	float goRight;
+	glm::vec3 boundary = glm::vec3(100.0f, 100.0f, 100.0f); //Kameramozgás határai - Biztonsági alapérték
+	float speed = 4.0f * TorpedoGLOBAL::Scale; //Kamera mozgás sebessége
+	float goFw = 0; //Elõre megyünk-e
+	float goRight = 0; //Jobbra megyünk-e
+	bool fast = false; //Shift-gyorsítás
+	float camU; //U gömbi koord - része az eye-ból való nézeti iránynak  
+	float camV; //V gömbi koord - része az eye-ból való nézeti iránynak 
+	
+	glm::vec3 camEye; //Kamera pozíció
+	glm::vec3 camAt; //Mely pontra néz a kamera
+	const float mountainHeight; //Hegy magassága a boundaryhez
+	
 };
 

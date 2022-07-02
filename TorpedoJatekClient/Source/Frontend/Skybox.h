@@ -22,7 +22,7 @@ public:
 private:
 	void CreateCubeMap();
 
-	std::array<const std::string, 6> facePaths = { //A skybox oldalainak az elérési útvonalai
+	std::array<const std::string, 6> facePaths = { //A skybox oldalainak az elérési útvonalai - MIND2 MEGY
 		//"Resources/Textures/Skybox/right.jpg", "Resources/Textures/Skybox/left.jpg",
 		//"Resources/Textures/Skybox/top.jpg", "Resources/Textures/Skybox/bottom.jpg",
 		//"Resources/Textures/Skybox/back.jpg", "Resources/Textures/Skybox/front.jpg"

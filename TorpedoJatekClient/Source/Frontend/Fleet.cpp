@@ -1,10 +1,10 @@
 #include "Fleet.h"
 
-Fleet::Fleet(void)
+Fleet::Fleet(bool ally) : isAlly(ally)
 {
 }
 
-Fleet::~Fleet(void)
+Fleet::~Fleet()
 {
 	delete battleShip;
 	for (Ship* sh : ships) {
@@ -13,32 +13,31 @@ Fleet::~Fleet(void)
 }
 
 //Inicializálja egy játékos hajóseregét
-void Fleet::Init(int in_map_size, bool ally)
+void Fleet::Init(int in_map_size, float pt_center_offset)
 {
 	mapSize = in_map_size;
-	isAlly = ally;
 
 	switch (mapSize) {
 	case 5:
-		unplacedShipCount = ShipCount::Five;
+		pUnplacedShipCount = &ShipCount::Five;
 		break;
 	case 7:
-		unplacedShipCount = ShipCount::Seven;
+		pUnplacedShipCount = &ShipCount::Seven;
 		break;
 	case 9:
-		unplacedShipCount = ShipCount::Nine;
+		pUnplacedShipCount = &ShipCount::Nine;
 		break;
 	}
 
-	firstTileBattleShipOffset = ((PlayTile::getScaleXZ() * mapSize) + 1.0f) * TorpedoGLOBAL::Scale;
-	glm::vec3 battleShipOffset = glm::vec3(firstTileBattleShipOffset, 0, 0) + glm::vec3(mountainCenterBorderXOffset + mountainTileOffset, 0, 0);
+	float firstTileBattleShipOffset = ((TorpedoGLOBAL::SeaTileScaleXZ * mapSize) + bShipPlayZoneOffset) * TorpedoGLOBAL::Scale;
+	glm::vec3 battleShipOffset = glm::vec3(firstTileBattleShipOffset, 0, 0) + glm::vec3(pt_center_offset, 0, 0);
 	battleShip = new BattleShip(battleShipOffset, isAlly);
 }
 
 //Elkéri a játékos játékmezõit
-void Fleet::InitTiles(std::vector<PlayTile> &tiles)
+void Fleet::InitTiles(std::vector<PlayTile*> &tiles)
 {
-	playTiles = &tiles;
+	pPlayTiles = &tiles;
 }
 
 //Fleet adatok frissítése real-time
@@ -66,9 +65,9 @@ void Fleet::Draw(const gCamera& camera, gShaderProgram& sh_program) const
 //Megnezi hogy szabad-e a játékmezõ
 bool Fleet::CheckTile(const PlayTile& tile) const
 {
-	for (const PlayTile &playTile : *playTiles) {
-		if (tile.getPos() == playTile.getPos()) {
-			if (playTile.isUsed()) {
+	for (PlayTile* &playTile : *pPlayTiles) {
+		if (tile.getPos() == playTile->getPos()) {
+			if (playTile->isUsed()) {
 				return false;
 			}
 		}
@@ -79,12 +78,12 @@ bool Fleet::CheckTile(const PlayTile& tile) const
 //Koordináta alapján visszaad egy játékmezõt
 PlayTile& Fleet::getTile(const std::pair<char, int> &pos)
 {
-	for (PlayTile &playTile : *playTiles) {
-		if (pos == playTile.getPos()) {
-			return playTile;
+	for (PlayTile* &playTile : *pPlayTiles) {
+		if (pos == playTile->getPos()) {
+			return *playTile;
 		}
 	}
-	return playTiles->at(0);
+	return *pPlayTiles->at(0);
 }
 
 //Visszaadja azokat a mezõket,ahova egy hajó másik vége lerakható lenne
@@ -96,62 +95,62 @@ std::array<PlayTile*, 4> Fleet::getFreeBacks(const PlayTile &tile, int back_dist
 	bool upFree = true;
 	bool downFree = true;
 
-	if (((tile.getIndex() % mapSize) + back_distance) >= mapSize) {
+	if (((tile.getId() % mapSize) + back_distance) >= mapSize) {
 		rightFree = false;
 	}
-	if (((tile.getIndex() % mapSize) - back_distance) < 0) {
+	if (((tile.getId() % mapSize) - back_distance) < 0) {
 		leftFree = false;
 	}
-	if (((tile.getIndex() / mapSize) + back_distance) >= mapSize) {
+	if (((tile.getId() / mapSize) + back_distance) >= mapSize) {
 		downFree = false;
 	}
-	if (((tile.getIndex() / mapSize) - back_distance) < 0) {
+	if (((tile.getId() / mapSize) - back_distance) < 0) {
 		upFree = false;
 	}
 
 	for (int i = back_distance; i > 0; i--) {
 		if (rightFree) {
-			if (playTiles->at(tile.getIndex() + i).isUsed()) {
+			if (pPlayTiles->at(tile.getId() + i)->isUsed()) {
 				rightFree = false;
 			}
 		}
 		if (leftFree) {
-			if (playTiles->at(tile.getIndex() - i).isUsed()) {
+			if (pPlayTiles->at(tile.getId() - i)->isUsed()) {
 				leftFree = false;
 			}
 		}
 		if (downFree) {
-			if (playTiles->at(tile.getIndex() + i*mapSize).isUsed()) {
+			if (pPlayTiles->at(tile.getId() + i*mapSize)->isUsed()) {
 				downFree = false;
 			}
 		}
 		if (upFree) {
-			if (playTiles->at(tile.getIndex() - i*mapSize).isUsed()) {
+			if (pPlayTiles->at(tile.getId() - i*mapSize)->isUsed()) {
 				upFree = false;
 			}
 		}
 	}
 
 	if (rightFree) {
-		result[0] = &playTiles->at(tile.getIndex() + back_distance);
+		result[0] = pPlayTiles->at(tile.getId() + back_distance);
 	}
 	else {
 		result[0] = nullptr;
 	}
 	if (leftFree) {
-		result[1] = &playTiles->at(tile.getIndex() - back_distance);
+		result[1] = pPlayTiles->at(tile.getId() - back_distance);
 	}
 	else {
 		result[1] = nullptr;
 	}
 	if (downFree) {
-		result[2] = &playTiles->at(tile.getIndex() + back_distance * mapSize);
+		result[2] = pPlayTiles->at(tile.getId() + back_distance * mapSize);
 	}
 	else {
 		result[2] = nullptr;
 	}
 	if (upFree) {
-		result[3] = &playTiles->at(tile.getIndex() - back_distance * mapSize);
+		result[3] = pPlayTiles->at(tile.getId() - back_distance * mapSize);
 	}
 	else {
 		result[3] = nullptr;
@@ -163,10 +162,14 @@ std::array<PlayTile*, 4> Fleet::getFreeBacks(const PlayTile &tile, int back_dist
 //Lerak egy hajót a pályára
 void Fleet::PlaceShip(PlayTile *front, PlayTile *back)
 {
+	if (TorpedoGLOBAL::Debug) {
+		std::cout << "-------------------------------------" << std::endl;
+	}
+
 	std::vector<PlayTile*> shipTiles;
 
 	if (front) {
-		PlayTile* tmpTile = &playTiles->at(front->getIndex());
+		PlayTile* tmpTile = pPlayTiles->at(front->getIndex());
 		if (!back) {
 			shipTiles.push_back(tmpTile);
 		}
@@ -174,37 +177,45 @@ void Fleet::PlaceShip(PlayTile *front, PlayTile *back)
 		{
 			while (tmpTile->getIndex() > back->getIndex()) {
 				shipTiles.push_back(tmpTile);
-				tmpTile--;
+				tmpTile = pPlayTiles->at(tmpTile->getIndex() - 1);
 			}
 			while (tmpTile->getIndex() < back->getIndex()) {
 				shipTiles.push_back(tmpTile);
-				tmpTile++;
+				tmpTile = pPlayTiles->at(tmpTile->getIndex() + 1);
 			}
 			shipTiles.push_back(back);
 		}
 		else if (front->getPos().first != back->getPos().first) {
-			while (tmpTile->getIndex() > back->getIndex()) {
-				shipTiles.push_back(tmpTile);
-				tmpTile -= mapSize;
+			if (front->getPos().second != back->getPos().second) {
+				std::cout << "[Fleet_PlaceShip]Error while placing ship: Input column and row both mismatch!" << std::endl;
+				return;
 			}
-			while (tmpTile->getIndex() < back->getIndex()) {
-				shipTiles.push_back(tmpTile);
-				tmpTile += mapSize;
+			else {
+				while (tmpTile->getIndex() > back->getIndex()) {
+					shipTiles.push_back(tmpTile);
+					tmpTile = pPlayTiles->at(tmpTile->getIndex() - mapSize);
+				}
+				while (tmpTile->getIndex() < back->getIndex()) {
+					shipTiles.push_back(tmpTile);
+					tmpTile = pPlayTiles->at(tmpTile->getIndex() + mapSize);
+				}
 			}
 			shipTiles.push_back(back);
 		}
 
-		//Ez valamiért csak így megy,ha csak shipTiles-os for van akkor a shipBack tile nem lesz used
 		for (PlayTile *til : shipTiles) {
-			for (PlayTile &tile : *playTiles) {
-				if (til->getIndex() == tile.getIndex()) {
-					tile.setUsed(true);
-					break;
-				}
+			if (TorpedoGLOBAL::Debug) {
+				std::cout << "Fleet::PlaceShip(): " << til->getIndex() << " ally? " << isAlly << std::endl;
 			}
+			til->setUsed(true);
+			//for (PlayTile* &tile : *pPlayTiles) {
+			//	if (til->getIndex() == tile->getIndex()) {
+			//		tile->setUsed(true);
+			//		break;
+			//	}
+			//}
 		}
 		ships.push_back(new Ship(shipTiles, isAlly));
-		//ships.emplace_back(shipTiles, isAlly);
 	}
 }
 
@@ -239,9 +250,9 @@ void Fleet::HitFleet(std::pair<char, int> hit_pos)
 }
 
 //Visszaadja a le nem rakott hajók számát méret alapján(1x1,2x2,stb.)
-const std::array<int, 4>& Fleet::getUnplacedShipCount() const
+const std::array<int, 4>* Fleet::getUnplacedShipCount() const
 {
-	return unplacedShipCount;
+	return pUnplacedShipCount;
 }
 
 //Visszaadja azoknak a mezõknek a koordinátáit amin van hajó, kilõttek is akár
@@ -261,3 +272,7 @@ BattleShip& Fleet::getBattleShip()
 	return *battleShip;
 }
 
+const bool Fleet::getIsAlly() const
+{
+	return isAlly;
+}

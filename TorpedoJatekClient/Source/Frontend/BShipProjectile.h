@@ -11,13 +11,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
+#include <iostream>
 #include <vector>
 
 //Ágyú lövedéke
 class BShipProjectile
 {
 public:
-	//BShipProjectile();
 	BShipProjectile(const glm::mat4& cannon_shared_trans, bool ally);
 	~BShipProjectile();
 
@@ -25,7 +25,6 @@ public:
 	bool Animate(float delta_time);
 	void Draw(const gCamera& camera,const glm::mat4& shared_trans);
 
-	//const ParticleGroup* getProjectileParticle() const;
 private:
 	void Init();
 	glm::vec3 GetUV(float u, float v);
@@ -49,7 +48,6 @@ private:
 	glm::vec3 currentPos; //Lövedék jelenlegi pos
 	glm::vec3 targetPos; //Lövedék célpont
 
-	//const glm::mat4 cannonSharedTrans; //Ágyúval közös transzformációk
 	const glm::vec3 startPos; //Lövedék kiinduló pos
 	const bool isAlly; //Mi lövedékünk-e
 	ParticleGroup* const projectileParticle; //Részecskecsoport

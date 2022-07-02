@@ -1,6 +1,10 @@
-v0.0.5b-Frontend Optimization Nr.2
+v0.0.5c-Scaling Fix
 -----------------------------------------------------------------------------------------
--SeaTiles are now drawn in 1 render call instead of 100*100.
--PlayTiles and SeaTiles now have only 1 vertexbuffer each in Sea class.
--Moved SeaTiles data to PlayTiles and Sea.(inheritance removed)
--Reviewed the frontend classes.
+-Game window is resizable again.
+-Reviewed and fixed Utility classes.
+-Fixed Global and individual scalings of ingame objects.
+(Mountain width on X doesn't affect PlayTiles start area anymore)
+-SeaTileRow now affects the map area, while terrainScale affects the ground tile
+amount on that area.
+-Fixed placement and sinking direction of enemy Ships.
+-Reviewed classes that are relevant while TorpedoGLOBAL::Debug is true.

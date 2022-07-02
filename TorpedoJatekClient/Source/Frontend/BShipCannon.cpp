@@ -1,16 +1,9 @@
 #include "BShipCannon.h"
 
-//BShipCannon::BShipCannon(void)
-//{
-//	Init();
-//}
-
 BShipCannon::BShipCannon(const glm::vec3 &battle_ship_translate,bool ally, float battle_ship_scale_x) 
 	: bShipTranslate(battle_ship_translate), alliedRotation(ally ? glm::pi<float>() : 0.0f),
 	cannonTranslateX(battle_ship_scale_x / cannonBShipDivFactor)
 {
-	//alliedRotation = (ally ? glm::pi<float>() : 0.0f);
-	//cannonTranslateX = battleShipScaleX / 8.0f;
 	Init();
 
 	projectileSharedTrans = glm::translate(bShipTranslate) * glm::rotate(alliedRotation, glm::vec3(0, 1.0f, 0))
@@ -101,7 +94,7 @@ void BShipCannon::Draw(const gCamera& camera, gShaderProgram& sh_program, const 
 	sh_program.SetTexture("texImage", 0, cannonTextureID);
 
 	vb_cannon.On();
-	vb_cannon.DrawIndexed(GL_TRIANGLES, 0, circleRes * 3 * 3, 0);
+	vb_cannon.DrawIndexed(GL_TRIANGLES, 0, circleRes * 3 * 3);
 	vb_cannon.Off();
 	sh_program.SetUniform("hasTexture", false);
 

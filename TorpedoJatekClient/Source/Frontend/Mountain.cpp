@@ -1,9 +1,6 @@
 
 #include "Mountain.h"
 
-const float Mountain::heightY = 8.0f;
-const float Mountain::widthX = 6.0f;
-
 Mountain::Mountain() : mountainScale(glm::vec3(widthX, heightY, widthZ) * TorpedoGLOBAL::Scale),
 	matWorld(glm::scale(mountainScale)), matWorldIT(glm::transpose(glm::inverse(matWorld)))
 {
@@ -76,24 +73,18 @@ void Mountain::Draw(const gCamera& camera, gShaderProgram& sh_program) const
 	sh_program.SetTexture("texImage", 0, mountainTextureID);
 
 	vb_mountain.On();
-	vb_mountain.DrawIndexed(GL_TRIANGLES, 0, 2 * 3 * mountainResolution * mountainResolution, 0);
+	vb_mountain.DrawIndexed(GL_TRIANGLES, 0, 2 * 3 * mountainResolution * mountainResolution);
 	vb_mountain.Off();
 
 	sh_program.SetUniform("hasTexture", false);
 }
 
-//Visszaadja hegy szélességét
-float Mountain::getWidthX()
-{
-	return widthX;
-}
-
-float Mountain::getHeight()
-{
-	return heightY;
-}
-
 const float Mountain::getWidthZ() const
 {
 	return widthZ;
+}
+
+const float Mountain::getHeightY() const
+{
+	return heightY;
 }

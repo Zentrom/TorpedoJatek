@@ -14,24 +14,21 @@
 #include <glm/gtx/transform2.hpp>
 
 #include <iostream>
-#include <sstream>
 #include <string>
-#include <utility>
 #include <array>
-#include <algorithm>
 
 //Játék háttérlogikájával kapcsolatos osztály
 class GameLogic
 {
 public:
-	GameLogic(void);
-	~GameLogic(void);
+	GameLogic(Fleet& player, Fleet& enemy, Sea& sea);
+	~GameLogic();
 
-	int Init(Fleet*& player, Fleet*& enemy, Sea*& sea);
+	void Init();
 	void ConnectionSetup();
-	void InitGame();
 	void DisplayMessage(GameState gameState, int related_data);
 	void DisplayError(GameState gameState, int related_data);
+
 	bool CheckForUnplacedShips(int shipSize);
 	bool CheckAnyUnplacedShipLeft();
 	bool PlaceShip(int tileIndex, int shipSize);
@@ -39,45 +36,35 @@ public:
 
 	bool CheckStartSignal();
 	void StopGame();
-
-	PlayTile* Shoot(int tileindex);
-	PlayTile* GetShoot();
 	int CheckVictoryState();
+	PlayTile* Shoot(int tileindex);
 
+	PlayTile* GetShoot();
 	int getPlayerNum();
-protected:
-	ClientHandler clientHandler;	//A hálózati kapcsolat kliens-oldali vezérlõje
 
+private:
 	//Debug módban beégetett dolgok
 	void PlaceShipsINDEBUG();
 	void SetTilesINDEBUG();
-
 	bool CheckString(std::string coord);
-	//PlayTile ProcessString(std::string coord);
 	std::string ProcessTile(const std::pair<char, int> &tile);
 	bool TileProcessable(const std::pair<char, int> &tile);
 	int ConvertCoordToTileIndex(const std::pair<char, int> &tile);
 
-	std::string output = "Torpedo Jatek";
-
-	PlayTile *shipFront; //Hajó elejét foglaló mezõ
-	PlayTile *shipBack; //Hajó hátát foglaló mezõ
-	bool shipFrontPlaced = false; //Leraktuk-e már egy hajó elejét
-	std::array<PlayTile*, 4> freeChoices; //Hajó hátának megfelelõ pozíciók
-
-	std::string ip = "127.0.0.1";	//A szerver-ip szöveges alakja
-	int port = 27015; //szerver port
-
-	Fleet *myFleet;	//Pointer a mi hajóseregünkre
-	Fleet *enemyFleet;	//Pointer az ellenfél hajóseregére
-	Sea *mySea;	//Pointer a tengerre
-
-	std::array<int, 4> &unplacedShips = std::array<int, 4>(); //Hány hajó nincs még lerakva(külön méretekben)
-
-	int mapSize = 7;	//Tárolt pályaméret DEBUG módhoz
-	int choice = 0; //Felhasználói input,mikor dönteni kell
-
-	int playerNum;	//Ha 1 akkor mi kezdünk,ha 2 akkor nem
-
+	ClientHandler* clientHandler = new ClientHandler();	//A hálózati kapcsolat kliens-oldali vezérlõje
+	std::array<int, 4> unplacedShips; //Hány hajó nincs még lerakva(külön méretekben)
+	Fleet *pMyFleet; //Pointer a mi hajóseregünkre
+	Fleet *pEnemyFleet; //Pointer az ellenfél hajóseregére
+	Sea *pSea;	//Pointer a tengerre
 	ResponseState matchState = ResponseState::START_OF_GAME; //Szerverrel való kommunikáció fázisa
+
+	//Játékmezõ kezdetének távolsága az origótól
+	const float playZoneCenterOffset = 4.0f * TorpedoGLOBAL::SeaTileScaleXZ * TorpedoGLOBAL::Scale;
+
+	std::string output = "Torpedo Jatek"; //Kimeneti szöveg consolera
+	std::string ip = "127.0.0.1"; //A szerver-ip szöveges alakja
+	int port = 27015; //szerver port
+	int mapSize = 7; //Tárolt pályaméret - Alapérték DEBUG módhoz
+	int playerNum; //Ha 1 akkor mi kezdünk,ha 2 akkor nem
+
 };

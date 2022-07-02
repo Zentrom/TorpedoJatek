@@ -1,12 +1,14 @@
 
 #include "Terrain.h"
 
-Terrain::Terrain() : terrainSizeXZ(terrainScale*terrainScale), matWorld(glm::mat4(1.0f)),
+//matWorld itt a VB-be beégetett traszok után hat, hagyjuk így ha lehet
+Terrain::Terrain(int seatile_row_count, float mountain_height_y) : 
+	groundScaleToSeaTile(seatile_row_count / static_cast<float>(terrainScale)),
+	groundMountainY((mountain_height_y / -2.0f - 0.01f) * TorpedoGLOBAL::Scale),
+	terrainSizeXZ(terrainScale*terrainScale), matWorld(glm::mat4(1.0f)),
 	matWorldIT(glm::transpose(glm::inverse(matWorld))),
-	groundScaleXZ(PlayTile::getScaleXZ() * groundScaleToSeaTile * TorpedoGLOBAL::Scale)
+	groundScaleXZ(TorpedoGLOBAL::SeaTileScaleXZ * groundScaleToSeaTile * TorpedoGLOBAL::Scale)
 {
-	//std::cout << groundScaleXZ << " SeaGS " << SeaTile::getScaleXZ() << " gsts " << groundScaleToSeaTile << " TGS "
-	//	<< TorpedoGLOBAL::Scale;
 	groundTileTrans.reserve(terrainSizeXZ);
 }
 
@@ -19,6 +21,11 @@ Terrain::~Terrain()
 //Inicializálja a Földet összerakó darabokat
 void Terrain::Init()
 {
+	if (TorpedoGLOBAL::Debug) {
+		std::cout << "-----------------------------------" << std::endl;
+		std::cout << "Terrain::groundScaleToSeatile: " << groundScaleToSeaTile << std::endl;
+	}
+
 	CalcGroundTileTransformations();
 
 	vb_terrain.AddAttribute(0, 3); //pos
@@ -64,10 +71,14 @@ void Terrain::CalcGroundTileTransformations()
 	glm::vec3 groundResult = glm::vec3(0.0f);
 	for (int i = 0; i < terrainSizeXZ; ++i) {
 		ground_transX = ((i % terrainScale) * groundScaleXZ)
-			//+ AZÉRT VAN HOGY CENTEREZVE LEGYEN CSAK MIÉRT ENNYIVEL PONT??
-			- (groundScaleXZ * terrainScale / 2.0f) + (groundScaleXZ / 2.0f);
+			//+ AZÉRT VAN HOGY CENTEREZVE LEGYEN CSAK MIÉRT ENNYIVEL PONT?? Ahányszor nagyobb a seatile
+			- (groundScaleXZ * terrainScale / 2.0f) + (groundScaleXZ / 4.0f);
 		ground_transZ = ((i / terrainScale) * groundScaleXZ)
 			- (groundScaleXZ * terrainScale / 2.0f) + (groundScaleXZ / 4.0f);
+
+		//if (i == 0) {
+		//	std::cout << "Ground: " << ground_transX << " " << ground_transZ << std::endl;
+		//}
 
 		groundResult += glm::vec3(ground_transX, groundMountainY, ground_transZ);
 		//std::cout << ground_transX << " ts "  << terrainScale << " gr " << groundScaleXZ << " ";
@@ -89,7 +100,7 @@ void Terrain::Draw(const gCamera& camera, gShaderProgram& sh_program) const
 	sh_program.SetUniform("eye_pos", camera.GetEye());
 
 	vb_terrain.On();
-	vb_terrain.DrawIndexed(GL_TRIANGLES, 0, 6 * terrainSizeXZ, 0);
+	vb_terrain.DrawIndexed(GL_TRIANGLES, 0, 6 * terrainSizeXZ);
 	vb_terrain.Off();
 	sh_program.SetUniform("hasTexture", false);
 }

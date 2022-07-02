@@ -22,10 +22,10 @@ EventHandler::EventHandler()
 	if (!missSound) {
 		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
 	}
-	if (!TorpedoGLOBAL::AudioEnabled) {
-		Mix_VolumeChunk(hitSound, 0);
-		Mix_VolumeChunk(missSound, 0);
-	}
+//	if (!TorpedoGLOBAL::AudioEnabled) {
+	Mix_VolumeChunk(hitSound, 0);
+	Mix_VolumeChunk(missSound, 0);
+	//}
 }
 
 EventHandler::~EventHandler()

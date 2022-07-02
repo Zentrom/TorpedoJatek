@@ -3,37 +3,40 @@ Megoldani egy tényleges visszakapcsolódást a serverre,lementett állapottal, 60se
 std::exit()-ektõl lehetõleg megszabadulni. Beta verziónál.
 std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
 
-Freetype vagy SDL rtf/ttf betuknek
+(Freetype) vagy !SDL ttf! betuknek
 
 Hogy jelenjenek meg az ellenfél hajói?(006)
 
 Vertexbufferek lehetnének static-ok talán?
-Javítani seaTilesize és Mountain::width változtatást.
-SeaTile és Ground darabokat egy Vertexbufferbe(+Vertexbuffert egyszer initelni)/Instancing/Deferred shading.004+
-SeaTile darabszáma groundscale-tõl függjön.
-Fleet-be és más osztályokba a const & parameteres osztályok nem referenciát adnak át,ezért copy készül.
-GameInstance-be stateRelatedData-t okosabban(006)
-INDEBUG-ba lehessen enemy hajót is letenni(Placeship javítás)
+SeaTile és Ground Instancing/Deferred shading.004+
 
 Csata után a vesztesnek kirajzolja a gyõztes túlélõ hajóit?
 Icon az exenek?
-Vertexbuffer Drawindexbe a default parameter declarationbe kell, first argument nem csinál semmit
 Debug buildbe módba tesztelni a progit 006
-006-nál eldönteni hogy mikor pass-by-pointer, pass-by-reference
 006 Ha már kilött hajó pozíciójára lövök akkor 00 koordra ir miss-t(csak aki kapja a lövést ott irja rosszul)
 Lövés animáció kezdetekor már kiirja hogy hova löttünk meg átszinezi a tile-t,végén kéne.
 006 Frontent osztályokat mappákba
 Ne tünjön el a particle miután a lövedék célba ér
 Beta után Particleeknek legyen mozgása + transparency/szín változása
 Particle - Cylindrical Billboaring -> Spherical
-Ellenfél oldalán a hajók rossz irányba süllyednek Z tengelyen. *-1 kell
 Megoldani hogy menjen a találat hangja is006
-A mute gomb minden hangot muteoljon. CameraBounds is gombra mûködjön
+A mute gomb minden hangot muteoljon. CameraBounds is gombra mûködjön??
 Exception propagation - Forceolt destructor hívás?
-FPSlimitert tesztelni mikor lesz több fps
 Camera viewdistance+fog-al eltüntetni a map szélét
 
 SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE window flagek betánál
 Operator overloading?
 
 007-be a Kiiratás már a Win ablakba legyen(legalább a játékmenetes,error nem muszáj)
+std::optional-t használni ha kell
+
+
+DEBUG-ra: ÁT LETT NÉZVE:
+-Utilityból minden
+-main
+-TorpedoJatekClient
+-KB MINDEN Update és Render talán nem annyira.
+
+SERVERRE:
+
+Clientre:

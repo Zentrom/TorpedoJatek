@@ -28,7 +28,7 @@ SDL_GetTicks64() hogy tovább futhasson?
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Coding conventions:
 -Function armunents: function(name_name)
--Pointers: int* name
+-Pointers: int* name - int* pName = referenciára mutat(don't delete!)
 -References: int& name
 -Member names: nameName
 -Transformations: nmTranslate
@@ -43,9 +43,7 @@ Heapen lévõ adatra mutató dereferált pointert adok át függvényeknek referenciaké
 Így csak függvény hívásnál kell dereferálni, lehet használni a "." operátort,
 viszont csak a függvény hívás elõtt lehet checkelni, hogy nullptr-e.
 
-Mountain a Frontend kiinduló gyökere. Static változóktól megszabadulni??
-
-x86-os buildelésnél memory limit van.
+x86-os buildelésnél memory limit van 1-2GB.
 
 Polygon draw mode:
 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

@@ -1,39 +1,26 @@
 
 #include "gCamera.h"
 
-// Initializes a new instance of the gCamera class.
-gCamera::gCamera(glm::vec3 pos) : camEye(pos), boundaryX(100.0f), boundaryY(100.0f), boundaryZ(100.0f),
-camAt(0.0f), camUp(0.0f, 1.0f, 0.0f), speed(4.0f), goFw(0), goRight(0), fast(false)
+gCamera::gCamera(const glm::vec3& pos, float mountain_height_y) : camEye(pos), camAt(0.0f),
+	mountainHeight(mountain_height_y)
 {
-	SetView(camEye * TorpedoGLOBAL::Scale,
-		//camAt
-		glm::normalize(camAt-camEye)
-		, camUp);
-	dist = glm::length(camAt - camEye);
-	SetProj(45.0f, 800 / 600.0f, 0.001f, 1000.0f);
+	SetView(camEye * TorpedoGLOBAL::Scale, camAt, camUp);
 }
 
-//gCamera::gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up) : m_speed(16.0f), m_goFw(0), m_goRight(0), m_dist(10), m_slow(false)
-//{
-//	SetView(_eye, _at, _up);
-//}
-
-gCamera::~gCamera(void)
+gCamera::~gCamera()
 {
 }
 
 //Beállítja a kamera határait
-void gCamera::SetBoundaries(float bX, float bY, float bZ)
+void gCamera::SetBoundaries(const glm::vec3& bound)
 {
-	boundaryX = bX;
-	boundaryY = bY;
-	boundaryZ = bZ;
+	boundary = bound;
 
 	CameraResetCheck();
 }
 
-//Beállítja a nézését meg a járását
-void gCamera::SetView(glm::vec3 eye, glm::vec3 at, glm::vec3 up)
+//Beállítja a kamera nézetét
+void gCamera::SetView(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up)
 {
 	camEye = eye;
 	camAt = at;
@@ -42,43 +29,37 @@ void gCamera::SetView(glm::vec3 eye, glm::vec3 at, glm::vec3 up)
 	camFw = glm::normalize(camAt - camEye);
 	camSt = glm::normalize(glm::cross(camFw, camUp));
 
-	dist = glm::length(camAt - camEye);
-
 	camU = atan2f(camFw.z, camFw.x);
 	camV = acosf(camFw.y);
+	viewMatrix = glm::lookAt(camEye, camAt, camUp);
 }
 
-void gCamera::SetProj(float angle, float aspect, float zn, float zf)
+//Kiszámítja a nézet-projekciós mátrixot
+void gCamera::SetProj(float angle, float aspect, float z_near, float z_far)
 {
-	matProj = glm::perspective(angle, aspect, zn, zf);
+	matProj = glm::perspective(angle, aspect, z_near, z_far);
 	matViewProj = matProj * viewMatrix;
-}
-
-//Gets the view matrix.
-const glm::mat4& gCamera::GetViewMatrix() const
-{
-	return viewMatrix;
 }
 
 //Kamara mozgását kezeli
-void gCamera::Update(float deltaTime)
+void gCamera::Update(float delta_time)
 {
-	if (BoundaryCheckNextFrame(deltaTime)) {
-		camEye += (goFw*camFw + goRight*camSt)*speed*deltaTime;
-		camAt += (goFw*camFw + goRight*camSt)*speed*deltaTime;
-	}
+	if (BoundaryCheckNextFrame(delta_time)) {
+		camEye += (goFw*camFw + goRight*camSt)*speed*delta_time;
+		camAt += (goFw*camFw + goRight*camSt)*speed*delta_time;
 
-	viewMatrix = glm::lookAt(camEye, camAt, camUp);
-	matViewProj = matProj * viewMatrix;
+		viewMatrix = glm::lookAt(camEye, camAt, camUp);
+		matViewProj = matProj * viewMatrix;
+	}
 }
 
 //Megnézi,hogy a következõ képkockára a kamera már kiesne-e a játéktérbõl
-bool gCamera::BoundaryCheckNextFrame(float deltaTime)
+bool gCamera::BoundaryCheckNextFrame(float delta_time)
 {
 	if (TorpedoGLOBAL::CameraBounds) {
-		glm::vec3 tmpEye = camEye + (goFw*camFw + goRight*camSt)*speed*deltaTime;
-		if (tmpEye.x > boundaryX || tmpEye.x < -boundaryX || tmpEye.y > boundaryY || tmpEye.y < -boundaryY / 8.0f
-			|| tmpEye.z > boundaryZ || tmpEye.z < -boundaryZ)
+		glm::vec3 tmpEye = camEye + (goFw*camFw + goRight*camSt)*speed*delta_time;
+		if (tmpEye.x > boundary.x || tmpEye.x < -boundary.x || tmpEye.y > boundary.y || tmpEye.y < -boundary.y / mountainHeight
+			|| tmpEye.z > boundary.z || tmpEye.z < -boundary.z)
 		{
 			return false;
 		}
@@ -86,41 +67,36 @@ bool gCamera::BoundaryCheckNextFrame(float deltaTime)
 	return true;
 }
 
-//Resets the camera if it's out of bounds
+//Visszaállítja a kamera pozíciót ha az a határokon kívûl esik
 void gCamera::CameraResetCheck()
 {
 	if (TorpedoGLOBAL::CameraBounds) {
-		if (camEye.x > boundaryX || camEye.x < -boundaryX || camEye.y > boundaryY || camEye.y < -boundaryY / 8.0f
-			|| camEye.z > boundaryZ || camEye.z < -boundaryZ)
+		if (camEye.x > boundary.x || camEye.x < -boundary.x || camEye.y > boundary.y || camEye.y < -boundary.y / mountainHeight
+			|| camEye.z > boundary.z || camEye.z < -boundary.z)
 		{
-			camEye = glm::vec3(-boundaryX / 2.0f, boundaryY / 2.0f, boundaryZ / 2.0f);
+			camEye = glm::vec3(-boundary.x / 2.0f, boundary.y / 2.0f, boundary.z / 2.0f);
 			SetView(camEye, camAt, camUp);
 		}
 	}
 }
 
-//Updates the UV
+//UV gömbi koord alapján kezeli a kamera forgatást
 void gCamera::UpdateUV(float du, float dv)
 {
 	camU += du;
 	camV = glm::clamp<float>(camV + dv, 0.1f, 3.1f);
 
-	camAt = camEye + dist*glm::vec3(cosf(camU)*sinf(camV),
-		cosf(camV),
+	camAt = camEye + glm::vec3(cosf(camU)*sinf(camV), cosf(camV),
 		sinf(camU)*sinf(camV));
 
 	camFw = glm::normalize(camAt - camEye);
 	camSt = glm::normalize(glm::cross(camFw, camUp));
 }
 
-void gCamera::SetSpeed(float val)
+//Ablak átméretezés esetén
+void gCamera::Resize(float w, float h, float fov, float view_dist)
 {
-	speed = val;
-}
-
-void gCamera::Resize(float w, float h, float fov, float viewDist)
-{
-	matProj = glm::perspective(fov, w / h, 0.01f, viewDist);
+	matProj = glm::perspective(fov, w / h, 0.001f, view_dist);
 
 	matViewProj = matProj * viewMatrix;
 }
@@ -134,7 +110,7 @@ void gCamera::KeyboardDown(SDL_KeyboardEvent& key)
 		if (!fast)
 		{
 			fast = true;
-			speed *= 4.0f;
+			speed *= shiftSpeedUp;
 		}
 		break;
 	case SDLK_w:
@@ -161,7 +137,7 @@ void gCamera::KeyboardUp(SDL_KeyboardEvent& key)
 		if (fast)
 		{
 			fast = false;
-			speed /= 4.0f;
+			speed /= shiftSpeedUp;
 		}
 		break;
 	case SDLK_w:
@@ -179,12 +155,12 @@ void gCamera::MouseMove(SDL_MouseMotionEvent& mouse)
 {
 	if (mouse.state & SDL_BUTTON_RMASK)
 	{
-		UpdateUV(mouse.xrel / 200.0f, mouse.yrel / 200.0f);
+		UpdateUV(mouse.xrel / sensitivityDiv, mouse.yrel / sensitivityDiv);
 	}
 }
 
-void gCamera::LookAt(glm::vec3 at)
+//Nem a GLM-es!
+void gCamera::SetLookAt(const glm::vec3& at)
 {
 	SetView(camEye, at, camUp);
 }
-

@@ -1,19 +1,11 @@
 #include "BShipProjectile.h"
 
-//BShipProjectile::BShipProjectile(void)
-//{
-//	Init();
-//}
-
 //cannon_shared_trans mátrixból az utsó oszlop elsõ 3 sora a mozgatás
-BShipProjectile::BShipProjectile(const glm::mat4 &cannon_shared_trans, bool ally) 
-	//: cannonSharedTrans(cannon_shared_trans), isAlly(ally)
-	: startPos(glm::vec3(cannon_shared_trans[3][0], cannon_shared_trans[3][1], cannon_shared_trans[3][2])),
+BShipProjectile::BShipProjectile(const glm::mat4 &cannon_shared_trans, bool ally) : 
+	startPos(glm::vec3(cannon_shared_trans[3][0], cannon_shared_trans[3][1], cannon_shared_trans[3][2])),
 	isAlly(ally), projectileParticle(new ParticleGroup(projectileScale.x))
 {
-	//projectileStartPos = glm::vec3(cannonSharedTrans[3][0], cannonSharedTrans[3][1], cannonSharedTrans[3][2]);
 	currentPos = startPos;
-	//projectileParticle = new ParticleGroup(projectileScale.x);
 	Init();
 }
 
@@ -76,10 +68,8 @@ void BShipProjectile::Fire(const glm::vec3& shot_tile_pos)
 	dist.x = glm::distance<float>(currentPos.x, targetPos.x);
 	dist.y = dist.x / distHeightDivFactor;
 	dist.z = targetPos.z - currentPos.z;
-	//dist.z = glm::distance<float>(projectileCurrentPos.z, projectileTargetPos.z);
 
 	dist.x *= (isAlly ? 1.0f : -1.0f);
-	//dist.z *= (isAlly ? 1.0f : -1.0f); VALSZEG NEMKELL HA EDDIG MENT
 }
 
 //Animáció - igazat ad vissza ha még tart
@@ -127,7 +117,7 @@ void BShipProjectile::Draw(const gCamera& camera,const glm::mat4& shared_trans)
 	sh_projectile.SetUniform("MVP", mvp);
 
 	vb_projectile.On();
-	vb_projectile.DrawIndexed(GL_TRIANGLES, 0, circleResHor * circleResVert * 2 * 3, 0);
+	vb_projectile.DrawIndexed(GL_TRIANGLES, 0, circleResHor * circleResVert * 2 * 3);
 	vb_projectile.Off();
 
 	for (std::pair<const glm::vec3, float> &par : particles) {
@@ -150,8 +140,3 @@ glm::vec3 BShipProjectile::GetUV(float u, float v) {
 
 	return glm::vec3(cu * sv, cv, su * sv);
 }
-
-//const ParticleGroup* BShipProjectile::getProjectileParticle() const
-//{
-//	return projectileParticle;
-//}

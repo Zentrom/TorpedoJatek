@@ -8,13 +8,14 @@ TorpedoJatekClient::TorpedoJatekClient()
 
 TorpedoJatekClient::~TorpedoJatekClient()
 {
-	//Mix_Quit();
 	Mix_CloseAudio();
 
 	delete gameInstance;
 	delete sdlEvent;
 	SDL_GL_DeleteContext(glContext);
 	SDL_DestroyWindow(gameWindow);
+	IMG_Quit();
+	Mix_Quit();
 	SDL_Quit();
 
 	delete clientVersion;
@@ -73,6 +74,13 @@ int TorpedoJatekClient::Init()
 		return 1;
 	}
 
+	//JPG és PNG formátumok támogatásának a betöltése
+	int imageFormats = IMG_INIT_JPG | IMG_INIT_PNG;
+	if (IMG_Init(imageFormats) & imageFormats != imageFormats) {
+		std::cout << "[IMG_Init]Failed to init required JPG and PNG support: " << SDL_GetError() << std::endl;
+		return 1;
+	}
+
 	return 0;
 }
 
@@ -85,13 +93,14 @@ int TorpedoJatekClient::CreateGameWindow()
 	gameWindow = SDL_CreateWindow(window_title.str().c_str(),
 		rightOffset, downOffset, widthWindow, heightWindow, flagsWindow);
 
-	if (gameWindow == 0)
+	if (gameWindow == nullptr)
 	{
 		std::cout << "[SDL_CreateWindow]Failed to create window: " << SDL_GetError() << std::endl;
 		return 1;
 	}
 
 	glContext = SDL_GL_CreateContext(gameWindow);
+
 	if (glContext == 0)
 	{
 		std::cout << "[SDL_GL_CreateContext]Failed to create GLcontext: " << SDL_GetError() << std::endl;
@@ -112,7 +121,6 @@ int TorpedoJatekClient::CreateGameWindow()
 	glGetIntegerv(GL_MAJOR_VERSION, &glVersion[0]);
 	glGetIntegerv(GL_MINOR_VERSION, &glVersion[1]);
 	std::cout << "Running OpenGL Version " << glVersion[0] << "." << glVersion[1] << std::endl;
-
 	if (glVersion[0] == -1 && glVersion[1] == -1)
 	{
 		std::cout << "[OGLcontext]Error creating OpenGL context! One of the SDL_GL_SetAttribute(...) calls might be wrong." << std::endl;
