@@ -3,8 +3,7 @@
 PlayTile::PlayTile(const std::pair<char, int>& pos, const glm::vec3& trans, const glm::vec3& scale, 
 	int ind, int ident_num) : 
 	position(pos), ptTranslate(trans), ptScale(scale), index(ind), id(ident_num),
-	matWorld(glm::translate(ptTranslate) * glm::scale(ptScale)),
-	matWorldIT(glm::transpose(glm::inverse(matWorld))),
+	matWorldOutline(glm::translate(ptTranslate) * glm::scale(ptScale)),
 	matWorldPlayTile(glm::translate(ptTranslate) * glm::scale(ptScale - outlineWidth)),
 	matWorldPlayTileIT(glm::transpose(glm::inverse(matWorldPlayTile)))
 {
@@ -17,12 +16,10 @@ PlayTile::~PlayTile()
 //Játékmezõ indexét rajzoljuk ki az alpha színcsatornába
 void PlayTile::PreProcess(const gCamera& camera, gShaderProgram& sh_program, const gVertexBuffer& vb_buffer) const
 {
-	glm::mat4 mvp = camera.GetViewProj() * matWorld;
+	glm::mat4 mvp = camera.GetViewProj() * matWorldOutline;
 	
-	sh_program.SetUniform("world", matWorld);
-	sh_program.SetUniform("worldIT", matWorldIT);
+	sh_program.SetUniform("world", matWorldOutline);
 	sh_program.SetUniform("MVP", mvp);
-	sh_program.SetUniform("is_preprocess", true);
 	sh_program.SetUniform("tile_index", id);
 
 	vb_buffer.On();
@@ -38,7 +35,6 @@ void PlayTile::Draw(const gCamera& camera, gShaderProgram& sh_program, const gVe
 	sh_program.SetUniform("world", matWorldPlayTile);
 	sh_program.SetUniform("worldIT", matWorldPlayTileIT);
 	sh_program.SetUniform("MVP", mvp);
-	//sh_program.SetUniform("is_seatile", true);
 	sh_program.SetUniform("tilestate_changed", isStateChanged);
 	sh_program.SetUniform("tile_state", stateColor);
 
@@ -46,20 +42,16 @@ void PlayTile::Draw(const gCamera& camera, gShaderProgram& sh_program, const gVe
 	vb_buffer.DrawIndexed(GL_TRIANGLES, 0, 6);
 	vb_buffer.Off();
 
-	//sh_program.SetUniform("hasTexture", false);
-	//sh_program.SetUniform("is_seatile", false);
 	sh_program.SetUniform("tilestate_changed", false);
 }
 
 //Körvonalakat rajzolja ki a játékmezõk köré
 void PlayTile::OutlineDraw(const gCamera& camera, gShaderProgram& sh_program, const gVertexBuffer& vb_buffer) const
 {
-	glm::mat4 mvp = camera.GetViewProj() * matWorld;
+	glm::mat4 mvp = camera.GetViewProj() * matWorldOutline;
 
-	sh_program.SetUniform("world", matWorld);
-	sh_program.SetUniform("worldIT", matWorldIT);
+	sh_program.SetUniform("world", matWorldOutline);
 	sh_program.SetUniform("MVP", mvp);
-	//sh_program.SetUniform("is_preprocess", false);
 	sh_program.SetUniform("tile_state", stateColor);
 	sh_program.SetUniform("tile_index", id);
 
@@ -155,3 +147,7 @@ const glm::vec3& PlayTile::getTranslate() const
 	return ptTranslate;
 }
 
+const int PlayTile::getState() const
+{
+	return state;
+}

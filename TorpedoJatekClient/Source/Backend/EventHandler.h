@@ -11,18 +11,36 @@ public:
 	EventHandler();
 	~EventHandler();
 
-	void Update(float deltatime, glm::vec3 cameye);
-	void FireProjectile(Fleet*& fleet, PlayTile *shottile);
+	void Update(float delta_time, const glm::vec3& cam_eye);
+	void FireProjectile(Fleet& fleet, PlayTile& shot_tile);
+	void SwitchVolume();
 
-	bool IsProjectileAnimation();
+	bool IsProjectileAnimation() const;
 private:
-	BShipProjectile* animatedProjectile; //Az éppen animált lövedék
-	bool isProjectileAnimation = false; //Lövedék animáció folyamatban van-e
+	void ApplySoundDistEffect(int channel_num, float sound_pos_x, float sound_pos_z);
 
-	//Mix_Music* music; //Zeneadatra mutató pointer
+	BShipProjectile* pAnimatedProjectile; //Az éppen animált lövedék
+	Mix_Music* music; //Zeneadatra mutató pointer
+	//1-es Mixer channelen: (8 channel allokált alapból)
 	Mix_Chunk* hitSound; //Találat hangadatra mutató pointer
 	Mix_Chunk* missSound; //Mellé-lövés hangadatra mutató pointer
+	//2-es channel:
+	Mix_Chunk* cannonFireSound; //Ágyúlövés hangadatra mutató pointer
 
-	//Mix_Chunk** nextSound; //Következõ lejátszandó hang
-	glm::vec3 tilePos; //Mezõ helye a hang lejátszásához
+	bool isMuted = false; //Némítás
+
+	//A hangforrások hangját szabályozza(végén channel hangerõvel mixelõdik)
+	const int musicVolume = MIX_MAX_VOLUME / 4;
+	const int hitVolume = MIX_MAX_VOLUME;
+	const int missVolume = MIX_MAX_VOLUME / 2;
+	const int cannonFireVolume = MIX_MAX_VOLUME / 2;
+	float soundScanDistance = 40.0f; //Mekkora távolságon belül interpoláljuk a hangerõt
+	const int musicFadeInTimeMs = 5000; //Zene fade-in effectje millisecben
+
+	bool isProjectileAnimation = false; //Lövedék animáció folyamatban van-e
+	float camEyeX; //Kamera pos X tengelyen
+	float camEyeZ; //Kamera pos Z tengelyen
+
+	PlayTile* pShotTile; //Éppen lött mezõ
+	
 };

@@ -20,12 +20,8 @@ GameInstance::GameInstance(float viewport_w, float viewport_h) : viewportWidth(v
 //Memória felszabadítás
 GameInstance::~GameInstance()
 {
-	//Mix_FreeChunk(cannonFireSound);
-	//delete cannonFireSound; NEMKELL elrontja
-
 	vb_fbo.Clean();
 	sh_default.Clean();
-	sh_playtile.Clean();
 	sh_dirLight.Clean();
 	
 	delete[] mousePointedData;
@@ -54,14 +50,6 @@ bool GameInstance::Init()
 {
 	gameLogic = new GameLogic(*playerFleet, *enemyFleet, *sea);
 	gameLogic->Init();
-
-	//cannonFireSound = Mix_LoadWAV("Resources/Audio/cannonFire.wav");
-	//if (!cannonFireSound) {
-	//	printf("Mix_LoadWAV error: %s\n", SDL_GetError());
-	//}
-	//if (!TorpedoGLOBAL::AudioEnabled) {
-	//	Mix_VolumeChunk(cannonFireSound, 0);
-	//}
 
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 
@@ -97,15 +85,6 @@ bool GameInstance::Init()
 	sh_default.BindAttribLoc(1, "vs_in_tex");
 	if (!sh_default.LinkProgram()) {
 		std::cout << "[Shader_Link]Error during Shader compilation: sh_default" << std::endl;
-		return false;
-	}
-
-	sh_playtile.AttachShader(GL_VERTEX_SHADER, "Shaders/playtile.vert");
-	sh_playtile.AttachShader(GL_FRAGMENT_SHADER, "Shaders/playtile.frag");
-	sh_playtile.BindAttribLoc(0, "vs_in_pos");
-	sh_playtile.BindAttribLoc(1, "vs_in_col");
-	if (!sh_playtile.LinkProgram()) {
-		std::cout << "[Shader_Link]Error during Shader compilation: sh_playtile" << std::endl;
 		return false;
 	}
 
@@ -149,7 +128,7 @@ void GameInstance::HandleGameState()
 	if (!outputWritten) {
 		if (isError) {
 			if (gameState == GameState::SHIP_SIZE_INPUT) {
-				gameLogic->DisplayError(gameState, shipSizeInput);//stateRelatedData.at(gameState));
+				gameLogic->DisplayError(gameState, shipSizeInput);
 				shipSizeInput = 0;
 				gameState = GameState::INITIAL;
 			}
@@ -189,15 +168,7 @@ void GameInstance::HandleGameState()
 			PlayTile* shotTile = gameLogic->GetShoot();
 			if (shotTile) {
 				shotReceived = true;
-				eventHandler->FireProjectile(enemyFleet, shotTile);
-
-				//float scannedDistance = 40.0f;
-				//float len = glm::length(glm::vec3(cam_mainCamera->GetEye().x - enemyFleet->getBattleShip().getShipTranslate().x
-				//	, 0
-				//	, cam_mainCamera->GetEye().z - enemyFleet->getBattleShip().getShipTranslate().z));
-				//int ds = (len > scannedDistance ? (scannedDistance - 1) : len) * 256 / scannedDistance;
-				//Mix_SetDistance(1, ds);
-				//Mix_PlayChannel(1, cannonFireSound, 0);
+				eventHandler->FireProjectile(*enemyFleet, *shotTile);
 			}
 		}
 		winnerPlayerNum = gameLogic->CheckVictoryState();
@@ -214,9 +185,7 @@ void GameInstance::Render()
 	glBindFramebuffer(GL_FRAMEBUFFER, dirL_frameBuffer);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	sh_playtile.On();
-	sea->PreProcess(*cam_mainCamera, sh_playtile);
-	sh_playtile.Off();
+	sea->PreProcess(*cam_mainCamera);
 	glReadPixels(mouseX, viewportHeight - mouseY - 1, 1, 1, GL_RGBA, GL_FLOAT, (void*)mousePointedData);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -234,16 +203,13 @@ void GameInstance::Render()
 	glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	
-	sh_dirLight.On();
-	sea->Draw(*cam_mainCamera, sh_dirLight);
-	sh_dirLight.Off();
+	sea->Draw(*cam_mainCamera);
 
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0xFF);
 
-	sh_playtile.On();
-	sea->OutlineDraw(*cam_mainCamera, sh_playtile, mousePointedData[3]);
-	sh_playtile.Off();
+	sea->OutlineDraw(*cam_mainCamera, mousePointedData[3]);
+	
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
@@ -271,9 +237,13 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 		(gameState == GameState::SHOOTING_AT_ENEMY || gameState == GameState::GETTING_SHOT || gameState == GameState::STARTING_MATCH
 			|| gameState == GameState::MATCH_ENDING)) {
 		if (gameState != GameState::MATCH_ENDING) {
-			gameLogic->StopGame();
+			gameLogic->QuitGame();
 		}
 		return 1;
+	}
+
+	if (key.keysym.sym == SDLK_m) {
+		eventHandler->SwitchVolume();
 	}
 
 	if (gameState == GameState::SHIP_SIZE_INPUT) {
@@ -292,7 +262,7 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 			shipSizeInput = 4;
 			break;
 		case SDLK_ESCAPE:
-			gameLogic->StopGame();
+			gameLogic->QuitGame();
 			return 1;
 			break;
 		}
@@ -312,15 +282,8 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 		//Lövés F - Süllyedés G 
 		if (key.keysym.sym == SDLK_f) {
 			if (!eventHandler->IsProjectileAnimation()) {
-				eventHandler->FireProjectile(playerFleet, &sea->getTileByIndex(15, false));
+				eventHandler->FireProjectile(*playerFleet, sea->getTileByIndex(15, false));
 				
-				//float scannedDistance = 40.0f;
-				//float len = glm::length(glm::vec3(cam_mainCamera->GetEye().x - playerFleet->getBattleShip().getShipTranslate().x
-				//	, 0
-				//	, cam_mainCamera->GetEye().z - playerFleet->getBattleShip().getShipTranslate().z));
-				//int ds = (len > scannedDistance ? (scannedDistance - 1) : len) * 256 / scannedDistance;
-				//Mix_SetDistance(1, ds);
-				//Mix_PlayChannel(1, cannonFireSound, 0);
 			}
 		}
 		else if (key.keysym.sym == SDLK_g) {
@@ -373,14 +336,7 @@ void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 			if (!eventHandler->IsProjectileAnimation()) {
 				PlayTile* shotTile = gameLogic->Shoot(static_cast<int>(mousePointedData[3]));
 				if (shotTile) {
-					eventHandler->FireProjectile(playerFleet, shotTile);
-					//float scannedDistance = 40.0f;
-					//float len = glm::length(glm::vec3(cam_mainCamera->GetEye().x - playerFleet->getBattleShip().getShipTranslate().x
-					//	, 0
-					//	, cam_mainCamera->GetEye().z - playerFleet->getBattleShip().getShipTranslate().z));
-					//int ds = (len > scannedDistance ? (scannedDistance - 1) : len) * 256 / scannedDistance;
-					//Mix_SetDistance(1, ds);
-					//Mix_PlayChannel(1, cannonFireSound, 0);
+					eventHandler->FireProjectile(*playerFleet, *shotTile);
 
 					winnerPlayerNum = gameLogic->CheckVictoryState();
 					if (winnerPlayerNum) {

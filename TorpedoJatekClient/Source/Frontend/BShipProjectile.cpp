@@ -107,13 +107,11 @@ bool BShipProjectile::Animate(float delta_time)
 void BShipProjectile::Draw(const gCamera& camera,const glm::mat4& shared_trans)
 {
 	glm::mat4 matWorld = glm::translate(currentPos) * shared_trans * glm::scale(projectileScale);
-	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
 	glm::mat4 mvp = camera.GetViewProj() * matWorld;
 
 	sh_projectile.On();
 
 	sh_projectile.SetUniform("world", matWorld);
-	sh_projectile.SetUniform("worldIT", matWorldIT);
 	sh_projectile.SetUniform("MVP", mvp);
 
 	vb_projectile.On();

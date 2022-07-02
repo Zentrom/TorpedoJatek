@@ -2,18 +2,11 @@
 
 EventHandler::EventHandler()
 {
-	//music = Mix_LoadMUS("Resources/Audio/mainMusic.ogg");
-	//if (!music) {
-	//	printf("Mix_LoadMUS(\"mainMusic.ogg\"): %s\n", Mix_GetError());
-	//}
-	//if (TorpedoGLOBAL::AudioEnabled) {
-	//	Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
-	//}
-	//else {
-	//	Mix_VolumeMusic(0);
-	//}
-	//Mix_PlayMusic(music, 3);
-
+	music = Mix_LoadMUS("Resources/Audio/mainMusic.ogg");
+	if (!music) {
+		printf("Mix_LoadMUS(\"mainMusic.ogg\"): %s\n", Mix_GetError());
+	}
+	
 	hitSound = Mix_LoadWAV("Resources/Audio/hitSound.wav");
 	if (!hitSound) {
 		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
@@ -22,56 +15,86 @@ EventHandler::EventHandler()
 	if (!missSound) {
 		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
 	}
-//	if (!TorpedoGLOBAL::AudioEnabled) {
-	Mix_VolumeChunk(hitSound, 0);
-	Mix_VolumeChunk(missSound, 0);
-	//}
+	cannonFireSound = Mix_LoadWAV("Resources/Audio/cannonFire.wav");
+	if (!cannonFireSound) {
+		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
+	}
+	//Ez hogy az elején be lehessen állítani a headerbe
+	isMuted = !isMuted;
+	SwitchVolume();
+
+	//Mix_PlayMusic(music, 3);
+	Mix_FadeInMusic(music, 3, musicFadeInTimeMs);
+
 }
 
 EventHandler::~EventHandler()
 {
-	//Mix_HaltMusic();
-	//Mix_FreeMusic(music);
+	Mix_FreeMusic(music);
+
 	Mix_FreeChunk(hitSound);
 	Mix_FreeChunk(missSound);
+	Mix_FreeChunk(cannonFireSound);
 }
 
 //Eseménykezelõ real-time frissítése
-void EventHandler::Update(float deltatime, glm::vec3 cameye)
+void EventHandler::Update(float delta_time, const glm::vec3& cam_eye)
 {
+	camEyeX = cam_eye.x;
+	camEyeZ = cam_eye.z;
+
 	if (isProjectileAnimation) {
-		if (!animatedProjectile->Animate(deltatime)) {
+		if (!pAnimatedProjectile->Animate(delta_time)) {
 			isProjectileAnimation = false;
 
-			float scannedDistance = 40.0f;
-			float len = glm::length(glm::vec3(cameye.x - tilePos.x, 0
-				, cameye.z - tilePos.z));
-			int ds = (len > scannedDistance ? (scannedDistance - 1) : len) * 256 / scannedDistance;
-			Mix_SetDistance(2, ds);
-			//JAVÍTANI MAJD nextSoundra
-			Mix_PlayChannel(2, missSound, 0);
+			ApplySoundDistEffect(1, pShotTile->getTranslate().x, pShotTile->getTranslate().z);
+			if (pShotTile->getState() == 1) {
+				Mix_PlayChannel(1, hitSound, 0);
+			}
+			else {
+				Mix_PlayChannel(1, missSound, 0);
+			}
 		}
 	}
 }
 
 //Lövedék animáció indítása
-void EventHandler::FireProjectile(Fleet*& fleet, PlayTile *shotTile)
+void EventHandler::FireProjectile(Fleet& fleet, PlayTile& shot_tile)
 {
-	animatedProjectile = &fleet->getBattleShip().getCannon().getProjectile();
-	animatedProjectile->Fire(shotTile->getTranslate());
+	pAnimatedProjectile = &fleet.getBattleShip().getCannon().getProjectile();
+	pAnimatedProjectile->Fire(shot_tile.getTranslate());
 	isProjectileAnimation = true;
 
-	//Ha van benne zöld akkor missSound lesz
-	//if (shotTile->getState().g == 1) {
-	//	nextSound = missSound;
-	//}
-	//else {
-	//	nextSound = hitSound;
-	//}
-	tilePos = shotTile->getTranslate();
+	ApplySoundDistEffect(2, fleet.getBattleShip().getShipTranslate().x, fleet.getBattleShip().getShipTranslate().z);
+	Mix_PlayChannel(2, cannonFireSound, 0);
+
+	pShotTile = &shot_tile;
 }
 
-bool EventHandler::IsProjectileAnimation()
+void EventHandler::ApplySoundDistEffect(int channel_num, float sound_pos_x, float sound_pos_z)
+{
+	float len = glm::length(glm::vec3(camEyeX - sound_pos_x, 0
+		, camEyeZ - sound_pos_z));
+	int dis = (len > soundScanDistance ? soundScanDistance : len) * 255 / soundScanDistance;
+	Mix_SetDistance(channel_num, dis);
+}
+
+//Muteolja vagy reseteli az audio hangerõt - Zene és channelek
+void EventHandler::SwitchVolume()
+{
+	if (!isMuted) {
+		Mix_VolumeMusic(0);
+		Mix_Volume(-1, 0);
+		isMuted = true;
+	}
+	else {
+		Mix_VolumeMusic(musicVolume);
+		Mix_Volume(-1, MIX_MAX_VOLUME);
+		isMuted = false;
+	}
+}
+
+bool EventHandler::IsProjectileAnimation() const
 {
 	return isProjectileAnimation;
 }

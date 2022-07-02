@@ -15,7 +15,6 @@
 #include <GL/glew.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include <SDL_mixer.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
@@ -57,7 +56,6 @@ private:
 
 	gVertexBuffer vb_fbo; //Custom Quad Framebufferbe rajzolandó négyzet adata
 	gShaderProgram sh_default; //Alap shader+postprocess
-	gShaderProgram sh_playtile; //PlayTile pre-postprocess shader
 	gShaderProgram sh_dirLight; //Ide rajzoljuk a 3D-s teret
 	GLuint dirL_depthStencilBuffer; //Custom Framebuffer mélység-stencil buffere
 	GLuint dirL_colorBuffer; //Custom Framebuffer színbuffere
@@ -74,7 +72,6 @@ private:
 	bool outputWritten = false; //kiirtuk-e már az üzenetet
 	bool dirL_frameBufferCreated = false;
 	float* mousePointedData; //Melyik játékmezõre mutat az egér
-	//Mix_Chunk* cannonFireSound; //Hajó lövés hangadatra mutató pointer
 	bool shotReceived = false; //Küldött-e már lövést a szerver nekünk
 	int shipSizeInput = 0; //Mekkora hajót készülünk lerakni
 	int winnerPlayerNum = 0; //Nyertes játékos+boolként is mûködik ha senki nem nyert még

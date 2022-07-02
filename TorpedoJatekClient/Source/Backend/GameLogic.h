@@ -35,7 +35,7 @@ public:
 	void SendFleetToServer();
 
 	bool CheckStartSignal();
-	void StopGame();
+	void QuitGame();
 	int CheckVictoryState();
 	PlayTile* Shoot(int tileindex);
 
@@ -46,10 +46,7 @@ private:
 	//Debug módban beégetett dolgok
 	void PlaceShipsINDEBUG();
 	void SetTilesINDEBUG();
-	bool CheckString(std::string coord);
 	std::string ProcessTile(const std::pair<char, int> &tile);
-	bool TileProcessable(const std::pair<char, int> &tile);
-	int ConvertCoordToTileIndex(const std::pair<char, int> &tile);
 
 	ClientHandler* clientHandler = new ClientHandler();	//A hálózati kapcsolat kliens-oldali vezérlõje
 	std::array<int, 4> unplacedShips; //Hány hajó nincs még lerakva(külön méretekben)

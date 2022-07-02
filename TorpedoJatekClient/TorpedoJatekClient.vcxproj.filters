@@ -229,16 +229,22 @@
     <None Include="Shaders\default.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\playtile.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\playtile.vert">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\projectile.frag">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\projectile.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ptOutline.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ptOutline.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\seatile.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\seatile.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

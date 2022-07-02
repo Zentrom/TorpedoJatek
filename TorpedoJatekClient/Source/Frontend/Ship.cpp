@@ -239,9 +239,6 @@ void Ship::Update(float delta_time)
 //Egy hajó kirajzolása
 void Ship::Draw(const gCamera& camera, gShaderProgram& sh_program) const
 {
-	//glm::mat4 matWorld = glm::translate(shipTranslate) * glm::rotate(shipRotate, shipRotateAngle) * glm::scale(shipScale)
-	//	* glm::translate(shipAboveSeaTrans) * sinkTranslate * sinkRotate;
-	//glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
 	glm::mat4 mvp = camera.GetViewProj() * matWorld;
 
 	sh_program.SetUniform("world", matWorld);

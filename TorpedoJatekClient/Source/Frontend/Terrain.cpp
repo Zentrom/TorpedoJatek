@@ -90,10 +90,11 @@ void Terrain::CalcGroundTileTransformations()
 //A Föld terület kirajzolása
 void Terrain::Draw(const gCamera& camera, gShaderProgram& sh_program) const
 {
+	glm::mat4 mvp = camera.GetViewProj() * matWorld;
+
 	sh_program.SetUniform("hasTexture", true);
 	sh_program.SetTexture("texImage", 0, groundTextureID);
-
-	glm::mat4 mvp = camera.GetViewProj() * matWorld;
+	
 	sh_program.SetUniform("world", matWorld);
 	sh_program.SetUniform("worldIT", matWorldIT);
 	sh_program.SetUniform("MVP", mvp);

@@ -17,7 +17,7 @@ void Skybox::Init()
 {
 	CreateCubeMap();
 
-	vb_skybox.AddAttribute(0, 3);
+	vb_skybox.AddAttribute(0, 3); //pos
 
 	vb_skybox.AddData(0, -1.0f, -1.0f,  1.0f);
 	vb_skybox.AddData(0,  1.0f, -1.0f,  1.0f);
@@ -86,9 +86,6 @@ void Skybox::CreateCubeMap()
 
 		SDL_FreeSurface(loaded_img);
 	}
-	
-	//glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

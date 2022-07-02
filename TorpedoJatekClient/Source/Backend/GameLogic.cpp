@@ -70,7 +70,6 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 			<< "ESC - Quit game! \n" << std::endl;
 	}
 	else if (gameState == GameState::PLACING_SHIP) {
-		//int* shipSizePointer = static_cast<int*>(relatedData);
 		if (related_data == 1) {
 			std::cout << "Place your ship on a free tile on your side of the map!(with LeftMouseButton)" << std::endl;
 		}
@@ -91,9 +90,7 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 			"\n(ESC - Quit)" << std::endl;
 	}
 	else if (gameState == GameState::MATCH_ENDING) {
-		//int* winnerNum = static_cast<int*>(relatedData);
-		if (//*winnerNum 
-			related_data == playerNum) {
+		if (related_data == playerNum) {
 			pEnemyFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've won the match!\n(ESC-Quit)" << std::endl;
 		}
@@ -108,8 +105,7 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 void GameLogic::DisplayError(GameState gameState, int related_data) 
 {
 	if (gameState == GameState::SHIP_SIZE_INPUT) {
-		//int* shipSizePointer = static_cast<int*>(relatedData);
-		std::cout << "You can't place down any more ships of " << related_data//<< *shipSizePointer 
+		std::cout << "You can't place down any more ships of " << related_data
 			<< " size!" << std::endl;
 	}
 }
@@ -287,44 +283,6 @@ int GameLogic::CheckVictoryState()
 	return 0;
 }
 
-//Játékosszám
-int GameLogic::getPlayerNum()
-{
-	return playerNum;
-}
-
-//Szöveges koordinátát ellenõriz,hogy jó-e
-bool GameLogic::CheckString(std::string coord)
-{
-
-	if (coord.length() != 2) {
-		std::cout << "Incorrect length!(must be 2)" << std::endl;
-		return false;
-	}
-
-	char tmp[3];
-	strcpy_s(tmp, coord.c_str());
-	bool legitColumn = false;
-
-	if (tmp[0] < ('a' + mapSize) && tmp[0] >= 'a') {
-		legitColumn = true;
-	}
-
-	if (!legitColumn) {
-		std::cout << "Incorrect column!(must be a-" << static_cast<char>('a' + mapSize - 1)
-			<< ')' << std::endl;
-		return false;
-	}
-
-	int ia = tmp[1] - '0';
-	if (ia > mapSize || ia == 0) {
-		std::cout << "Incorrect row!(must be 1-" << mapSize << ')' << std::endl;
-		return false;
-	}
-
-	return true;
-}
-
 //Játékmezõ koordinátákból csinál szöveges formájút
 std::string GameLogic::ProcessTile(const std::pair<char, int> &tile)
 {
@@ -336,23 +294,6 @@ std::string GameLogic::ProcessTile(const std::pair<char, int> &tile)
 	result.push_back(rowC[0]);
 
 	return result;
-}
-
-//Ellenõrzi,hogy a mezõkoordináta a pályán belül van-e
-bool GameLogic::TileProcessable(const std::pair<char, int> &tile)
-{
-	if (tile.first > ('a' + mapSize) || tile.second > mapSize || tile.first < 'a' || tile.second <= 0) {
-		return false;
-	}
-	return true;
-}
-
-//Játékmezõ koordinátát konvertál mezõket tartalmazó tömb indexévé
-int GameLogic::ConvertCoordToTileIndex(const std::pair<char, int> &tile)
-{
-	int tens = (tile.first - 'a') * mapSize;
-	int ones = tile.second - 1;
-	return (tens + ones);
 }
 
 //Ha a játék DEBUG módba indítjuk,akkor beégetetten lerak nekünk néhány hajót
@@ -383,6 +324,12 @@ void GameLogic::SetTilesINDEBUG()
 }
 
 //Lezárja a kapcsolatot a szerverrel
-void GameLogic::StopGame() {
+void GameLogic::QuitGame() {
 	clientHandler->quitGame();
+}
+
+//Játékosszám
+int GameLogic::getPlayerNum()
+{
+	return playerNum;
 }

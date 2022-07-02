@@ -20,9 +20,9 @@ public:
 
 	void Init(int map_size, float pt_center_offset);
 	void Update(float delta_time);
-	void PreProcess(const gCamera& camera, gShaderProgram& sh_program) const;
-	void Draw(const gCamera& camera, gShaderProgram& sh_program) const;
-	void OutlineDraw(const gCamera& camera, gShaderProgram& sh_program, float pointed_tile) const;
+	void PreProcess(const gCamera& camera);
+	void Draw(const gCamera& camera);
+	void OutlineDraw(const gCamera& camera, float pointed_tile);
 
 	std::vector<PlayTile*>& getTiles(bool ally = true);
 	PlayTile& getTileByIndex(int index, bool ally = true);
@@ -38,6 +38,8 @@ private:
 
 	gVertexBuffer vb_seatiles; //összes tengermezõ grafikai modell adatok
 	gVertexBuffer vb_playtile; //egy játékmezõ modell adatok
+	gShaderProgram sh_ptOutline; //PlayTile körvonalának shadere
+	gShaderProgram sh_seaTile; //Tengermezõk shadere
 	GLuint seaTileTextureID; //Tengerdarab textúra azonosítója
 	std::vector<PlayTile*> myTiles;	//kliens játékmezõi
 	std::vector<PlayTile*> enemyTiles; //ellenfél játékmezõi

@@ -9,6 +9,7 @@ Hogy jelenjenek meg az ellenfél hajói?(006)
 
 Vertexbufferek lehetnének static-ok talán?
 SeaTile és Ground Instancing/Deferred shading.004+
+Mix_Position() Positional audiot ujrapróbálni esetleg. Béta+
 
 Csata után a vesztesnek kirajzolja a gyõztes túlélõ hajóit?
 Icon az exenek?
@@ -19,7 +20,6 @@ Lövés animáció kezdetekor már kiirja hogy hova löttünk meg átszinezi a tile-t,vé
 Ne tünjön el a particle miután a lövedék célba ér
 Beta után Particleeknek legyen mozgása + transparency/szín változása
 Particle - Cylindrical Billboaring -> Spherical
-Megoldani hogy menjen a találat hangja is006
 A mute gomb minden hangot muteoljon. CameraBounds is gombra mûködjön??
 Exception propagation - Forceolt destructor hívás?
 Camera viewdistance+fog-al eltüntetni a map szélét
@@ -35,7 +35,7 @@ DEBUG-ra: ÁT LETT NÉZVE:
 -Utilityból minden
 -main
 -TorpedoJatekClient
--KB MINDEN Update és Render talán nem annyira.
+-KB MINDEN.
 
 SERVERRE:
 

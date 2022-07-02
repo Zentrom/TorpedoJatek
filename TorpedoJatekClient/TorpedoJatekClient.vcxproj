@@ -81,8 +81,10 @@
     <None Include="Shaders\dirLight.vert" />
     <None Include="Shaders\projectile.frag" />
     <None Include="Shaders\projectile.vert" />
-    <None Include="Shaders\playtile.frag" />
-    <None Include="Shaders\playtile.vert" />
+    <None Include="Shaders\ptOutline.frag" />
+    <None Include="Shaders\ptOutline.vert" />
+    <None Include="Shaders\seatile.frag" />
+    <None Include="Shaders\seatile.vert" />
     <None Include="Shaders\skybox.frag" />
     <None Include="Shaders\skybox.vert" />
   </ItemGroup>

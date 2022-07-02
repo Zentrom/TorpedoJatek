@@ -30,6 +30,7 @@ public:
 	const std::pair<char, int> getPos() const;
 	bool isUsed() const;
 	const glm::vec3& getTranslate() const;
+	const int getState() const;
 
 private:
 	enum TileState {
@@ -57,8 +58,7 @@ private:
 	const int id; //Játékmezõ azonosítója a 3D pickinghez
 	const glm::vec3 ptTranslate; //Mozgatás
 	const glm::vec3 ptScale; //Skálázás
-	const glm::mat4 matWorld; //Játékmezõ körvonallal együtti világ transzformáció
-	const glm::mat4 matWorldIT; //VT inverze
+	const glm::mat4 matWorldOutline; //Játékmezõ körvonallal együtti világ transzformáció
 	const glm::mat4 matWorldPlayTile; //Kissebb játékmezõ, hogy látszódjon a körvonal
 	const glm::mat4 matWorldPlayTileIT; //PlayTileVT inverze
 };

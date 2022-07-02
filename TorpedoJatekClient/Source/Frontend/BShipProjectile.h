@@ -36,17 +36,17 @@ private:
 	const int circleResHor = 16; //körfelbontás vízszintesen
 	const int circleResVert = 16; //körfelbontás függõlegesen
 	const float animationTime = 4.0f; //Animáció ideje
-	float elapsedTime = 0.0f; //Animációból eltelt idõ
 	const float particleLife = 1.5f; //Meddig él egy részecske
-	float particleElapsed = 0.0f; //Részecskeanimációhoz
 	const float particleEmitTime = 0.05f; //Részecskeszórás ideje
 	const float distHeightDivFactor = 4.0f; //Távolság függvényében mennyire magasra megyünk(osztási faktor)
 
 	const glm::vec3 projectileScale = glm::vec3(0.125f) * TorpedoGLOBAL::Scale; //skálázás
-
 	glm::vec3 dist; //Kezdõ és célpont közti táv(y = x/4 -et kapja meg)
 	glm::vec3 currentPos; //Lövedék jelenlegi pos
 	glm::vec3 targetPos; //Lövedék célpont
+
+	float elapsedTime = 0.0f; //Animációból eltelt idõ
+	float particleElapsed = 0.0f; //Részecskeanimációhoz
 
 	const glm::vec3 startPos; //Lövedék kiinduló pos
 	const bool isAlly; //Mi lövedékünk-e

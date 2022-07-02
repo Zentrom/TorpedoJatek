@@ -50,16 +50,12 @@ const glm::mat4 ParticleGroup::CalcToCameraRotation(const gCamera& camera, const
 	//XZ-ben
 	glm::vec3 objectToCamera = glm::vec3(camera.GetEye().x - projectile_pos.x, 0,
 		camera.GetEye().z - projectile_pos.z);
-	//objectToCamera.x = camera.GetEye().x - projectile_pos.x;
-	//objectToCamera.y = 0;
-	//objectToCamera.z = camera.GetEye().z - projectile_pos.z;
-	//glm::vec3 objectLookAt = glm::vec3(0, 0, -1.0f);
 	glm::vec3 normalizedOTC = glm::normalize(objectToCamera);
 
 	glm::vec3 objectUp = glm::cross(objectLookAt, normalizedOTC);
 	float angle = glm::dot(objectLookAt, normalizedOTC);
 
-	glm::mat4 resultRotation = glm::rotate(acosf(angle), glm::vec3(objectUp.x, objectUp.y, objectUp.z));
+	glm::mat4 resultRotation = glm::rotate(acosf(angle), objectUp);
 
 	return resultRotation;
 }
@@ -68,15 +64,13 @@ const glm::mat4 ParticleGroup::CalcToCameraRotation(const gCamera& camera, const
 void ParticleGroup::Draw(const gCamera& camera, gShaderProgram& sh_program, const glm::vec3& projectilepos) const
 {
 	glm::mat4 matWorld = glm::translate(projectilepos) * CalcToCameraRotation(camera, projectilepos);
-	glm::mat4 matWorldIT = glm::transpose(glm::inverse(matWorld));
 	glm::mat4 mvp = camera.GetViewProj() * matWorld;
 
 	sh_program.SetUniform("world", matWorld);
-	sh_program.SetUniform("worldIT", matWorldIT);
 	sh_program.SetUniform("MVP", mvp);
 
 	vb_particles.On();
-	for (int i = 0; i < nrInGroup; i++) {
+	for (int i = 0; i < nrInGroup; ++i) {
 		vb_particles.Draw(GL_TRIANGLE_STRIP, i * 4, 4);
 	}
 	vb_particles.Off();

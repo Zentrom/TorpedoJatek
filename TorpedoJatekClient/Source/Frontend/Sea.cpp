@@ -10,6 +10,9 @@ Sea::~Sea()
 {
 	vb_playtile.Clean();
 	vb_seatiles.Clean();
+	sh_ptOutline.Clean();
+	sh_seaTile.Clean();
+
 	for (PlayTile* &tile : myTiles) {
 		delete tile;
 	}
@@ -27,6 +30,25 @@ void Sea::Init(int map_size, float pt_center_offset)
 	InitPlayTiles();
 	InitSeaTiles();
 	
+	sh_ptOutline.AttachShader(GL_VERTEX_SHADER, "Shaders/ptOutline.vert");
+	sh_ptOutline.AttachShader(GL_FRAGMENT_SHADER, "Shaders/ptOutline.frag");
+	sh_ptOutline.BindAttribLoc(0, "vs_in_pos");
+	sh_ptOutline.BindAttribLoc(1, "vs_in_col");
+	if (!sh_ptOutline.LinkProgram()) {
+		std::cout << "[Shader_Link]Error during Shader compilation: sh_ptOutline" << std::endl;
+	}
+
+	sh_seaTile.AttachShader(GL_VERTEX_SHADER, "Shaders/seatile.vert");
+	sh_seaTile.AttachShader(GL_FRAGMENT_SHADER, "Shaders/seatile.frag");
+	sh_seaTile.BindAttribLoc(0, "vs_in_pos");
+	sh_seaTile.BindAttribLoc(1, "vs_in_color");
+	sh_seaTile.BindAttribLoc(2, "vs_in_normal");
+	sh_seaTile.BindAttribLoc(3, "vs_in_tex");
+	if (!sh_seaTile.LinkProgram())
+	{
+		std::cout << "[Shader_Link]Error during Shader compilation: sh_seaTile" << std::endl;
+	}
+
 	seaTileTextureID = GLUtils::TextureFromFile("Resources/Textures/seaTexture.bmp");
 }
 
@@ -49,10 +71,6 @@ void Sea::InitSeaTiles()
 			- (seaTileRow * TorpedoGLOBAL::SeaTileScaleXZ / 2.0f * TorpedoGLOBAL::Scale);
 		seatile_transZ = ((i / seaTileRow) * TorpedoGLOBAL::SeaTileScaleXZ * TorpedoGLOBAL::Scale)
 			- (seaTileRow * TorpedoGLOBAL::SeaTileScaleXZ / 2.0f * TorpedoGLOBAL::Scale);
-
-		//if (i == 0) {
-		//	std::cout << "Seatile: " << seatile_transX << " " << seatile_transZ << std::endl;
-		//}
 
 		//Kiszedi a PlayTile-al azonos helyen lévõket
 		found = false;
@@ -148,7 +166,7 @@ void Sea::InitPlayTiles()
 	int ind;
 	myTiles.reserve(playTileCount);
 	enemyTiles.reserve(playTileCount);
-	//std::cout << "Playtile: " << calcTranslate(6, 0, true).x << " " << calcTranslate(6, 0, true).z << std::endl;
+	
 	for (int i = 0; i < mapSize; ++i) {
 		for (int j = 0; j < mapSize; ++j) {
 			ind = i * mapSize + j;
@@ -190,61 +208,68 @@ void Sea::Update(float delta_time)
 }
 
 //Egy elõrajzolás,ami szükséges hogy tudjuk melyik játékmezõre mutatunk az egérrel
-void Sea::PreProcess(const gCamera& camera, gShaderProgram& sh_program) const
+void Sea::PreProcess(const gCamera& camera)
 {
 	glDisable(GL_CULL_FACE);
-	sh_program.SetUniform("is_preprocess", true);
+
+	sh_ptOutline.On();
+	sh_ptOutline.SetUniform("is_preprocess", true);
 	for (int i = 0; i < (mapSize*mapSize); ++i) {
-		enemyTiles.at(i)->PreProcess(camera, sh_program, vb_playtile);
-		myTiles.at(i)->PreProcess(camera, sh_program, vb_playtile);
+		enemyTiles.at(i)->PreProcess(camera, sh_ptOutline, vb_playtile);
+		myTiles.at(i)->PreProcess(camera, sh_ptOutline, vb_playtile);
 	}
+	sh_ptOutline.Off();
+
 	glEnable(GL_CULL_FACE);
 }
 
 //Kirajzolja a játékmezõket
-void Sea::Draw(const gCamera& camera, gShaderProgram& sh_program) const
+void Sea::Draw(const gCamera& camera)
 {
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glStencilMask(0xFF);
-	//sh_program.SetUniform("read_index", static_cast<int>(pointedTile));
-	sh_program.SetUniform("seatileOffset", textureAnimationOffset);
 
-	sh_program.SetUniform("is_seatile", true);
-	sh_program.SetUniform("hasTexture", true);
-	sh_program.SetTexture("texImage", 0, seaTileTextureID);
+	sh_seaTile.On();
+	sh_seaTile.SetUniform("seatileTexOffset", textureAnimationOffset);
+	sh_seaTile.SetUniform("hasTexture", true);
+	sh_seaTile.SetTexture("texImage", 0, seaTileTextureID);
 
 	for (int i = 0; i < (mapSize*mapSize); ++i) {
-		enemyTiles.at(i)->Draw(camera, sh_program, vb_playtile);
-		myTiles.at(i)->Draw(camera, sh_program, vb_playtile);
+		enemyTiles.at(i)->Draw(camera, sh_seaTile, vb_playtile);
+		myTiles.at(i)->Draw(camera, sh_seaTile, vb_playtile);
 	}
 	glStencilMask(0x00);
 
 	glm::mat4 mvp = camera.GetViewProj() * matWorld;
-	sh_program.SetUniform("world", matWorld);
-	sh_program.SetUniform("worldIT", matWorldIT);
-	sh_program.SetUniform("MVP", mvp);
+	sh_seaTile.SetUniform("world", matWorld);
+	sh_seaTile.SetUniform("worldIT", matWorldIT);
+	sh_seaTile.SetUniform("MVP", mvp);
 
 	vb_seatiles.On();
 	vb_seatiles.DrawIndexed(GL_TRIANGLES, 0, 6 * seaTileCount);
 	vb_seatiles.Off();
-	sh_program.SetUniform("is_seatile", false);
-	sh_program.SetUniform("hasTexture", false);
+	//sh_seaTile.SetUniform("hasTexture", false);
+	sh_seaTile.Off();
 
 	glDisable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 }
 
 //Mindegyik játékmezõre meghívja a körvonal rajzolást
-void Sea::OutlineDraw(const gCamera& camera, gShaderProgram& sh_program, float pointed_tile) const
+void Sea::OutlineDraw(const gCamera& camera, float pointed_tile)
 {
 	glDisable(GL_CULL_FACE);
-	sh_program.SetUniform("read_index", static_cast<int>(pointed_tile));
-	sh_program.SetUniform("is_preprocess", false);
+
+	sh_ptOutline.On();
+	sh_ptOutline.SetUniform("read_index", static_cast<int>(pointed_tile));
+	sh_ptOutline.SetUniform("is_preprocess", false);
 	for (int i = 0; i < (mapSize*mapSize); ++i) {
-		enemyTiles.at(i)->OutlineDraw(camera, sh_program, vb_playtile);
-		myTiles.at(i)->OutlineDraw(camera, sh_program, vb_playtile);
+		enemyTiles.at(i)->OutlineDraw(camera, sh_ptOutline, vb_playtile);
+		myTiles.at(i)->OutlineDraw(camera, sh_ptOutline, vb_playtile);
 	}
+	sh_ptOutline.Off();
+
 	glEnable(GL_CULL_FACE);
 }
 

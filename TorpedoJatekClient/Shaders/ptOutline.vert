@@ -1,10 +1,10 @@
 #version 460
 
 in vec3 vs_in_pos;
-in vec3 vs_in_color;
+in vec4 vs_in_color;
 
 out vec3 vs_out_pos;
-out vec3 vs_out_color;
+out vec4 vs_out_color;
 
 uniform mat4 world;
 uniform mat4 MVP;
