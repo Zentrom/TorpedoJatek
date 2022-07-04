@@ -133,6 +133,7 @@ int TorpedoJatekClient::CreateGameWindow()
 //Elindít egy játékmenetet
 int TorpedoJatekClient::StartGameInstance()
 {
+	sdlEvent = new SDL_Event();
 	gameInstance = new GameInstance(static_cast<float>(widthWindow),static_cast<float>(heightWindow));
 	if (!gameInstance->Init())
 	{
@@ -150,7 +151,6 @@ int TorpedoJatekClient::StartGameInstance()
 	float frmMod = 0;
 
 	//Fõ event ciklus
-	sdlEvent = new SDL_Event();
 	bool quit = false;
 	while (!quit)
 	{

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Source\ServerHandler.h"
+#include "Source/ServerHandler.h"
 #include "../CommonSource/TorpedoVersion.hpp"
 #include "../CommonSource/CommonGlobals.hpp"
 
@@ -18,10 +18,10 @@
 class TorpedoJatekServer
 {
 public:
-	TorpedoJatekServer(void);
-	~TorpedoJatekServer(void);
+	TorpedoJatekServer();
+	~TorpedoJatekServer();
 
-	int Start();
+	int Run();
 
 private:
 	//Melyik szerveropció
@@ -44,32 +44,34 @@ private:
 	//Kliensadatok
 	struct Client {
 		std::stringstream name; //név
-		int playerNum;	//hányadik játékos
-		TCPsocket socket;	//kapcsolati socket
-		std::vector<std::pair<char, int>> activeTiles;	//Mely mezõkoordinátáin vannak hajói
+		int playerNum; //hányadik játékos
+		TCPsocket socket; //kapcsolati socket
+		std::vector<std::pair<char, int>> activeTiles; //Mely mezõkoordinátáin vannak hajói
 		ClientState state = ClientState::NOT_CONNECTED; //Az elején a kliens még nem csatlakozott
 	}firstClient, secondClient, temporaryClient;
-	std::array<Client*, 3> clients; //Csatlakozott kliensek pointer tömbje
 
-	void CalcActiveTileCount();
 	void Init();
+	void DisplaySettings();
+	void CalcActiveTileCount();
 	void PrepareMatch();
-	void HandleClientState(Client *client);
+	void HandleClientState(Client& client);
+	bool CheckClientVersion(TCPsocket& connected_socket);
 	void StartMatch();
-	void UpdateSettings();
-	bool CheckClientVersion(TCPsocket &connectedSocket);
-	ResponseState ProcessTiles(Client &clientTiles);
-	void HandleShot(Client &shooter, Client &taker);
+	void HandleShot(Client& shooter, Client& taker);
+	ResponseState ProcessTiles(Client& client);
 	int getFirstNotConnectedIndex() const;
+
+	std::array<Client*, 3> clients; //Csatlakozott kliensek pointer tömbje
+	const TorpedoVersion* serverVersion = new TorpedoVersion(); //szerver verziószáma
 
 	IPaddress ip; //ip osztálya
 	Uint16 port = 27015; //portszám
 	SDLNet_SocketSet socketSet = nullptr; //socket csoport
 	TCPsocket server = nullptr; //szerver socket
 	const int maxSockets = 4; //maximum hány socket lehet egy socketcsoportban
-	//int connectedClients = 0; //hány kliens csatlakozott sikeresen
+	int connectedPlayers = 0; //Hány játékos csatlakozott - Temp connectiont leszámítva
 
-	std::stringstream currentSettings; //Jelenlegi beállítás szövege
+	std::stringstream currentSettings; //Jelenlegi beállítások szövegesen
 	ResponseState responseState = ResponseState::START_OF_GAME; //Mi a játék állapota
 	MessageType receivedType; //Elvárt üzenetet küld-e a kliens
 
@@ -77,7 +79,5 @@ private:
 	int mapSize = 7; //játékPálya mérete
 	int activeTileCount = 0; //hány hajót tartalmazó mezõ van
 	std::pair<char, int> targetTile; //melyik mezõkoordinátára lõtt valaki
-
-	const TorpedoVersion serverVersion; //szerver verziószáma
 
 };

@@ -52,7 +52,7 @@ private:
 	Fleet* enemyFleet = new Fleet(false); //Ellenfél hajói
 	Sea* sea = new Sea(); //Játék és tengermezõk
 	GameLogic* gameLogic; //Háttérlogika
-	EventHandler* eventHandler = new EventHandler(); //Eseménykezelés
+	EventHandler* eventHandler; //Eseménykezelés
 
 	gVertexBuffer vb_fbo; //Custom Quad Framebufferbe rajzolandó négyzet adata
 	gShaderProgram sh_default; //Alap shader+postprocess

@@ -20,8 +20,12 @@ GameLogic::~GameLogic()
 void GameLogic::Init()
 {
 	if (!TorpedoGLOBAL::Debug) {
-		ConnectionSetup();
-		playerNum = clientHandler->GetPlayerNum();
+		//Lekezeli ha teli szerverre kapcsolódtunk
+		do {
+			ConnectionSetup();
+			playerNum = clientHandler->GetPlayerNum();
+		} while (playerNum > 2);
+
 		mapSize = clientHandler->GetMapSize();
 	}
 
@@ -126,40 +130,39 @@ bool GameLogic::CheckAnyUnplacedShipLeft()
 }
 
 //Lerak egy hajót ha üres a kijelölt mezõ
-bool GameLogic::PlaceShip(int tileIndex, int shipSize)
+bool GameLogic::PlaceAllyShip(int tileIndex, int shipSize)
 {
-	PlayTile* shipFront;
-	PlayTile* shipBack;
-	bool shipFrontPlaced = false;
-	std::array<PlayTile*, 4> freeChoices;
 
 	int offset = pSea->getAlphaOffset();
 	if (tileIndex - offset < mapSize * mapSize && tileIndex - offset >= 0) {
+		//Hajó eleje
 		if (!shipFrontPlaced) {
-			shipFront = &pSea->getTileByIndex(tileIndex - offset);
-			if (pMyFleet->CheckTile(*shipFront)) {
+			pShipFront = &pSea->getTileByIndex(tileIndex - offset);
+			if (pMyFleet->CheckTile(*pShipFront)) {
+				//Ha 1 méretû
 				if (shipSize == 1) {
-					pMyFleet->PlaceShip(shipFront, NULL);
+					pMyFleet->PlaceShip(pShipFront, NULL);
 					std::cout << "--------\n"
-						"Ship placed at " << shipFront->getPos().first << shipFront->getPos().second <<
+						"Ship placed at " << pShipFront->getPos().first << pShipFront->getPos().second <<
 						"\n--------" << std::endl;
 					--unplacedShips.at(shipSize - 1);
 					return true;
 				}
+				//Ha Nagyobb méretû, összegyûjti a lehetséges hajóhátakat
 				else {
-					freeChoices = pMyFleet->getFreeBacks(*shipFront, shipSize - 1);
+					freeChoices = pMyFleet->getFreeBacks(*pShipFront, shipSize - 1);
 					if (std::none_of(freeChoices.cbegin(), freeChoices.cend(), [](PlayTile* ptr) {return ptr; }))
 					{
 						std::cout << "No position available for the back of the ship!\n Try another position." << std::endl;
 						return false;
 					}
 					else {
-						shipFront->setState(7); //aqua recoloring
+						pShipFront->setState(7); //aqua recoloring
 						std::cout << "--------\n"
-							"Ship Front location saved at " << shipFront->getPos().first << shipFront->getPos().second <<
+							"Ship Front location saved at " << pShipFront->getPos().first << pShipFront->getPos().second <<
 							"\n--------" << std::endl;
 						std::cout << "Select one of the possible locations for the back of the ship!(marked with green)" << std::endl;
-						for (PlayTile* choice : freeChoices) {
+						for (PlayTile* &choice : freeChoices) {
 							if (choice) {
 								choice->setState(6); //green recoloring
 								std::cout << choice->getPos().first << choice->getPos().second << std::endl;
@@ -175,28 +178,30 @@ bool GameLogic::PlaceShip(int tileIndex, int shipSize)
 				std::cout << "Tile is not empty!" << std::endl;
 			}
 		}
+		//Hajó háta
 		else {
-			shipBack = &pSea->getTileByIndex(tileIndex - offset);
+			pShipBack = &pSea->getTileByIndex(tileIndex - offset);
 			bool foundInputInChoices = false;
-			for (PlayTile* choisz : freeChoices) {
-				if (choisz && choisz->getId() == shipBack->getId()) {
+			for (PlayTile* &choisz : freeChoices) {
+				if (choisz && choisz->getIndex() == pShipBack->getIndex()) {
 					foundInputInChoices = true;
 					break;
 				}
 			}
+			//Ha jó helyre kattintunk
 			if (foundInputInChoices) {
-				pMyFleet->PlaceShip(shipFront, shipBack);
+				pMyFleet->PlaceShip(pShipFront, pShipBack);
 				std::cout << "--------\n"
-					"Ship placed at " << shipFront->getPos().first << shipFront->getPos().second <<
-					"/" << shipBack->getPos().first << shipBack->getPos().second <<
+					"Ship placed at " << pShipFront->getPos().first << pShipFront->getPos().second <<
+					"/" << pShipBack->getPos().first << pShipBack->getPos().second <<
 					"\n--------" << std::endl;
 				--unplacedShips.at(shipSize - 1);
 
-				shipFront->setState(3); //default recoloring
-				for (PlayTile* choice : freeChoices) {
+				pShipFront->setState(3); //default recoloring
+				for (PlayTile* &choice : freeChoices) {
 					if (choice) {
 						choice->setState(3); //default recoloring
-						choice = NULL;
+						choice = nullptr;
 					}
 				}
 				shipFrontPlaced = false;
@@ -228,7 +233,7 @@ PlayTile* GameLogic::Shoot(int tileindex)
 	int offset = pSea->getAlphaOffset();
 	int enemyOffset = pSea->getEnemyIndexOffset();
 	if (tileindex - enemyOffset - offset < mapSize * mapSize && tileindex - enemyOffset - offset >= 0) {
-		target = &pSea->getTileByIndex(tileindex - offset);
+		target = &pSea->getTileByIndex(tileindex - enemyOffset - offset, false);
 		matchState = clientHandler->SendShot(target->getPos());
 		target->setState(static_cast<int>(matchState));
 
@@ -256,7 +261,7 @@ PlayTile* GameLogic::GetShoot()
 			PlayTile* target = &pMyFleet->getTile(shootCoord);
 			shootPos = ProcessTile(target->getPos());
 
-			//Ez az if kinullázza a pozíciót,az alapján nézi meg hogy kikell-e még rajzolni egy hajót
+			//Megnézi hogy van-e még lebegõ hajónk
 			if (matchState != ResponseState::CONTINUE_MATCH) {
 				pMyFleet->HitFleet(target->getPos());
 			}

@@ -17,8 +17,8 @@
 class ClientHandler : public ConnectionHandler
 {
 public:
-	ClientHandler(void);
-	~ClientHandler(void);
+	ClientHandler();
+	~ClientHandler();
 
 	bool Init(std::string ipString = "127.0.0.1", int portNr = 27015);
 	void SendFleet(const std::vector<std::pair<char, int>> &activeTilePositions);
@@ -36,12 +36,13 @@ protected:
 	IPaddress ip;	//ip-cím
 	TCPsocket mySocket;	//kliens oldali socket
 	SDLNet_SocketSet socketSet = nullptr; //socket csoport
+	ResponseState stateResult = ResponseState::START_OF_GAME; //Mi a játék állapota
+	MessageType sentMessageType = MessageType::ESTIMATED; //Szervertõl várt adatot küldünk-e
+	
 	const int maxSockets = 1; //maximum hány socket lehet egy socketcsoportban
 
 	int receivedBytes = 0;	//szervertõl érkezett byte mennyisége
 	int sentBytes = 0; //szervernek átküldött byte mennyisége
-	ResponseState stateResult = ResponseState::START_OF_GAME; //Mi a játék állapota
-	MessageType sentMessageType = MessageType::ESTIMATED; //Szervertõl várt adatot küldünk-e
-
+	
 	const TorpedoVersion clientVersion; //a kliens verziószáma
 };

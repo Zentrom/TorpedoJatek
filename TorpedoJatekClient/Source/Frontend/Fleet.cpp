@@ -95,62 +95,62 @@ std::array<PlayTile*, 4> Fleet::getFreeBacks(const PlayTile &tile, int back_dist
 	bool upFree = true;
 	bool downFree = true;
 
-	if (((tile.getId() % mapSize) + back_distance) >= mapSize) {
+	if (((tile.getIndex() % mapSize) + back_distance) >= mapSize) {
 		rightFree = false;
 	}
-	if (((tile.getId() % mapSize) - back_distance) < 0) {
+	if (((tile.getIndex() % mapSize) - back_distance) < 0) {
 		leftFree = false;
 	}
-	if (((tile.getId() / mapSize) + back_distance) >= mapSize) {
+	if (((tile.getIndex() / mapSize) + back_distance) >= mapSize) {
 		downFree = false;
 	}
-	if (((tile.getId() / mapSize) - back_distance) < 0) {
+	if (((tile.getIndex() / mapSize) - back_distance) < 0) {
 		upFree = false;
 	}
 
-	for (int i = back_distance; i > 0; i--) {
+	for (int i = back_distance; i > 0; --i) {
 		if (rightFree) {
-			if (pPlayTiles->at(tile.getId() + i)->isUsed()) {
+			if (pPlayTiles->at(tile.getIndex() + i)->isUsed()) {
 				rightFree = false;
 			}
 		}
 		if (leftFree) {
-			if (pPlayTiles->at(tile.getId() - i)->isUsed()) {
+			if (pPlayTiles->at(tile.getIndex() - i)->isUsed()) {
 				leftFree = false;
 			}
 		}
 		if (downFree) {
-			if (pPlayTiles->at(tile.getId() + i*mapSize)->isUsed()) {
+			if (pPlayTiles->at(tile.getIndex() + i*mapSize)->isUsed()) {
 				downFree = false;
 			}
 		}
 		if (upFree) {
-			if (pPlayTiles->at(tile.getId() - i*mapSize)->isUsed()) {
+			if (pPlayTiles->at(tile.getIndex() - i*mapSize)->isUsed()) {
 				upFree = false;
 			}
 		}
 	}
 
 	if (rightFree) {
-		result[0] = pPlayTiles->at(tile.getId() + back_distance);
+		result[0] = pPlayTiles->at(tile.getIndex() + back_distance);
 	}
 	else {
 		result[0] = nullptr;
 	}
 	if (leftFree) {
-		result[1] = pPlayTiles->at(tile.getId() - back_distance);
+		result[1] = pPlayTiles->at(tile.getIndex() - back_distance);
 	}
 	else {
 		result[1] = nullptr;
 	}
 	if (downFree) {
-		result[2] = pPlayTiles->at(tile.getId() + back_distance * mapSize);
+		result[2] = pPlayTiles->at(tile.getIndex() + back_distance * mapSize);
 	}
 	else {
 		result[2] = nullptr;
 	}
 	if (upFree) {
-		result[3] = pPlayTiles->at(tile.getId() - back_distance * mapSize);
+		result[3] = pPlayTiles->at(tile.getIndex() - back_distance * mapSize);
 	}
 	else {
 		result[3] = nullptr;
@@ -208,12 +208,6 @@ void Fleet::PlaceShip(PlayTile *front, PlayTile *back)
 				std::cout << "Fleet::PlaceShip(): " << til->getIndex() << " ally? " << isAlly << std::endl;
 			}
 			til->setUsed(true);
-			//for (PlayTile* &tile : *pPlayTiles) {
-			//	if (til->getIndex() == tile->getIndex()) {
-			//		tile->setUsed(true);
-			//		break;
-			//	}
-			//}
 		}
 		ships.push_back(new Ship(shipTiles, isAlly));
 	}
@@ -225,16 +219,16 @@ void Fleet::HitFleet(std::pair<char, int> hit_pos)
 	bool found = false;
 	for (Ship* sh : ships) {
 		if (!sh->isDestroyed()) {
-			for (PlayTile *pt : sh->getPlayTiles()) {
-				if (pt->getPos() == hit_pos) {
-					pt->ClearPosition();
+			for (PlayTile* &pt : sh->getPlayTiles()) {
+				if (pt && pt->getPos() == hit_pos) {
+					pt = nullptr;
 					found = true;
 					break;
 				}
 			}
 			bool notAll = false;
-			for (PlayTile *pt : sh->getPlayTiles()) {
-				if (pt->getPos().first != '0') {
+			for (PlayTile* &pt : sh->getPlayTiles()) {
+				if (pt) {
 					notAll = true;
 					break;
 				}
@@ -261,7 +255,9 @@ std::vector<std::pair<char, int>> Fleet::getActiveTilePositions() const
 	std::vector<std::pair<char, int>> result;
 	for (Ship* ship : ships) {
 		for (PlayTile* tile : ship->getPlayTiles()) {
-			result.push_back(tile->getPos());
+			if (tile) {
+				result.push_back(tile->getPos());
+			}
 		}
 	}
 	return result;

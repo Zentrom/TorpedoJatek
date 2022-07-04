@@ -31,12 +31,15 @@ Operator overloading?
 std::optional-t használni ha kell
 
 
+
 DEBUG-ra: ÁT LETT NÉZVE:
 -Utilityból minden
 -main
 -TorpedoJatekClient
 -KB MINDEN.
 
-SERVERRE:
+SERVERRE: MEGVAN
 
-Clientre:
+Clientre:			 BACKENDET KÉNE ÁTNÉZNI SZEKVENCIÁLISAN MÉG
+
+Debug compilation és Felirt errorok

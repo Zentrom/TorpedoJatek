@@ -9,9 +9,9 @@ void ConnectionHandler::Init_SDLNet()
 }
 
 //Host adatok feldolgozása
-void ConnectionHandler::ResolveHost(IPaddress *address, const char *host, Uint16 port)
+void ConnectionHandler::ResolveHost(IPaddress* address, const char* host, Uint16 port)
 {
-	for (int retryCount = 0; retryCount < maxRetryCountOnError; retryCount++) {
+	for (int retryCount = 0; retryCount < maxRetryCountOnError; ++retryCount) {
 		if (SDLNet_ResolveHost(address, host, port) == -1) {
 			printRetry(retryCount, "Resolving address");
 			SDL_Delay(delayTime);
@@ -24,10 +24,10 @@ void ConnectionHandler::ResolveHost(IPaddress *address, const char *host, Uint16
 }
 
 //Csatlakozás
-TCPsocket ConnectionHandler::TCP_Open(IPaddress *ip)
+TCPsocket ConnectionHandler::TCP_Open(IPaddress* ip)
 {
 	TCPsocket serverSocket;
-	for (int retryCount = 0; retryCount < maxRetryCountOnError; retryCount++) {
+	for (int retryCount = 0; retryCount < maxRetryCountOnError; ++retryCount) {
 		serverSocket = SDLNet_TCP_Open(ip);
 		if (!serverSocket) {
 			printRetry(retryCount, "Opening socket");
@@ -41,10 +41,10 @@ TCPsocket ConnectionHandler::TCP_Open(IPaddress *ip)
 }
 
 //Egy socketcsoport foglalása a memóriába
-SDLNet_SocketSet ConnectionHandler::AllocSocketSet(int maxSockets)
+SDLNet_SocketSet ConnectionHandler::AllocSocketSet(int max_sockets)
 {
 	SDLNet_SocketSet socketSet;
-	socketSet = SDLNet_AllocSocketSet(maxSockets);
+	socketSet = SDLNet_AllocSocketSet(max_sockets);
 	if (!socketSet) {
 		ReportErrorAndExit("SDLNet_AllocSocketSet", ErrorCode::ALLOC_SET);
 	}
@@ -53,15 +53,15 @@ SDLNet_SocketSet ConnectionHandler::AllocSocketSet(int maxSockets)
 
 //Socket hozzáadása egy csoporthoz
 //Ez csak akkor dobhat hibát,ha nem fér el a socketsetben a socket
-void ConnectionHandler::TCP_AddSocket(SDLNet_SocketSet &set, TCPsocket &socket)
+void ConnectionHandler::TCP_AddSocket(SDLNet_SocketSet& set, TCPsocket& socket)
 {
 	if (SDLNet_TCP_AddSocket(set, socket) == -1) {
-		std::cerr << "SDLNet_TCP_AddSocket" << SDLNet_GetError() << std::endl;
+		std::cerr << "[ERROR] SDLNet_TCP_AddSocket" << SDLNet_GetError() << std::endl;
 	}
 }
 
 //Megnézi,hogy bármely socketen a csoportba,van-e aktivitás
-bool ConnectionHandler::CheckSocket(SDLNet_SocketSet &set, Uint32 timeout)
+bool ConnectionHandler::CheckSocket(SDLNet_SocketSet& set, Uint32 timeout)
 {
 	if (SDLNet_CheckSockets(set, timeout) == -1) {
 		perror("SDLNet_CheckSockets");
@@ -73,39 +73,21 @@ bool ConnectionHandler::CheckSocket(SDLNet_SocketSet &set, Uint32 timeout)
 }
 
 //Van-e aktivitás egy socketen
-bool ConnectionHandler::SocketReady(TCPsocket &socket)
+bool ConnectionHandler::SocketReady(TCPsocket& socket)
 {
 	if (SDLNet_SocketReady(socket)) {
 		return true;
 	}
 	else {
-		//ReportErrorAndExit("SDLNet_SocketReady", ErrorCode::SOCKET_READY);
 		return false;
 	}
 }
 
-//Szöveg fogadása hálózaton
-void ConnectionHandler::ReceiveText(TCPsocket &socket, void *data, const int length)
-{
-	int receivedBytes;
-	for (int retryCount = 0; retryCount < maxRetryCountOnError; retryCount++) {
-		receivedBytes = SDLNet_TCP_Recv(socket, data, length);
-		if (receivedBytes <= 0) {
-			printRetry(retryCount, "Receiving text");
-			SDL_Delay(delayTime);
-		}
-		else {
-			return;
-		}
-	}
-	ReportErrorAndExit("SDLNet_TCP_Recv", ErrorCode::RECEIVE);
-}
-
 //Bináris adat fogadása hálózaton
-void ConnectionHandler::ReceiveBinary(TCPsocket &socket, void *dest, const int size)
+void ConnectionHandler::ReceiveBinary(TCPsocket& socket, void* dest, const int size)
 {
 	int receivedBytes;
-	for (int retryCount = 0; retryCount < maxRetryCountOnError; retryCount++) {
+	for (int retryCount = 0; retryCount < maxRetryCountOnError; ++retryCount) {
 		receivedBytes = SDLNet_TCP_Recv(socket, dest, size);
 		if (receivedBytes <= 0) {
 			printRetry(retryCount, "Receiving binary data");
@@ -118,28 +100,11 @@ void ConnectionHandler::ReceiveBinary(TCPsocket &socket, void *dest, const int s
 	ReportErrorAndExit("SDLNet_TCP_Recv", ErrorCode::RECEIVE);
 }
 
-//Szöveg küldése hálózaton
-void ConnectionHandler::SendText(TCPsocket &socket, const char *text, const int length)
-{
-	int sentBytes;
-	for (int retryCount = 0; retryCount < maxRetryCountOnError; retryCount++) {
-		sentBytes = SDLNet_TCP_Send(socket, text, length);
-		if (sentBytes < length) {
-			printRetry(retryCount, "Sending text");
-			SDL_Delay(delayTime);
-		}
-		else {
-			return;
-		}
-	}
-	ReportErrorAndExit("SDLNet_TCP_Send", ErrorCode::SEND);
-}
-
 //Bináris adat küldése hálózaton
-void ConnectionHandler::SendBinary(TCPsocket &socket, const void *source, const int size)
+void ConnectionHandler::SendBinary(TCPsocket& socket, const void* source, const int size)
 {
 	int sentBytes;
-	for (int retryCount = 0; retryCount < maxRetryCountOnError; retryCount++) {
+	for (int retryCount = 0; retryCount < maxRetryCountOnError; ++retryCount) {
 		sentBytes = SDLNet_TCP_Send(socket, source, size);
 		if (sentBytes < size) {
 			printRetry(retryCount, "Sending binary data");
@@ -153,19 +118,19 @@ void ConnectionHandler::SendBinary(TCPsocket &socket, const void *source, const 
 }
 
 //Kiirjuk hogy újra próbálkozunk
-void ConnectionHandler::printRetry(int currentRetry, char currentAction[])
+void ConnectionHandler::printRetry(int current_retry, char current_action[])
 {
-	std::cout << "Losing connection while: " << currentAction << '\n'
-		<< "Retrying!(" << currentRetry + 1 << '/' << maxRetryCountOnError << ')' << std::endl;
+	std::cout << "[WARNING] Losing connection while: " << current_action << '\n'
+		<< "Retrying!(" << current_retry + 1 << '/' << maxRetryCountOnError << ')' << std::endl;
 }
 
 //Nagyobb hiba esetén kiirjuk és kilépünk
-void ConnectionHandler::ReportErrorAndExit(char functionName[], int exitCode)
+void ConnectionHandler::ReportErrorAndExit(char function_name[], int exit_code)
 {
-	std::cerr << "[" << functionName << "] " << SDLNet_GetError() << '\n'
-		<< "ERROR OCCURED!Press enter to exit...\n";
+	std::cerr << "[ERROR][" << function_name << "] " << SDLNet_GetError() << '\n'
+		<< "Press enter to exit...\n";
 	std::cin.clear();
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	std::cin.get();
-	std::exit(exitCode);
+	std::exit(exit_code);
 }

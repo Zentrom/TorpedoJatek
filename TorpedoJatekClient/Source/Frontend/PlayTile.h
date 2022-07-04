@@ -21,8 +21,6 @@ public:
 	void Draw(const gCamera& camera, gShaderProgram& sh_program, const gVertexBuffer& vb_buffer) const;
 	void OutlineDraw(const gCamera& camera, gShaderProgram& sh_program, const gVertexBuffer& vb_buffer) const;
 
-	void ClearPosition();
-
 	void setState(int new_state = 3);
 	void setUsed(bool used = true);
 	const int getId() const;
@@ -33,6 +31,7 @@ public:
 	const int getState() const;
 
 private:
+	//Játékmezõ állapota
 	enum TileState {
 		HIT = 1,
 		MISS,

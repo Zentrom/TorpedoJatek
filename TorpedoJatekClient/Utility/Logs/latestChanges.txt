@@ -1,6 +1,5 @@
-v0.0.5d-Rendering Optimization
+v0.0.5e-Server Review
 -----------------------------------------------------------------------------------------
--Fixed hitSound to play when projectile hits a ship.
--Fixed mute button 'm', it now mutes all audio.
--SeaTiles now have a separate shader.
--Finished rendering optimization.
+-Reviewed Server and Connection handling code.
+-Tested most possible game outcomes.
+-Fixed the game to run in default(non-debug) mode.

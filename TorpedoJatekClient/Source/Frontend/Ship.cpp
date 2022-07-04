@@ -17,7 +17,10 @@ Ship::Ship(const std::vector<PlayTile*> &tiles, bool ally) : playTiles(tiles), i
 			0.6f + 0.4f * tiles.size() * TorpedoGLOBAL::SeaTileScaleXZ,
 			(0.3f + 0.12f*tiles.size()) * TorpedoGLOBAL::SeaTileScaleXZ )* TorpedoGLOBAL::Scale;
 		if (tiles.size() > 1) {
-			if (tiles.at(0)->getPos().first != tiles.at(1)->getPos().first) {
+			if (tiles.at(0)->getPos().first > tiles.at(1)->getPos().first) {
+				shipRotate = -1*(glm::half_pi<float>());
+			}
+			else if(tiles.at(0)->getPos().first < tiles.at(1)->getPos().first){
 				shipRotate = glm::half_pi<float>();
 			}
 		}

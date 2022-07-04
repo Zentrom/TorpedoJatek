@@ -1,13 +1,12 @@
 
 #include "ClientHandler.h"
 
-
-ClientHandler::ClientHandler(void)
+ClientHandler::ClientHandler()
 {
 	Init_SDLNet();
 }
 
-ClientHandler::~ClientHandler(void)
+ClientHandler::~ClientHandler()
 {
 	if (!TorpedoGLOBAL::Debug) {
 		SDLNet_TCP_Close(mySocket);
@@ -21,9 +20,9 @@ bool ClientHandler::Init(std::string ipString, int portNr)
 {
 	socketSet = ConnectionHandler::AllocSocketSet(maxSockets);
 
+	std::cout << "Connecting to server..." << std::endl;
 	ResolveHost(&ip, ipString.c_str(), static_cast<Uint16>(portNr));
 
-	std::cout << "Connecting to server..." << std::endl;
 	mySocket = TCP_Open(&ip);
 	std::cout << "Connected!" << std::endl;
 
@@ -31,13 +30,13 @@ bool ClientHandler::Init(std::string ipString, int portNr)
 
 	std::cout << "Sending client version..." << std::endl;
 	SendBinary(mySocket, &clientVersion, sizeof(TorpedoVersion));
-
+	//Version check válasza
 	char text[200];
 	int textLength;
 	bool responseVersionCheck = false;
 	ReceiveBinary(mySocket, &responseVersionCheck, sizeof(bool));
 	ReceiveBinary(mySocket, &textLength, sizeof(int));
-	ReceiveText(mySocket, text, textLength);
+	ReceiveBinary(mySocket, text, textLength); //char = 1byte
 	text[textLength] = '\0';
 	std::cout << text << std::endl;
 
@@ -71,11 +70,7 @@ int ClientHandler::GetPlayerNum()
 	int playerNum = 1;
 	ReceiveBinary(mySocket, &playerNum, sizeof(int));
 	if (playerNum > 2) {
-		std::cout << "Server is FULL!!\nPress enter to exit..." << std::endl;
-		std::cin.clear();
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		std::cin.get();
-		std::exit(99);
+		std::cout << "Server is FULL!!\n" << std::endl;
 	}
 	else {
 		std::cout << "You are player number " << playerNum << std::endl;
@@ -83,7 +78,7 @@ int ClientHandler::GetPlayerNum()
 	return playerNum;
 }
 
-//Vár a szerverre,hogy jelezzen,hogy indulhat a meccs
+//Vár a szerverre,hogy jelezzen,hogy indulhat a meccs.Nem blokkol a CheckSocket miatt
 bool ClientHandler::GetStartSignal()
 {
 	int startSignal;
@@ -132,6 +127,7 @@ std::pair<char, int> ClientHandler::ReceiveShot()
 	return tileNr;
 }
 
+//Jelzi a szervernek hogy kilépünk
 void ClientHandler::quitGame()
 {
 	sentMessageType = MessageType::QUIT;

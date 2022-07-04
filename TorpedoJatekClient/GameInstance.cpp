@@ -50,6 +50,7 @@ bool GameInstance::Init()
 {
 	gameLogic = new GameLogic(*playerFleet, *enemyFleet, *sea);
 	gameLogic->Init();
+	eventHandler = new EventHandler();
 
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 
@@ -319,7 +320,7 @@ void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 			//	if (SDL_GetRelativeMouseMode() == SDL_bool(false)) {
 			//		SDL_SetRelativeMouseMode(SDL_bool(true));
 			//	}
-			if (gameLogic->PlaceShip(static_cast<int>(mousePointedData[3]), shipSizeInput)) {
+			if (gameLogic->PlaceAllyShip(static_cast<int>(mousePointedData[3]), shipSizeInput)) {
 				if (gameLogic->CheckAnyUnplacedShipLeft()) {
 					gameState = GameState::INITIAL;
 				}

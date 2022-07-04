@@ -7,8 +7,8 @@
 class ServerHandler : public ConnectionHandler {
 public:
 	static void Init_SDL();
-	static TCPsocket TCP_Accept(TCPsocket &serverSocket);
-	static MessageType ReceiveMessageType(TCPsocket &socket);
+	static TCPsocket TCP_Accept(TCPsocket& server_socket);
+	static MessageType ReceiveMessageType(TCPsocket& socket);
 
 private:
 

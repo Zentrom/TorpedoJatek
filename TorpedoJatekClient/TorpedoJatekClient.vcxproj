@@ -89,21 +89,6 @@
     <None Include="Shaders\skybox.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Normals\cylinder_normal.bmp" />
-    <Image Include="Resources\Normals\gomb_normal.bmp" />
-    <Image Include="Resources\Normals\ground_normal.bmp" />
-    <Image Include="Resources\Normals\suzanne_normal.bmp" />
-    <Image Include="Resources\Normals\top_normal.bmp" />
-    <Image Include="Resources\Textures\cannonTexture.bmp" />
-    <Image Include="Resources\Textures\groundTexture.bmp" />
-    <Image Include="Resources\Textures\mountainTexture.bmp" />
-    <Image Include="Resources\Textures\seaTexture.bmp" />
-    <Image Include="Resources\Textures\shipBottomTexture.bmp" />
-    <Image Include="Resources\Textures\shipTopTexture.bmp" />
-    <Image Include="Resources\Textures\suzanne_texture.bmp" />
-    <Image Include="Resources\Textures\top_texture.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="..\Bstuff\Info\changelog.txt" />
     <Text Include="..\Bstuff\Info\controlsAlpha.txt" />
     <Text Include="Utility\Logs\latestChanges.txt" />

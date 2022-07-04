@@ -23,7 +23,6 @@ EventHandler::EventHandler()
 	isMuted = !isMuted;
 	SwitchVolume();
 
-	//Mix_PlayMusic(music, 3);
 	Mix_FadeInMusic(music, 3, musicFadeInTimeMs);
 
 }

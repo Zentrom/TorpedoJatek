@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <array>
 
 //Játék háttérlogikájával kapcsolatos osztály
@@ -31,7 +32,7 @@ public:
 
 	bool CheckForUnplacedShips(int shipSize);
 	bool CheckAnyUnplacedShipLeft();
-	bool PlaceShip(int tileIndex, int shipSize);
+	bool PlaceAllyShip(int tileIndex, int shipSize);
 	void SendFleetToServer();
 
 	bool CheckStartSignal();
@@ -62,6 +63,11 @@ private:
 	std::string ip = "127.0.0.1"; //A szerver-ip szöveges alakja
 	int port = 27015; //szerver port
 	int mapSize = 7; //Tárolt pályaméret - Alapérték DEBUG módhoz
-	int playerNum; //Ha 1 akkor mi kezdünk,ha 2 akkor nem
+	int playerNum = 0; //Ha 1 akkor mi kezdünk,ha 2 akkor nem
+	//PlaceAllyShiphez kell hogy megjegyezze,ne töröld
+	PlayTile* pShipFront;
+	PlayTile* pShipBack;
+	bool shipFrontPlaced = false; //Hajó elejét már leraktuk-e
+	std::array<PlayTile*, 4> freeChoices; //Hajó hátaknak megfelelõ pos
 
 };

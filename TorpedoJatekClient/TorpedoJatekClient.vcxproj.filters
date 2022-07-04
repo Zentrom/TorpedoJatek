@@ -9,16 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Resource Files\Textures">
-      <UniqueIdentifier>{239ef7f2-6daa-4af8-8aa4-022b544a3b9a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\NormalMaps">
-      <UniqueIdentifier>{43b8e0c5-2fc5-4484-a041-16031e1438b3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{7a2fe49e-e828-4268-843b-5ead85c5a3e6}</UniqueIdentifier>
     </Filter>
@@ -247,47 +237,6 @@
     <None Include="Shaders\seatile.vert">
       <Filter>Shaders</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resources\Normals\cylinder_normal.bmp">
-      <Filter>Resource Files\NormalMaps</Filter>
-    </Image>
-    <Image Include="Resources\Normals\gomb_normal.bmp">
-      <Filter>Resource Files\NormalMaps</Filter>
-    </Image>
-    <Image Include="Resources\Normals\ground_normal.bmp">
-      <Filter>Resource Files\NormalMaps</Filter>
-    </Image>
-    <Image Include="Resources\Normals\suzanne_normal.bmp">
-      <Filter>Resource Files\NormalMaps</Filter>
-    </Image>
-    <Image Include="Resources\Normals\top_normal.bmp">
-      <Filter>Resource Files\NormalMaps</Filter>
-    </Image>
-    <Image Include="Resources\Textures\suzanne_texture.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\top_texture.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\groundTexture.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\mountainTexture.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\seaTexture.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\cannonTexture.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\shipBottomTexture.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\shipTopTexture.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Utility\Logs\latestChanges.txt">

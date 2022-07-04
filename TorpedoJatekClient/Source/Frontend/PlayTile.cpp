@@ -115,12 +115,6 @@ void PlayTile::setUsed(bool used)
 	usedTile = used;
 }
 
-//Kinullázza a játékmezõ koordinátáját
-void PlayTile::ClearPosition()
-{
-	position = std::pair<char, int>('0', 0);
-}
-
 const int PlayTile::getId() const
 {
 	return id;
