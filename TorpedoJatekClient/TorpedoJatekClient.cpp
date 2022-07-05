@@ -162,20 +162,6 @@ int TorpedoJatekClient::StartGameInstance()
 				quit = true;
 				break;
 			case SDL_KEYDOWN:
-				//if (ev.key.keysym.sym == SDLK_ESCAPE) {
-					//if (SDL_GetRelativeMouseMode() == SDL_bool(true)) {
-					//	SDL_SetRelativeMouseMode(SDL_bool(false));
-					//}
-				//}
-				//if (sdlEvent->key.keysym.sym == SDLK_m) {
-				//	if (Mix_PausedMusic())
-				//	{
-				//		Mix_ResumeMusic();
-				//	}
-				//	else {
-				//		Mix_PauseMusic();
-				//	}
-				//}
 				if (gameInstance->KeyboardDown(sdlEvent->key)) {
 					quit = true;
 				}

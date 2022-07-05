@@ -173,7 +173,7 @@ void GameInstance::HandleGameState()
 			}
 		}
 		winnerPlayerNum = gameLogic->CheckVictoryState();
-		if (winnerPlayerNum && !eventHandler->IsProjectileAnimation()) {
+		if (winnerPlayerNum) {
 			gameState = GameState::MATCH_ENDING;
 			outputWritten = false;
 		}

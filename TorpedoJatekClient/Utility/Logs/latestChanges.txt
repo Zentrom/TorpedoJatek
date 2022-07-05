@@ -1,5 +1,4 @@
-v0.0.5f-Backend Review
+v0.0.5g-Bug Fixes
 -----------------------------------------------------------------------------------------
--Reviewed Client backend.
--Fixed compilation warnings.
--Fixed game to run after Debug compilation.
+-Fixed MP3 and JPG support.
+-

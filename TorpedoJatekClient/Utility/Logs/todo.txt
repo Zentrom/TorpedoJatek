@@ -1,34 +1,25 @@
-Mountaint dispacement mappinggel vagy valami profibb módon. Beta után.
-Megoldani egy tényleges visszakapcsolódást a serverre,lementett állapottal, 60sec timeout.EZT majd beta körül.
+Mountaint dispacement mappinggel vagy valami profibb módon.
+Megoldani egy tényleges visszakapcsolódást a serverre,lementett állapottal, 60sec timeout.
+
+Particle - Cylindrical Billboaring -> Spherical
+Beta után Particleeknek legyen mozgása + transparency/szín változása
+Mix_Position() Positional audiot ujrapróbálni esetleg. Béta+
 std::exit()-ektõl lehetõleg megszabadulni. Beta verziónál.
 std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
+Bétánál külön mappákba rakni a játék/menü frontend és backendet.
+SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE window flagek betánál. SDL_SetRelativeMouseMode()
 
-(Freetype) vagy !SDL ttf! betuknek
-
-Hogy jelenjenek meg az ellenfél hajói?(006)
-
-Vertexbufferek lehetnének static-ok talán?
-SeaTile és Ground Instancing/Deferred shading.004+
-Mix_Position() Positional audiot ujrapróbálni esetleg. Béta+
-
-Csata után a vesztesnek kirajzolja a gyõztes túlélõ hajóit?
-Icon az exenek?
-Debug buildbe módba tesztelni a progit 006
-006 Ha már kilött hajó pozíciójára lövök akkor 00 koordra ir miss-t(csak aki kapja a lövést ott irja rosszul)
-Lövés animáció kezdetekor már kiirja hogy hova löttünk meg átszinezi a tile-t,végén kéne.
-006 Frontent osztályokat mappákba
-Ne tünjön el a particle miután a lövedék célba ér
-Beta után Particleeknek legyen mozgása + transparency/szín változása
-Particle - Cylindrical Billboaring -> Spherical
-A mute gomb minden hangot muteoljon. CameraBounds is gombra mûködjön??
-Exception propagation - Forceolt destructor hívás?
-Camera viewdistance+fog-al eltüntetni a map szélét
-
-SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE window flagek betánál
-Operator overloading?
-
+(Freetype) vagy !SDL ttf! betuknek 007
+Hogy jelenjenek meg az ellenfél hajói?(007)
+Csata után a vesztesnek kirajzolja a gyõztes túlélõ hajóit? 007
+Icon az exenek? 007
+Camera viewdistance+fog-al eltüntetni a map szélét 007
 007-be a Kiiratás már a Win ablakba legyen(legalább a játékmenetes,error nem muszáj)
-std::optional-t használni ha kell
+
+Vertexbufferek lehetnének static-ok talán? NEM. TOLJUK FEL FLEETBE. 006 Ship,Shipflag vertexbjét
+Debug buildbe módba tesztelni a progit 006
+Lövés animáció kezdetekor már kiirja hogy hova löttünk meg átszinezi a tile-t,végén kéne.
+Ne tünjön el a particle miután a lövedék célba ér
 
 
 
@@ -41,4 +32,4 @@ SERVERRE: MEGVAN
 Clientre: MEGVAN
 Debug compilation MEGVAN
 
-és Felirt errorok
+						DEBUGBA MÉG1x test és Felirt errorok!!
