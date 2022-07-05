@@ -37,9 +37,8 @@ DEBUG-ra: ÁT LETT NÉZVE:
 -main
 -TorpedoJatekClient
 -KB MINDEN.
-
 SERVERRE: MEGVAN
+Clientre: MEGVAN
+Debug compilation MEGVAN
 
-Clientre:			 BACKENDET KÉNE ÁTNÉZNI SZEKVENCIÁLISAN MÉG
-
-Debug compilation és Felirt errorok
+és Felirt errorok

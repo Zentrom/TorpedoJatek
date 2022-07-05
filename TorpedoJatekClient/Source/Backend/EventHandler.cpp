@@ -74,8 +74,8 @@ void EventHandler::ApplySoundDistEffect(int channel_num, float sound_pos_x, floa
 {
 	float len = glm::length(glm::vec3(camEyeX - sound_pos_x, 0
 		, camEyeZ - sound_pos_z));
-	int dis = (len > soundScanDistance ? soundScanDistance : len) * 255 / soundScanDistance;
-	Mix_SetDistance(channel_num, dis);
+	float dis = (len > soundScanDistance ? soundScanDistance : len) * 255 / soundScanDistance;
+	Mix_SetDistance(channel_num, static_cast<int>(dis));
 }
 
 //Muteolja vagy reseteli az audio hangerõt - Zene és channelek

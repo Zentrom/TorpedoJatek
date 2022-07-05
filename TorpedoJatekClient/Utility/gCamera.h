@@ -29,7 +29,7 @@ public:
 	const glm::mat4& GetProj() const { return matProj; }
 	const glm::mat4& GetViewProj() const { return matViewProj; }
 
-	void Resize(float w, float h, float fov, float view_dist);
+	void Resize(int width, int height, float fov, float view_dist);
 
 	void KeyboardDown(SDL_KeyboardEvent& key);
 	void KeyboardUp(SDL_KeyboardEvent& key);

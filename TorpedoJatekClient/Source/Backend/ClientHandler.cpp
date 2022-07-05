@@ -8,9 +8,6 @@ ClientHandler::ClientHandler()
 
 ClientHandler::~ClientHandler()
 {
-	if (!TorpedoGLOBAL::Debug) {
-		SDLNet_TCP_Close(mySocket);
-	}
 	SDLNet_Quit();
 }
 
@@ -58,7 +55,7 @@ void ClientHandler::SendFleet(const std::vector<std::pair<char, int>> &activeTil
 {
 	std::cout << "Sending activetiles..." << std::endl;
 	SendBinary(mySocket, &sentMessageType, sizeof(MessageType));
-	for (std::pair<char, int> activeTilePos : activeTilePositions) {
+	for (const std::pair<char, int> &activeTilePos : activeTilePositions) {
 		SendBinary(mySocket, &activeTilePos, sizeof(std::pair<char, int>));
 	}
 	std::cout << "ShipData sent to server." << std::endl;
@@ -118,7 +115,7 @@ ResponseState ClientHandler::SendShot(const std::pair<char, int> &tile)
 }
 
 //Visszaadja hogy az ellenfél hova lõtt
-std::pair<char, int> ClientHandler::ReceiveShot()
+const std::pair<char, int> ClientHandler::ReceiveShot()
 {
 	std::pair<char, int> tileNr('0', 0);
 
@@ -128,12 +125,17 @@ std::pair<char, int> ClientHandler::ReceiveShot()
 }
 
 //Jelzi a szervernek hogy kilépünk
-void ClientHandler::quitGame()
+void ClientHandler::QuitGame()
 {
 	sentMessageType = MessageType::QUIT;
 	SendBinary(mySocket, &sentMessageType, sizeof(MessageType));
-
+	CloseConnection();
 	std::cout << "You left the game!" << std::endl;
+}
+
+void ClientHandler::CloseConnection() 
+{
+	SDLNet_TCP_Close(mySocket);
 }
 
 //Megkérdi a szervert,hogy miután kaptunk egy lövést,milyen állapotba lesz a játék

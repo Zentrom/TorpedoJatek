@@ -17,6 +17,7 @@
 #include <string>
 #include <sstream>
 #include <array>
+#include <algorithm>
 
 //Játék háttérlogikájával kapcsolatos osztály
 class GameLogic
@@ -32,13 +33,13 @@ public:
 
 	bool CheckForUnplacedShips(int shipSize);
 	bool CheckAnyUnplacedShipLeft();
-	bool PlaceAllyShip(int tileIndex, int shipSize);
+	bool PlaceAllyShip(int tile_id, int shipSize);
 	void SendFleetToServer();
 
 	bool CheckStartSignal();
 	void QuitGame();
 	int CheckVictoryState();
-	PlayTile* Shoot(int tileindex);
+	PlayTile* Shoot(int tile_id);
 
 	PlayTile* GetShoot();
 	int getPlayerNum();
@@ -47,7 +48,7 @@ private:
 	//Debug módban beégetett dolgok
 	void PlaceShipsINDEBUG();
 	void SetTilesINDEBUG();
-	std::string ProcessTile(const std::pair<char, int> &tile);
+	const std::string ProcessTile(const std::pair<char, int> &tile);
 
 	ClientHandler* clientHandler = new ClientHandler();	//A hálózati kapcsolat kliens-oldali vezérlõje
 	std::array<int, 4> unplacedShips; //Hány hajó nincs még lerakva(külön méretekben)

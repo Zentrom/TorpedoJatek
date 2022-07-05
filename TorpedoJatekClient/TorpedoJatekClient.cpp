@@ -69,14 +69,14 @@ int TorpedoJatekClient::Init()
 
 	//Hangformátum dll-ek inicializálása
 	int audioFormats = MIX_INIT_MP3 | MIX_INIT_OGG;
-	if (Mix_Init(audioFormats) & audioFormats != audioFormats) {
+	if ((Mix_Init(audioFormats) & audioFormats) != audioFormats) {
 		std::cout << "[Mix_Init]Failed to init required Ogg and Mp3 support: " << SDL_GetError() << std::endl;
-		return 1;
+		//return 1;
 	}
 
 	//JPG és PNG formátumok támogatásának a betöltése
 	int imageFormats = IMG_INIT_JPG | IMG_INIT_PNG;
-	if (IMG_Init(imageFormats) & imageFormats != imageFormats) {
+	if ((IMG_Init(imageFormats) & imageFormats) != imageFormats) {
 		std::cout << "[IMG_Init]Failed to init required JPG and PNG support: " << SDL_GetError() << std::endl;
 		return 1;
 	}
@@ -134,7 +134,7 @@ int TorpedoJatekClient::CreateGameWindow()
 int TorpedoJatekClient::StartGameInstance()
 {
 	sdlEvent = new SDL_Event();
-	gameInstance = new GameInstance(static_cast<float>(widthWindow),static_cast<float>(heightWindow));
+	gameInstance = new GameInstance(widthWindow, heightWindow);
 	if (!gameInstance->Init())
 	{
 		std::cout << "[GameInstance_Init] Game instance inicialization failed!" << std::endl;

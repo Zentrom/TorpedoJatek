@@ -94,9 +94,9 @@ void gCamera::UpdateUV(float du, float dv)
 }
 
 //Ablak átméretezés esetén
-void gCamera::Resize(float w, float h, float fov, float view_dist)
+void gCamera::Resize(int width, int height, float fov, float view_dist)
 {
-	matProj = glm::perspective(fov, w / h, 0.001f, view_dist);
+	matProj = glm::perspective(fov, width / static_cast<float>(height), 0.001f, view_dist);
 
 	matViewProj = matProj * viewMatrix;
 }

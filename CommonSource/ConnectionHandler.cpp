@@ -38,6 +38,9 @@ TCPsocket ConnectionHandler::TCP_Open(IPaddress* ip)
 		}
 	}
 	ReportErrorAndExit("SDLNet_TCP_Open", ErrorCode::OPEN);
+
+	std::cout << "[WARNING] [SDLNet_TCP_Open] Undefined behaviour!! Returning NULL serverSocket!" << std::endl;
+	return serverSocket;
 }
 
 //Egy socketcsoport foglalása a memóriába
@@ -67,9 +70,7 @@ bool ConnectionHandler::CheckSocket(SDLNet_SocketSet& set, Uint32 timeout)
 		perror("SDLNet_CheckSockets");
 		ReportErrorAndExit("SDLNet_CheckSockets", ErrorCode::CHECK_SOCKETS);
 	}
-	else {
-		return true;
-	}
+	return true;
 }
 
 //Van-e aktivitás egy socketen
@@ -127,7 +128,7 @@ void ConnectionHandler::printRetry(int current_retry, char current_action[])
 //Nagyobb hiba esetén kiirjuk és kilépünk
 void ConnectionHandler::ReportErrorAndExit(char function_name[], int exit_code)
 {
-	std::cerr << "[ERROR][" << function_name << "] " << SDLNet_GetError() << '\n'
+	std::cerr << "[ERROR] [" << function_name << "] " << SDLNet_GetError() << '\n'
 		<< "Press enter to exit...\n";
 	std::cin.clear();
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

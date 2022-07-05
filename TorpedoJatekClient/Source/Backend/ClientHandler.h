@@ -27,8 +27,9 @@ public:
 	bool GetStartSignal();
 	bool CheckForResponse();
 	ResponseState SendShot(const std::pair<char, int> &tile);
-	std::pair<char, int> ReceiveShot();
-	void quitGame();
+	const std::pair<char, int> ReceiveShot();
+	void QuitGame();
+	void CloseConnection();
 
 	ResponseState getRecShotState();
 

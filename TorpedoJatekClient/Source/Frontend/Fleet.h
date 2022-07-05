@@ -28,11 +28,11 @@ public:
 	bool CheckTile(const PlayTile &tile) const;
 	std::array<PlayTile*, 4> getFreeBacks(const PlayTile &tile, int back_distance) const;
 	void PlaceShip(PlayTile *front, PlayTile *back);
-	void HitFleet(std::pair<char, int> hit_pos);
+	void HitFleet(const std::pair<char, int> hit_pos);
 
 	PlayTile& getTile(const std::pair<char, int> &pos);
 	const std::array<int, 4>* getUnplacedShipCount() const;
-	std::vector<std::pair<char, int>> getActiveTilePositions() const;
+	const std::vector<std::pair<char, int>> getActiveTilePositions() const;
 	BattleShip& getBattleShip();
 	const bool getIsAlly() const;
 private:

@@ -36,7 +36,7 @@ void ParticleGroup::Init()
 		vb_particles.AddData(0, centerPoints.at(i).x - radius, centerPoints.at(i).y - radius, centerPoints.at(i).z);
 		vb_particles.AddData(0, centerPoints.at(i).x + radius, centerPoints.at(i).y - radius, centerPoints.at(i).z);
 
-		for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
 			vb_particles.AddData(1, color, color, color);
 		}
 	}

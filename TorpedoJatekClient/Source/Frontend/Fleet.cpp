@@ -214,7 +214,7 @@ void Fleet::PlaceShip(PlayTile *front, PlayTile *back)
 }
 
 //Lekezel ellenséges lövést
-void Fleet::HitFleet(std::pair<char, int> hit_pos)
+void Fleet::HitFleet(const std::pair<char, int> hit_pos)
 {
 	bool found = false;
 	for (Ship* sh : ships) {
@@ -250,7 +250,7 @@ const std::array<int, 4>* Fleet::getUnplacedShipCount() const
 }
 
 //Visszaadja azoknak a mezõknek a koordinátáit amin van hajó, kilõttek is akár
-std::vector<std::pair<char, int>> Fleet::getActiveTilePositions() const
+const std::vector<std::pair<char, int>> Fleet::getActiveTilePositions() const
 {
 	std::vector<std::pair<char, int>> result;
 	for (Ship* ship : ships) {

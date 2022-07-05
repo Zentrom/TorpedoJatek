@@ -1,5 +1,5 @@
-v0.0.5e-Server Review
+v0.0.5f-Backend Review
 -----------------------------------------------------------------------------------------
--Reviewed Server and Connection handling code.
--Tested most possible game outcomes.
--Fixed the game to run in default(non-debug) mode.
+-Reviewed Client backend.
+-Fixed compilation warnings.
+-Fixed game to run after Debug compilation.

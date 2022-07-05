@@ -179,7 +179,8 @@ void TorpedoJatekServer::HandleClientState(Client& client)
 		else
 		{
 			//Átküldjük a mapsizet
-			client.activeTiles.reserve(activeTileCount);
+			//client.activeTiles.reserve(activeTileCount);
+			client.activeTiles.resize(activeTileCount);
 			std::cout << "[INFO] " << client.name.str() << " connected." << '(' << ++connectedPlayers << "/2)" << std::endl;
 			ServerHandler::SendBinary(client.socket, &client.playerNum, sizeof(int));
 
@@ -195,7 +196,7 @@ void TorpedoJatekServer::HandleClientState(Client& client)
 		//Ha elvárt adat jött, a hajó pozíciók
 		if (receivedType == MessageType::ESTIMATED) {
 			for (int i = 0; i < activeTileCount; ++i) {
-				ServerHandler::ReceiveBinary(client.socket, &client.activeTiles[i], sizeof(std::pair<char, int>));
+				ServerHandler::ReceiveBinary(client.socket, &client.activeTiles.at(i), sizeof(std::pair<char, int>));
 			}
 			std::cout << "[INFO] Received ShipData from " << client.name.str() << std::endl;
 			if (client.playerNum == 1) {

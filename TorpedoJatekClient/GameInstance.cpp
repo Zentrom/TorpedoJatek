@@ -1,7 +1,7 @@
 #include "GameInstance.h"
 
 //Kamera és más változók inicializálása
-GameInstance::GameInstance(float viewport_w, float viewport_h) : viewportWidth(viewport_w),viewportHeight(viewport_h),
+GameInstance::GameInstance(int viewport_w, int viewport_h) : viewportWidth(viewport_w),viewportHeight(viewport_h),
 	cam_mainCamera(new gCamera(glm::vec3(0, 20.0f, 20.0f), mountain->getHeightY()))
 {
 	terrain = new Terrain(sea->getSeaTileRow(), mountain->getHeightY());
@@ -9,7 +9,7 @@ GameInstance::GameInstance(float viewport_w, float viewport_h) : viewportWidth(v
 		terrain->getTerrainScale() * terrain->getGroundScaleXZ() / cameraRestraintXZ,
 		mountain->getHeightY() * cameraRestraintY * TorpedoGLOBAL::Scale, 
 		terrain->getTerrainScale() * terrain->getGroundScaleXZ() / cameraRestraintXZ));
-	cam_mainCamera->SetProj(fieldOfView, viewportWidth / viewportHeight, 0.001f, viewDistance);
+	cam_mainCamera->SetProj(fieldOfView, viewportWidth / static_cast<float>(viewportHeight), 0.001f, viewDistance);
 	
 	mousePointedData = new float[4];
 	mousePointedData[3] = 0.0f; //ez hogy legyen alapértéke mikor kell neki 3d pickinghez
@@ -166,10 +166,10 @@ void GameInstance::HandleGameState()
 			outputWritten = false;
 		}
 		else if (!shotReceived) {
-			PlayTile* shotTile = gameLogic->GetShoot();
-			if (shotTile) {
+			PlayTile* pShotTile = gameLogic->GetShoot();
+			if (pShotTile) {
 				shotReceived = true;
-				eventHandler->FireProjectile(*enemyFleet, *shotTile);
+				eventHandler->FireProjectile(*enemyFleet, *pShotTile);
 			}
 		}
 		winnerPlayerNum = gameLogic->CheckVictoryState();
@@ -230,10 +230,10 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 {
 	cam_mainCamera->KeyboardDown(key);
 
+	//Kilépés
 	if ((key.keysym.sym == SDLK_ESCAPE) && TorpedoGLOBAL::Debug) {
 		return 1;
 	}
-
 	if((key.keysym.sym == SDLK_ESCAPE) &&
 		(gameState == GameState::SHOOTING_AT_ENEMY || gameState == GameState::GETTING_SHOT || gameState == GameState::STARTING_MATCH
 			|| gameState == GameState::MATCH_ENDING)) {
@@ -242,11 +242,11 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 		}
 		return 1;
 	}
-
+	//Hang némítása
 	if (key.keysym.sym == SDLK_m) {
 		eventHandler->SwitchVolume();
 	}
-
+	//Kiválasztjuk hogy mekkora hajót készülünk lerakni
 	if (gameState == GameState::SHIP_SIZE_INPUT) {
 		switch (key.keysym.sym)
 		{
@@ -316,6 +316,7 @@ void GameInstance::MouseMove(SDL_MouseMotionEvent& mouse)
 void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 {
 	if (mouse.button == SDL_BUTTON_LEFT) {
+		//Hajót teszünk mi le
 		if (gameState == GameState::PLACING_SHIP) {
 			//	if (SDL_GetRelativeMouseMode() == SDL_bool(false)) {
 			//		SDL_SetRelativeMouseMode(SDL_bool(true));
@@ -332,12 +333,12 @@ void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 				outputWritten = false;
 			}
 		}
-
+		//Mi lövünk
 		if (gameState == GameState::SHOOTING_AT_ENEMY) {
 			if (!eventHandler->IsProjectileAnimation()) {
-				PlayTile* shotTile = gameLogic->Shoot(static_cast<int>(mousePointedData[3]));
-				if (shotTile) {
-					eventHandler->FireProjectile(*playerFleet, *shotTile);
+				PlayTile* pShotTile = gameLogic->Shoot(static_cast<int>(mousePointedData[3]));
+				if (pShotTile) {
+					eventHandler->FireProjectile(*playerFleet, *pShotTile);
 
 					winnerPlayerNum = gameLogic->CheckVictoryState();
 					if (winnerPlayerNum) {

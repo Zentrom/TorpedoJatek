@@ -130,14 +130,15 @@ bool GameLogic::CheckAnyUnplacedShipLeft()
 }
 
 //Lerak egy hajót ha üres a kijelölt mezõ
-bool GameLogic::PlaceAllyShip(int tileIndex, int shipSize)
+bool GameLogic::PlaceAllyShip(int tile_id, int shipSize)
 {
 
 	int offset = pSea->getAlphaOffset();
-	if (tileIndex - offset < mapSize * mapSize && tileIndex - offset >= 0) {
+	int tileIndex = tile_id - offset;
+	if (tileIndex < mapSize * mapSize && tileIndex >= 0) {
 		//Hajó eleje
 		if (!shipFrontPlaced) {
-			pShipFront = &pSea->getTileByIndex(tileIndex - offset);
+			pShipFront = &pSea->getTileByIndex(tileIndex);
 			if (pMyFleet->CheckTile(*pShipFront)) {
 				//Ha 1 méretû
 				if (shipSize == 1) {
@@ -180,7 +181,7 @@ bool GameLogic::PlaceAllyShip(int tileIndex, int shipSize)
 		}
 		//Hajó háta
 		else {
-			pShipBack = &pSea->getTileByIndex(tileIndex - offset);
+			pShipBack = &pSea->getTileByIndex(tileIndex);
 			bool foundInputInChoices = false;
 			for (PlayTile* &choisz : freeChoices) {
 				if (choisz && choisz->getIndex() == pShipBack->getIndex()) {
@@ -225,19 +226,19 @@ bool GameLogic::CheckStartSignal()
 }
 
 //Bekéri a játékostól,hogy hova akar lõni,majd küldi a szervernek
-PlayTile* GameLogic::Shoot(int tileindex)
+PlayTile* GameLogic::Shoot(int tile_id)
 {
-	std::string shootPos;
 	PlayTile *target;
-
+	
 	int offset = pSea->getAlphaOffset();
 	int enemyOffset = pSea->getEnemyIndexOffset();
-	if (tileindex - enemyOffset - offset < mapSize * mapSize && tileindex - enemyOffset - offset >= 0) {
-		target = &pSea->getTileByIndex(tileindex - enemyOffset - offset, false);
+	int tileIndex = tile_id - enemyOffset - offset;
+	if (tileIndex < mapSize * mapSize && tileIndex >= 0) {
+		target = &pSea->getTileByIndex(tileIndex, false);
 		matchState = clientHandler->SendShot(target->getPos());
 		target->setState(static_cast<int>(matchState));
 
-		shootPos = ProcessTile(target->getPos());
+		const std::string shootPos = ProcessTile(target->getPos());
 		std::cout << "Your shot to " << shootPos << " was a "
 			<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
 		return target;
@@ -251,24 +252,24 @@ PlayTile* GameLogic::GetShoot()
 {
 	if (clientHandler->CheckForResponse()) {
 		std::string shootPos;
-		std::pair<char,int> shootCoord = clientHandler->ReceiveShot();
+		const std::pair<char,int> shootCoord = clientHandler->ReceiveShot();
 		matchState = clientHandler->getRecShotState();
 
 		if (shootCoord.first == '0') {
 			std::cout << "The enemy left the game!" << std::endl;
 		}
 		else {
-			PlayTile* target = &pMyFleet->getTile(shootCoord);
-			shootPos = ProcessTile(target->getPos());
+			PlayTile* pTarget = &pMyFleet->getTile(shootCoord);
+			shootPos = ProcessTile(pTarget->getPos());
 
 			//Megnézi hogy van-e még lebegõ hajónk
 			if (matchState != ResponseState::CONTINUE_MATCH) {
-				pMyFleet->HitFleet(target->getPos());
+				pMyFleet->HitFleet(pTarget->getPos());
 			}
-			target->setState(static_cast<int>(matchState));
+			pTarget->setState(static_cast<int>(matchState));
 			std::cout << "Enemy's shot to " << shootPos << " was a "
 				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
-			return target;
+			return pTarget;
 		}
 	}
 	return nullptr;
@@ -278,18 +279,18 @@ PlayTile* GameLogic::GetShoot()
 int GameLogic::CheckVictoryState()
 {
 	if (matchState == ResponseState::WIN_PLAYER_ONE) {
-		clientHandler->~ClientHandler();
+		clientHandler->CloseConnection();
 		return 1;
 	}
 	else if (matchState == ResponseState::WIN_PLAYER_TWO) {
-		clientHandler->~ClientHandler();
+		clientHandler->CloseConnection();
 		return 2;
 	}
 	return 0;
 }
 
 //Játékmezõ koordinátákból csinál szöveges formájút
-std::string GameLogic::ProcessTile(const std::pair<char, int> &tile)
+const std::string GameLogic::ProcessTile(const std::pair<char, int> &tile)
 {
 	char rowC[10];
 	_itoa_s(tile.second, rowC, 10);
@@ -330,7 +331,7 @@ void GameLogic::SetTilesINDEBUG()
 
 //Lezárja a kapcsolatot a szerverrel
 void GameLogic::QuitGame() {
-	clientHandler->quitGame();
+	clientHandler->QuitGame();
 }
 
 //Játékosszám

@@ -65,7 +65,7 @@ void BShipCannon::Init()
 		
 		vb_cannon.AddData(2, 0, 1, 0);
 		
-		vb_cannon.AddData(3, 0.5f * cosf(angle) + 0.5f, 0.5f * sinf(angle) + 0.5);
+		vb_cannon.AddData(3, 0.5f * cosf(angle) + 0.5f, 0.5f * sinf(angle) + 0.5f);
 	}
 	
 	for (int i = circleRes*2+3; i <= circleRes*3; ++i) {

@@ -301,7 +301,8 @@ PlayTile& Sea::getTileByIndex(int index, bool ally)
 			}
 		}
 	}
-	
+	std::cout << "[Sea_getTileByIndex] No tile found to return! Returning myTiles[0]!" << std::endl;
+	return *myTiles.at(0);
 }
 
 //Az ellenfél játékmezõindexei el vannak tolva,hogy mikor kiolvassuk akkor lehessen tudni

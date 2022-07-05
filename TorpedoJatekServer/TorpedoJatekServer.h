@@ -76,7 +76,7 @@ private:
 	MessageType receivedType; //Elvárt üzenetet küld-e a kliens
 
 	std::string input; //Inputot tároló string
-	int mapSize = 7; //játékPálya mérete
+	int mapSize = 5; //játékPálya mérete
 	int activeTileCount = 0; //hány hajót tartalmazó mezõ van
 	std::pair<char, int> targetTile; //melyik mezõkoordinátára lõtt valaki
 

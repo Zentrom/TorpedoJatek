@@ -25,7 +25,7 @@
 class GameInstance
 {
 public:
-	GameInstance(float viewport_w = 800.0f, float viewport_h = 600.0f);
+	GameInstance(int viewport_w = 800, int viewport_h = 600);
 	~GameInstance();
 
 	bool Init();
@@ -76,8 +76,8 @@ private:
 	int shipSizeInput = 0; //Mekkora hajót készülünk lerakni
 	int winnerPlayerNum = 0; //Nyertes játékos+boolként is mûködik ha senki nem nyert még
 
-	float viewportWidth; //Ablak canvaszának szélessége
-	float viewportHeight; //Ablak canvaszának magassága
+	int viewportWidth; //Ablak canvaszának szélessége
+	int viewportHeight; //Ablak canvaszának magassága
 	gCamera* cam_mainCamera; //Kamera
 };
 
