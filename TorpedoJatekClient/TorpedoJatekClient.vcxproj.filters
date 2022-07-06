@@ -98,9 +98,6 @@
     <ClCompile Include="Utility\GLUtils.cpp">
       <Filter>Utility\gClasses</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Frontend\ShipFlag.cpp">
-      <Filter>Source Files\Frontend</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Frontend\BattleShip.cpp">
       <Filter>Source Files\Frontend</Filter>
     </ClCompile>
@@ -180,9 +177,6 @@
     </ClInclude>
     <ClInclude Include="Utility\GLUtils.h">
       <Filter>Utility\gClasses</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Frontend\ShipFlag.h">
-      <Filter>Header Files\Frontend</Filter>
     </ClInclude>
     <ClInclude Include="Source\Frontend\BattleShip.h">
       <Filter>Header Files\Frontend</Filter>

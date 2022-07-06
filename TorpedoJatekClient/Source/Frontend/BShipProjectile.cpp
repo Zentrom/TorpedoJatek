@@ -3,7 +3,7 @@
 //cannon_shared_trans mátrixból az utsó oszlop elsõ 3 sora a mozgatás
 BShipProjectile::BShipProjectile(const glm::mat4 &cannon_shared_trans, bool ally) : 
 	startPos(glm::vec3(cannon_shared_trans[3][0], cannon_shared_trans[3][1], cannon_shared_trans[3][2])),
-	isAlly(ally), projectileParticle(new ParticleGroup(projectileScale.x))
+	isAlly(ally), projectileParticle(new ParticleGroup(projectileScale.x)), postAnimParticleTime(particleLife)
 {
 	currentPos = startPos;
 	Init();
@@ -70,6 +70,8 @@ void BShipProjectile::Fire(const glm::vec3& shot_tile_pos)
 	dist.z = targetPos.z - currentPos.z;
 
 	dist.x *= (isAlly ? 1.0f : -1.0f);
+
+	particles.clear();
 }
 
 //Animáció - igazat ad vissza ha még tart
@@ -86,19 +88,33 @@ bool BShipProjectile::Animate(float delta_time)
 			particleElapsed = 0.0f;
 			particles.push_back(std::pair<const glm::vec3,float>(currentPos, particleLife));
 		}
-		for (std::pair<const glm::vec3, float> &par : particles) {
+		for (std::pair<const glm::vec3, float>& par : particles) {
 			if (par.second > 0) {
 				par.second -= delta_time;
 			}
 		}
-
 		return true;
 	}
 	else {
 		elapsedTime = 0.0f;
 		particleElapsed = 0.0f;
-		particles.clear();
+		postAnimParticleElapsed = 0.0f;
 		currentPos = startPos;
+	}
+	return false;
+}
+
+//Lövés után élõ részecskék animációja
+bool BShipProjectile::AnimPostParticles(float delta_time)
+{
+	postAnimParticleElapsed += delta_time;
+	if (postAnimParticleElapsed < postAnimParticleTime) {
+		for (std::pair<const glm::vec3, float>& par : particles) {
+			if (par.second > 0) {
+				par.second -= delta_time;
+			}
+		}
+		return true;
 	}
 	return false;
 }

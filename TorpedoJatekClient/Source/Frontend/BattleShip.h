@@ -10,7 +10,7 @@ public:
 	BattleShip(const glm::vec3& battle_ship_translate, bool ally);
 	~BattleShip();
 
-	void Draw(const gCamera& camera, gShaderProgram& sh_program);
+	void Draw(const gCamera& camera, gShaderProgram& sh_program, const gVertexBuffer& vb_ship, const gVertexBuffer& vb_flag);
 	void ResetForDEBUG();
 	const BShipCannon& getCannon() const;
 private:

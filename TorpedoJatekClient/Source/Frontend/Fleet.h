@@ -36,6 +36,11 @@ public:
 	BattleShip& getBattleShip();
 	const bool getIsAlly() const;
 private:
+	void InitShipVb();
+	void InitShipFlagVb();
+
+	gVertexBuffer vb_ship; //Hajó grafikai modell adatai
+	gVertexBuffer vb_flag; //Hajó zászlójának modell adatai
 	const std::array<int, 4> *pUnplacedShipCount; //1x1,2x2,stb. méretû hajókból még hányat NEM raktunk le
 	std::vector<Ship*> ships; //Játékos hajói
 	std::vector<PlayTile*> *pPlayTiles; //Játékos oldalán lévõ játékmezõk

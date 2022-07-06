@@ -34,7 +34,6 @@
     <ClCompile Include="Source\Frontend\PlayTile.cpp" />
     <ClCompile Include="Source\Frontend\Sea.cpp" />
     <ClCompile Include="Source\Frontend\Ship.cpp" />
-    <ClCompile Include="Source\Frontend\ShipFlag.cpp" />
     <ClCompile Include="Source\Frontend\Skybox.cpp" />
     <ClCompile Include="Source\Frontend\Terrain.cpp" />
     <ClCompile Include="TorpedoJatekClient.cpp" />
@@ -62,7 +61,6 @@
     <ClInclude Include="Source\Frontend\PlayTile.h" />
     <ClInclude Include="Source\Frontend\Sea.h" />
     <ClInclude Include="Source\Frontend\Ship.h" />
-    <ClInclude Include="Source\Frontend\ShipFlag.h" />
     <ClInclude Include="Source\Frontend\Skybox.h" />
     <ClInclude Include="Source\Frontend\Terrain.h" />
     <ClInclude Include="Source\Globals.hpp" />

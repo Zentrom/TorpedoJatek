@@ -1,4 +1,5 @@
 v0.0.5g-Bug Fixes
 -----------------------------------------------------------------------------------------
 -Fixed MP3 and JPG support.
--
+-Removed extra Ship and ShipFlag Vertexbuffer instances.(now in Fleet)
+-Shoot related info is now only displayed after the Projectile animation.

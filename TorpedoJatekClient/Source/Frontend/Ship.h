@@ -2,7 +2,6 @@
 
 #include "../Globals.hpp"
 #include "PlayTile.h"
-#include "ShipFlag.h"
 
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
@@ -22,7 +21,7 @@ public:
 	~Ship();
 
 	void Update(float delta_time);
-	void Draw(const gCamera& camera, gShaderProgram& sh_program) const;
+	void Draw(const gCamera& camera, gShaderProgram& sh_program, const gVertexBuffer& vb_ship, const gVertexBuffer& vb_flag) const;
 
 	std::vector<PlayTile*>& getPlayTiles();
 	bool isDestroyed() const;
@@ -32,7 +31,6 @@ public:
 protected:
 	void Init();
 
-	gVertexBuffer vb_ship; //Hajó grafikai modell adatai
 	GLuint shipBottomTextureID; //Hajó aljának textúra azonosítója
 	GLuint shipTopTextureID; //Hajó tetejének textúra azonosítója
 
@@ -54,6 +52,5 @@ protected:
 
 	std::vector<PlayTile*> playTiles;	//Mely játékmezõkön van a hajó
 	bool isAlly; //Kliens szempontjából mi hajónk-e
-	ShipFlag* const shipFlag; //Hajó zászlója
 
 };

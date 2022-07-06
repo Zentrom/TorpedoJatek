@@ -10,6 +10,8 @@ Fleet::~Fleet()
 	for (Ship* sh : ships) {
 		delete sh;
 	}
+	vb_ship.Clean();
+	vb_flag.Clean();
 }
 
 //Inicializálja egy játékos hajóseregét
@@ -29,10 +31,15 @@ void Fleet::Init(int in_map_size, float pt_center_offset)
 		break;
 	}
 
+	InitShipVb();
+	InitShipFlagVb();
+
 	float firstTileBattleShipOffset = ((TorpedoGLOBAL::SeaTileScaleXZ * mapSize) + bShipPlayZoneOffset) * TorpedoGLOBAL::Scale;
 	glm::vec3 battleShipOffset = glm::vec3(firstTileBattleShipOffset, 0, 0) + glm::vec3(pt_center_offset, 0, 0);
 	battleShip = new BattleShip(battleShipOffset, isAlly);
 }
+
+
 
 //Elkéri a játékos játékmezõit
 void Fleet::InitTiles(std::vector<PlayTile*> &tiles)
@@ -54,11 +61,11 @@ void Fleet::Draw(const gCamera& camera, gShaderProgram& sh_program) const
 {
 	for (Ship* ship : ships) {
 		if (ship->isVisible()) {
-			ship->Draw(camera, sh_program);
+			ship->Draw(camera, sh_program, vb_ship, vb_flag);
 		}
 	}
 	if (battleShip->isVisible()) {
-		battleShip->Draw(camera, sh_program);
+		battleShip->Draw(camera, sh_program, vb_ship, vb_flag);
 	}
 }
 
@@ -241,6 +248,255 @@ void Fleet::HitFleet(const std::pair<char, int> hit_pos)
 			}
 		}
 	}
+}
+
+//Hajó modell adatainak inicializálása
+void Fleet::InitShipVb()
+{
+	vb_ship.AddAttribute(0, 3); //pozíció
+	vb_ship.AddAttribute(1, 4); //szín
+	vb_ship.AddAttribute(2, 3); //normálvektor
+	vb_ship.AddAttribute(3, 2); //textúrakoord
+
+	//Hajó alsó palást
+	vb_ship.AddData(0, -0.5f, 0, 0);
+	vb_ship.AddData(0, -0.25f, -0.25f, 0);
+	vb_ship.AddData(0, -0.25f, 0, 0.25f);
+	vb_ship.AddData(0, -0.25f, 0, 0.25f);
+	vb_ship.AddData(0, -0.25f, -0.25f, 0);
+	vb_ship.AddData(0, 0.25f, 0, 0.25f);
+	vb_ship.AddData(0, 0.25f, 0, 0.25f);
+	vb_ship.AddData(0, -0.25f, -0.25f, 0);
+	vb_ship.AddData(0, 0.25f, -0.25f, 0);
+	vb_ship.AddData(0, 0.25f, 0, 0.25f);
+	vb_ship.AddData(0, 0.25f, -0.25f, 0);
+	vb_ship.AddData(0, 0.5f, 0, 0);
+	//palást másik oldala
+	vb_ship.AddData(0, 0.5f, 0, 0);
+	vb_ship.AddData(0, 0.25f, -0.25f, 0);
+	vb_ship.AddData(0, 0.25f, 0, -0.25f);
+	vb_ship.AddData(0, 0.25f, 0, -0.25f);
+	vb_ship.AddData(0, 0.25f, -0.25f, 0);
+	vb_ship.AddData(0, -0.25f, 0, -0.25f);
+	vb_ship.AddData(0, -0.25f, 0, -0.25f);
+	vb_ship.AddData(0, 0.25f, -0.25f, 0);
+	vb_ship.AddData(0, -0.25f, -0.25f, 0);
+	vb_ship.AddData(0, -0.25f, 0, -0.25f);
+	vb_ship.AddData(0, -0.25f, -0.25f, 0);
+	vb_ship.AddData(0, -0.5f, 0, 0);
+	//Fedõlap
+	vb_ship.AddData(0, -0.25f, 0, -0.25f);
+	vb_ship.AddData(0, -0.5f, 0, 0);
+	vb_ship.AddData(0, -0.25f, 0, 0.25f);
+	vb_ship.AddData(0, -0.25f, 0, -0.25f);
+	vb_ship.AddData(0, -0.25f, 0, 0.25f);
+	vb_ship.AddData(0, 0.25f, 0, 0.25f);
+	vb_ship.AddData(0, 0.25f, 0, 0.25f);
+	vb_ship.AddData(0, 0.25f, 0, -0.25f);
+	vb_ship.AddData(0, -0.25f, 0, -0.25f);
+	vb_ship.AddData(0, 0.25f, 0, -0.25f);
+	vb_ship.AddData(0, 0.25f, 0, 0.25f);
+	vb_ship.AddData(0, 0.5f, 0, 0);
+	//Gúlasátor
+	vb_ship.AddData(0, -0.25f, 0, 0);
+	vb_ship.AddData(0, 0, 0, 0.25f);
+	vb_ship.AddData(0, 0, 0.25f, 0);
+	vb_ship.AddData(0, 0, 0.25f, 0);
+	vb_ship.AddData(0, 0, 0, 0.25f);
+	vb_ship.AddData(0, 0.25f, 0, 0);
+	vb_ship.AddData(0, 0.25f, 0, 0);
+	vb_ship.AddData(0, 0, 0, -0.25f);
+	vb_ship.AddData(0, 0, 0.25f, 0);
+	vb_ship.AddData(0, 0, 0.25f, 0);
+	vb_ship.AddData(0, 0, 0, -0.25f);
+	vb_ship.AddData(0, -0.25f, 0, 0);
+
+	if (!isAlly) {
+		for (int i = 0; i < 48; ++i) {
+			vb_ship.AddData(1, 1.0f, 0, 0, 1);
+		}
+	}
+	else {
+		for (int i = 0; i < 48; ++i) {
+			vb_ship.AddData(1, 0, 1.0f, 0, 1);
+		}
+	}
+
+	vb_ship.AddData(2, -0.5f, 0, 0);
+	vb_ship.AddData(2, -0.25f, -0.25f, 0);
+	vb_ship.AddData(2, -0.25f, 0, 0.25f);
+	vb_ship.AddData(2, -0.25f, 0, 0.25f);
+	vb_ship.AddData(2, -0.25f, -0.25f, 0);
+	vb_ship.AddData(2, 0.25f, 0, 0.25f);
+	vb_ship.AddData(2, 0.25f, 0, 0.25f);
+	vb_ship.AddData(2, -0.25f, -0.25f, 0);
+	vb_ship.AddData(2, 0.25f, -0.25f, 0);
+	vb_ship.AddData(2, 0.25f, 0, 0.25f);
+	vb_ship.AddData(2, 0.25f, -0.25f, 0);
+	vb_ship.AddData(2, 0.5f, 0, 0);
+	vb_ship.AddData(2, 0.5f, 0, 0);
+	vb_ship.AddData(2, 0.25f, -0.25f, 0);
+	vb_ship.AddData(2, 0.25f, 0, -0.25f);
+	vb_ship.AddData(2, 0.25f, 0, -0.25f);
+	vb_ship.AddData(2, 0.25f, -0.25f, 0);
+	vb_ship.AddData(2, -0.25f, 0, -0.25f);
+	vb_ship.AddData(2, -0.25f, 0, -0.25f);
+	vb_ship.AddData(2, 0.25f, -0.25f, 0);
+	vb_ship.AddData(2, -0.25f, -0.25f, 0);
+	vb_ship.AddData(2, -0.25f, 0, -0.25f);
+	vb_ship.AddData(2, -0.25f, -0.25f, 0);
+	vb_ship.AddData(2, -0.5f, 0, 0);
+	vb_ship.AddData(2, -0.25f, 0, -0.25f);
+	vb_ship.AddData(2, -0.5f, 0, 0);
+	vb_ship.AddData(2, -0.25f, 0, 0.25f);
+	vb_ship.AddData(2, -0.25f, 0, -0.25f);
+	vb_ship.AddData(2, -0.25f, 0, 0.25f);
+	vb_ship.AddData(2, 0.25f, 0, 0.25f);
+	vb_ship.AddData(2, 0.25f, 0, 0.25f);
+	vb_ship.AddData(2, 0.25f, 0, -0.25f);
+	vb_ship.AddData(2, -0.25f, 0, -0.25f);
+	vb_ship.AddData(2, 0.25f, 0, -0.25f);
+	vb_ship.AddData(2, 0.25f, 0, 0.25f);
+	vb_ship.AddData(2, 0.5f, 0, 0);
+	vb_ship.AddData(2, -0.25f, 0, 0);
+	vb_ship.AddData(2, 0, 0, 0.25f);
+	vb_ship.AddData(2, 0, 0.25f, 0);
+	vb_ship.AddData(2, 0, 0.25f, 0);
+	vb_ship.AddData(2, 0, 0, 0.25f);
+	vb_ship.AddData(2, 0.25f, 0, 0);
+	vb_ship.AddData(2, 0.25f, 0, 0);
+	vb_ship.AddData(2, 0, 0, -0.25f);
+	vb_ship.AddData(2, 0, 0.25f, 0);
+	vb_ship.AddData(2, 0, 0.25f, 0);
+	vb_ship.AddData(2, 0, 0, -0.25f);
+	vb_ship.AddData(2, -0.25f, 0, 0);
+
+	//Hajó alsó palást
+	vb_ship.AddData(3, 0, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);;
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);
+	vb_ship.AddData(3, 0.75f, 1.0f);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.75f, 1.0f);
+	vb_ship.AddData(3, 1.0f, 0);
+	//palást másik oldala
+	vb_ship.AddData(3, 0, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);;
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);
+	vb_ship.AddData(3, 0.75f, 1.0f);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.75f, 1.0f);
+	vb_ship.AddData(3, 1.0f, 0);
+	//Fedõlap
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0, 0.5f);
+	vb_ship.AddData(3, 0.25f, 1.0f);
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0.25f, 1.0f);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 0.75f, 1.0f);
+	vb_ship.AddData(3, 0.25f, 0);
+	vb_ship.AddData(3, 0.75f, 1.0f);
+	vb_ship.AddData(3, 0.75f, 0);
+	vb_ship.AddData(3, 1.0f, 0.5f);
+	//Gúlasátor
+	vb_ship.AddData(3, 0, 1.0f);
+	vb_ship.AddData(3, 0.5f, 1.0f);
+	vb_ship.AddData(3, 0.5f, 0);
+	vb_ship.AddData(3, 0.5f, 0);
+	vb_ship.AddData(3, 0.5f, 1.0f);
+	vb_ship.AddData(3, 1.0f, 1.0f);
+	vb_ship.AddData(3, 1.0f, 1.0f);
+	vb_ship.AddData(3, 0.5f, 1.0f);
+	vb_ship.AddData(3, 0.5f, 0);
+	vb_ship.AddData(3, 0.5f, 0);
+	vb_ship.AddData(3, 0.5f, 1.0f);
+	vb_ship.AddData(3, 0, 1.0f);
+
+	vb_ship.InitBuffers();
+}
+
+//Hajó-zászló modell adatainak inicializálása
+void Fleet::InitShipFlagVb()
+{
+	vb_flag.AddAttribute(0, 3); //pozíció
+	vb_flag.AddAttribute(1, 3); //szín
+	vb_flag.AddAttribute(2, 3); //normálvektor
+
+	int xInvert = (isAlly ? -1 : 1);
+
+	//Oszlop
+	vb_flag.AddData(0, xInvert * 0.25f, 0, 0);
+	vb_flag.AddData(0, xInvert * 0.187f, 0, -0.063f);
+	vb_flag.AddData(0, xInvert * 0.187f, 0, 0.063f);
+	vb_flag.AddData(0, xInvert * 0.25f, 0.375f, 0);
+	vb_flag.AddData(0, xInvert * 0.187f, 0.375f, -0.063f);
+	vb_flag.AddData(0, xInvert * 0.187f, 0.375f, 0.063f);
+	//Zászló
+	vb_flag.AddData(0, xInvert * 0.25f, 0.375f, 0);
+	vb_flag.AddData(0, xInvert * 0.25f, 0.25f, 0);
+	vb_flag.AddData(0, xInvert * 0.375f, 0.25f, 0);
+	vb_flag.AddData(0, xInvert * 0.375f, 0.375f, 0);
+
+	//Oszlop
+	vb_flag.AddData(1, 0.5f, 0.25f, 0.1f);
+	vb_flag.AddData(1, 0.5f, 0.25f, 0.1f);
+	vb_flag.AddData(1, 0.5f, 0.25f, 0.1f);
+	vb_flag.AddData(1, 0.5f, 0.25f, 0.1f);
+	vb_flag.AddData(1, 0.5f, 0.25f, 0.1f);
+	vb_flag.AddData(1, 0.5f, 0.25f, 0.1f);
+	//Zászló
+	if (isAlly) {
+		vb_flag.AddData(1, 0, 1.0f, 0);
+		vb_flag.AddData(1, 0, 1.0f, 0);
+		vb_flag.AddData(1, 0, 1.0f, 0);
+		vb_flag.AddData(1, 0, 1.0f, 0);
+	}
+	else {
+		vb_flag.AddData(1, 1.0f, 0, 0);
+		vb_flag.AddData(1, 1.0f, 0, 0);
+		vb_flag.AddData(1, 1.0f, 0, 0);
+		vb_flag.AddData(1, 1.0f, 0, 0);
+	}
+
+	//Oszlop
+	vb_flag.AddData(2, 0.25f, 0, 0);
+	vb_flag.AddData(2, 0.187f, 0, -0.063f);
+	vb_flag.AddData(2, 0.187f, 0, 0.063f);
+	vb_flag.AddData(2, 0.25f, 0.375f, 0);
+	vb_flag.AddData(2, 0.187f, 0.375f, -0.063f);
+	vb_flag.AddData(2, 0.187f, 0.375f, 0.063f);
+	//Zászló
+	vb_flag.AddData(2, 0.25f, 0.375f, 0);
+	vb_flag.AddData(2, 0.25f, 0.25f, 0);
+	vb_flag.AddData(2, 0.375f, 0.25f, 0);
+	vb_flag.AddData(2, 0.375f, 0.375f, 0);
+
+	//Oszlop
+	vb_flag.AddIndex(0, 2, 1);
+	vb_flag.AddIndex(0, 5, 2);
+	vb_flag.AddIndex(0, 3, 5);
+	vb_flag.AddIndex(1, 3, 0);
+	vb_flag.AddIndex(1, 4, 3);
+	vb_flag.AddIndex(2, 4, 1);
+	vb_flag.AddIndex(2, 5, 4);
+	vb_flag.AddIndex(3, 4, 5);
+	//Zászló
+	vb_flag.AddIndex(8, 6, 7);
+	vb_flag.AddIndex(8, 9, 6);
+
+	vb_flag.InitBuffers();
 }
 
 //Visszaadja a le nem rakott hajók számát méret alapján(1x1,2x2,stb.)

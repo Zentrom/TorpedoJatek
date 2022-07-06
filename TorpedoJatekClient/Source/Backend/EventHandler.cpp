@@ -45,6 +45,7 @@ void EventHandler::Update(float delta_time, const glm::vec3& cam_eye)
 	if (isProjectileAnimation) {
 		if (!pAnimatedProjectile->Animate(delta_time)) {
 			isProjectileAnimation = false;
+			isPostParticleAnimation = true;
 
 			ApplySoundDistEffect(1, pShotTile->getTranslate().x, pShotTile->getTranslate().z);
 			if (pShotTile->getState() == 1) {
@@ -55,6 +56,11 @@ void EventHandler::Update(float delta_time, const glm::vec3& cam_eye)
 			}
 		}
 	}
+	else if (isPostParticleAnimation) {
+		if (!pAnimatedProjectile->AnimPostParticles(delta_time)) {
+			isPostParticleAnimation = false;
+		}
+	}
 }
 
 //Lövedék animáció indítása
@@ -63,6 +69,7 @@ void EventHandler::FireProjectile(Fleet& fleet, PlayTile& shot_tile)
 	pAnimatedProjectile = &fleet.getBattleShip().getCannon().getProjectile();
 	pAnimatedProjectile->Fire(shot_tile.getTranslate());
 	isProjectileAnimation = true;
+	isPostParticleAnimation = false;
 
 	ApplySoundDistEffect(2, fleet.getBattleShip().getShipTranslate().x, fleet.getBattleShip().getShipTranslate().z);
 	Mix_PlayChannel(2, cannonFireSound, 0);

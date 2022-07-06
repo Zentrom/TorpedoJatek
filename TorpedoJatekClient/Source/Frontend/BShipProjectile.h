@@ -23,6 +23,7 @@ public:
 
 	void Fire(const glm::vec3& shot_tile_pos);
 	bool Animate(float delta_time);
+	bool AnimPostParticles(float delta_time);
 	void Draw(const gCamera& camera,const glm::mat4& shared_trans);
 
 private:
@@ -35,7 +36,7 @@ private:
 
 	const int circleResHor = 16; //körfelbontás vízszintesen
 	const int circleResVert = 16; //körfelbontás függõlegesen
-	const float animationTime = 0.5f;//4.0f; //Animáció ideje
+	const float animationTime = 4.0f; //Animáció ideje
 	const float particleLife = 1.5f; //Meddig él egy részecske
 	const float particleEmitTime = 0.05f; //Részecskeszórás ideje
 	const float distHeightDivFactor = 4.0f; //Távolság függvényében mennyire magasra megyünk(osztási faktor)
@@ -46,9 +47,11 @@ private:
 	glm::vec3 targetPos; //Lövedék célpont
 
 	float elapsedTime = 0.0f; //Animációból eltelt idõ
-	float particleElapsed = 0.0f; //Részecskeanimációhoz
+	float particleElapsed = 0.0f; //Részecskeanimáció szórásához
+	float postAnimParticleElapsed = 0.0f; //Animáció bejezetével füst animációhoz számláló
 
 	const glm::vec3 startPos; //Lövedék kiinduló pos
 	const bool isAlly; //Mi lövedékünk-e
 	ParticleGroup* const projectileParticle; //Részecskecsoport
+	const float postAnimParticleTime; //Animáció befejeztével meddig folytatjuk a füstanimációt
 };

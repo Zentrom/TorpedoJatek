@@ -86,19 +86,45 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 			"\n(ESC - Quit)" << std::endl;
 	}
 	else if (gameState == GameState::SHOOTING_AT_ENEMY) {
+
+		if (pEnemyTarget) {
+			const std::string shootPos = ProcessTile(pEnemyTarget->getPos());
+			pEnemyTarget->setState(static_cast<int>(matchState));
+			std::cout << "Enemy's shot to " << shootPos << " was a "
+				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+		}
 		std::cout << "\nIt's your turn! Shoot at an enemy tile!(with LeftMouseButton)" <<
 			"\n(ESC - Quit)" << std::endl;
 	}
 	else if (gameState == GameState::GETTING_SHOT) {
+
+		if (pMyTarget) {
+			const std::string shootPos = ProcessTile(pMyTarget->getPos());
+			pMyTarget->setState(static_cast<int>(matchState));
+			std::cout << "Your shot to " << shootPos << " was a "
+				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+		}
 		std::cout << "\nWaiting for enemy to shoot..." <<
 			"\n(ESC - Quit)" << std::endl;
 	}
 	else if (gameState == GameState::MATCH_ENDING) {
 		if (related_data == playerNum) {
+			if (pMyTarget) {
+				const std::string shootPos = ProcessTile(pMyTarget->getPos());
+				pMyTarget->setState(static_cast<int>(matchState));
+				std::cout << "Your shot to " << shootPos << " was a "
+					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+			}
 			pEnemyFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've won the match!\n(ESC-Quit)" << std::endl;
 		}
 		else{
+			if (pEnemyTarget) {
+				const std::string shootPos = ProcessTile(pEnemyTarget->getPos());
+				pEnemyTarget->setState(static_cast<int>(matchState));
+				std::cout << "Enemy's shot to " << shootPos << " was a "
+					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+			}
 			pMyFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've lost the match!\n(ESC-Quit)" << std::endl;
 		}
@@ -228,20 +254,15 @@ bool GameLogic::CheckStartSignal()
 //Bekéri a játékostól,hogy hova akar lõni,majd küldi a szervernek
 PlayTile* GameLogic::Shoot(int tile_id)
 {
-	PlayTile *target;
 	
 	int offset = pSea->getAlphaOffset();
 	int enemyOffset = pSea->getEnemyIndexOffset();
 	int tileIndex = tile_id - enemyOffset - offset;
 	if (tileIndex < mapSize * mapSize && tileIndex >= 0) {
-		target = &pSea->getTileByIndex(tileIndex, false);
-		matchState = clientHandler->SendShot(target->getPos());
-		target->setState(static_cast<int>(matchState));
-
-		const std::string shootPos = ProcessTile(target->getPos());
-		std::cout << "Your shot to " << shootPos << " was a "
-			<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
-		return target;
+		pMyTarget = &pSea->getTileByIndex(tileIndex, false);
+		matchState = clientHandler->SendShot(pMyTarget->getPos());
+		
+		return pMyTarget;
 	}
 
 	return nullptr;
@@ -251,7 +272,7 @@ PlayTile* GameLogic::Shoot(int tile_id)
 PlayTile* GameLogic::GetShoot()
 {
 	if (clientHandler->CheckForResponse()) {
-		std::string shootPos;
+		
 		const std::pair<char,int> shootCoord = clientHandler->ReceiveShot();
 		matchState = clientHandler->getRecShotState();
 
@@ -259,17 +280,12 @@ PlayTile* GameLogic::GetShoot()
 			std::cout << "The enemy left the game!" << std::endl;
 		}
 		else {
-			PlayTile* pTarget = &pMyFleet->getTile(shootCoord);
-			shootPos = ProcessTile(pTarget->getPos());
-
+			pEnemyTarget = &pMyFleet->getTile(shootCoord);
 			//Megnézi hogy van-e még lebegõ hajónk
 			if (matchState != ResponseState::CONTINUE_MATCH) {
-				pMyFleet->HitFleet(pTarget->getPos());
+				pMyFleet->HitFleet(pEnemyTarget->getPos());
 			}
-			pTarget->setState(static_cast<int>(matchState));
-			std::cout << "Enemy's shot to " << shootPos << " was a "
-				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
-			return pTarget;
+			return pEnemyTarget;
 		}
 	}
 	return nullptr;

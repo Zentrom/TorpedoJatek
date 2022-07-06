@@ -56,7 +56,8 @@ private:
 	Fleet *pEnemyFleet; //Pointer az ellenfél hajóseregére
 	Sea *pSea;	//Pointer a tengerre
 	ResponseState matchState = ResponseState::START_OF_GAME; //Szerverrel való kommunikáció fázisa
-
+	PlayTile* pMyTarget; //Játékos által célzott mezõ
+	PlayTile* pEnemyTarget; //Ellenfél által célzott mezõ
 	//Játékmezõ kezdetének távolsága az origótól
 	const float playZoneCenterOffset = 4.0f * TorpedoGLOBAL::SeaTileScaleXZ * TorpedoGLOBAL::Scale;
 

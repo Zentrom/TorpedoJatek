@@ -17,9 +17,9 @@ BattleShip::~BattleShip()
 }
 
 //Kirajzol egy csatahajót
-void BattleShip::Draw(const gCamera& camera, gShaderProgram& sh_program)
+void BattleShip::Draw(const gCamera& camera, gShaderProgram& sh_program, const gVertexBuffer& vb_ship, const gVertexBuffer& vb_flag)
 {
-	Ship::Draw(camera, sh_program);
+	Ship::Draw(camera, sh_program, vb_ship, vb_flag);
 	glm::mat4 cann_rotate = glm::rotate((sinkElapsed / sinkTime) * glm::half_pi<float>() / 2.0f,
 		glm::vec3(0, 0, 1.0f));
 	cannon->Draw(camera, sh_program, sinkTranslate * cann_rotate);
