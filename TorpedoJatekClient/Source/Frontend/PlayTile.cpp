@@ -77,7 +77,11 @@ void PlayTile::setState(int new_state)
 		//EZ LEHET SZAR HA NAGYOBB JÖN BE MINT AZ ENUMHATÁR
 		state = static_cast<TileState>(new_state);
 	}
-	setStateColor();
+
+	if (state == TileState::CURSOR_SELECTION || state == TileState::DEFAULT 
+		|| state == TileState::BACK_OF_THE_SHIP_PLACEABLE_HERE || TorpedoGLOBAL::Debug) {
+		setStateColor();
+	}
 }
 
 void PlayTile::setStateColor() 

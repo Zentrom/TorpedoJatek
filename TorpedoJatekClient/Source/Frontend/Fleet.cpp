@@ -241,7 +241,7 @@ void Fleet::HitFleet(const std::pair<char, int> hit_pos)
 				}
 			}
 			if (!notAll) {
-				sh->setDestroyed(true);
+				sh->setShotAt(battleShip->getCannon().getProjectile().getAnimationTime());
 			}
 			if (found) {
 				break;

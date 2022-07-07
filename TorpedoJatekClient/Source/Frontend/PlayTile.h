@@ -29,6 +29,7 @@ public:
 	bool isUsed() const;
 	const glm::vec3& getTranslate() const;
 	const int getState() const;
+	void setStateColor();
 
 private:
 	//Játékmezõ állapota
@@ -42,8 +43,6 @@ private:
 		CURSOR_SELECTION,
 		UNDEFINED,
 	};
-
-	void setStateColor();
 
 	const float outlineWidth = 0.2f * TorpedoGLOBAL::Scale; //Kijelölõ négyzet vastagsága
 

@@ -115,11 +115,10 @@ void GameInstance::Update()
 	playerFleet->Update(deltaTime);
 	enemyFleet->Update(deltaTime);
 	eventHandler->Update(deltaTime, cam_mainCamera->GetEye());
-	lastTime = SDL_GetTicks();
-
 	if(!TorpedoGLOBAL::Debug) {
 		HandleGameState();
 	}
+	lastTime = SDL_GetTicks();
 }
 
 void GameInstance::HandleGameState() 
@@ -175,7 +174,19 @@ void GameInstance::HandleGameState()
 		winnerPlayerNum = gameLogic->CheckVictoryState();
 		if (winnerPlayerNum) {
 			gameState = GameState::MATCH_ENDING;
+		}
+	}//Lövést adunk
+	else if (shotSent && gameState == GameState::SHOOTING_AT_ENEMY) {
+		if (!eventHandler->IsProjectileAnimation()) {
+			gameState = GameState::GETTING_SHOT;
+			shotSent = false;
 			outputWritten = false;
+		}
+	}//Játék vége
+	else if (!stopOutput && gameState == GameState::MATCH_ENDING) {
+		if (!eventHandler->IsProjectileAnimation()) {
+			outputWritten = false;
+			stopOutput = true;
 		}
 	}
 }
@@ -339,15 +350,12 @@ void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 				PlayTile* pShotTile = gameLogic->Shoot(static_cast<int>(mousePointedData[3]));
 				if (pShotTile) {
 					eventHandler->FireProjectile(*playerFleet, *pShotTile);
+					shotSent = true;
 
 					winnerPlayerNum = gameLogic->CheckVictoryState();
 					if (winnerPlayerNum) {
 						gameState = GameState::MATCH_ENDING;
 					}
-					else {
-						gameState = GameState::GETTING_SHOT;
-					}
-					outputWritten = false;
 				}
 			}
 		}

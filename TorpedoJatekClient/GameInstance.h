@@ -70,9 +70,11 @@ private:
 
 	bool isError = false; //van-e error a jelenlegi állapotban
 	bool outputWritten = false; //kiirtuk-e már az üzenetet
+	bool stopOutput = false; //Játék végén már ne írjunk ki
 	bool dirL_frameBufferCreated = false;
 	float* mousePointedData; //Melyik játékmezõre mutat az egér
 	bool shotReceived = false; //Küldött-e már lövést a szerver nekünk
+	bool shotSent = false; //Küldtünk-e már lövést
 	int shipSizeInput = 0; //Mekkora hajót készülünk lerakni
 	int winnerPlayerNum = 0; //Nyertes játékos+boolként is mûködik ha senki nem nyert még
 

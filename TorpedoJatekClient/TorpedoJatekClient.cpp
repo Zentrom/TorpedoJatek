@@ -154,6 +154,41 @@ int TorpedoJatekClient::StartGameInstance()
 	bool quit = false;
 	while (!quit)
 	{
+		//FPS limiter
+		if (!enableVsync && enableFpsLimit) {
+				ftime_diff = SDL_GetTicks() - last_render_time;
+
+				if (ftime_diff + frmMod >= frmtime) {
+					gameInstance->Update();
+					gameInstance->Render();
+					SDL_GL_SwapWindow(gameWindow);
+					++frame_count;
+					last_render_time = SDL_GetTicks();
+					frmMod = (ftime_diff + frmMod) - frmtime;
+				}
+		}
+		else{
+			gameInstance->Update();
+			gameInstance->Render();
+			SDL_GL_SwapWindow(gameWindow);
+			++frame_count;
+		}
+
+		//FPS kiirása
+		time_diff = SDL_GetTicks() - last_time;
+		if (time_diff >= 1000)
+		{
+			window_title.str(std::string());
+			window_title << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
+				<< "." << clientVersion->alphaVersion << clientVersion->experimentalVersion
+				<< " | FPS:" << frame_count;
+			SDL_SetWindowTitle(gameWindow, window_title.str().c_str());
+
+			last_time = SDL_GetTicks();
+			time_diff = 0;
+			frame_count = 0;
+		}
+
 		while (SDL_PollEvent(sdlEvent))
 		{
 			switch (sdlEvent->type)
@@ -190,40 +225,6 @@ int TorpedoJatekClient::StartGameInstance()
 			}
 		}
 
-		//FPS limiter
-		if (!enableVsync && enableFpsLimit) {
-				ftime_diff = SDL_GetTicks() - last_render_time;
-
-				if (ftime_diff + frmMod >= frmtime) {
-					gameInstance->Update();
-					gameInstance->Render();
-					SDL_GL_SwapWindow(gameWindow);
-					++frame_count;
-					last_render_time = SDL_GetTicks();
-					frmMod = (ftime_diff + frmMod) - frmtime;
-				}
-		}
-		else{
-			gameInstance->Update();
-			gameInstance->Render();
-			SDL_GL_SwapWindow(gameWindow);
-			++frame_count;
-		}
-
-		//FPS kiirása
-		time_diff = SDL_GetTicks() - last_time;
-		if (time_diff >= 1000)
-		{
-			window_title.str(std::string());
-			window_title << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
-				<< "." << clientVersion->alphaVersion << clientVersion->experimentalVersion
-				<< " | FPS:" << frame_count;
-			SDL_SetWindowTitle(gameWindow, window_title.str().c_str());
-
-			last_time = SDL_GetTicks();
-			time_diff = 0;
-			frame_count = 0;
-		}
 	}
 
 	return 0;

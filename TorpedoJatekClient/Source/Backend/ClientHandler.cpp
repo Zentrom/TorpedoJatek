@@ -135,6 +135,8 @@ void ClientHandler::QuitGame()
 
 void ClientHandler::CloseConnection() 
 {
+	SDLNet_TCP_DelSocket(socketSet, mySocket);
+	SDLNet_FreeSocketSet(socketSet);
 	SDLNet_TCP_Close(mySocket);
 }
 

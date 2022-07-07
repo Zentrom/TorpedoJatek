@@ -24,7 +24,9 @@ public:
 	void Fire(const glm::vec3& shot_tile_pos);
 	bool Animate(float delta_time);
 	bool AnimPostParticles(float delta_time);
+	void ClearParticles();
 	void Draw(const gCamera& camera,const glm::mat4& shared_trans);
+	float getAnimationTime() const;
 
 private:
 	void Init();

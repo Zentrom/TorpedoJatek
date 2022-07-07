@@ -71,7 +71,6 @@ void BShipProjectile::Fire(const glm::vec3& shot_tile_pos)
 
 	dist.x *= (isAlly ? 1.0f : -1.0f);
 
-	particles.clear();
 }
 
 //Animáció - igazat ad vissza ha még tart
@@ -119,6 +118,12 @@ bool BShipProjectile::AnimPostParticles(float delta_time)
 	return false;
 }
 
+//Részecske adatokat törli
+void BShipProjectile::ClearParticles()
+{
+	particles.clear();
+}
+
 //Lövedék kirajzolása
 void BShipProjectile::Draw(const gCamera& camera,const glm::mat4& shared_trans)
 {
@@ -140,6 +145,11 @@ void BShipProjectile::Draw(const gCamera& camera,const glm::mat4& shared_trans)
 		}
 	}
 	sh_projectile.Off();
+}
+
+float BShipProjectile::getAnimationTime() const
+{
+	return animationTime;
 }
 
 //Gömb parametrikus leírása: (u,v) -> (x,y,z)

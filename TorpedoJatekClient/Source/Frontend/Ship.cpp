@@ -48,6 +48,14 @@ void Ship::Init()
 //Hajó adatok frissítése real-time
 void Ship::Update(float delta_time)
 {
+	if (preSinkTime) {
+		preSinkElapsed += delta_time;
+		if (preSinkElapsed > preSinkTime) {
+			preSinkTime = 0.0f;
+			destroyed = true;
+		}
+	}
+
 	if (visible && destroyed) {
 		sinkElapsed += delta_time;
 		if (sinkElapsed > sinkTime) {
@@ -103,6 +111,11 @@ bool Ship::isDestroyed() const
 void Ship::setDestroyed(bool dis)
 {
 	destroyed = dis;
+}
+
+void Ship::setShotAt(float animation_time)
+{
+	preSinkTime = animation_time;
 }
 
 bool Ship::isVisible() const

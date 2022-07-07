@@ -89,7 +89,7 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 
 		if (pEnemyTarget) {
 			const std::string shootPos = ProcessTile(pEnemyTarget->getPos());
-			pEnemyTarget->setState(static_cast<int>(matchState));
+			pEnemyTarget->setStateColor();
 			std::cout << "Enemy's shot to " << shootPos << " was a "
 				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
 		}
@@ -100,7 +100,7 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 
 		if (pMyTarget) {
 			const std::string shootPos = ProcessTile(pMyTarget->getPos());
-			pMyTarget->setState(static_cast<int>(matchState));
+			pMyTarget->setStateColor();
 			std::cout << "Your shot to " << shootPos << " was a "
 				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
 		}
@@ -111,7 +111,7 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 		if (related_data == playerNum) {
 			if (pMyTarget) {
 				const std::string shootPos = ProcessTile(pMyTarget->getPos());
-				pMyTarget->setState(static_cast<int>(matchState));
+				pMyTarget->setStateColor();
 				std::cout << "Your shot to " << shootPos << " was a "
 					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
 			}
@@ -121,7 +121,7 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 		else{
 			if (pEnemyTarget) {
 				const std::string shootPos = ProcessTile(pEnemyTarget->getPos());
-				pEnemyTarget->setState(static_cast<int>(matchState));
+				pEnemyTarget->setStateColor();
 				std::cout << "Enemy's shot to " << shootPos << " was a "
 					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
 			}
@@ -254,14 +254,13 @@ bool GameLogic::CheckStartSignal()
 //Bekéri a játékostól,hogy hova akar lõni,majd küldi a szervernek
 PlayTile* GameLogic::Shoot(int tile_id)
 {
-	
 	int offset = pSea->getAlphaOffset();
 	int enemyOffset = pSea->getEnemyIndexOffset();
 	int tileIndex = tile_id - enemyOffset - offset;
 	if (tileIndex < mapSize * mapSize && tileIndex >= 0) {
 		pMyTarget = &pSea->getTileByIndex(tileIndex, false);
 		matchState = clientHandler->SendShot(pMyTarget->getPos());
-		
+		pMyTarget->setState(static_cast<int>(matchState));
 		return pMyTarget;
 	}
 
@@ -281,6 +280,7 @@ PlayTile* GameLogic::GetShoot()
 		}
 		else {
 			pEnemyTarget = &pMyFleet->getTile(shootCoord);
+			pEnemyTarget->setState(static_cast<int>(matchState));
 			//Megnézi hogy van-e még lebegõ hajónk
 			if (matchState != ResponseState::CONTINUE_MATCH) {
 				pMyFleet->HitFleet(pEnemyTarget->getPos());

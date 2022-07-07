@@ -19,8 +19,9 @@ public:
 private:
 	void ApplySoundDistEffect(int channel_num, float sound_pos_x, float sound_pos_z);
 
-	BShipProjectile* pAnimatedProjectile; //Az éppen animált lövedék
-	PlayTile* pShotTile; //Éppen lött mezõ
+	BShipProjectile* pAnimatedProjectile = nullptr; //Az éppen animált lövedék
+	BShipProjectile* pLastAnimatedProjectile = nullptr; //Elõzõleg animált lövedék
+	PlayTile* pShotTile = nullptr; //Éppen lött mezõ
 	Mix_Music* music; //Zeneadatra mutató pointer
 	//1-es Mixer channelen: (8 channel allokált alapból)
 	Mix_Chunk* hitSound; //Találat hangadatra mutató pointer

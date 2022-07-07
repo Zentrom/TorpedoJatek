@@ -16,5 +16,3 @@ Icon az exenek? 007
 Camera viewdistance+fog-al eltüntetni a map szélét 007
 007-be a Kiiratás már a Win ablakba legyen(legalább a játékmenetes,error nem muszáj)
 
-Lövés animáció kezdetekor már kiirja hogy hova löttünk meg átszinezi a tile-t,végén kéne.------
-Ne tünjön el a particle miután a lövedék célba ér------

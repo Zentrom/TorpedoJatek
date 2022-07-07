@@ -1,5 +1,14 @@
-v0.0.5g-Bug Fixes
+v0.0.6<->Major Optimization
 -----------------------------------------------------------------------------------------
+[FEATURES]
+-The game now runs about 6x faster and consumes half the memory.
+-Shoot related info is now only displayed to players after the shooting animation ends.
+[FIXES]
+-Fixed placement and sinking direction of enemy Ships.
+-Fixed hitSound to play when projectile hits a ship.
+-Fixed mute button 'm', it now mutes all audio.
 -Fixed MP3 and JPG support.
--Removed extra Ship and ShipFlag Vertexbuffer instances.(now in Fleet)
--Shoot related info is now only displayed after the Projectile animation.
+-Ships now only start sinking when the Projectile hits them.
+-Projectile's particles now continue animating after the shooting animation ends.
+-Reviewed the code to fix most code-related bugs.
+-Server output now looks cleaner and more sorted.

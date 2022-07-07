@@ -27,6 +27,7 @@ public:
 	bool isDestroyed() const;
 	bool isVisible() const;
 	void setDestroyed(bool dis);
+	void setShotAt(float animation_time);
 	glm::vec3 getShipTranslate();
 protected:
 	void Init();
@@ -34,7 +35,7 @@ protected:
 	GLuint shipBottomTextureID; //Hajó aljának textúra azonosítója
 	GLuint shipTopTextureID; //Hajó tetejének textúra azonosítója
 
-	const float sinkTime = 30.0f; //Elsüllyedés ideje
+	const float sinkTime = 45.0f; //Elsüllyedés ideje
 	const glm::vec3 shipAboveSeaTrans = glm::vec3(0, 0.12f, 0); //korrigáló transz,hogy a hajó lebegjen a vizen.
 
 	glm::mat4 sinkTranslate = glm::mat4(1.0f); //Süllyedési mozgás
@@ -48,7 +49,9 @@ protected:
 
 	bool destroyed = false; //Ki lett-e lõve a hajó
 	bool visible = true; //Ki kell-e még rajzolni
-	float sinkElapsed = 0.0f; //Eltelt idõ
+	float preSinkTime = 0.0f; //Lövedékanim idejével késõbb kezdjük el a süllyedést
+	float preSinkElapsed = 0.0f; //Lövedékanimból mennyi telt el - Boolként is ez lesz hogy kivan-e lõve
+	float sinkElapsed = 0.0f; //Eltelt idõ süllyedésnél
 
 	std::vector<PlayTile*> playTiles;	//Mely játékmezõkön van a hajó
 	bool isAlly; //Kliens szempontjából mi hajónk-e
