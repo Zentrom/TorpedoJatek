@@ -39,6 +39,9 @@
     <Filter Include="Utility\Info">
       <UniqueIdentifier>{b88298de-5669-46d7-9454-bbf91a01469a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{9c69665f-9404-49e8-b5cb-804e4f27341d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -193,6 +196,9 @@
     <ClInclude Include="Source\Frontend\ParticleGroup.h">
       <Filter>Header Files\Frontend</Filter>
     </ClInclude>
+    <ClInclude Include="Icon\resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\dirLight.frag">
@@ -254,5 +260,15 @@
     <Text Include="..\Bstuff\Info\controlsAlpha.txt">
       <Filter>Utility\Info</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Icon\icon.ico">
+      <Filter>Resources</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Icon\TorpedoJatekClient.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

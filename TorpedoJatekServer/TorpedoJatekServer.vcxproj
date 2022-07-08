@@ -175,8 +175,15 @@
     <ClInclude Include="..\CommonSource\CommonGlobals.hpp" />
     <ClInclude Include="..\CommonSource\ConnectionHandler.h" />
     <ClInclude Include="..\CommonSource\TorpedoVersion.hpp" />
+    <ClInclude Include="Icon\resource.h" />
     <ClInclude Include="Source\ServerHandler.h" />
     <ClInclude Include="TorpedoJatekServer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Icon\TorpedoJatekServer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Icon\icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

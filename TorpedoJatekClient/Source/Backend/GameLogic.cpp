@@ -124,7 +124,13 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 				pEnemyTarget->setStateColor();
 				std::cout << "Enemy's shot to " << shootPos << " was a "
 					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+
+				//Vesztés esetén kirajzoljuk a nyertes hajóit
+				//if (clientHandler->CheckForResponse()) {
+				PlaceShipsIfLost();
+				//}
 			}
+
 			pMyFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've lost the match!\n(ESC-Quit)" << std::endl;
 		}
@@ -242,7 +248,7 @@ bool GameLogic::PlaceAllyShip(int tile_id, int shipSize)
 //Elküldi a lerakott hajóink pozícióit
 void GameLogic::SendFleetToServer()
 {
-	clientHandler->SendFleet(pMyFleet->getActiveTilePositions());
+	clientHandler->SendFleet(pMyFleet->getShipPositions());
 }
 
 //Megnézi hogy a szerver el akarja-e indítani a játékot
@@ -316,6 +322,23 @@ const std::string GameLogic::ProcessTile(const std::pair<char, int> &tile)
 	result.push_back(rowC[0]);
 
 	return result;
+}
+
+//Ha vesztettünk, kirajzoljuk az ellenfél hajóit
+void GameLogic::PlaceShipsIfLost()
+{
+	std::vector<std::vector<std::pair<char, int>>> winnerShips = clientHandler->GetEnemyShipsIfLost();
+	PlayTile* pFront;
+	PlayTile* pBack = nullptr;
+	//for (std::vector<std::pair<char, int>> &sh : winnerShips) {
+	//	pFront = &pEnemyFleet->getTile(sh.front());
+	//	if (sh.size() > 1) {
+	//		pBack = &pEnemyFleet->getTile(sh.back());
+	//	}
+	//	pEnemyFleet->PlaceShip(pFront, pBack);
+	//
+	//	pBack = nullptr;
+	//}
 }
 
 //Ha a játék DEBUG módba indítjuk,akkor beégetetten lerak nekünk néhány hajót

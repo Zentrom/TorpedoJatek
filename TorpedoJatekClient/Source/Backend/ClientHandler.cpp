@@ -51,14 +51,48 @@ int ClientHandler::GetMapSize() {
 }
 
 //Elküldi a szervernek azokat a játékmezõket,amin hajója van a kliensnek.
-void ClientHandler::SendFleet(const std::vector<std::pair<char, int>> &activeTilePositions)
+void ClientHandler::SendFleet(const std::vector<std::vector<std::pair<char, int>>> &ship_positions)
 {
-	std::cout << "Sending activetiles..." << std::endl;
+	std::cout << "Sending ships..." << std::endl;
 	SendBinary(mySocket, &sentMessageType, sizeof(MessageType));
-	for (const std::pair<char, int> &activeTilePos : activeTilePositions) {
-		SendBinary(mySocket, &activeTilePos, sizeof(std::pair<char, int>));
+	//for (const std::pair<char, int> &activeTilePos : activeTilePositions) {
+	//	SendBinary(mySocket, &activeTilePos, sizeof(std::pair<char, int>));
+	//}
+	std::pair<char, int> data;
+	for (const std::vector<std::pair<char, int>> &sh : ship_positions) {
+		int shipSize = static_cast<int>(sh.size());
+		data.first = 'v';
+		data.second = shipSize;
+		SendBinary(mySocket, &data, sizeof(std::pair<char, int>));
+		for (int i = 0; i < sh.size(); ++i) {
+			SendBinary(mySocket, &sh.at(i), sizeof(std::pair<char, int>));
+		}
 	}
+
 	std::cout << "ShipData sent to server." << std::endl;
+}
+
+const std::vector<std::vector<std::pair<char, int>>> ClientHandler::GetEnemyShipsIfLost()
+{
+	std::vector<std::vector<std::pair<char, int>>> result;
+	std::pair<char, int> data = std::pair<char, int>('0', 0);
+	int sentSize = 0;
+	while (true) {
+		ReceiveBinary(mySocket, &data, sizeof(std::pair<char, int>));
+		if (data.first = 'x') break;
+		else if (data.first = 'v') {
+			sentSize = data.second;
+			result.push_back(std::vector<std::pair<char, int>>());
+
+			for (int i = 0; i < sentSize; ++i) {
+				ReceiveBinary(mySocket, &data, sizeof(std::pair<char, int>));
+				result.back().push_back(data);
+			}
+
+		}
+	}
+
+	return result;
 }
 
 //Lekéri a szervertõl,hogy mi kezdünk-e

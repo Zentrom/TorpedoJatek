@@ -48,6 +48,7 @@ private:
 	//Debug módban beégetett dolgok
 	void PlaceShipsINDEBUG();
 	void SetTilesINDEBUG();
+	void PlaceShipsIfLost();
 	const std::string ProcessTile(const std::pair<char, int> &tile);
 
 	ClientHandler* clientHandler = new ClientHandler();	//A hálózati kapcsolat kliens-oldali vezérlõje
@@ -56,8 +57,8 @@ private:
 	Fleet *pEnemyFleet; //Pointer az ellenfél hajóseregére
 	Sea *pSea;	//Pointer a tengerre
 	ResponseState matchState = ResponseState::START_OF_GAME; //Szerverrel való kommunikáció fázisa
-	PlayTile* pMyTarget; //Játékos által célzott mezõ
-	PlayTile* pEnemyTarget; //Ellenfél által célzott mezõ
+	PlayTile* pMyTarget = nullptr; //Játékos által célzott mezõ
+	PlayTile* pEnemyTarget = nullptr; //Ellenfél által célzott mezõ
 	//Játékmezõ kezdetének távolsága az origótól
 	const float playZoneCenterOffset = 4.0f * TorpedoGLOBAL::SeaTileScaleXZ * TorpedoGLOBAL::Scale;
 

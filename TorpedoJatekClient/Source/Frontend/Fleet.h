@@ -32,7 +32,7 @@ public:
 
 	PlayTile& getTile(const std::pair<char, int> &pos);
 	const std::array<int, 4>* getUnplacedShipCount() const;
-	const std::vector<std::pair<char, int>> getActiveTilePositions() const;
+	const std::vector<std::vector<std::pair<char, int>>> getShipPositions() const;
 	BattleShip& getBattleShip();
 	const bool getIsAlly() const;
 private:

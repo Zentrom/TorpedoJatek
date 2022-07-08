@@ -38,9 +38,9 @@ private:
 	const Uint32 flagsWindow = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE; //win ablakhoz tartozó SDL flagek.
 	const int rightOffset = 10; //Ablak Jobbra mozgazás
 	const int downOffset = 30; //Ablak le mozgatás
-	const int widthWindow = 800; //ablak szélesség
-	const int heightWindow = 600; //ablak magasság
-	const int enableVsync = 0; //Függõleges szinkronizáció bekapcsolása. (-1 esetén adaptive vsync)
+	const int widthWindow = 400; //ablak szélesség
+	const int heightWindow = 300; //ablak magasság
+	const int enableVsync = 1; //Függõleges szinkronizáció bekapcsolása. (-1 esetén adaptive vsync)
 	const int fpsLimit = 120; //Ha van FPSlimit,akkor mennyi legyen a maximum
 	const int enableFpsLimit = 0; //Ha nincs Vsync,akkor legyen FPSlimit?
 

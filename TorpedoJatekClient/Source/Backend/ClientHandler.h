@@ -21,7 +21,8 @@ public:
 	~ClientHandler();
 
 	bool Init(std::string ipString = "127.0.0.1", int portNr = 27015);
-	void SendFleet(const std::vector<std::pair<char, int>> &activeTilePositions);
+	void SendFleet(const std::vector<std::vector<std::pair<char, int>>> &ship_positions);
+	const std::vector<std::vector<std::pair<char, int>>> GetEnemyShipsIfLost();
 	int GetMapSize();
 	int GetPlayerNum();
 	bool GetStartSignal();

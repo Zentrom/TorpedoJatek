@@ -49,6 +49,7 @@
     <ClInclude Include="..\CommonSource\ConnectionHandler.h" />
     <ClInclude Include="..\CommonSource\TorpedoVersion.hpp" />
     <ClInclude Include="GameInstance.h" />
+    <ClInclude Include="Icon\resource.h" />
     <ClInclude Include="Source\Backend\ClientHandler.h" />
     <ClInclude Include="Source\Backend\EventHandler.h" />
     <ClInclude Include="Source\Backend\GameLogic.h" />
@@ -94,6 +95,12 @@
     <Text Include="Utility\Logs\temp.txt" />
     <Text Include="Utility\Logs\todo.txt" />
     <Text Include="Utility\Logs\versionInfo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Icon\TorpedoJatekClient.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Icon\icon.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F7A21611-DC56-43E4-9080-AE5095F30900}</ProjectGuid>

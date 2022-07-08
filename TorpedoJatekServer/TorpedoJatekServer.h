@@ -46,19 +46,22 @@ private:
 		std::stringstream name; //név
 		int playerNum; //hányadik játékos
 		TCPsocket socket; //kapcsolati socket
-		std::vector<std::pair<char, int>> activeTiles; //Mely mezõkoordinátáin vannak hajói
+		std::vector<std::vector<std::pair<char,int>> > ships; //Hajók mezõkoordinátái
+		int unreadTiles; //Hány hajós mezõt kell még átküldjön a kliens
+		//std::vector<std::pair<char, int>> activeTiles; //Mely mezõkoordinátáin vannak hajói
 		ClientState state = ClientState::NOT_CONNECTED; //Az elején a kliens még nem csatlakozott
 	}firstClient, secondClient, temporaryClient;
 
 	void Init();
 	void DisplaySettings();
-	void CalcActiveTileCount();
+	void AllocateShips();
 	void PrepareMatch();
 	void HandleClientState(Client& client);
 	bool CheckClientVersion(TCPsocket& connected_socket);
 	void StartMatch();
 	void HandleShot(Client& shooter, Client& taker);
 	ResponseState ProcessTiles(Client& client);
+	void SendShipsToLoser(Client& client);
 	int getFirstNotConnectedIndex() const;
 
 	std::array<Client*, 3> clients; //Csatlakozott kliensek pointer tömbje
@@ -77,7 +80,9 @@ private:
 
 	std::string input; //Inputot tároló string
 	int mapSize = 5; //játékPálya mérete
-	int activeTileCount = 0; //hány hajót tartalmazó mezõ van
+	int shipCount; //Hány hajó lesz
+	bool isDisconnection = false; //Valamelyik játékos kilépett-e
+	//int activeTileCount = 0; //hány hajót tartalmazó mezõ van
 	std::pair<char, int> targetTile; //melyik mezõkoordinátára lõtt valaki
 
 };

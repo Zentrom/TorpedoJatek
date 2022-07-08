@@ -18,6 +18,9 @@
     <Filter Include="Common">
       <UniqueIdentifier>{298429f7-ef56-43a6-b6ad-1bde8672d992}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{5ecb8076-9e1f-4767-92a5-7ce366232e94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -49,5 +52,18 @@
     <ClInclude Include="..\CommonSource\TorpedoVersion.hpp">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="Icon\resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Icon\TorpedoJatekServer.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Icon\icon.ico">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>

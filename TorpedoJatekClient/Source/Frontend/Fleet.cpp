@@ -506,13 +506,14 @@ const std::array<int, 4>* Fleet::getUnplacedShipCount() const
 }
 
 //Visszaadja azoknak a mezõknek a koordinátáit amin van hajó, kilõttek is akár
-const std::vector<std::pair<char, int>> Fleet::getActiveTilePositions() const
+const std::vector<std::vector<std::pair<char, int>>> Fleet::getShipPositions() const
 {
-	std::vector<std::pair<char, int>> result;
+	std::vector<std::vector<std::pair<char, int>>> result;
 	for (Ship* ship : ships) {
+		result.push_back(std::vector<std::pair<char, int>>());
 		for (PlayTile* tile : ship->getPlayTiles()) {
 			if (tile) {
-				result.push_back(tile->getPos());
+				result.back().push_back(tile->getPos());
 			}
 		}
 	}
