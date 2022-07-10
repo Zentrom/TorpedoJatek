@@ -333,20 +333,44 @@ void TorpedoJatekServer::StartMatch() {
 	//Ha valaki nyert
 	if (responseState == ResponseState::WIN_PLAYER_ONE) {
 		std::cout << "[INFO] " << firstClient.name.str() << " won the match!" << std::endl;
+		SDLNet_TCP_DelSocket(socketSet, firstClient.socket);
+
 		if (!isDisconnection) {
+			while (true) {
+				if (ServerHandler::CheckSocket(socketSet, static_cast<Uint32>(-1))) {
+					if (ServerHandler::SocketReady(secondClient.socket)) {
+						int tmp;
+						ServerHandler::ReceiveBinary(secondClient.socket, &tmp, sizeof(int));
+						break;
+					}
+				}
+			}
 			SendShipsToLoser(secondClient);
 		}
+
+		SDLNet_TCP_DelSocket(socketSet, secondClient.socket);
 	}
 	else if (responseState == ResponseState::WIN_PLAYER_TWO) {
 		std::cout << "[INFO] " << secondClient.name.str() << " won the match!" << std::endl;
+		SDLNet_TCP_DelSocket(socketSet, secondClient.socket);
+
 		if (!isDisconnection) {
+			while (true) {
+				if (ServerHandler::CheckSocket(socketSet, static_cast<Uint32>(-1))) {
+					if (ServerHandler::SocketReady(firstClient.socket)) {
+						int tmp;
+						ServerHandler::ReceiveBinary(firstClient.socket, &tmp, sizeof(int));
+						break;
+					}
+				}
+			}
 			SendShipsToLoser(firstClient);
 		}
+
+		SDLNet_TCP_DelSocket(socketSet, firstClient.socket);
 	}
 
 	std::cout << "[INFO] Game ended. Closing connections..." << std::endl;
-	SDLNet_TCP_DelSocket(socketSet, firstClient.socket);
-	SDLNet_TCP_DelSocket(socketSet, secondClient.socket);
 	SDLNet_TCP_DelSocket(socketSet, server);
 	SDLNet_FreeSocketSet(socketSet);
 
@@ -493,18 +517,20 @@ void TorpedoJatekServer::SendShipsToLoser(Client& client)
 			data.first = 'v';
 			data.second = sentSize;
 			ServerHandler::SendBinary(client.socket, &data, sizeof(std::pair<char, int>));
-
+			std::cout << data.first << data.second << std::endl;
 			for (int j = 0; j < pWinner->ships.at(aliveIndex).size(); ++j) {
 
 				data.first = pWinner->ships.at(aliveIndex).at(j).first;
 				data.second = pWinner->ships.at(aliveIndex).at(j).second;
 				ServerHandler::SendBinary(client.socket, &data, sizeof(std::pair<char, int>));
+				std::cout << data.first << data.second << std::endl;
 			}
 		}
 	}
 	data.first = 'x';
 	data.second = 0;
 	ServerHandler::SendBinary(client.socket, &data, sizeof(std::pair<char, int>));
+	std::cout << data.first << data.second << std::endl;
 
 	std::cout << "[INFO] Winner's alive ships sent to " << client.name.str() << std::endl;
 }
