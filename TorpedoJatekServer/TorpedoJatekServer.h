@@ -41,14 +41,23 @@ private:
 		IN_MATCH_TAKER,
 	};
 
+	//Hajóadatok
+	struct ShipTile {
+		explicit ShipTile(std::pair<char, int> til) {
+			tileCoord = til;
+		}
+
+		std::pair<char, int> tileCoord; //Hajó mezõkoordinátája
+		bool isIntact = true; //Nincs-e még kilõve
+	};
+
 	//Kliensadatok
 	struct Client {
 		std::stringstream name; //név
 		int playerNum; //hányadik játékos
 		TCPsocket socket; //kapcsolati socket
-		std::vector<std::vector<std::pair<char,int>> > ships; //Hajók mezõkoordinátái
+		std::vector<std::vector<ShipTile> > ships; //Hajók adatai
 		int unreadTiles; //Hány hajós mezõt kell még átküldjön a kliens
-		//std::vector<std::pair<char, int>> activeTiles; //Mely mezõkoordinátáin vannak hajói
 		ClientState state = ClientState::NOT_CONNECTED; //Az elején a kliens még nem csatlakozott
 	}firstClient, secondClient, temporaryClient;
 
@@ -82,7 +91,6 @@ private:
 	int mapSize = 5; //játékPálya mérete
 	int shipCount; //Hány hajó lesz
 	bool isDisconnection = false; //Valamelyik játékos kilépett-e
-	//int activeTileCount = 0; //hány hajót tartalmazó mezõ van
 	std::pair<char, int> targetTile; //melyik mezõkoordinátára lõtt valaki
 
 };

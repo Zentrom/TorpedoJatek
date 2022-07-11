@@ -1,5 +1,6 @@
-v0.0.6a-Nemtom
+v0.0.6a-Exe Manifest-Data
 -----------------------------------------------------------------------------------------
 -The compiled exe now gets an icon and manifest info.
--
+-The intact ships of the winning player are now drawn out to the loser.
+-The server now stores Ship data properly, instead of just storing tile coords.
 -Fixed possible crash occuring when both players place their ships.(GameLogic pTarget,pEnemyTarget)

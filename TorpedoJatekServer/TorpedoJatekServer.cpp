@@ -131,11 +131,6 @@ void TorpedoJatekServer::AllocateShips()
 	for(int i = 0;i < 2;++i){
 		clients.at(i)->ships.resize(shipCount);
 		clients.at(i)->unreadTiles = activeTileCount;
-		//for (int j = 0; j < shipCounts.size(); ++j) {
-		//	for (int k = 0; k < j; ++k) {
-		//		clients.at(i)->ships.at(k).resize(j + 1);
-		//	}
-		//}
 	}
 	
 }
@@ -223,10 +218,10 @@ void TorpedoJatekServer::HandleClientState(Client& client)
 				else {
 					sentSize = data.second;
 				}
-				client.ships.push_back(std::vector<std::pair<char, int>>());
+				client.ships.push_back(std::vector<ShipTile>());
 				for (int i = 0; i < sentSize; ++i) {
 					ServerHandler::ReceiveBinary(client.socket, &data, sizeof(std::pair<char, int>));
-					client.ships.back().push_back(data);
+					client.ships.back().push_back(ShipTile(data));
 					--client.unreadTiles;
 				}
 			}
@@ -336,15 +331,6 @@ void TorpedoJatekServer::StartMatch() {
 		SDLNet_TCP_DelSocket(socketSet, firstClient.socket);
 
 		if (!isDisconnection) {
-			while (true) {
-				if (ServerHandler::CheckSocket(socketSet, static_cast<Uint32>(-1))) {
-					if (ServerHandler::SocketReady(secondClient.socket)) {
-						int tmp;
-						ServerHandler::ReceiveBinary(secondClient.socket, &tmp, sizeof(int));
-						break;
-					}
-				}
-			}
 			SendShipsToLoser(secondClient);
 		}
 
@@ -355,15 +341,6 @@ void TorpedoJatekServer::StartMatch() {
 		SDLNet_TCP_DelSocket(socketSet, secondClient.socket);
 
 		if (!isDisconnection) {
-			while (true) {
-				if (ServerHandler::CheckSocket(socketSet, static_cast<Uint32>(-1))) {
-					if (ServerHandler::SocketReady(firstClient.socket)) {
-						int tmp;
-						ServerHandler::ReceiveBinary(firstClient.socket, &tmp, sizeof(int));
-						break;
-					}
-				}
-			}
 			SendShipsToLoser(firstClient);
 		}
 
@@ -436,20 +413,11 @@ ResponseState TorpedoJatekServer::ProcessTiles(Client &client)
 {
 	ResponseState resultState = ResponseState::CONTINUE_MATCH;
 
-	//ITT A RANGED-BASED LOOP NEM MEGY,NE PRÓBÁLD.NEMTOM MIÉRT.
-	//for (int i = 0; i < activeTileCount; ++i) {
-	//	if (targetTile == client.activeTiles[i]) {
-	//		client.activeTiles[i] = std::pair<char, int>('0', 0);
-	//		resultState = ResponseState::HIT_ENEMY_SHIP;
-	//		break;
-	//	}
-	//}
-
 	bool found = false;
 	for (int i = 0; i < client.ships.size(); ++i) {
 		for (int j = 0; j < client.ships.at(i).size(); ++j) {
-			if (targetTile == client.ships.at(i).at(j)) {
-				client.ships.at(i).at(j) = std::pair<char, int>('0', 0);
+			if (targetTile == client.ships.at(i).at(j).tileCoord) {
+				client.ships.at(i).at(j).isIntact = false;
 				resultState = ResponseState::HIT_ENEMY_SHIP;
 				found = true;
 				break;
@@ -457,17 +425,11 @@ ResponseState TorpedoJatekServer::ProcessTiles(Client &client)
 		}
 		if (found) break;
 	}
-
+	//Keres még élõ hajót a lövés után
 	bool allZeros = true;
-	//for (int i = 0; i < activeTileCount; ++i) {
-	//	if (client.activeTiles[i].first != '0') {
-	//		allZeros = false;
-	//		break;
-	//	}
-	//}
 	for (int i = 0; i < client.ships.size(); ++i) {
 		for (int j = 0; j < client.ships.at(i).size(); ++j) {
-			if (client.ships.at(i).at(j).first != '0') {
+			if (client.ships.at(i).at(j).isIntact) {
 				allZeros = false;
 				break;
 			}
@@ -501,36 +463,32 @@ void TorpedoJatekServer::SendShipsToLoser(Client& client)
 	int sentSize = 0;
 	std::pair<char, int> data;
 	for (int i = 0; i < pWinner->ships.size(); ++i) {
-		
+		//Megnézi él-e a hajó
 		bool isAlive = false;
 		int aliveIndex = 0;
 		for (int j = 0; j < pWinner->ships.at(i).size(); ++j) {
-			if (pWinner->ships.at(i).at(j).first != '0') {
+			if (pWinner->ships.at(i).at(j).isIntact) {
 				isAlive = true;
 				aliveIndex = i;
 				break;
 			}
 		}
-
+		//Élõ hajó mezõkoordokat elküldi
 		if (isAlive) {
 			sentSize = pWinner->ships.at(i).size();
 			data.first = 'v';
 			data.second = sentSize;
 			ServerHandler::SendBinary(client.socket, &data, sizeof(std::pair<char, int>));
-			std::cout << data.first << data.second << std::endl;
 			for (int j = 0; j < pWinner->ships.at(aliveIndex).size(); ++j) {
-
-				data.first = pWinner->ships.at(aliveIndex).at(j).first;
-				data.second = pWinner->ships.at(aliveIndex).at(j).second;
+				data.first = pWinner->ships.at(aliveIndex).at(j).tileCoord.first;
+				data.second = pWinner->ships.at(aliveIndex).at(j).tileCoord.second;
 				ServerHandler::SendBinary(client.socket, &data, sizeof(std::pair<char, int>));
-				std::cout << data.first << data.second << std::endl;
 			}
 		}
 	}
 	data.first = 'x';
 	data.second = 0;
 	ServerHandler::SendBinary(client.socket, &data, sizeof(std::pair<char, int>));
-	std::cout << data.first << data.second << std::endl;
 
 	std::cout << "[INFO] Winner's alive ships sent to " << client.name.str() << std::endl;
 }

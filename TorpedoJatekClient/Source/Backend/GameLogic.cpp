@@ -126,14 +126,13 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
 
 				//Vesztés esetén kirajzoljuk a nyertes hajóit
-				//if (clientHandler->CheckForResponse()) {
 				PlaceShipsIfLost();
-				//}
 			}
 
 			pMyFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've lost the match!\n(ESC-Quit)" << std::endl;
 		}
+		clientHandler->CloseConnection();
 	}
 }
 
@@ -301,11 +300,9 @@ PlayTile* GameLogic::GetShoot()
 int GameLogic::CheckVictoryState()
 {
 	if (matchState == ResponseState::WIN_PLAYER_ONE) {
-		clientHandler->CloseConnection();
 		return 1;
 	}
 	else if (matchState == ResponseState::WIN_PLAYER_TWO) {
-		clientHandler->CloseConnection();
 		return 2;
 	}
 	return 0;
@@ -330,15 +327,15 @@ void GameLogic::PlaceShipsIfLost()
 	std::vector<std::vector<std::pair<char, int>>> winnerShips = clientHandler->GetEnemyShipsIfLost();
 	PlayTile* pFront;
 	PlayTile* pBack = nullptr;
-	//for (std::vector<std::pair<char, int>> &sh : winnerShips) {
-	//	pFront = &pEnemyFleet->getTile(sh.front());
-	//	if (sh.size() > 1) {
-	//		pBack = &pEnemyFleet->getTile(sh.back());
-	//	}
-	//	pEnemyFleet->PlaceShip(pFront, pBack);
-	//
-	//	pBack = nullptr;
-	//}
+	for (std::vector<std::pair<char, int>> &sh : winnerShips) {
+		pFront = &pEnemyFleet->getTile(sh.front());
+		if (sh.size() > 1) {
+			pBack = &pEnemyFleet->getTile(sh.back());
+		}
+		pEnemyFleet->PlaceShip(pFront, pBack);
+	
+		pBack = nullptr;
+	}
 }
 
 //Ha a játék DEBUG módba indítjuk,akkor beégetetten lerak nekünk néhány hajót

@@ -72,30 +72,24 @@ void ClientHandler::SendFleet(const std::vector<std::vector<std::pair<char, int>
 	std::cout << "ShipData sent to server." << std::endl;
 }
 
+//Vesztés esetén lekérjük a szervertõl az ellenfél még élõ hajóit
 const std::vector<std::vector<std::pair<char, int>>> ClientHandler::GetEnemyShipsIfLost()
 {
 	std::vector<std::vector<std::pair<char, int>>> result;
 	std::pair<char, int> data = std::pair<char, int>('0', 0);
 	int sentSize = 0;
-	std::cout << "INDUL" << std::endl;
-	SendBinary(mySocket, &sentSize, sizeof(int));
 	while (true) {
 		ReceiveBinary(mySocket, &data, sizeof(std::pair<char, int>));
-		std::cout << data.first << data.second << std::endl;
-		if (data.first = 'x') break;
-		else if (data.first = 'v') {
+		if (data.first == 'x') break;
+		else if (data.first == 'v') {
 			sentSize = data.second;
 			result.push_back(std::vector<std::pair<char, int>>());
-
 			for (int i = 0; i < sentSize; ++i) {
 				ReceiveBinary(mySocket, &data, sizeof(std::pair<char, int>));
-				std::cout << data.first << data.second << std::endl;
 				result.back().push_back(data);
 			}
-
 		}
 	}
-
 	return result;
 }
 
