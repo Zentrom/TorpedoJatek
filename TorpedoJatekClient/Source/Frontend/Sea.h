@@ -44,7 +44,7 @@ private:
 	std::vector<PlayTile*> myTiles;	//kliens játékmezõi
 	std::vector<PlayTile*> enemyTiles; //ellenfél játékmezõi
 
-	const int seaTileRow = 50 * 2; //hány tengermezõ van egy sorba
+	const int seaTileRow = 100 * 2; //hány tengermezõ van egy sorba
 	const int seaTileCount = seaTileRow * seaTileRow; //hány tengermezõ van összesen
 	const int enemyTilesOffset = 100; //offsetelni az ellenfélmezõ indexeket
 	const int alphaOffset = 100; //offsetelni az indexet,hogy ne 0-1 legyen AMÉG ALPHA színbe írom az indexet

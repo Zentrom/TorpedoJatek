@@ -10,11 +10,10 @@ out vec4 fs_out_col;
 vec3 light_start = vec3(1, 1,-1); //Fény felé mutató egységvektor
 vec3 La = vec3(0.2f, 0.2f, 0.2f); //Ambiens fényerõ
 vec3 Ld = vec3(0.8f, 0.8f, 0.8f); //Diffúz fényerõ
-vec4 transparency = vec4(1, 1, 1, 0.7f); //4dik érték az átlátszóság
+float transparencyMax = 0.7f; //Átlátszóság maximum
 
-//vec3 Ls = vec3(1, 1, 0.4f); //Spekuláris fényerõ
-//float specular_power = 128; //Spekuláris szórás
-//uniform vec3 eye_pos = vec3(0, 20, 20); //Kamera pos
+uniform float near = 0.001f; //Kamera közeli vágósík
+uniform float far = 200.0f; //Kamera távoli vágósík
 
 uniform bool hasTexture = false; //Textúra van-e
 uniform sampler2D texImage; //2Ds textúra mintavételezõ
@@ -33,23 +32,26 @@ void main()
 	float diff = max(dot( normal, light_dir), 0.0f);
 	vec3 diffuse = Ld * diff;
 
-	//vec3 viewDir = normalize( eye_pos - vs_out_pos );
-	//vec3 reflection = reflect( -light_dir, normal );
-	//float si = pow( max( dot(viewDir, reflection), 0.0f), specular_power );
-	//vec3 specular = Ls * si;
-
 	vec4 lightNoSpecular = vec4(ambient + diffuse, 1.0f);
-	//vec4 light = vec4(lightNoSpecular.xyz + specular, 1.0f);
 
 	vec2 newSeatexturePos = vec2(vs_out_tex.s + seatileTexOffset, vs_out_tex.t);
 	vec4 texture_col = texture(texImage, newSeatexturePos);
 	if(tilestate_changed){
-		vec4 final_col = mix(texture_col, vec4(tile_state, 1), 0.5f);
-		fs_out_col = transparency * lightNoSpecular * final_col;
+		fs_out_col = lightNoSpecular * mix(texture_col, vec4(tile_state, 1), 0.5f);
 	}else{
-		fs_out_col = transparency * lightNoSpecular * texture_col;
+		fs_out_col = lightNoSpecular * texture_col;
 	}
 
-	//fs_out_col = light * ( hasTexture ? texture(texImage, vs_out_tex.st) : vs_out_color );
+	float ndc = gl_FragCoord.z * 2.0f - 1.0f;
+	float linearDepth = (2.0f * near * far) / (far + near - ndc * (far - near));
+	float depth = linearDepth / far;
 
+	//fs_out_col = vec4(vec3(depth), 1.0f);
+
+	if(depth < 0.5f){
+		fs_out_col.a = transparencyMax;
+	}else{
+		fs_out_col.a = mix(transparencyMax, 0.1f, depth * 2 - 1);
+	}
+	//fs_out_col.a = mix(transparencyMax, 0.1f, depth);
 }

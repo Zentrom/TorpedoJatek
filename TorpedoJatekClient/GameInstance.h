@@ -64,8 +64,8 @@ private:
 	Sint32 mouseY; //Egér relatív Y koord
 	
 	const float fieldOfView = 45.0f; //Kamera látószöge
-	const float viewDistance = 200.0f * TorpedoGLOBAL::Scale; //Milyen távolságon belül rajzolunk ki dolgokat
-	const float cameraRestraintXZ = 4.0f; //Földterület hányadáig mehet a lockolt kamera
+	const float viewDistance = 150.0f * TorpedoGLOBAL::Scale; //Milyen távolságon belül rajzolunk ki dolgokat
+	const float cameraRestraintXZ = 6.0f; //Földterület hányadáig mehet a lockolt kamera
 	const float cameraRestraintY = 4.0f; //Hegymagasság hányszorosára mehet felfele a kamera
 
 	bool isError = false; //van-e error a jelenlegi állapotban

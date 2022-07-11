@@ -37,6 +37,9 @@ void gCamera::SetView(const glm::vec3& eye, const glm::vec3& at, const glm::vec3
 //Kiszámítja a nézet-projekciós mátrixot
 void gCamera::SetProj(float angle, float aspect, float z_near, float z_far)
 {
+	near = z_near;
+	far = z_far;
+
 	matProj = glm::perspective(angle, aspect, z_near, z_far);
 	matViewProj = matProj * viewMatrix;
 }
@@ -163,4 +166,14 @@ void gCamera::MouseMove(SDL_MouseMotionEvent& mouse)
 void gCamera::SetLookAt(const glm::vec3& at)
 {
 	SetView(camEye, at, camUp);
+}
+
+float gCamera::getNear() const
+{
+	return near;
+}
+
+float gCamera::getFar() const
+{
+	return far;
 }

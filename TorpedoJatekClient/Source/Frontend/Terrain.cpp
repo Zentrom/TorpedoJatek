@@ -100,9 +100,15 @@ void Terrain::Draw(const gCamera& camera, gShaderProgram& sh_program) const
 	sh_program.SetUniform("MVP", mvp);
 	sh_program.SetUniform("eye_pos", camera.GetEye());
 
+	sh_program.SetUniform("is_ground", true);
+	sh_program.SetUniform("near", camera.getNear());
+	sh_program.SetUniform("far", camera.getFar());
+
 	vb_terrain.On();
 	vb_terrain.DrawIndexed(GL_TRIANGLES, 0, 6 * terrainSizeXZ);
 	vb_terrain.Off();
+	sh_program.SetUniform("is_ground", false);
+
 	sh_program.SetUniform("hasTexture", false);
 }
 

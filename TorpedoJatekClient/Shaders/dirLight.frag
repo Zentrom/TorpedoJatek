@@ -12,7 +12,10 @@ vec3 La = vec3(0.2f, 0.2f, 0.2f); //Ambiens fényerõ
 vec3 Ld = vec3(0.8f, 0.8f, 0.8f); //Diffúz fényerõ
 vec3 Ls = vec3(1, 1, 0.4f); //Spekuláris fényerõ
 float specular_power = 128; //Spekuláris szórás
-vec4 transparency = vec4(1, 1, 1, 0.7f); //4dik érték az átlátszóság
+
+uniform bool is_ground = false; //Ground mezõ-e
+uniform float near = 0.001f; //Kamera közeli vágósík
+uniform float far = 200.0f; //Kamera távoli vágósík
 
 uniform vec3 eye_pos = vec3(0, 20, 20); //Kamera pos
 uniform bool hasTexture = true; //Textúra van-e
@@ -37,4 +40,17 @@ void main()
 
 	fs_out_col = light * ( hasTexture ? texture(texImage, vs_out_tex.st) : vs_out_color );
 
+	if(is_ground){
+		float ndc = gl_FragCoord.z * 2.0f - 1.0f;
+		float linearDepth = (2.0f * near * far) / (far + near - ndc * (far - near));
+		float depth = linearDepth / far;
+		//fs_out_col = vec4(vec3(depth), 1.0f);
+
+		if(depth < 0.5f){
+			fs_out_col.a = 1.0f;
+		}else{
+			fs_out_col.a = mix(1.0f, 0.0f, depth * 2 - 1);
+		}
+		//fs_out_col.a = mix(1.0f, 0.0f, depth);
+	}
 }

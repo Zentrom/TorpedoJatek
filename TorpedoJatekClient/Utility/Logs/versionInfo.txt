@@ -7,4 +7,4 @@ INDEBUG+VSyncOff:
 	'G'-vel lehet hajó elsüllyedést tesztelni.
 -Framelimiter mûködik rendesen.
 -Lehet tobbszor ugyanoda lõni.
--Vsync ebben a verzióban direkt ki van kapcsolva, hogy látszódjon az optimalizáció.
+-SeaTileRow now affects the map area, while terrainScale affects the ground tile amount on that area.

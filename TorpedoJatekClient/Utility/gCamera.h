@@ -28,6 +28,8 @@ public:
 	const glm::mat4& GetViewMatrix() const { return viewMatrix; }
 	const glm::mat4& GetProj() const { return matProj; }
 	const glm::mat4& GetViewProj() const { return matViewProj; }
+	float getNear() const;
+	float getFar() const;
 
 	void Resize(int width, int height, float fov, float view_dist);
 
@@ -57,7 +59,9 @@ private:
 	bool fast = false; //Shift-gyorsítás
 	float camU; //U gömbi koord - része az eye-ból való nézeti iránynak  
 	float camV; //V gömbi koord - része az eye-ból való nézeti iránynak 
-	
+	float near = 0.001f; //Közeli vágósík
+	float far = 200.0f; //Távoli vágósík
+
 	glm::vec3 camEye; //Kamera pozíció
 	glm::vec3 camAt; //Mely pontra néz a kamera
 	const float mountainHeight; //Hegy magassága a boundaryhez

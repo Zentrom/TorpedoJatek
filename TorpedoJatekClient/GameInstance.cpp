@@ -205,17 +205,24 @@ void GameInstance::Render()
 
 	sh_dirLight.On();
 	mountain->Draw(*cam_mainCamera, sh_dirLight);
-	terrain->Draw(*cam_mainCamera, sh_dirLight);
 	playerFleet->Draw(*cam_mainCamera, sh_dirLight);
 	enemyFleet->Draw(*cam_mainCamera, sh_dirLight);
 	sh_dirLight.Off();
 
 	skybox->Draw(*cam_mainCamera);
 
+	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	sh_dirLight.On();
+	terrain->Draw(*cam_mainCamera, sh_dirLight);
+	sh_dirLight.Off();
+
 	glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	
 	sea->Draw(*cam_mainCamera);
+	glDisable(GL_BLEND);
+	glEnable(GL_CULL_FACE);
 
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0xFF);

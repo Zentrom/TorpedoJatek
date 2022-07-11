@@ -1,6 +1,4 @@
-v0.0.6a-Exe Manifest-Data
+v0.0.6b-Fog
 -----------------------------------------------------------------------------------------
--The compiled exe now gets an icon and manifest info.
--The intact ships of the winning player are now drawn out to the loser.
--The server now stores Ship data properly, instead of just storing tile coords.
--Fixed possible crash occuring when both players place their ships.(GameLogic pTarget,pEnemyTarget)
+-Added Fog-like blending to the edges of the Sea and Terrain.
+-Adjusted Sea size, camera view distance and boundaries.

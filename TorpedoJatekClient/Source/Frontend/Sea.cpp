@@ -226,8 +226,6 @@ void Sea::PreProcess(const gCamera& camera)
 //Kirajzolja a játékmezõket
 void Sea::Draw(const gCamera& camera)
 {
-	glDisable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
 	glStencilMask(0xFF);
 
 	sh_seaTile.On();
@@ -246,14 +244,14 @@ void Sea::Draw(const gCamera& camera)
 	sh_seaTile.SetUniform("worldIT", matWorldIT);
 	sh_seaTile.SetUniform("MVP", mvp);
 
+	sh_seaTile.SetUniform("near", camera.getNear());
+	sh_seaTile.SetUniform("far", camera.getFar());
+
 	vb_seatiles.On();
 	vb_seatiles.DrawIndexed(GL_TRIANGLES, 0, 6 * seaTileCount);
 	vb_seatiles.Off();
 	//sh_seaTile.SetUniform("hasTexture", false);
 	sh_seaTile.Off();
-
-	glDisable(GL_BLEND);
-	glEnable(GL_CULL_FACE);
 }
 
 //Mindegyik játékmezõre meghívja a körvonal rajzolást
