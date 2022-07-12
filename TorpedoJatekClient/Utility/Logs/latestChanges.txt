@@ -1,4 +1,3 @@
-v0.0.6b-Fog
+v0.0.6c-SDL_TTF
 -----------------------------------------------------------------------------------------
--Added Fog-like blending to the edges of the Sea and Terrain.
--Adjusted Sea size, camera view distance and boundaries.
+-Added SDL_ttf to the client.
