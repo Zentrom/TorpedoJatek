@@ -5,6 +5,7 @@
 #include "../Frontend/Sea.h"
 #include "../Globals.hpp"
 
+#include "../../Utility/TextHandler.h"
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
 #include "../../Utility/gCamera.h"
@@ -23,7 +24,7 @@
 class GameLogic
 {
 public:
-	GameLogic(Fleet& player, Fleet& enemy, Sea& sea);
+	GameLogic(Fleet& player, Fleet& enemy, Sea& sea, TextHandler& text_handler);
 	~GameLogic();
 
 	void Init();
@@ -73,4 +74,5 @@ private:
 	bool shipFrontPlaced = false; //Hajó elejét már leraktuk-e
 	std::array<PlayTile*, 4> freeChoices; //Hajó hátaknak megfelelõ pos
 
+	TextHandler* pTextHandler;
 };

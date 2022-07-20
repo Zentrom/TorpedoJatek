@@ -104,7 +104,7 @@ void TorpedoJatekServer::Init()
 //Lefoglalja a hajóknak szánt memóriaterületet
 void TorpedoJatekServer::AllocateShips()
 {
-	int activeTileCount = 0;
+	activeTileCount = 0;
 	std::array<int, 4> shipArray;
 
 	switch (mapSize) {
@@ -239,6 +239,9 @@ void TorpedoJatekServer::HandleClientState(Client& client)
 			std::cout << "[WARNING] " << client.name.str() << " has left the server! Closing connection." << std::endl;
 			SDLNet_TCP_DelSocket(socketSet, client.socket);
 			SDLNet_TCP_Close(client.socket);
+			client.ships.clear();
+			client.ships.resize(shipCount);
+			client.unreadTiles = activeTileCount;
 			client.state = ClientState::NOT_CONNECTED;
 			--connectedPlayers;
 		}
@@ -250,6 +253,9 @@ void TorpedoJatekServer::HandleClientState(Client& client)
 			std::cout << "[WARNING] " << client.name.str() << " has left the server! Closing connection." << std::endl;
 			SDLNet_TCP_DelSocket(socketSet, client.socket);
 			SDLNet_TCP_Close(client.socket);
+			client.ships.clear();
+			client.ships.resize(shipCount);
+			client.unreadTiles = activeTileCount;
 			client.state = ClientState::NOT_CONNECTED;
 			--connectedPlayers;
 		}

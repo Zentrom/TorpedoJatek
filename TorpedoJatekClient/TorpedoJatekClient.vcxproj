@@ -43,6 +43,7 @@
     <ClCompile Include="Utility\gVertexBuffer.cpp" />
     <ClCompile Include="Utility\Mesh_OGL3.cpp" />
     <ClCompile Include="Utility\ObjParser_OGL3.cpp" />
+    <ClCompile Include="Utility\TextHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CommonSource\CommonGlobals.hpp" />
@@ -72,6 +73,7 @@
     <ClInclude Include="Utility\gVertexBuffer.h" />
     <ClInclude Include="Utility\Mesh_OGL3.h" />
     <ClInclude Include="Utility\ObjParser_OGL3.h" />
+    <ClInclude Include="Utility\TextHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\default.frag" />
@@ -86,6 +88,8 @@
     <None Include="Shaders\seatile.vert" />
     <None Include="Shaders\skybox.frag" />
     <None Include="Shaders\skybox.vert" />
+    <None Include="Shaders\text.frag" />
+    <None Include="Shaders\text.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Bstuff\Info\changelog.txt" />

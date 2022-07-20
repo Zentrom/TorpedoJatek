@@ -1,3 +1,5 @@
+!!1.47MB-os VS-es 2.20-as SDL_TTF-be hibás a lib
+
 Mountaint dispacement mappinggel vagy valami profibb módon.
 Megoldani egy tényleges visszakapcsolódást a serverre,lementett állapottal, 60sec timeout.
 
@@ -8,7 +10,4 @@ std::exit()-ektõl lehetõleg megszabadulni. Beta verziónál.
 std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
 Bétánál külön mappákba rakni a játék/menü frontend és backendet.
 SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE window flagek betánál. SDL_SetRelativeMouseMode()
-
-(Freetype) vagy !SDL ttf! betuknek 007
-007-be a Kiiratás már a Win ablakba legyen(legalább a játékmenetes,error nem muszáj)
 

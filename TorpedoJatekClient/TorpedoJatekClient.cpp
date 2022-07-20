@@ -16,6 +16,7 @@ TorpedoJatekClient::~TorpedoJatekClient()
 	SDL_DestroyWindow(gameWindow);
 	IMG_Quit();
 	Mix_Quit();
+	TTF_Quit();
 	SDL_Quit();
 
 	delete clientVersion;
@@ -78,6 +79,11 @@ int TorpedoJatekClient::Init()
 	int imageFormats = IMG_INIT_JPG | IMG_INIT_PNG;
 	if ((IMG_Init(imageFormats) & imageFormats) != imageFormats) {
 		std::cout << "[IMG_Init]Failed to init required JPG and PNG support: " << SDL_GetError() << std::endl;
+		return 1;
+	}
+
+	if (TTF_Init() != 0) {
+		std::cout << "[TTF_Init]Failed to init TrueType Font support: " << SDL_GetError() << std::endl;
 		return 1;
 	}
 

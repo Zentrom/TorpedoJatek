@@ -90,6 +90,7 @@ private:
 	std::string input; //Inputot tároló string
 	int mapSize = 5; //játékPálya mérete
 	int shipCount; //Hány hajó lesz
+	int activeTileCount; //Hány aktív mezõ lesz
 	bool isDisconnection = false; //Valamelyik játékos kilépett-e
 	std::pair<char, int> targetTile; //melyik mezõkoordinátára lõtt valaki
 

@@ -1,6 +1,6 @@
 #include "GameLogic.h"
 
-GameLogic::GameLogic(Fleet& player, Fleet& enemy, Sea& sea)
+GameLogic::GameLogic(Fleet& player, Fleet& enemy, Sea& sea, TextHandler& text_handler)
 {
 	std::cout << "-----------------------------------------------" << std::endl
 		<< output << std::endl
@@ -9,6 +9,7 @@ GameLogic::GameLogic(Fleet& player, Fleet& enemy, Sea& sea)
 	pMyFleet = &player;
 	pEnemyFleet = &enemy;
 	pSea = &sea;
+	pTextHandler = &text_handler;
 }
 
 GameLogic::~GameLogic()
@@ -39,6 +40,9 @@ void GameLogic::Init()
 
 	if (TorpedoGLOBAL::Debug) {
 		std::cout << "Disclamer: You are currently running the DEBUG version of the game,\nwhich is only good for graphics testing." << std::endl;
+		if (pTextHandler) {
+			*pTextHandler < u8"Disclamer: You are currently running the DEBUG version of the game,\nwhich is only good for graphics testing.";
+		}
 		PlaceShipsINDEBUG();
 		SetTilesINDEBUG();
 	}
@@ -64,7 +68,8 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 {
 	if (gameState == GameState::INITIAL){
 		output = "Place your ships!\nChoose what kind of ship do you want to place down.\nPress the length number on your keyboard while the game window is focused.(1-4)";
-
+		*pTextHandler << u8"Place your ships! Choose what kind of ship do you want to place down.\nPress the length number on your keyboard while the game window is focused.(1-4)";
+		
 		std::cout << '\n' <<
 			output << '\n'
 			<< "1. - 1tile ships left: " << unplacedShips.at(0) << '\n'
@@ -72,18 +77,28 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 			<< "3. - 3tile ships left: " << unplacedShips.at(2) << '\n'
 			<< "4. - 4tile ships left: " << unplacedShips.at(3) << '\n'
 			<< "ESC - Quit game! \n" << std::endl;
+		*pTextHandler
+			<< u8"\n1. - 1tile ships left: " << unplacedShips.at(0)
+			<< u8"\n2. - 2tile ships left: " << unplacedShips.at(1)
+			<< u8"\n3. - 3tile ships left: " << unplacedShips.at(2)
+			<< u8"\n4. - 4tile ships left: " << unplacedShips.at(3)
+			<< u8"\nESC - Quit game!";
 	}
 	else if (gameState == GameState::PLACING_SHIP) {
 		if (related_data == 1) {
 			std::cout << "Place your ship on a free tile on your side of the map!(with LeftMouseButton)" << std::endl;
+			*pTextHandler < "Place your ship on a free tile on your side of the map!(with LeftMouseButton)";
 		}
 		else {
 			std::cout << "Place the front of your ship on a free tile on your side of the map!(with LeftMouseButton)" << std::endl;
+			*pTextHandler < "Place the front of your ship on a free tile on your side of the map!(with LeftMouseButton)";
 		}
 	}
 	else if (gameState == GameState::STARTING_MATCH) {
 		std::cout << "Waiting for server to start the match..." <<
 			"\n(ESC - Quit)" << std::endl;
+		*pTextHandler << "Waiting for server to start the match...";
+		*pTextHandler << "\n(ESC - Quit)";
 	}
 	else if (gameState == GameState::SHOOTING_AT_ENEMY) {
 
@@ -92,9 +107,13 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 			pEnemyTarget->setStateColor();
 			std::cout << "Enemy's shot to " << shootPos << " was a "
 				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+			(*pTextHandler < "Enemy's shot to ") << shootPos.c_str() << " was a "
+				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << '\n';
 		}
 		std::cout << "\nIt's your turn! Shoot at an enemy tile!(with LeftMouseButton)" <<
 			"\n(ESC - Quit)" << std::endl;
+		*pTextHandler << "It's your turn! Shoot at an enemy tile!(with LeftMouseButton)" <<
+			"\n(ESC - Quit)";
 	}
 	else if (gameState == GameState::GETTING_SHOT) {
 
@@ -103,9 +122,13 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 			pMyTarget->setStateColor();
 			std::cout << "Your shot to " << shootPos << " was a "
 				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+			(*pTextHandler < "Your shot to ") << shootPos.c_str() << " was a "
+				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << '\n';
 		}
 		std::cout << "\nWaiting for enemy to shoot..." <<
 			"\n(ESC - Quit)" << std::endl;
+		*pTextHandler << "Waiting for enemy to shoot..." <<
+			"\n(ESC - Quit)";
 	}
 	else if (gameState == GameState::MATCH_ENDING) {
 		if (related_data == playerNum) {
@@ -114,9 +137,12 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 				pMyTarget->setStateColor();
 				std::cout << "Your shot to " << shootPos << " was a "
 					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+				(*pTextHandler < "Your shot to ") << shootPos.c_str() << " was a "
+					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!"));
 			}
 			pEnemyFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've won the match!\n(ESC-Quit)" << std::endl;
+			*pTextHandler << "\nYou've won the match!\n(ESC-Quit)";
 		}
 		else{
 			if (pEnemyTarget) {
@@ -124,13 +150,15 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 				pEnemyTarget->setStateColor();
 				std::cout << "Enemy's shot to " << shootPos << " was a "
 					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
-
+				(*pTextHandler < "Enemy's shot to ") << shootPos.c_str() << " was a "
+					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!"));
 				//Vesztés esetén kirajzoljuk a nyertes hajóit
 				PlaceShipsIfLost();
 			}
 
 			pMyFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've lost the match!\n(ESC-Quit)" << std::endl;
+			*pTextHandler << "\nYou've lost the match!\n(ESC-Quit)";
 		}
 		clientHandler->CloseConnection();
 	}
@@ -142,6 +170,8 @@ void GameLogic::DisplayError(GameState gameState, int related_data)
 	if (gameState == GameState::SHIP_SIZE_INPUT) {
 		std::cout << "You can't place down any more ships of " << related_data
 			<< " size!" << std::endl;
+		(*pTextHandler < "You can't place down any more ships of ") << related_data
+			<< " size!\n";
 	}
 }
 
@@ -177,6 +207,8 @@ bool GameLogic::PlaceAllyShip(int tile_id, int shipSize)
 					std::cout << "--------\n"
 						"Ship placed at " << pShipFront->getPos().first << pShipFront->getPos().second <<
 						"\n--------" << std::endl;
+					(*pTextHandler < "Ship placed at ") << pShipFront->getPos().first << pShipFront->getPos().second <<
+						"\n";
 					--unplacedShips.at(shipSize - 1);
 					return true;
 				}
@@ -186,6 +218,7 @@ bool GameLogic::PlaceAllyShip(int tile_id, int shipSize)
 					if (std::none_of(freeChoices.cbegin(), freeChoices.cend(), [](PlayTile* ptr) {return ptr; }))
 					{
 						std::cout << "No position available for the back of the ship!\n Try another position." << std::endl;
+						*pTextHandler << "\nNo position available for the back of the ship!\n Try another position.";
 						return false;
 					}
 					else {
@@ -193,7 +226,10 @@ bool GameLogic::PlaceAllyShip(int tile_id, int shipSize)
 						std::cout << "--------\n"
 							"Ship Front location saved at " << pShipFront->getPos().first << pShipFront->getPos().second <<
 							"\n--------" << std::endl;
+						(*pTextHandler < "Ship Front location saved at ") << pShipFront->getPos().first << pShipFront->getPos().second <<
+							"\n";
 						std::cout << "Select one of the possible locations for the back of the ship!(marked with green)" << std::endl;
+						*pTextHandler << "Select one of the possible locations for the back of the ship!(marked with green)";
 						for (PlayTile* &choice : freeChoices) {
 							if (choice) {
 								choice->setState(6); //green recoloring
@@ -208,6 +244,7 @@ bool GameLogic::PlaceAllyShip(int tile_id, int shipSize)
 			}
 			else {
 				std::cout << "Tile is not empty!" << std::endl;
+				*pTextHandler << "\nTile is not empty!";
 			}
 		}
 		//Hajó háta
@@ -227,6 +264,8 @@ bool GameLogic::PlaceAllyShip(int tile_id, int shipSize)
 					"Ship placed at " << pShipFront->getPos().first << pShipFront->getPos().second <<
 					"/" << pShipBack->getPos().first << pShipBack->getPos().second <<
 					"\n--------" << std::endl;
+				(*pTextHandler < "Ship placed at ") << pShipFront->getPos().first << pShipFront->getPos().second <<
+					"/" << pShipBack->getPos().first << pShipBack->getPos().second << "\n";
 				--unplacedShips.at(shipSize - 1);
 
 				pShipFront->setState(3); //default recoloring

@@ -1,3 +1,5 @@
-v0.0.6c-SDL_TTF
+v0.0.6d-Text Rendering
 -----------------------------------------------------------------------------------------
--Added SDL_ttf to the client.
+-Added basic text rendering.
+-Game related info text is now rendered like this.(without the errors)
+-Fixed Client disconnection not resetting ShipData on Server-side.

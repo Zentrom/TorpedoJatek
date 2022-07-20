@@ -1,3 +1,41 @@
+TextHandler.cpp Blended 32bites
+-----------------------------------------------
+GLuint TextHandler::RenderTextBlended(const char* text)
+{
+	SDL_Color col = SDL_Color();
+	col.r = 255;
+	col.g = 255;
+	col.b = 255;
+	col.a = 0;
+	
+	if (!(textSurface = TTF_RenderUTF8_Blended(comicSans, text, col))) {
+		std::cout << "[RenderText_Blended] TTF Rendered text is NULL: " << SDL_GetError() << std::endl;
+	}
+	
+	//std::cout << "texturesize " << textSurface->w << " " << textSurface->h << std::endl;
+	//std::cout << "textsurfaceformat " << SDL_GetPixelFormatName(textSurface->format->format) << " " << +textSurface->format->BitsPerPixel << " " << +textSurface->format->BytesPerPixel << std::endl;
+	
+	glGenTextures(1, &textTexture);
+	
+	glBindTexture(GL_TEXTURE_2D, textTexture);
+	
+	SDL_PixelFormat* pixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+	SDL_Surface* convertedSurface = SDL_ConvertSurface(textSurface, pixelFormat, 0);
+	
+	//std::cout << "convertedSurface " << SDL_GetPixelFormatName(convertedSurface->format->format) << " " << +convertedSurface->format->BitsPerPixel << " " << +convertedSurface->format->BytesPerPixel << std::endl;
+	
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, convertedSurface->w, convertedSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, convertedSurface->pixels);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return textTexture;
+}
+
 Sea.cpp Régi 100*100 mezõs megoldás
 -----------------------------------------------
 glm::vec3 seatileResult = glm::vec3(0.0f);

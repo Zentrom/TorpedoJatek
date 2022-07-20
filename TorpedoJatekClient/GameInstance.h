@@ -8,6 +8,7 @@
 #include "Source/BackEnd/GameLogic.h"
 #include "Source/Backend/EventHandler.h"
 
+#include "Utility/TextHandler.h"
 #include "Utility/gCamera.h"
 #include "Utility/gShaderProgram.h"
 #include "Utility/gVertexBuffer.h"
@@ -53,6 +54,7 @@ private:
 	Sea* sea = new Sea(); //Játék és tengermezõk
 	GameLogic* gameLogic; //Háttérlogika
 	EventHandler* eventHandler; //Eseménykezelés
+	TextHandler* textHandler; //Szövegkezelõ
 
 	gVertexBuffer vb_fbo; //Custom Quad Framebufferbe rajzolandó négyzet adata
 	gShaderProgram sh_default; //Alap shader+postprocess
@@ -81,5 +83,6 @@ private:
 	int viewportWidth; //Ablak canvaszának szélessége
 	int viewportHeight; //Ablak canvaszának magassága
 	gCamera* cam_mainCamera; //Kamera
+
 };
 

@@ -33,6 +33,7 @@ GameInstance::~GameInstance()
 	delete enemyFleet;
 	delete sea;
 	
+	delete textHandler;
 	delete eventHandler;
 	delete gameLogic;
 	delete cam_mainCamera;
@@ -48,9 +49,14 @@ GameInstance::~GameInstance()
 //Játékmenet inicializálása
 bool GameInstance::Init()
 {
-	gameLogic = new GameLogic(*playerFleet, *enemyFleet, *sea);
+	textHandler = new TextHandler();
+	gameLogic = new GameLogic(*playerFleet, *enemyFleet, *sea, *textHandler);
 	gameLogic->Init();
 	eventHandler = new EventHandler();
+	
+	//if (TorpedoGLOBAL::Debug) {
+	//	*textHandler << "DEBUG mode";
+	//}
 
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 
@@ -149,6 +155,7 @@ void GameInstance::HandleGameState()
 	//Játék indításánál mi kezdünk-e
 	if (gameState == GameState::STARTING_MATCH) {
 		if (gameLogic->CheckStartSignal()) {
+			textHandler->Clear();
 			if (gameLogic->getPlayerNum() == 1) {
 				gameState = GameState::SHOOTING_AT_ENEMY;
 			}
@@ -241,6 +248,9 @@ void GameInstance::Render()
 	vb_fbo.Draw(GL_TRIANGLE_STRIP, 0, 4);
 	vb_fbo.Off();
 	sh_default.Off();
+
+	textHandler->Render();
+
 }
 
 //true-val tér vissza ha be akarjuk zárni a programot magasabb szintrõl
