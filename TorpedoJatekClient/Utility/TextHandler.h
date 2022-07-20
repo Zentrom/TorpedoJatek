@@ -34,11 +34,11 @@ private:
 	gShaderProgram sh_text; //Szöveg shadere
 	gVertexBuffer vb_message; //Alap üzenetmezõ modell adatok
 
-	const float textLengthDivisor = 400.0f; //Szövegmezõt mennyire sûrítjük
-	const float lineHeightDivisor = 2.0f; //Magasság sûrítése
+	const float textLengthDivisor = 200.0f; //Szövegmezõt mennyire sûrítjük
+	const float lineHeightDivisor = 1.5f; //Magasság sûrítése
 
 	SDL_PixelFormat* pixelFormat; //Pixelformátum amelybe konvertáljuk az SDL Surface-t,hogy OPENGL ismerje
-	SDL_Surface* textSurface; //SDL_ttf ebbe a felületbe tudja a szöveget kirajzolni
+	SDL_Surface* textSurface = nullptr; //SDL_ttf ebbe a felületbe tudja a szöveget kirajzolni
 	GLuint textTexture = 0; //Szövegmezõ OPENGL-es textúrája
 	SDL_Color fgColor = {255, 255, 255}; //Szöveg színe
 	SDL_Color bgColor = {255, 0, 0}; //Shaded rajzoláshoz a háttérszín(Fragment shader nagyrészét eldobja)

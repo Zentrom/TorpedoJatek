@@ -157,7 +157,7 @@ void TextHandler::Render()
 //Solid módszerrel kirajzol szöveget egy SDL Surface-ba,majd átkonvertálja OPENGL-es textúrába
 GLuint TextHandler::RenderTextSolid(const char* text)
 {
-	glDeleteTextures(1, &textTexture);
+	if(textTexture) glDeleteTextures(1, &textTexture);
 	SDL_FreeSurface(textSurface);
 
 	bgColor = SDL_Color{ 0,0,0,0 };
@@ -194,7 +194,7 @@ GLuint TextHandler::RenderTextSolid(const char* text)
 //Shaded módszerrel kirajzol szöveget egy SDL Surface-ba,majd átkonvertálja OPENGL-es textúrába
 GLuint TextHandler::RenderTextShaded(const char* text)
 {
-	glDeleteTextures(1, &textTexture);
+	if(textTexture) glDeleteTextures(1, &textTexture);
 	SDL_FreeSurface(textSurface);
 
 	bgColor = { 255,0,0,0 };

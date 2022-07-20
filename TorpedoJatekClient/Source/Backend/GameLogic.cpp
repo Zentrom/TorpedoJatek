@@ -218,7 +218,7 @@ bool GameLogic::PlaceAllyShip(int tile_id, int shipSize)
 					if (std::none_of(freeChoices.cbegin(), freeChoices.cend(), [](PlayTile* ptr) {return ptr; }))
 					{
 						std::cout << "No position available for the back of the ship!\n Try another position." << std::endl;
-						*pTextHandler << "\nNo position available for the back of the ship!\n Try another position.";
+						*pTextHandler < "No position available for the back of the ship!\n Try another position.";
 						return false;
 					}
 					else {
@@ -244,7 +244,7 @@ bool GameLogic::PlaceAllyShip(int tile_id, int shipSize)
 			}
 			else {
 				std::cout << "Tile is not empty!" << std::endl;
-				*pTextHandler << "\nTile is not empty!";
+				*pTextHandler < "Tile is not empty!";
 			}
 		}
 		//Hajó háta

@@ -1,5 +1,11 @@
-v0.0.6d-Text Rendering
+v0.0.7<->Text Rendering
 -----------------------------------------------------------------------------------------
--Added basic text rendering.
--Game related info text is now rendered like this.(without the errors)
--Fixed Client disconnection not resetting ShipData on Server-side.
+[FEATURES]
+-Game related info-text is now rendered into the game window.
+-The game exe now has an icon.
+-The intact ships of the winning player are now drawn out to the loser.
+-Added Fog-like effect to the edges of the Sea and Terrain.
+[FIXES]
+-Fixed possible crash occuring when both players have placed their ships.
+-Expanded the size of the Sea.
+-Adjusted camera view distance and boundaries.

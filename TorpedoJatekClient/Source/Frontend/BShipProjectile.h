@@ -38,7 +38,7 @@ private:
 
 	const int circleResHor = 16; //körfelbontás vízszintesen
 	const int circleResVert = 16; //körfelbontás függõlegesen
-	const float animationTime = 4.0f; //Animáció ideje
+	const float animationTime = 3.0f; //Animáció ideje
 	const float particleLife = 1.5f; //Meddig él egy részecske
 	const float particleEmitTime = 0.05f; //Részecskeszórás ideje
 	const float distHeightDivFactor = 4.0f; //Távolság függvényében mennyire magasra megyünk(osztási faktor)
