@@ -6,5 +6,5 @@ struct TorpedoVersion {
 	const int majorVersion = 0;
 	const int betaVersion = 0;
 	const int alphaVersion = 7;
-	const char experimentalVersion = ' ';
+	const char experimentalVersion = 'a';
 };

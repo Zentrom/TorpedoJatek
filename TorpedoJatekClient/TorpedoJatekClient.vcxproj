@@ -22,6 +22,7 @@
     <ClCompile Include="..\CommonSource\ConnectionHandler.cpp" />
     <ClCompile Include="GameInstance.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Source\Backend\ClientHandler.cpp" />
     <ClCompile Include="Source\Backend\EventHandler.cpp" />
     <ClCompile Include="Source\Backend\GameLogic.cpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="..\CommonSource\TorpedoVersion.hpp" />
     <ClInclude Include="GameInstance.h" />
     <ClInclude Include="Icon\resource.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Source\Backend\ClientHandler.h" />
     <ClInclude Include="Source\Backend\EventHandler.h" />
     <ClInclude Include="Source\Backend\GameLogic.h" />

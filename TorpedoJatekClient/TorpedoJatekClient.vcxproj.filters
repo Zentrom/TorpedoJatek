@@ -119,6 +119,9 @@
     <ClCompile Include="Utility\TextHandler.cpp">
       <Filter>Utility\gClasses</Filter>
     </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TorpedoJatekClient.h">
@@ -204,6 +207,9 @@
     </ClInclude>
     <ClInclude Include="Utility\TextHandler.h">
       <Filter>Utility\gClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

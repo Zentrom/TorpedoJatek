@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MainMenu.h"
 #include "GameInstance.h"
 #include "../CommonSource/TorpedoVersion.hpp"
 #include "Source/Globals.hpp"
@@ -25,6 +26,7 @@ public:
 private:
 	int Init();
 	int CreateGameWindow();
+	int StartMainMenu();
 	int StartGameInstance();
 
 	//enum class State {GLOBAL_GAME,GLOBAL_MENU}; //Játékmenetbe vagyunk vagy menüben
@@ -35,6 +37,7 @@ private:
 	SDL_GLContext glContext; //OpenGL beállítási állapot - ez már void* típusu
 	SDL_Event* sdlEvent;  //SDL esemény kezelõje
 	GameInstance* gameInstance; //A tényleges torpedo játékmenet
+	MainMenu* mainMenu; //Fõmenü
 
 	const Uint32 flagsWindow = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE; //win ablakhoz tartozó SDL flagek.
 	const int rightOffset = 10; //Ablak Jobbra mozgazás

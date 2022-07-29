@@ -53,10 +53,6 @@ bool GameInstance::Init()
 	gameLogic = new GameLogic(*playerFleet, *enemyFleet, *sea, *textHandler);
 	gameLogic->Init();
 	eventHandler = new EventHandler();
-	
-	//if (TorpedoGLOBAL::Debug) {
-	//	*textHandler << "DEBUG mode";
-	//}
 
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 

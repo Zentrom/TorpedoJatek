@@ -1,5 +1,3 @@
-!!1.47MB-os VS-es 2.20-as SDL_TTF-be hibás a lib
-
 Mountaint dispacement mappinggel vagy valami profibb módon.
 Megoldani egy tényleges visszakapcsolódást a serverre,lementett állapottal, 60sec timeout.
 

@@ -31,9 +31,12 @@ int TorpedoJatekClient::Run()
 	if (CreateGameWindow()) {
 		return 1;
 	}
-	if (StartGameInstance()) {
-		return 1;
-	}
+	bool quit = false;
+	//if (StartMainMenu()) {
+		if (StartGameInstance()) {
+			return 1;
+		}
+	//}
 	return 0;
 }
 
@@ -132,14 +135,20 @@ int TorpedoJatekClient::CreateGameWindow()
 		std::cout << "[OGLcontext]Error creating OpenGL context! One of the SDL_GL_SetAttribute(...) calls might be wrong." << std::endl;
 		return 1;
 	}
+	sdlEvent = new SDL_Event();
 
+	return 0;
+}
+
+//Menüt elindítja
+int TorpedoJatekClient::StartMainMenu()
+{
 	return 0;
 }
 
 //Elindít egy játékmenetet
 int TorpedoJatekClient::StartGameInstance()
 {
-	sdlEvent = new SDL_Event();
 	gameInstance = new GameInstance(widthWindow, heightWindow);
 	if (!gameInstance->Init())
 	{
