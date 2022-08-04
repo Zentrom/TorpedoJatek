@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Frontend/Fleet.h"
+#include "../Frontend/Game/Fleet.h"
 
 #include <SDL_mixer.h>
 

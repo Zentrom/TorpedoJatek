@@ -16,7 +16,7 @@ uniform vec3 tile_state; //PlayTile állapot színe
 void main()
 {
 	if(is_preprocess){
-		fs_out_col.w = tile_index;//vec4(1, 1, 1, tile_index);
+		fs_out_col.a = tile_index;
 	}else{
 		if(tile_index == read_index){
 			fs_out_col = vec4(0, 1, 1, 1); //Kijelölés színe

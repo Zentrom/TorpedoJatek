@@ -26,17 +26,20 @@
     <ClCompile Include="Source\Backend\ClientHandler.cpp" />
     <ClCompile Include="Source\Backend\EventHandler.cpp" />
     <ClCompile Include="Source\Backend\GameLogic.cpp" />
-    <ClCompile Include="Source\Frontend\BattleShip.cpp" />
-    <ClCompile Include="Source\Frontend\BShipCannon.cpp" />
-    <ClCompile Include="Source\Frontend\BShipProjectile.cpp" />
-    <ClCompile Include="Source\Frontend\Fleet.cpp" />
-    <ClCompile Include="Source\Frontend\Mountain.cpp" />
-    <ClCompile Include="Source\Frontend\ParticleGroup.cpp" />
-    <ClCompile Include="Source\Frontend\PlayTile.cpp" />
-    <ClCompile Include="Source\Frontend\Sea.cpp" />
-    <ClCompile Include="Source\Frontend\Ship.cpp" />
-    <ClCompile Include="Source\Frontend\Skybox.cpp" />
-    <ClCompile Include="Source\Frontend\Terrain.cpp" />
+    <ClCompile Include="Source\Frontend\Game\BattleShip.cpp" />
+    <ClCompile Include="Source\Frontend\Game\BShipCannon.cpp" />
+    <ClCompile Include="Source\Frontend\Game\BShipProjectile.cpp" />
+    <ClCompile Include="Source\Frontend\Game\Fleet.cpp" />
+    <ClCompile Include="Source\Frontend\Game\Mountain.cpp" />
+    <ClCompile Include="Source\Frontend\Game\ParticleGroup.cpp" />
+    <ClCompile Include="Source\Frontend\Game\PlayTile.cpp" />
+    <ClCompile Include="Source\Frontend\Game\Sea.cpp" />
+    <ClCompile Include="Source\Frontend\Game\Ship.cpp" />
+    <ClCompile Include="Source\Frontend\Game\Skybox.cpp" />
+    <ClCompile Include="Source\Frontend\Game\Terrain.cpp" />
+    <ClCompile Include="Source\Frontend\Game\TextHandler.cpp" />
+    <ClCompile Include="Source\Frontend\Menu\MenuRenderer.cpp" />
+    <ClCompile Include="Source\Frontend\Menu\MenuStateHandler.cpp" />
     <ClCompile Include="TorpedoJatekClient.cpp" />
     <ClCompile Include="Utility\gCamera.cpp" />
     <ClCompile Include="Utility\GLUtils.cpp" />
@@ -44,7 +47,6 @@
     <ClCompile Include="Utility\gVertexBuffer.cpp" />
     <ClCompile Include="Utility\Mesh_OGL3.cpp" />
     <ClCompile Include="Utility\ObjParser_OGL3.cpp" />
-    <ClCompile Include="Utility\TextHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CommonSource\CommonGlobals.hpp" />
@@ -56,17 +58,20 @@
     <ClInclude Include="Source\Backend\ClientHandler.h" />
     <ClInclude Include="Source\Backend\EventHandler.h" />
     <ClInclude Include="Source\Backend\GameLogic.h" />
-    <ClInclude Include="Source\Frontend\BattleShip.h" />
-    <ClInclude Include="Source\Frontend\BShipCannon.h" />
-    <ClInclude Include="Source\Frontend\BShipProjectile.h" />
-    <ClInclude Include="Source\Frontend\Fleet.h" />
-    <ClInclude Include="Source\Frontend\Mountain.h" />
-    <ClInclude Include="Source\Frontend\ParticleGroup.h" />
-    <ClInclude Include="Source\Frontend\PlayTile.h" />
-    <ClInclude Include="Source\Frontend\Sea.h" />
-    <ClInclude Include="Source\Frontend\Ship.h" />
-    <ClInclude Include="Source\Frontend\Skybox.h" />
-    <ClInclude Include="Source\Frontend\Terrain.h" />
+    <ClInclude Include="Source\Frontend\Game\BattleShip.h" />
+    <ClInclude Include="Source\Frontend\Game\BShipCannon.h" />
+    <ClInclude Include="Source\Frontend\Game\BShipProjectile.h" />
+    <ClInclude Include="Source\Frontend\Game\Fleet.h" />
+    <ClInclude Include="Source\Frontend\Game\Mountain.h" />
+    <ClInclude Include="Source\Frontend\Game\ParticleGroup.h" />
+    <ClInclude Include="Source\Frontend\Game\PlayTile.h" />
+    <ClInclude Include="Source\Frontend\Game\Sea.h" />
+    <ClInclude Include="Source\Frontend\Game\Ship.h" />
+    <ClInclude Include="Source\Frontend\Game\Skybox.h" />
+    <ClInclude Include="Source\Frontend\Game\Terrain.h" />
+    <ClInclude Include="Source\Frontend\Game\TextHandler.h" />
+    <ClInclude Include="Source\Frontend\Menu\MenuRenderer.h" />
+    <ClInclude Include="Source\Frontend\Menu\MenuStateHandler.h" />
     <ClInclude Include="Source\Globals.hpp" />
     <ClInclude Include="TorpedoJatekClient.h" />
     <ClInclude Include="Utility\gCamera.h" />
@@ -75,13 +80,14 @@
     <ClInclude Include="Utility\gVertexBuffer.h" />
     <ClInclude Include="Utility\Mesh_OGL3.h" />
     <ClInclude Include="Utility\ObjParser_OGL3.h" />
-    <ClInclude Include="Utility\TextHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\default.frag" />
     <None Include="Shaders\default.vert" />
     <None Include="Shaders\dirLight.frag" />
     <None Include="Shaders\dirLight.vert" />
+    <None Include="Shaders\menu.frag" />
+    <None Include="Shaders\menu.vert" />
     <None Include="Shaders\projectile.frag" />
     <None Include="Shaders\projectile.vert" />
     <None Include="Shaders\ptOutline.frag" />

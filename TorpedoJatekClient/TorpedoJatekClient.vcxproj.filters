@@ -42,6 +42,18 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{9c69665f-9404-49e8-b5cb-804e4f27341d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Frontend\Menu">
+      <UniqueIdentifier>{6ff73282-94a1-455f-8495-51af730069a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frontend\Menu">
+      <UniqueIdentifier>{f5c8a3e4-d6a2-4eca-9d62-1ba0a0a0efb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frontend\Game">
+      <UniqueIdentifier>{398cb8dc-25a7-48b4-bce7-ce05bdfac390}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frontend\Game">
+      <UniqueIdentifier>{ed4c8f87-87f1-4173-8e14-7fb8f12388ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -53,26 +65,8 @@
     <ClCompile Include="GameInstance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Frontend\Mountain.cpp">
-      <Filter>Source Files\Frontend</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Frontend\PlayTile.cpp">
-      <Filter>Source Files\Frontend</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Frontend\Ship.cpp">
-      <Filter>Source Files\Frontend</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Backend\GameLogic.cpp">
       <Filter>Source Files\Backend</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Frontend\Terrain.cpp">
-      <Filter>Source Files\Frontend</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Frontend\Fleet.cpp">
-      <Filter>Source Files\Frontend</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Frontend\Sea.cpp">
-      <Filter>Source Files\Frontend</Filter>
     </ClCompile>
     <ClCompile Include="..\CommonSource\ConnectionHandler.cpp">
       <Filter>Common</Filter>
@@ -95,32 +89,56 @@
     <ClCompile Include="Source\Backend\ClientHandler.cpp">
       <Filter>Source Files\Backend</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Frontend\Skybox.cpp">
-      <Filter>Source Files\Frontend</Filter>
-    </ClCompile>
     <ClCompile Include="Utility\GLUtils.cpp">
       <Filter>Utility\gClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Frontend\BattleShip.cpp">
-      <Filter>Source Files\Frontend</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Frontend\BShipCannon.cpp">
-      <Filter>Source Files\Frontend</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Frontend\BShipProjectile.cpp">
-      <Filter>Source Files\Frontend</Filter>
     </ClCompile>
     <ClCompile Include="Source\Backend\EventHandler.cpp">
       <Filter>Source Files\Backend</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Frontend\ParticleGroup.cpp">
-      <Filter>Source Files\Frontend</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility\TextHandler.cpp">
-      <Filter>Utility\gClasses</Filter>
-    </ClCompile>
     <ClCompile Include="MainMenu.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Menu\MenuRenderer.cpp">
+      <Filter>Source Files\Frontend\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Game\BattleShip.cpp">
+      <Filter>Source Files\Frontend\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Game\BShipCannon.cpp">
+      <Filter>Source Files\Frontend\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Game\BShipProjectile.cpp">
+      <Filter>Source Files\Frontend\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Game\Fleet.cpp">
+      <Filter>Source Files\Frontend\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Game\Mountain.cpp">
+      <Filter>Source Files\Frontend\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Game\ParticleGroup.cpp">
+      <Filter>Source Files\Frontend\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Game\PlayTile.cpp">
+      <Filter>Source Files\Frontend\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Game\Sea.cpp">
+      <Filter>Source Files\Frontend\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Game\Ship.cpp">
+      <Filter>Source Files\Frontend\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Game\Skybox.cpp">
+      <Filter>Source Files\Frontend\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Game\Terrain.cpp">
+      <Filter>Source Files\Frontend\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Game\TextHandler.cpp">
+      <Filter>Source Files\Frontend\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Frontend\Menu\MenuStateHandler.cpp">
+      <Filter>Source Files\Frontend\Menu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -130,26 +148,8 @@
     <ClInclude Include="GameInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Frontend\Mountain.h">
-      <Filter>Header Files\Frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Frontend\PlayTile.h">
-      <Filter>Header Files\Frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Frontend\Ship.h">
-      <Filter>Header Files\Frontend</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Backend\GameLogic.h">
       <Filter>Header Files\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Frontend\Terrain.h">
-      <Filter>Header Files\Frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Frontend\Fleet.h">
-      <Filter>Header Files\Frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Frontend\Sea.h">
-      <Filter>Header Files\Frontend</Filter>
     </ClInclude>
     <ClInclude Include="..\CommonSource\ConnectionHandler.h">
       <Filter>Common</Filter>
@@ -175,9 +175,6 @@
     <ClInclude Include="Source\Globals.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Frontend\Skybox.h">
-      <Filter>Header Files\Frontend</Filter>
-    </ClInclude>
     <ClInclude Include="..\CommonSource\CommonGlobals.hpp">
       <Filter>Common</Filter>
     </ClInclude>
@@ -187,29 +184,56 @@
     <ClInclude Include="Utility\GLUtils.h">
       <Filter>Utility\gClasses</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Frontend\BattleShip.h">
-      <Filter>Header Files\Frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Frontend\BShipCannon.h">
-      <Filter>Header Files\Frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Frontend\BShipProjectile.h">
-      <Filter>Header Files\Frontend</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Backend\EventHandler.h">
       <Filter>Header Files\Backend</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Frontend\ParticleGroup.h">
-      <Filter>Header Files\Frontend</Filter>
     </ClInclude>
     <ClInclude Include="Icon\resource.h">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Utility\TextHandler.h">
-      <Filter>Utility\gClasses</Filter>
-    </ClInclude>
     <ClInclude Include="MainMenu.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Menu\MenuRenderer.h">
+      <Filter>Header Files\Frontend\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Game\BattleShip.h">
+      <Filter>Header Files\Frontend\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Game\BShipCannon.h">
+      <Filter>Header Files\Frontend\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Game\BShipProjectile.h">
+      <Filter>Header Files\Frontend\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Game\Fleet.h">
+      <Filter>Header Files\Frontend\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Game\Mountain.h">
+      <Filter>Header Files\Frontend\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Game\ParticleGroup.h">
+      <Filter>Header Files\Frontend\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Game\PlayTile.h">
+      <Filter>Header Files\Frontend\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Game\Sea.h">
+      <Filter>Header Files\Frontend\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Game\Ship.h">
+      <Filter>Header Files\Frontend\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Game\Skybox.h">
+      <Filter>Header Files\Frontend\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Game\Terrain.h">
+      <Filter>Header Files\Frontend\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Game\TextHandler.h">
+      <Filter>Header Files\Frontend\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Frontend\Menu\MenuStateHandler.h">
+      <Filter>Header Files\Frontend\Menu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +277,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\text.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\menu.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\menu.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

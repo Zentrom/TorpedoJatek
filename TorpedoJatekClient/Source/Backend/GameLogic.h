@@ -1,11 +1,11 @@
 #pragma once
 
 #include "ClientHandler.h"
-#include "../Frontend/Fleet.h"
-#include "../Frontend/Sea.h"
+#include "../Frontend/Game/Fleet.h"
+#include "../Frontend/Game/Sea.h"
+#include "../Frontend/Game/TextHandler.h"
 #include "../Globals.hpp"
 
-#include "../../Utility/TextHandler.h"
 #include "../../Utility/gVertexBuffer.h"
 #include "../../Utility/gShaderProgram.h"
 #include "../../Utility/gCamera.h"
@@ -27,7 +27,7 @@ public:
 	GameLogic(Fleet& player, Fleet& enemy, Sea& sea, TextHandler& text_handler);
 	~GameLogic();
 
-	void Init();
+	void Init(std::string ip, std::string port);
 	void ConnectionSetup();
 	void DisplayMessage(GameState gameState, int related_data);
 	void DisplayError(GameState gameState, int related_data);

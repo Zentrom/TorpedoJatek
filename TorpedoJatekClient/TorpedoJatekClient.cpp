@@ -10,7 +10,8 @@ TorpedoJatekClient::~TorpedoJatekClient()
 {
 	Mix_CloseAudio();
 
-	delete gameInstance;
+	if (mainMenu) delete mainMenu;
+	if (gameInstance) delete gameInstance;
 	delete sdlEvent;
 	SDL_GL_DeleteContext(glContext);
 	SDL_DestroyWindow(gameWindow);
@@ -32,11 +33,11 @@ int TorpedoJatekClient::Run()
 		return 1;
 	}
 	bool quit = false;
-	//if (StartMainMenu()) {
+	if (!StartMainMenu()) {
 		if (StartGameInstance()) {
 			return 1;
 		}
-	//}
+	}
 	return 0;
 }
 
@@ -143,6 +144,106 @@ int TorpedoJatekClient::CreateGameWindow()
 //Menüt elindítja
 int TorpedoJatekClient::StartMainMenu()
 {
+	mainMenu = new MainMenu(widthWindow, heightWindow);
+	if (!mainMenu->Init())
+	{
+		std::cout << "[mainMenu_Init] Main menu inicialization failed!" << std::endl;
+		return 1;
+	}
+
+	int frame_count = 0;
+	int last_time = SDL_GetTicks();
+	int last_render_time = SDL_GetTicks();
+	int time_diff = 0;
+	int ftime_diff = 0;
+
+	float frmtime = 1000.0f / fpsLimit;
+	float frmMod = 0;
+
+	//Fõ event ciklus
+	bool quit = false;
+	while (!quit)
+	{
+		//FPS limiter
+		if (!enableVsync && enableFpsLimit) {
+			ftime_diff = SDL_GetTicks() - last_render_time;
+
+			if (ftime_diff + frmMod >= frmtime) {
+				mainMenu->Update();
+				mainMenu->Render();
+				SDL_GL_SwapWindow(gameWindow);
+				++frame_count;
+				last_render_time = SDL_GetTicks();
+				frmMod = (ftime_diff + frmMod) - frmtime;
+			}
+		}
+		else {
+			if (mainMenu->Update()) {
+				connectionIP = mainMenu->getIP();
+				connectionPort = mainMenu->getPort();
+				quit = true;
+			}
+			mainMenu->Render();
+			SDL_GL_SwapWindow(gameWindow);
+			++frame_count;
+		}
+
+		//FPS kiirása
+		time_diff = SDL_GetTicks() - last_time;
+		if (time_diff >= 1000)
+		{
+			window_title.str(std::string());
+			window_title << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
+				<< "." << clientVersion->alphaVersion << clientVersion->experimentalVersion
+				<< " | FPS:" << frame_count;
+			SDL_SetWindowTitle(gameWindow, window_title.str().c_str());
+
+			last_time = SDL_GetTicks();
+			time_diff = 0;
+			frame_count = 0;
+		}
+
+		while (SDL_PollEvent(sdlEvent))
+		{
+			switch (sdlEvent->type)
+			{
+			case SDL_QUIT:
+				quit = true;
+				return 1;
+				break;
+			case SDL_KEYDOWN:
+				mainMenu->KeyboardDown(sdlEvent->key);
+				break;
+			case SDL_KEYUP:
+				mainMenu->KeyboardUp(sdlEvent->key);
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				if (mainMenu->MouseDown(sdlEvent->button))
+				{
+					quit = true;
+					return 1;
+				}
+				break;
+			case SDL_MOUSEBUTTONUP:
+				mainMenu->MouseUp(sdlEvent->button);
+				break;
+			case SDL_MOUSEWHEEL:
+				mainMenu->MouseWheel(sdlEvent->wheel);
+				break;
+			case SDL_MOUSEMOTION:
+				mainMenu->MouseMove(sdlEvent->motion);
+				break;
+			case SDL_WINDOWEVENT:
+				if (sdlEvent->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+				{
+					mainMenu->Resize(sdlEvent->window.data1, sdlEvent->window.data2);
+				}
+				break;
+			}
+		}
+
+	}
+
 	return 0;
 }
 
@@ -150,7 +251,7 @@ int TorpedoJatekClient::StartMainMenu()
 int TorpedoJatekClient::StartGameInstance()
 {
 	gameInstance = new GameInstance(widthWindow, heightWindow);
-	if (!gameInstance->Init())
+	if (!gameInstance->Init(connectionIP, connectionPort))
 	{
 		std::cout << "[GameInstance_Init] Game instance inicialization failed!" << std::endl;
 		return 1;

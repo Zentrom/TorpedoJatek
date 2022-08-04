@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../Utility/gVertexBuffer.h"
-#include "../../Utility/gShaderProgram.h"
-#include "../../Utility/gCamera.h"
+#include "../../../Utility/gVertexBuffer.h"
+#include "../../../Utility/gShaderProgram.h"
+#include "../../../Utility/gCamera.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <SDL_image.h>

@@ -18,9 +18,12 @@ GameLogic::~GameLogic()
 }
 
 //Inicializálja a játékkal kapcsolatos háttéradatokat
-void GameLogic::Init()
+void GameLogic::Init(std::string ip, std::string port)
 {
 	if (!TorpedoGLOBAL::Debug) {
+		this->ip = ip;
+		this->port = std::stoi(port);
+
 		//Lekezeli ha teli szerverre kapcsolódtunk
 		do {
 			ConnectionSetup();
@@ -56,10 +59,14 @@ void GameLogic::ConnectionSetup()
 {
 	do {
 		std::cout << "Establishing connection." << std::endl;
-		std::cout << "Server ip: ";
-		std::cin >> ip;
-		std::cout << "Server port: ";
-		std::cin >> port;
+		
+		std::cout << "Server ip: " << ip << std::endl;
+		std::cout << "Server port: " << port << std::endl;
+
+		//std::cout << "Server ip: ";
+		//std::cin >> ip;
+		//std::cout << "Server port: ";
+		//std::cin >> port;
 	} while (!clientHandler->Init(ip, port));
 }
 

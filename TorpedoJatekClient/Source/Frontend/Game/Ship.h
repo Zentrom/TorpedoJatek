@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../Globals.hpp"
+#include "../../Globals.hpp"
 #include "PlayTile.h"
 
-#include "../../Utility/gVertexBuffer.h"
-#include "../../Utility/gShaderProgram.h"
-#include "../../Utility/gCamera.h"
-#include "../../Utility/GLUtils.h"
+#include "../../../Utility/gVertexBuffer.h"
+#include "../../../Utility/gShaderProgram.h"
+#include "../../../Utility/gCamera.h"
+#include "../../../Utility/GLUtils.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

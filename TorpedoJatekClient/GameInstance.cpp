@@ -47,11 +47,11 @@ GameInstance::~GameInstance()
 }
 
 //Játékmenet inicializálása
-bool GameInstance::Init()
+bool GameInstance::Init(std::string ip, std::string port)
 {
 	textHandler = new TextHandler();
 	gameLogic = new GameLogic(*playerFleet, *enemyFleet, *sea, *textHandler);
-	gameLogic->Init();
+	gameLogic->Init(ip, port);
 	eventHandler = new EventHandler();
 
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
@@ -256,7 +256,7 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 
 	//Kilépés
 	if ((key.keysym.sym == SDLK_ESCAPE) && TorpedoGLOBAL::Debug) {
-		return 1;
+		return true;
 	}
 	if((key.keysym.sym == SDLK_ESCAPE) &&
 		(gameState == GameState::SHOOTING_AT_ENEMY || gameState == GameState::GETTING_SHOT || gameState == GameState::STARTING_MATCH
@@ -264,7 +264,7 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 		if (gameState != GameState::MATCH_ENDING) {
 			gameLogic->QuitGame();
 		}
-		return 1;
+		return true;
 	}
 	//Hang némítása
 	if (key.keysym.sym == SDLK_m) {
@@ -288,7 +288,7 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 			break;
 		case SDLK_ESCAPE:
 			gameLogic->QuitGame();
-			return 1;
+			return true;
 			break;
 		}
 		if (shipSizeInput) {
@@ -321,7 +321,7 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 		}
 	}
 
-	return 0;
+	return false;
 }
 
 void GameInstance::KeyboardUp(SDL_KeyboardEvent& key)

@@ -167,5 +167,5 @@ void gVertexBuffer::Draw(GLenum _mode, GLint _first, GLsizei _count) const
 }
 void gVertexBuffer::DrawIndexed(GLenum _mode, GLint _first, GLsizei _count) const
 {
-	glDrawElements(_mode, _count - _first, GL_UNSIGNED_INT, (unsigned int*)_first);
+	glDrawElements(_mode, _count, GL_UNSIGNED_INT, (unsigned int*)(_first * sizeof(unsigned int)));
 }

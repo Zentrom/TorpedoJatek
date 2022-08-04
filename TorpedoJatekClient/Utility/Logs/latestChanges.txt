@@ -1,4 +1,8 @@
-v0.0.7a-Nemtom
+v0.0.7a-Initial Menu
 -----------------------------------------------------------------------------------------
+-Added a basic, clickable MainMenu.
+-Added ability to connect to the Server using only the Menu UI.
+-Removed all interactivity that's related to the console.
+-Linked the MainMenu and GameInstace together.
 -Fixed SDL_ttf static lib missing the newest functions.
--
+-Fixed indexed drawing from a specific index.(DrawIndexed)

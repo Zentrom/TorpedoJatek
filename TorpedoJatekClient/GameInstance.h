@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Source/Frontend/Mountain.h"
-#include "Source/Frontend/Fleet.h"
-#include "Source/Frontend/Terrain.h"
-#include "Source/Frontend/Sea.h"
-#include "Source/Frontend/Skybox.h"
+#include "Source/Frontend/Game/Mountain.h"
+#include "Source/Frontend/Game/Fleet.h"
+#include "Source/Frontend/Game/Terrain.h"
+#include "Source/Frontend/Game/Sea.h"
+#include "Source/Frontend/Game/Skybox.h"
+#include "Source/Frontend/Game/TextHandler.h"
 #include "Source/BackEnd/GameLogic.h"
 #include "Source/Backend/EventHandler.h"
 
-#include "Utility/TextHandler.h"
 #include "Utility/gCamera.h"
 #include "Utility/gShaderProgram.h"
 #include "Utility/gVertexBuffer.h"
@@ -29,7 +29,7 @@ public:
 	GameInstance(int viewport_w = 800, int viewport_h = 600);
 	~GameInstance();
 
-	bool Init();
+	bool Init(std::string ip, std::string port);
 
 	void Update();
 	void Render();

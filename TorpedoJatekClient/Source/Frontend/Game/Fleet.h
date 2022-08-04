@@ -1,11 +1,11 @@
 #pragma once
 
 #include "BattleShip.h"
-#include "../../../CommonSource/CommonGlobals.hpp"
+#include "../../../../CommonSource/CommonGlobals.hpp"
 
-#include "../../Utility/gVertexBuffer.h"
-#include "../../Utility/gShaderProgram.h"
-#include "../../Utility/gCamera.h"
+#include "../../../Utility/gVertexBuffer.h"
+#include "../../../Utility/gShaderProgram.h"
+#include "../../../Utility/gCamera.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

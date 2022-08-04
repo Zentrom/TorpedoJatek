@@ -1,7 +1,7 @@
 #pragma once
 
-#include "gVertexBuffer.h"
-#include "gShaderProgram.h"
+#include "../../../Utility/gVertexBuffer.h"
+#include "../../../Utility/gShaderProgram.h"
 
 #include <SDL_ttf.h>
 #include <GL/glew.h>
