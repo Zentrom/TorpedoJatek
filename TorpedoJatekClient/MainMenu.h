@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Source/Frontend/Menu/MenuStateHandler.h"
+#include "../CommonSource/TorpedoVersion.hpp"
 #include "Utility/gShaderProgram.h"
 #include "Utility/gVertexBuffer.h"
 #include "Utility/GLUtils.h"
@@ -19,7 +20,7 @@
 class MainMenu
 {
 public:
-	MainMenu(int viewport_w = 800, int viewport_h = 600);
+	MainMenu(const TorpedoVersion& version, int viewport_w = 800, int viewport_h = 600);
 	~MainMenu();
 
 	bool Init();
@@ -43,14 +44,15 @@ private:
 		TYPING,
 	};
 	void CreateFrameBuffer(int width, int height);
-	//void HandleState();
 
 	MenuState menuState = MenuState::CLICKING; //jelenlegi menüállapot
 
+	//Menü melyik részében vagyunk
 	MenuStateHandler* initialState = new MenuStateHandler();
 	MenuStateHandler* connectState = new MenuStateHandler();
+	MenuStateHandler* optionsState = new MenuStateHandler();
 
-	MenuStateHandler* pCurrentState = initialState;
+	MenuStateHandler* pCurrentState = initialState; //Jelenlegi menürész
 
 	gVertexBuffer vb_fbo; //Custom Quad Framebufferbe rajzolandó négyzet adata
 	gShaderProgram sh_default; //Alap shader+postprocess
@@ -60,20 +62,31 @@ private:
 	Sint32 mouseX; //Egér relatív X koord
 	Sint32 mouseY; //Egér relatív Y koord
 	gVertexBuffer vb_background; //Háttérnek a modell adat
-	std::array<GLuint, 2> bgTextures = { //Háttér textúrák
+	std::array<GLuint, 4> bgTextures = { //Háttér textúrák
+		GLUtils::TextureFromFile("Resources/Textures/MenuBg/bg5.bmp"),
 		GLUtils::TextureFromFile("Resources/Textures/MenuBg/bg4.bmp"),
-		GLUtils::TextureFromFile("Resources/Textures/MenuBg/bg5.bmp")
+		GLUtils::TextureFromFile("Resources/Textures/MenuBg/bg3.bmp"),
+		GLUtils::TextureFromFile("Resources/Textures/MenuBg/bg2.bmp")
 	};
+	GLuint logoTexture = GLUtils::TextureFromFile("Resources/Textures/top_texture.bmp"); //Játék logó textúrája
+	GLuint elementsBg = GLUtils::TextureFromFile("Resources/Textures/suzanne_texture.bmp"); //Menüelemeket körbefoglaló háttér
+	std::string versionString; //Verzió szövegesen
 
+	const float bgAnimTime = 4.0f; //Háttér animáció ideje
+	const float typingAnimTime = 0.5f; //Idõ amég írás közben a kurzor eltünik/megjelenik
+
+	int bgIndex = 0; //Éppen hányadik hátteret mutatjuk
+	float bgAnimElapsed = 0.0f; //Számláló háttéranimhoz
+	bool cursorShown = true; //Éppen mutatjuk-e a kurzort inputboxba iráskor
+	float typingAnimElapsed = 0.0f; //Kurzoranimhoz a számláló
 	float* mousePointedData; //Egér melyik objektumra mutat 3D picking
 	int typingInInput = 0; //Ebbe az indexû inputboxba írunk
 	bool dirL_frameBufferCreated = false;
 
-	std::string connectIP;
-	std::string connectPort;
+	std::string connectIP; //IPhez gyûjtõ
+	std::string connectPort; //Porthoz gyûjtõ
 	bool connectSignal = false; //Connect gombot megnyomtuk-e
 
 	int viewportWidth; //Ablak canvaszának szélessége
 	int viewportHeight; //Ablak canvaszának magassága
-
 };

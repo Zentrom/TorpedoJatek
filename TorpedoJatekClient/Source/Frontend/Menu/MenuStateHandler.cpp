@@ -3,6 +3,9 @@
 
 MenuStateHandler::MenuStateHandler()
 {
+	vb_decorator.AddAttribute(0, 2); //pozíció
+	vb_decorator.AddAttribute(1, 2); //textcoord
+
 	vb_clickable.AddAttribute(0, 2); //pozíció
 	vb_clickable.AddAttribute(1, 2); //textcoord
 
@@ -17,25 +20,78 @@ MenuStateHandler::MenuStateHandler()
 
 MenuStateHandler::~MenuStateHandler()
 {
-	//vb_decorator.Clean();
+	vb_decorator.Clean();
 	vb_clickable.Clean();
 	sh_menu.Clean();
 
 	delete menuRenderer;
-	//for (GLuint& texture : decoratorTextures) {
-	//	glDeleteTextures(1, &texture);
-	//}
+	for (GLuint& texture : decoratorTextures) {
+		glDeleteTextures(1, &texture);
+	}
 	for (std::pair<std::string, GLuint> &texture : clickableTextures) {
 		glDeleteTextures(1, &texture.second);
 	}
 }
 
-void MenuStateHandler::AddButton(const char* name)
+//Kiüríti az adatokat
+void MenuStateHandler::Clean()
 {
-	vb_clickable.AddData(0, 0.1f, nextElementY);
-	vb_clickable.AddData(0, -0.1f, nextElementY);
-	vb_clickable.AddData(0, -0.1f, nextElementY - 0.1f);
-	vb_clickable.AddData(0, 0.1f, nextElementY - 0.1f);
+	vb_clickable.Clean();
+	for (std::pair<std::string, GLuint>& texture : clickableTextures) {
+		glDeleteTextures(1, &texture.second);
+	}
+	clickableTextures.clear();
+	nextElementY = 0.4f;
+}
+
+//Nem clickelhetõ textúrát helyez el a menübe
+void MenuStateHandler::AddDecoratorTexture(float ndc_x, float ndc_y, float size_x, float size_y, GLuint texture)
+{
+	vb_decorator.AddData(0, ndc_x + (1.0f * size_x), ndc_y + (1.0f * size_y));
+	vb_decorator.AddData(0, ndc_x - (1.0f * size_x), ndc_y + (1.0f * size_y));
+	vb_decorator.AddData(0, ndc_x - (1.0f * size_x), ndc_y - (1.0f * size_y));
+	vb_decorator.AddData(0, ndc_x + (1.0f * size_x), ndc_y - (1.0f * size_y));
+	vb_decorator.AddData(1, 1, 0);
+	vb_decorator.AddData(1, 0, 0);
+	vb_decorator.AddData(1, 0, 1);
+	vb_decorator.AddData(1, 1, 1);
+
+	int indexCount = decoratorTextures.size() * 4;
+	vb_decorator.AddIndex(0 + indexCount, 1 + indexCount, 2 + indexCount);
+	vb_decorator.AddIndex(0 + indexCount, 2 + indexCount, 3 + indexCount);
+
+	decoratorTextures.push_back(texture);
+}
+
+//Nem clickelhetõ szöveget helyez el a menübe
+void MenuStateHandler::AddDecoratorString(float ndc_x, float ndc_y, float size_x, const char* text)
+{
+	vb_decorator.AddData(0, ndc_x + (1.0f * size_x), ndc_y);
+	vb_decorator.AddData(0, ndc_x - (1.0f * size_x), ndc_y);
+	vb_decorator.AddData(0, ndc_x - (1.0f * size_x), ndc_y - 0.1f);
+	vb_decorator.AddData(0, ndc_x + (1.0f * size_x), ndc_y - 0.1f);
+	vb_decorator.AddData(1, 1, 0);
+	vb_decorator.AddData(1, 0, 0);
+	vb_decorator.AddData(1, 0, 1);
+	vb_decorator.AddData(1, 1, 1);
+
+	int indexCount = decoratorTextures.size() * 4;
+	vb_decorator.AddIndex(0 + indexCount, 1 + indexCount, 2 + indexCount);
+	vb_decorator.AddIndex(0 + indexCount, 2 + indexCount, 3 + indexCount);
+
+	decoratorTextures.push_back(menuRenderer->RenderTextSolid(text));
+}
+
+//Gombot rak a menübe
+void MenuStateHandler::AddButton(float ndc_x, float ndc_y, const char* name)
+{
+	float coordX = (ndc_x ? ndc_x : 0.0f);
+	float coordY = (ndc_y ? ndc_y : nextElementY);
+
+	vb_clickable.AddData(0, coordX + 0.1f, coordY);
+	vb_clickable.AddData(0, coordX - 0.1f, coordY);
+	vb_clickable.AddData(0, coordX - 0.1f, coordY - 0.1f);
+	vb_clickable.AddData(0, coordX + 0.1f, coordY - 0.1f);
 	vb_clickable.AddData(1, 1, 0);
 	vb_clickable.AddData(1, 0, 0);
 	vb_clickable.AddData(1, 0, 1);
@@ -47,15 +103,15 @@ void MenuStateHandler::AddButton(const char* name)
 
 	clickableTextures.push_back(std::pair<std::string, GLuint>(std::string(name), menuRenderer->RenderTextSolid(name)));
 
-	nextElementY -= 0.2f;
-
+	if(!ndc_y) nextElementY -= 0.2f;
 }
 
+//Inputbox-ot rak a menübe
 void MenuStateHandler::AddInputBox(const char* name)
 {
 	vb_clickable.AddData(0, 0.4f, nextElementY);
-	vb_clickable.AddData(0, -0.4f, nextElementY);
-	vb_clickable.AddData(0, -0.4f, nextElementY - 0.1f);
+	vb_clickable.AddData(0, -0.2f, nextElementY);
+	vb_clickable.AddData(0, -0.2f, nextElementY - 0.1f);
 	vb_clickable.AddData(0, 0.4f, nextElementY - 0.1f);
 	vb_clickable.AddData(1, 1, 0);
 	vb_clickable.AddData(1, 0, 0);
@@ -66,29 +122,53 @@ void MenuStateHandler::AddInputBox(const char* name)
 	vb_clickable.AddIndex(0 + indexCount, 1 + indexCount, 2 + indexCount);
 	vb_clickable.AddIndex(0 + indexCount, 2 + indexCount, 3 + indexCount);
 
-	clickableTextures.push_back(std::pair<std::string, GLuint>(std::string(name), menuRenderer->RenderTextSolid(name)));
+	std::string inputString;
+	if (name) inputString = std::string(name);
+	inputString.append(inputSizeLimit - inputString.size(), ' ');
+	clickableTextures.push_back(std::pair<std::string, GLuint>(inputString, menuRenderer->RenderTextSolid(inputString.c_str())));
 
 	nextElementY -= 0.2f;
 }
 
+//Ha már nem akarunk berakni több elemet akkor ezt meghívjuk
 void MenuStateHandler::BuildLayout()
 {
+	vb_decorator.InitBuffers();
 	vb_clickable.InitBuffers();
 }
 
-void MenuStateHandler::UpdateTexture(int id, const char* next_char, bool is_delete)
+//InputBox-ot frissíti
+void MenuStateHandler::UpdateInputBox(int id, const char* next_char, bool is_delete, bool is_cursor)
 {
 	int index = (id - preProcessOffset);
+	size_t firstSpace = clickableTextures.at(index).first.find(' ');
+	char cursorChar = (is_cursor ? '|' : ' ');
 	if (!is_delete) {
-		clickableTextures.at(index).first.append(next_char);
+		if (firstSpace != std::string::npos) {
+			if (next_char) {
+				clickableTextures.at(index).first.replace(firstSpace, 1, next_char);
+				++firstSpace;
+			}
+			glDeleteTextures(1, &clickableTextures.at(index).second);
+			std::string renderableString = std::string(clickableTextures.at(index).first);
+			renderableString[firstSpace] = cursorChar;
+			clickableTextures.at(index).second = menuRenderer->RenderTextSolid(renderableString.c_str());
+		}
+		return;
 	}
 	else {
-		if (clickableTextures.at(index).first.size() != 0) {
-			clickableTextures.at(index).first.pop_back();
+		if (firstSpace == std::string::npos) {
+			clickableTextures.at(index).first.back() = ' ';
+		}
+		if (firstSpace != 0) {
+			clickableTextures.at(index).first[firstSpace - 1] = ' ';
 		}
 	}
 	glDeleteTextures(1, &clickableTextures.at(index).second);
-	clickableTextures.at(index).second = menuRenderer->RenderTextSolid(clickableTextures.at(index).first.c_str());
+	std::string renderableString = std::string(clickableTextures.at(index).first);
+	firstSpace = clickableTextures.at(index).first.find(' ');
+	renderableString[firstSpace] = cursorChar;
+	clickableTextures.at(index).second = menuRenderer->RenderTextSolid(renderableString.c_str());
 }
 
 //3D picking a menüelemek clickelésére
@@ -103,33 +183,38 @@ void MenuStateHandler::PreProcess()
 		vb_clickable.DrawIndexed(GL_TRIANGLES, i * 6, 6);
 	}
 	vb_clickable.Off();
+	sh_menu.SetUniform("clickableIndex", preProcessOffset * 3);
 	sh_menu.SetUniform("is_PreProcess", false);
 	sh_menu.Off();
 }
 
-//OPENGL-es végsõ kirajzolás
-void MenuStateHandler::Render()
+//Menüállapot kirajzolása
+void MenuStateHandler::Render(float pointed_element)
 {
-	//glDisable(GL_DEPTH_TEST);
-	//sh_text.On();
-	//sh_text.SetUniform("lineWidth", textLength / lineCount / textLengthDivisor);
-	//sh_text.SetUniform("lineCount", static_cast<float>(lineCount) / lineHeightDivisor);
-	//sh_text.SetUniform("bgColor", bgColorNDC);
-	//sh_text.SetTexture("textTexture", 0, textTexture);
 	sh_menu.On();
 
+	sh_menu.SetUniform("is_Decorator", true);
+	vb_decorator.On();
+	for (int i = 0; i < decoratorTextures.size(); ++i) {
+		sh_menu.SetTexture("textTexture", 0, decoratorTextures.at(i));
+		vb_decorator.DrawIndexed(GL_TRIANGLES, i * 6, 6);
+	}
+	vb_decorator.Off();
+	sh_menu.SetUniform("is_Decorator", false);
+
 	vb_clickable.On();
+	sh_menu.SetUniform("read_index", static_cast<int>(pointed_element));
 	for (int i = 0; i < clickableTextures.size(); ++i) {
 		sh_menu.SetTexture("textTexture", 0, clickableTextures.at(i).second);
+		sh_menu.SetUniform("clickableIndex", i + preProcessOffset);
 		vb_clickable.DrawIndexed(GL_TRIANGLES, i * 6, 6);
 	}
 	vb_clickable.Off();
 
 	sh_menu.Off();
-	//sh_text.Off();
-	//glEnable(GL_DEPTH_TEST);
 }
 
+//Inputbox szövegeit adja vissza
 std::vector<std::string> MenuStateHandler::getInputStrings(int count)
 {
 	std::vector<std::string> result;

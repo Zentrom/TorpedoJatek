@@ -9,4 +9,5 @@ std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
 Bétánál külön mappákba rakni a játék/menü frontend és backendet.
 SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE window flagek betánál. SDL_SetRelativeMouseMode()
 
-Menüháttért animálni
+Options menü
+Menü gombok szebben

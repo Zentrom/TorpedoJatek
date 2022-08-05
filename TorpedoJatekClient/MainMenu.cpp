@@ -1,7 +1,11 @@
 #include "MainMenu.h"
 
-MainMenu::MainMenu(int viewport_w, int viewport_h) : viewportWidth(viewport_w), viewportHeight(viewport_h)
+MainMenu::MainMenu(const TorpedoVersion& version, int viewport_w, int viewport_h) : viewportWidth(viewport_w), viewportHeight(viewport_h)
 {
+	versionString = std::string('v' + std::to_string(version.majorVersion) + '.' + std::to_string(version.betaVersion) + '.'
+		+ std::to_string(version.alphaVersion) + version.experimentalVersion);
+	versionString.append(u8" made by Negrut Ákos");
+
 	mousePointedData = new float[4];
 	mousePointedData[3] = 0.0f;
 }
@@ -12,6 +16,7 @@ MainMenu::~MainMenu()
 	
 	delete initialState;
 	delete connectState;
+	delete optionsState;
 
 	vb_background.Clean();
 
@@ -36,12 +41,6 @@ bool MainMenu::Init()
 
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
-
-	//glClampColor(GL_CLAMP_READ_COLOR, GL_FALSE);
-	//glEnable(GL_STENCIL_TEST);
-	//glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	CreateFrameBuffer(viewportWidth, viewportHeight);
 	vb_fbo.AddAttribute(0, 2); //position
@@ -81,14 +80,24 @@ bool MainMenu::Init()
 		return false;
 	}
 
-	initialState->AddButton(u8"Play");
-	initialState->AddButton(u8"Quit");
+	initialState->AddDecoratorTexture(0.0f, 0.7f, 0.6f, 0.2f, logoTexture);
+	initialState->AddDecoratorString(0.5f, -0.8f, 0.4f, versionString.c_str());
+	initialState->AddButton(0, 0, u8"Play");
+	initialState->AddButton(0, 0, u8"Options");
+	initialState->AddButton(0, 0, u8"Quit");
 	initialState->BuildLayout();
 
-	connectState->AddInputBox("IP");
-	connectState->AddInputBox("Port");
-	connectState->AddButton(u8"Connect");
+	connectState->AddDecoratorString(-0.4f, 0.4f, 0.1f, u8"IP:");
+	connectState->AddDecoratorString(-0.4f, 0.2f, 0.1f, u8"Port:");
+	connectState->AddInputBox(nullptr); //ip
+	connectState->AddInputBox(nullptr); //port
+	connectState->AddButton(0, 0, u8"Connect");
+	connectState->AddButton(-0.8f, -0.8f, u8"Back");
 	connectState->BuildLayout();
+
+	optionsState->AddDecoratorTexture(0.0f, 0.0f, 0.4f, 0.5f, elementsBg);
+	optionsState->AddButton(-0.8f, -0.8f, u8"Back");
+	optionsState->BuildLayout();
 
 	return true;
 }
@@ -96,11 +105,27 @@ bool MainMenu::Init()
 //Ha true akkor csatlakozást jelzünk
 bool MainMenu::Update()
 {
-	//mozgatások/animációk
 	static Uint32 lastTime = SDL_GetTicks();
 	float deltaTime = (SDL_GetTicks() - lastTime) / 1000.0f;
-	//HandleState();
 	lastTime = SDL_GetTicks();
+
+	if (menuState == MenuState::TYPING) {
+		typingAnimElapsed += deltaTime;
+		if (typingAnimElapsed > typingAnimTime) {
+			cursorShown = !cursorShown;
+			typingAnimElapsed = 0.0f;
+			pCurrentState->UpdateInputBox(typingInInput, nullptr, false, cursorShown);
+		}
+	}
+
+	bgAnimElapsed += deltaTime;
+	if (bgAnimElapsed > bgAnimTime)
+	{
+		if (++bgIndex == bgTextures.size()) {
+			bgIndex = 0;
+		}
+		bgAnimElapsed = 0.0f;
+	}
 
 	if (connectSignal) {
 		return true;
@@ -108,33 +133,30 @@ bool MainMenu::Update()
 	return false;
 }
 
-//void MainMenu::HandleState()
-//{
-//	
-//}
-
 //Rajzolási hívás
 void MainMenu::Render()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, dirL_frameBuffer);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//
-	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//
+	
 	pCurrentState->PreProcess();
 	glReadPixels(mouseX, viewportHeight - mouseY - 1, 1, 1, GL_RGBA, GL_FLOAT, (void*)mousePointedData);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	sh_default.On();
-	sh_default.SetTexture("quadTexture", 0, bgTextures[0]);
+	sh_default.SetTexture("quadTexture", 0, bgTextures[bgIndex]);
 	vb_background.On();
 	vb_background.Draw(GL_TRIANGLE_STRIP, 0, 4);
 	vb_background.Off();
 	sh_default.Off();
 
-	pCurrentState->Render();
+	if (menuState == MenuState::TYPING) {
+		pCurrentState->Render(66.0f);
+	}
+	else {
+		pCurrentState->Render(mousePointedData[3]);
+	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -154,14 +176,16 @@ void MainMenu::KeyboardDown(SDL_KeyboardEvent& key)
 			|| (key.keysym.sym >= SDLK_a && key.keysym.sym <= SDLK_z)
 			|| key.keysym.sym == SDLK_PERIOD) 
 		{
-			//std::cout << SDL_GetKeyName(key.keysym.sym) << std::endl;
-			pCurrentState->UpdateTexture(typingInInput, SDL_GetKeyName(key.keysym.sym), false);
+			pCurrentState->UpdateInputBox(typingInInput, SDL_GetKeyName(key.keysym.sym), false, cursorShown);
 		}
-		else if (SDLK_RETURN == key.keysym.sym) {
+		else if (SDLK_RETURN == key.keysym.sym || SDLK_ESCAPE == key.keysym.sym) {
 			menuState = MenuState::CLICKING;
+			typingAnimElapsed = 0.0f;
+			cursorShown = true;
+			pCurrentState->UpdateInputBox(typingInInput, nullptr, false, false);
 		}
 		else if (SDLK_BACKSPACE == key.keysym.sym) {
-			pCurrentState->UpdateTexture(typingInInput, SDL_GetKeyName(key.keysym.sym), true);
+			pCurrentState->UpdateInputBox(typingInInput, SDL_GetKeyName(key.keysym.sym), true, cursorShown);
 		}
 	}
 }
@@ -181,12 +205,14 @@ void MainMenu::MouseMove(SDL_MouseMotionEvent& mouse)
 //True-val tér vissza ha be akarjuk zárni a programot magasabb szintrõl
 bool MainMenu::MouseDown(SDL_MouseButtonEvent& mouse)
 {
-	//std::cout << mousePointedData[0] << " g " << mousePointedData[1] << " b " << mousePointedData[2] << " a " << mousePointedData[3] << std::endl;
 	if (pCurrentState == initialState) {
 		if (mousePointedData[3] == 100) {
 			pCurrentState = connectState;
 		}
-		else if(mousePointedData[3] == 101)
+		else if (mousePointedData[3] == 101) {
+			pCurrentState = optionsState;
+		}
+		else if(mousePointedData[3] == 102)
 		{
 			return true;
 		}
@@ -213,9 +239,24 @@ bool MainMenu::MouseDown(SDL_MouseButtonEvent& mouse)
 				connectPort = ipAndPort.at(1);
 				connectSignal = true;
 				break;
+			case 103:
+				//Back gomb
+				//connectState->Clean();
+				pCurrentState = initialState;
 			default:
 				break;
 			}
+		}
+	}
+	else if (pCurrentState == optionsState) {
+		switch (static_cast<int>(mousePointedData[3]))
+		{
+		case 100:
+			//Back gomb
+			pCurrentState = initialState;
+			break;
+		default:
+			break;
 		}
 	}
 	return false;

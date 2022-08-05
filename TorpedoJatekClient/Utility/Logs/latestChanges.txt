@@ -1,8 +1,7 @@
-v0.0.7a-Initial Menu
+v0.0.7b-Menu Update
 -----------------------------------------------------------------------------------------
--Added a basic, clickable MainMenu.
--Added ability to connect to the Server using only the Menu UI.
--Removed all interactivity that's related to the console.
--Linked the MainMenu and GameInstace together.
--Fixed SDL_ttf static lib missing the newest functions.
--Fixed indexed drawing from a specific index.(DrawIndexed)
+-Menu background is now animated.
+-Focused clickable element is drawn differently.
+-Added menu decorators(non-clickable elements).
+-Prepared the Options menu.
+-Fixed the inputbox.

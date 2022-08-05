@@ -6,7 +6,6 @@
 #include <GL/glew.h>
 
 #include <vector>
-//#include <map>
 #include <string>
 
 //Menü egy állapotát nyilvántartó osztály
@@ -15,28 +14,30 @@ class MenuStateHandler
 public:
 	MenuStateHandler();
 	~MenuStateHandler();
+	void Clean();
 
 	void PreProcess();
-	void Render();
+	void Render(float pointed_element);
 
-	void AddButton(const char* name);
+	void AddDecoratorTexture(float ndc_x, float ndc_y, float size_x, float size_y, GLuint texture);
+	void AddDecoratorString(float ndc_x, float ndc_y, float size_x, const char* text);
+	void AddButton(float ndc_x, float ndc_y, const char* name);
 	void AddInputBox(const char* name);
 	void BuildLayout();
-	void UpdateTexture(int id, const char* next_char, bool is_delete);
+	void UpdateInputBox(int id, const char* next_char, bool is_delete, bool is_cursor);
 
 	std::vector<std::string> getInputStrings(int count);
 private:
 
-	MenuRenderer* menuRenderer = new MenuRenderer();
-	//gVertexBuffer vb_decorator; //Nem klikkelhetõk modell adatai
-	gVertexBuffer vb_clickable; //Klikkelhetõ modell adatai
+	MenuRenderer* menuRenderer = new MenuRenderer(); //Szövegek textúrába rajzolása
+	gVertexBuffer vb_decorator; //Nem klikkelhetõk modell adatok
+	gVertexBuffer vb_clickable; //Klikkelhetõ modell adatok
 	gShaderProgram sh_menu; //Menü shadere
-	//std::vector<GLuint> decoratorTextures; //Nem klikkelhetõ objektumok textúrája
+	std::vector<GLuint> decoratorTextures; //Nem klikkelhetõ objektumok textúrája
 	std::vector<std::pair<std::string, GLuint>> clickableTextures; //Klikkelhetõ objektumok szövege és textúrája
 
-	const int preProcessOffset = 100;
+	const size_t inputSizeLimit = 16; //Inputboxba maximum hány karaktert lehet írni
+	const int preProcessOffset = 100; //3D pickinghez offset hogy ne 0-tól induljon
 
-	float nextElementY = 0.4f;
-
-	//int id; //Állapot enumból az azonosító
+	float nextElementY = 0.4f; //Menü kövi elemét Y tengelyen hova rakjuk
 };

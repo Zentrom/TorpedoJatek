@@ -144,7 +144,7 @@ int TorpedoJatekClient::CreateGameWindow()
 //Menüt elindítja
 int TorpedoJatekClient::StartMainMenu()
 {
-	mainMenu = new MainMenu(widthWindow, heightWindow);
+	mainMenu = new MainMenu(*clientVersion, widthWindow, heightWindow);
 	if (!mainMenu->Init())
 	{
 		std::cout << "[mainMenu_Init] Main menu inicialization failed!" << std::endl;
