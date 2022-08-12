@@ -1,10 +1,12 @@
 #include "MainMenu.h"
 
-MainMenu::MainMenu(const TorpedoVersion& version, int viewport_w, int viewport_h) : viewportWidth(viewport_w), viewportHeight(viewport_h)
+MainMenu::MainMenu(const TorpedoVersion& version, std::map<std::string, int>& options) : viewportWidth(options["ResolutionWidth"]), viewportHeight(options["ResolutionHeight"])
 {
 	versionString = std::string('v' + std::to_string(version.majorVersion) + '.' + std::to_string(version.betaVersion) + '.'
 		+ std::to_string(version.alphaVersion) + version.experimentalVersion);
 	versionString.append(u8" made by Negrut Ákos");
+
+	optionsState = new OptionHandler(options);
 
 	mousePointedData = new float[4];
 	mousePointedData[3] = 0.0f;
@@ -92,11 +94,23 @@ bool MainMenu::Init()
 	connectState->AddInputBox(nullptr); //ip
 	connectState->AddInputBox(nullptr); //port
 	connectState->AddButton(0, 0, u8"Connect");
-	connectState->AddButton(-0.8f, -0.8f, u8"Back");
+	connectState->AddButton(-0.2f, -0.4f, u8"Back");
 	connectState->BuildLayout();
 
-	optionsState->AddDecoratorTexture(0.0f, 0.0f, 0.4f, 0.5f, elementsBg);
-	optionsState->AddButton(-0.8f, -0.8f, u8"Back");
+	optionsState->AddDecoratorTexture(0.0f, 0.0f, 0.7f, 0.6f, elementsBg);
+	optionsState->AddDecoratorString(-0.3f, 0.4f, 0.2f, u8"Video");
+	optionsState->AddDecoratorString(-0.5f, 0.2f, 0.1f, u8"Resolution:");
+	optionsState->AddDecoratorString(-0.5f, 0.0f, 0.1f, u8"Fullscreen:");
+	optionsState->AddDecoratorString(-0.5f,-0.2f, 0.1f, u8"Vsync:");
+	optionsState->AddDecoratorString(0.3f, 0.4f, 0.2f, u8"Audio");
+	optionsState->AddDecoratorString(0.1f, 0.2f, 0.1f, u8"Music:");
+	optionsState->AddDecoratorString(0.1f, 0.0f, 0.1f, u8"Sfx:");
+	optionsState->AddDecoratorTexture(0.0f, 0.0f, 0.01f, 0.5f, logoTexture);
+	optionsState->AddDecoratorTexture(0.4f, 0.15f, 0.2f, 0.01f, logoTexture);
+	optionsState->AddDecoratorTexture(0.4f,-0.05f, 0.2f, 0.01f, logoTexture);
+	optionsState->AddClickableOptions();
+	optionsState->AddButton(-0.4f, -0.4f, u8"Cancel");
+	optionsState->AddButton(0.4f, -0.4f, u8"Apply");
 	optionsState->BuildLayout();
 
 	return true;
@@ -139,7 +153,12 @@ void MainMenu::Render()
 	glBindFramebuffer(GL_FRAMEBUFFER, dirL_frameBuffer);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	pCurrentState->PreProcess();
+	if (pCurrentState == optionsState) {
+		optionsState->PreProcess();
+	}
+	else {
+		pCurrentState->PreProcess();
+	}
 	glReadPixels(mouseX, viewportHeight - mouseY - 1, 1, 1, GL_RGBA, GL_FLOAT, (void*)mousePointedData);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -155,7 +174,12 @@ void MainMenu::Render()
 		pCurrentState->Render(66.0f);
 	}
 	else {
-		pCurrentState->Render(mousePointedData[3]);
+		if (pCurrentState == optionsState) {
+			optionsState->Render(mousePointedData[3]);
+		}
+		else {
+			pCurrentState->Render(mousePointedData[3]);
+		}
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -199,7 +223,6 @@ void MainMenu::MouseMove(SDL_MouseMotionEvent& mouse)
 {
 	mouseX = mouse.x;
 	mouseY = mouse.y;
-
 }
 
 //True-val tér vissza ha be akarjuk zárni a programot magasabb szintrõl
@@ -254,6 +277,18 @@ bool MainMenu::MouseDown(SDL_MouseButtonEvent& mouse)
 		case 100:
 			//Back gomb
 			pCurrentState = initialState;
+			break;
+		case 101:
+			//Apply gomb
+			pCurrentState = initialState;
+			break;
+		case 102:
+			//Bal nyíl
+			optionsState->SwitchResolution(false);
+			break;
+		case 103:
+			//Jobb nyíl
+			optionsState->SwitchResolution(true);
 			break;
 		default:
 			break;

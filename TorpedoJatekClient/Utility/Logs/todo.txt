@@ -6,8 +6,11 @@ Beta után Particleeknek legyen mozgása + transparency/szín változása
 Mix_Position() Positional audiot ujrapróbálni esetleg. Béta+
 std::exit()-ektõl lehetõleg megszabadulni. Beta verziónál.
 std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
-Bétánál külön mappákba rakni a játék/menü frontend és backendet.
-SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE window flagek betánál. SDL_SetRelativeMouseMode()
+SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE(EZ FELVESZI A MOZGÁSZ WINDOWON KIVÜL) window flagek betánál. SDL_SetRelativeMouseMode()(EZT KAMERAFORGÁSNÁL KÉNE KAPCSOLNI KI-BE)
+SDL_WINDOWEVENT_CLOSE kezeli az ablak bezárást(consolet nem)
 
-Options menü
-Menü gombok szebben
+DLL-ek másik mappába legyenek?? EZ NEHÉZ(WIN API KELL) ÉS NEM IS AJÁNLOTT(DLL Hell)
+Megoldani,hogy az opciók változtatást csináljanak
+Opció Resolutionbeolvasásnál jobban lekorlátozni ha teljes képernyõs
+SDL_ShowSimpleMessageBox()-al kezelni az összes error-t,mer nem lesz console majd.
+virtual-al megoldani a polimorfizmust OptionHandlernél

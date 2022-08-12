@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Source/Frontend/Menu/MenuStateHandler.h"
+#include "Source/Frontend/Menu/OptionHandler.h"
 #include "../CommonSource/TorpedoVersion.hpp"
 #include "Utility/gShaderProgram.h"
 #include "Utility/gVertexBuffer.h"
@@ -20,7 +20,7 @@
 class MainMenu
 {
 public:
-	MainMenu(const TorpedoVersion& version, int viewport_w = 800, int viewport_h = 600);
+	MainMenu(const TorpedoVersion& version, std::map<std::string, int>& options);
 	~MainMenu();
 
 	bool Init();
@@ -50,7 +50,7 @@ private:
 	//Menü melyik részében vagyunk
 	MenuStateHandler* initialState = new MenuStateHandler();
 	MenuStateHandler* connectState = new MenuStateHandler();
-	MenuStateHandler* optionsState = new MenuStateHandler();
+	OptionHandler* optionsState = nullptr;
 
 	MenuStateHandler* pCurrentState = initialState; //Jelenlegi menürész
 
@@ -63,13 +63,13 @@ private:
 	Sint32 mouseY; //Egér relatív Y koord
 	gVertexBuffer vb_background; //Háttérnek a modell adat
 	std::array<GLuint, 4> bgTextures = { //Háttér textúrák
-		GLUtils::TextureFromFile("Resources/Textures/MenuBg/bg5.bmp"),
-		GLUtils::TextureFromFile("Resources/Textures/MenuBg/bg4.bmp"),
-		GLUtils::TextureFromFile("Resources/Textures/MenuBg/bg3.bmp"),
-		GLUtils::TextureFromFile("Resources/Textures/MenuBg/bg2.bmp")
+		GLUtils::TextureFromFile("Resources/Textures/Menu/bg5.bmp"),
+		GLUtils::TextureFromFile("Resources/Textures/Menu/bg4.bmp"),
+		GLUtils::TextureFromFile("Resources/Textures/Menu/bg3.bmp"),
+		GLUtils::TextureFromFile("Resources/Textures/Menu/bg2.bmp")
 	};
-	GLuint logoTexture = GLUtils::TextureFromFile("Resources/Textures/top_texture.bmp"); //Játék logó textúrája
-	GLuint elementsBg = GLUtils::TextureFromFile("Resources/Textures/suzanne_texture.bmp"); //Menüelemeket körbefoglaló háttér
+	GLuint logoTexture = GLUtils::TextureFromFile("Resources/Textures/suzanne_texture.bmp"); //Játék logó textúrája
+	GLuint elementsBg = GLUtils::TextureFromFile("Resources/Textures/top_texture.bmp"); //Menüelemeket körbefoglaló háttér
 	std::string versionString; //Verzió szövegesen
 
 	const float bgAnimTime = 4.0f; //Háttér animáció ideje

@@ -140,6 +140,9 @@
     <ClCompile Include="Source\Frontend\Menu\MenuStateHandler.cpp">
       <Filter>Source Files\Frontend\Menu</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Frontend\Menu\OptionHandler.cpp">
+      <Filter>Source Files\Frontend\Menu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TorpedoJatekClient.h">
@@ -235,6 +238,9 @@
     <ClInclude Include="Source\Frontend\Menu\MenuStateHandler.h">
       <Filter>Header Files\Frontend\Menu</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Frontend\Menu\OptionHandler.h">
+      <Filter>Header Files\Frontend\Menu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\dirLight.frag">
@@ -283,6 +289,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\menu.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\options.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\options.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

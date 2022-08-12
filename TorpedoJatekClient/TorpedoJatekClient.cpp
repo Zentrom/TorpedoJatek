@@ -29,6 +29,9 @@ int TorpedoJatekClient::Run()
 	if (Init()) {
 		return 1;
 	}
+	if (ReadOptions()) {
+		return 1;
+	}
 	if (CreateGameWindow()) {
 		return 1;
 	}
@@ -91,7 +94,116 @@ int TorpedoJatekClient::Init()
 		return 1;
 	}
 
+	options["ResolutionWidth"] = widthWindow;
+	options["ResolutionHeight"] = heightWindow;
+	options["Fullscreen"] = fullscreen;
+	options["Vsync"] = enableVsync;
+	options["MusicVolume"] = musicVolume;
+	options["SfxVolume"] = sfxVolume;
+
 	return 0;
+}
+
+//Beolvassa vagy létrehozza a beállításos fájlt
+int TorpedoJatekClient::ReadOptions()
+{
+	std::fstream optionsFile(pathToOptions, std::ios::in);
+	if (!optionsFile.is_open()) {
+		std::cout << "[ReadOptions] Config file missing! Resetting defaults." << std::endl;
+		optionsFile.clear();
+		optionsFile.open(pathToOptions, std::ios::out);
+		for (std::map<std::string, int>::const_iterator iter = options.cbegin(); iter != options.cend(); ++iter) {
+			optionsFile << iter->first << '=' << iter->second << '\n';
+		}
+		optionsFile.close();
+	}
+	else {
+		std::string line;
+		int findIndex = 0;
+		bool corrupted = false;
+		for (std::map<std::string, int>::const_iterator iter = options.cbegin(); iter != options.cend(); ++iter) {
+			std::getline(optionsFile, line);
+			findIndex = line.find(iter->first + '=', 0);
+			if (findIndex == std::string::npos) {
+				corrupted = true;
+				break;
+			}
+		}
+		optionsFile.close();
+		if (corrupted) {
+			std::cout << "[ReadOptions] Config file corrupted! Resetting defaults." << std::endl;
+			optionsFile.open(pathToOptions, std::ios::out|std::ios::trunc);
+			for (std::map<std::string, int>::const_iterator iter = options.cbegin(); iter != options.cend(); ++iter) {
+				optionsFile << iter->first << '=' << iter->second << '\n';
+			}
+			optionsFile.close();
+		}
+		else {
+			optionsFile.open(pathToOptions, std::ios::in);
+			while (std::getline(optionsFile, line)) {
+				findIndex = line.find('=', 0);
+				std::map<std::string, int>::iterator it = options.find(line.substr(0, findIndex));
+
+				if (it != options.end()) {
+					it->second = std::stoi(line.substr(findIndex + 1));
+				}
+
+				//std::cout << line.substr(0, findIndex) << std::endl << "-------" << std::endl;
+				//std::cout << line.substr(findIndex + 1) << std::endl;
+			}
+			optionsFile.close();
+
+			if (!CheckOptionsIntegrity()) {
+				std::cout << "[CheckOptionsIntegrity] Config file corrupted! Fixing with defaults." << std::endl;
+				optionsFile.open(pathToOptions, std::ios::out | std::ios::trunc);
+				for (std::map<std::string, int>::const_iterator iter = options.cbegin(); iter != options.cend(); ++iter) {
+					optionsFile << iter->first << '=' << iter->second << '\n';
+				}
+				optionsFile.close();
+			}
+			//else {
+			//	widthWindow = std::stoi(options["ResolutionWidth"]);
+			//	heightWindow = std::stoi(options["ResolutionHeight"]);
+			//	fullscreen = std::stoi(options["Fullscreen"]);
+			//	enableVsync = std::stoi(options["Vsync"]);
+			//	musicVolume = std::stoi(options["MusicVolume"]);
+			//	sfxVolume = std::stoi(options["SfxVolume"]);
+			//}
+		}
+	}
+
+	return 0;
+}
+
+//Leellenõrzi hogy a beállítások határon belül vannak-e
+bool TorpedoJatekClient::CheckOptionsIntegrity()
+{
+	if (options["ResolutionWidth"] < 0 || options["ResolutionWidth"]>1920) {
+		options["ResolutionWidth"] = widthWindow;
+		return false;
+	}
+	if (options["ResolutionHeight"] < 0 || options["ResolutionHeight"]>1080) {
+		options["ResolutionHeight"] = heightWindow;
+		return false;
+	}
+	if (options["Fullscreen"] != 0 && options["Fullscreen"] != 1) {
+		options["Fullscreen"] = fullscreen;
+		return false;
+	}
+	if (options["Vsync"] != 0 && options["Vsync"] != 1) {
+		options["Vsync"] = enableVsync;
+		return false;
+	}
+	if (options["MusicVolume"] < 0 || options["MusicVolume"] > 128) {
+		options["MusicVolume"] = musicVolume;
+		return false;
+	}
+	if (options["SfxVolume"] < 0 || options["SfxVolume"] > 128) {
+		options["SfxVolume"] = sfxVolume;
+		return false;
+	}
+
+	return true;
 }
 
 //SDL-el lekér egy ablakot a Windowstól
@@ -100,8 +212,9 @@ int TorpedoJatekClient::CreateGameWindow()
 	window_title << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
 		<< "." << clientVersion->alphaVersion << clientVersion->experimentalVersion;
 
+	if (fullscreen) flagsWindow |= SDL_WINDOW_FULLSCREEN;
 	gameWindow = SDL_CreateWindow(window_title.str().c_str(),
-		rightOffset, downOffset, widthWindow, heightWindow, flagsWindow);
+		rightOffset, downOffset, options["ResolutionWidth"], options["ResolutionHeight"], flagsWindow);
 
 	if (gameWindow == nullptr)
 	{
@@ -118,7 +231,7 @@ int TorpedoJatekClient::CreateGameWindow()
 	}
 
 	//VSync
-	SDL_GL_SetSwapInterval(enableVsync);
+	SDL_GL_SetSwapInterval(options["Vsync"]);
 
 	if (glewInit() != GLEW_OK)
 	{
@@ -138,13 +251,77 @@ int TorpedoJatekClient::CreateGameWindow()
 	}
 	sdlEvent = new SDL_Event();
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//SDL_DisplayMode current;
+	//// Get current display mode of all displays.
+	//for (int i = 0; i < SDL_GetNumVideoDisplays(); ++i) {
+	//
+	//	int should_be_zero = SDL_GetCurrentDisplayMode(i, &current);
+	//
+	//	if (should_be_zero != 0)
+	//		// In case of error...
+	//		SDL_Log("Could not get display mode for video display #%d: %s", i, SDL_GetError());
+	//
+	//	else
+	//	{
+	//		// On success, print the current display mode.
+	//		SDL_Log("Display #%d: current display mode is %dx%dpx @ %dhz.", i, current.w, current.h, current.refresh_rate);
+	//		std::cout << "DisplayName: " << SDL_GetDisplayName(i) << std::endl;
+	//		std::cout << "GetNumDisplayModes: " << SDL_GetNumDisplayModes(0) << std::endl; //Ez a fõ monitor a 0
+	//		std::cout << "GetNumVideoDisplays: " << SDL_GetNumVideoDisplays() << std::endl;
+	//	}
+	//}
+	/////
+	//int display_count = 0, display_index = 0, mode_index = 0;
+	//SDL_DisplayMode mode = { SDL_PIXELFORMAT_UNKNOWN, 0, 0, 0, 0 };
+	//
+	//if ((display_count = SDL_GetNumVideoDisplays()) < 1) {
+	//	SDL_Log("SDL_GetNumVideoDisplays returned: %i", display_count);
+	//	return 1;
+	//}
+	//
+	//if (SDL_GetDisplayMode(display_index, mode_index, &mode) != 0) {
+	//	SDL_Log("SDL_GetDisplayMode failed: %s", SDL_GetError());
+	//	return 1;
+	//}
+	//SDL_Log("SDL_GetDisplayMode(0, 0, &mode):\t\t%i bpp\t%i x %i",SDL_BITSPERPIXEL(mode.format), mode.w, mode.h);
+	/////
+	//SDL_DisplayMode vlmi;
+	//if (!SDL_GetWindowDisplayMode(gameWindow, &vlmi)) {
+	//	SDL_Log("SDL_GetWindowDisplayMode: %i bpp\t%i x %i", SDL_BITSPERPIXEL(vlmi.format), vlmi.w, vlmi.h);
+	//}
+	//else {
+	//	std::cout << "SDL_GetWindowDisplayModeERROR: " << SDL_GetError() << std::endl;
+	//}
+	////
+	//for (int i = 0; i < SDL_GetNumDisplayModes(0); ++i) {
+	//	if (SDL_GetDisplayMode(0, i, &mode) != 0) {
+	//		SDL_Log("SDL_GetDisplayMode failed: %s", SDL_GetError());
+	//		return 1;
+	//	}
+	//	SDL_Log("SDL_GetALLDisplayMode(0, i, &mode): %i bpp\t%i x %i - %i HZ", SDL_BITSPERPIXEL(mode.format), mode.w, mode.h, mode.refresh_rate);
+	//}
+	////
+	//int wid = 0; 
+	//int hig = 0;
+	//SDL_GetWindowSize(gameWindow, &wid, &hig);
+	//std::cout << "SDL_GetWindowSize: " << wid << " x " << hig << std::endl;
+
+	//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "title", "message", NULL);
+	//SDL_SetWindowGrab(gameWindow, SDL_TRUE); //focust ad
+
+	//SDL_RaiseWindow(gameWindow); //Raise a window above other windows and set the input focus.
+	//int SDL_SetWindowDisplayMode(SDL_Window * window, const SDL_DisplayMode * mode); //Set the display mode to use when a window is visible at fullscreen.
+	//int SDL_SetWindowFullscreen(SDL_Window * window,Uint32 flags); //Fullscreen state
+	//void SDL_SetWindowSize(SDL_Window * window, int w, int h); //Non-Fullscreen
+
 	return 0;
 }
 
 //Menüt elindítja
 int TorpedoJatekClient::StartMainMenu()
 {
-	mainMenu = new MainMenu(*clientVersion, widthWindow, heightWindow);
+	mainMenu = new MainMenu(*clientVersion, options);
 	if (!mainMenu->Init())
 	{
 		std::cout << "[mainMenu_Init] Main menu inicialization failed!" << std::endl;
@@ -165,7 +342,7 @@ int TorpedoJatekClient::StartMainMenu()
 	while (!quit)
 	{
 		//FPS limiter
-		if (!enableVsync && enableFpsLimit) {
+		if (!options["Vsync"] && enableFpsLimit) {
 			ftime_diff = SDL_GetTicks() - last_render_time;
 
 			if (ftime_diff + frmMod >= frmtime) {
@@ -250,7 +427,7 @@ int TorpedoJatekClient::StartMainMenu()
 //Elindít egy játékmenetet
 int TorpedoJatekClient::StartGameInstance()
 {
-	gameInstance = new GameInstance(widthWindow, heightWindow);
+	gameInstance = new GameInstance(options["ResolutionWidth"], options["ResolutionHeight"]);
 	if (!gameInstance->Init(connectionIP, connectionPort))
 	{
 		std::cout << "[GameInstance_Init] Game instance inicialization failed!" << std::endl;
@@ -271,7 +448,7 @@ int TorpedoJatekClient::StartGameInstance()
 	while (!quit)
 	{
 		//FPS limiter
-		if (!enableVsync && enableFpsLimit) {
+		if (!options["Vsync"] && enableFpsLimit) {
 				ftime_diff = SDL_GetTicks() - last_render_time;
 
 				if (ftime_diff + frmMod >= frmtime) {

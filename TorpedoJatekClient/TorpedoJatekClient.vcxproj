@@ -40,6 +40,7 @@
     <ClCompile Include="Source\Frontend\Game\TextHandler.cpp" />
     <ClCompile Include="Source\Frontend\Menu\MenuRenderer.cpp" />
     <ClCompile Include="Source\Frontend\Menu\MenuStateHandler.cpp" />
+    <ClCompile Include="Source\Frontend\Menu\OptionHandler.cpp" />
     <ClCompile Include="TorpedoJatekClient.cpp" />
     <ClCompile Include="Utility\gCamera.cpp" />
     <ClCompile Include="Utility\GLUtils.cpp" />
@@ -72,6 +73,7 @@
     <ClInclude Include="Source\Frontend\Game\TextHandler.h" />
     <ClInclude Include="Source\Frontend\Menu\MenuRenderer.h" />
     <ClInclude Include="Source\Frontend\Menu\MenuStateHandler.h" />
+    <ClInclude Include="Source\Frontend\Menu\OptionHandler.h" />
     <ClInclude Include="Source\Globals.hpp" />
     <ClInclude Include="TorpedoJatekClient.h" />
     <ClInclude Include="Utility\gCamera.h" />
@@ -88,6 +90,8 @@
     <None Include="Shaders\dirLight.vert" />
     <None Include="Shaders\menu.frag" />
     <None Include="Shaders\menu.vert" />
+    <None Include="Shaders\options.frag" />
+    <None Include="Shaders\options.vert" />
     <None Include="Shaders\projectile.frag" />
     <None Include="Shaders\projectile.vert" />
     <None Include="Shaders\ptOutline.frag" />
@@ -171,6 +175,8 @@
     <LibraryPath>$(ProjectDir)\..\OGLPack\lib\x86;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\Builds\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>VSgenerated\$(Platform)\$(Configuration)\</IntDir>
+    <ReferencePath>$(VC_ReferencesPath_x86);</ReferencePath>
+    <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -178,6 +184,7 @@
     <LibraryPath>$(ProjectDir)\..\OGLPack\lib\x64;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\Builds\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>VSgenerated\$(Platform)\$(Configuration)\</IntDir>
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -185,6 +192,8 @@
     <LibraryPath>$(ProjectDir)\..\OGLPack\lib\x86;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\Builds\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>VSgenerated\$(Platform)\$(Configuration)\</IntDir>
+    <ReferencePath>$(VC_ReferencesPath_x86);</ReferencePath>
+    <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -192,6 +201,7 @@
     <LibraryPath>$(ProjectDir)\..\OGLPack\lib\x64;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\Builds\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>VSgenerated\$(Platform)\$(Configuration)\</IntDir>
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -201,11 +211,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;glew32.lib;glu32.lib;opengl32.lib;SDL2_mixer.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -233,6 +247,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -240,6 +256,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;glew32.lib;glu32.lib;opengl32.lib;SDL2_mixer.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
