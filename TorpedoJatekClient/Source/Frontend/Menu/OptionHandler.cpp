@@ -35,6 +35,10 @@ OptionHandler::OptionHandler(std::map<std::string, int>& options) : optionsRef(o
 	}
 
 	displayModeIndex = std::find(displayModes.begin(), displayModes.end(), std::pair<int, int>(options["ResolutionWidth"], options["ResolutionHeight"]));
+	fullscreen = options["Fullscreen"];
+	vsync = options["Vsync"];
+	musSliderTransX = 0.4f * options["MusicVolume"] / 128.0f;
+	sfxSliderTransX = 0.4f * options["SfxVolume"] / 128.0f;
 
 	//for (std::pair<int, int>& dismode : displayModes) {
 	//	std::cout << dismode.first << " x " << dismode.second << std::endl;
@@ -46,6 +50,9 @@ OptionHandler::~OptionHandler()
 {
 	vb_clickables.Clean();
 	sh_options.Clean();
+
+	glDeleteTextures(1, &checkBoxOffTexture);
+	glDeleteTextures(2, &checkBoxOnTexture);
 }
 
 void OptionHandler::PreProcess()
@@ -69,11 +76,14 @@ void OptionHandler::PreProcess()
 	sh_menu.SetUniform("clickableIndex", pickingIndex++);
 	vb_clickables.Draw(GL_TRIANGLES, 12, 6); //vsync
 	sh_menu.SetUniform("clickableIndex", pickingIndex++);
-	vb_clickables.Draw(GL_TRIANGLES, 18, 6); //audioslider
+	sh_menu.SetUniform("translation", musSliderTransX);
+	vb_clickables.Draw(GL_TRIANGLES, 18, 6); //musicslider
 	sh_menu.SetUniform("clickableIndex", pickingIndex++);
+	sh_menu.SetUniform("translation", sfxSliderTransX);
 	vb_clickables.Draw(GL_TRIANGLES, 24, 6); //audioslider
 	vb_clickables.Off();
 	sh_menu.SetUniform("clickableIndex", preProcessOffset * 3);
+	sh_menu.SetUniform("translation", 0.0f);
 	sh_menu.SetUniform("is_PreProcess", false);
 	sh_menu.Off();
 }
@@ -108,14 +118,24 @@ void OptionHandler::Render(float pointed_element)
 	vb_clickables.Draw(GL_TRIANGLES, 0, 3); //nyil
 	sh_options.SetUniform("clickableIndex", pickingIndex++);
 	vb_clickables.Draw(GL_TRIANGLES, 3, 3); //nyil
+	sh_options.SetUniform("has_Texture", true);
+	if (fullscreen) sh_options.SetTexture("optionTexture", 0, checkBoxOnTexture);
+	else sh_options.SetTexture("optionTexture", 0, checkBoxOffTexture);
 	sh_options.SetUniform("clickableIndex", pickingIndex++);
 	vb_clickables.Draw(GL_TRIANGLES, 6, 6); //fullscreen
-	sh_menu.SetUniform("clickableIndex", pickingIndex++);
-	vb_clickables.Draw(GL_TRIANGLES, 12, 6); //fullscreen
+	if (vsync) sh_options.SetTexture("optionTexture", 0, checkBoxOnTexture);
+	else sh_options.SetTexture("optionTexture", 0, checkBoxOffTexture);
+	sh_options.SetUniform("clickableIndex", pickingIndex++);
+	vb_clickables.Draw(GL_TRIANGLES, 12, 6); //vsync
+	sh_options.SetTexture("optionTexture", 0, checkBoxOffTexture);
+	sh_options.SetUniform("translation", musSliderTransX);
 	sh_options.SetUniform("clickableIndex", pickingIndex++);
 	vb_clickables.Draw(GL_TRIANGLES, 18, 6); //audioslider
+	sh_options.SetUniform("translation", sfxSliderTransX);
 	sh_options.SetUniform("clickableIndex", pickingIndex++);
 	vb_clickables.Draw(GL_TRIANGLES, 24, 6); //audioslider
+	sh_options.SetUniform("has_Texture", false);
+	sh_options.SetUniform("translation", 0.0f);
 	vb_clickables.Off();
 
 	sh_options.Off();
@@ -145,6 +165,9 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 1.0f);
 	//Felbontás - Jobbnyíl
 	vb_clickables.AddData(0, 0, 0.15f);
 	vb_clickables.AddData(0, -0.1f, 0.2f);
@@ -152,6 +175,9 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 1.0f);
 
 	//Fullscreen
 	vb_clickables.AddData(0, -0.2f, 0);
@@ -160,12 +186,18 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 0);
+	vb_clickables.AddData(2, 0, 0);
+	vb_clickables.AddData(2, 0, 1.0f);
 	vb_clickables.AddData(0, -0.2f, 0);
 	vb_clickables.AddData(0, -0.3f,-0.1f);
 	vb_clickables.AddData(0, -0.2f,-0.1f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 0);
+	vb_clickables.AddData(2, 0, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 1.0f);
 
 	//Vsync
 	vb_clickables.AddData(0, -0.2f, -0.2f);
@@ -174,40 +206,58 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 0);
+	vb_clickables.AddData(2, 0, 0);
+	vb_clickables.AddData(2, 0, 1.0f);
 	vb_clickables.AddData(0, -0.2f, -0.2f);
 	vb_clickables.AddData(0, -0.3f, -0.3f);
 	vb_clickables.AddData(0, -0.2f, -0.3f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 0);
+	vb_clickables.AddData(2, 0, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 1.0f);
 
 	//Music Volume
-	vb_clickables.AddData(0, 0.4f, 0.2f);
-	vb_clickables.AddData(0, 0.3f, 0.2f);
-	vb_clickables.AddData(0, 0.3f, 0.1f);
+	vb_clickables.AddData(0, 0.25f, 0.2f);
+	vb_clickables.AddData(0, 0.15f, 0.2f);
+	vb_clickables.AddData(0, 0.15f, 0.1f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
-	vb_clickables.AddData(0, 0.4f, 0.2f);
-	vb_clickables.AddData(0, 0.3f, 0.1f);
-	vb_clickables.AddData(0, 0.4f, 0.1f);
+	vb_clickables.AddData(2, 1.0f, 0);
+	vb_clickables.AddData(2, 0, 0);
+	vb_clickables.AddData(2, 0, 1.0f);
+	vb_clickables.AddData(0, 0.25f, 0.2f);
+	vb_clickables.AddData(0, 0.15f, 0.1f);
+	vb_clickables.AddData(0, 0.25f, 0.1f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 0);
+	vb_clickables.AddData(2, 0, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 1.0f);
 
 	//Sfx volume
-	vb_clickables.AddData(0, 0.4f, 0);
-	vb_clickables.AddData(0, 0.3f, 0);
-	vb_clickables.AddData(0, 0.3f, -0.1f);
+	vb_clickables.AddData(0, 0.25f, 0);
+	vb_clickables.AddData(0, 0.15f, 0);
+	vb_clickables.AddData(0, 0.15f, -0.1f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
-	vb_clickables.AddData(0, 0.4f, 0);
-	vb_clickables.AddData(0, 0.3f, -0.1f);
-	vb_clickables.AddData(0, 0.4f, -0.1f);
+	vb_clickables.AddData(2, 1.0f, 0);
+	vb_clickables.AddData(2, 0, 0);
+	vb_clickables.AddData(2, 0, 1.0f);
+	vb_clickables.AddData(0, 0.25f, 0);
+	vb_clickables.AddData(0, 0.15f, -0.1f);
+	vb_clickables.AddData(0, 0.25f, -0.1f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 0);
+	vb_clickables.AddData(2, 0, 1.0f);
+	vb_clickables.AddData(2, 1.0f, 1.0f);
 
 	vb_clickables.InitBuffers();
 }
@@ -229,4 +279,86 @@ void OptionHandler::SwitchResolution(bool forward)
 		}
 		else --displayModeIndex;
 	}
+}
+
+void OptionHandler::SwitchFullscreen()
+{
+	fullscreen = !fullscreen;
+}
+
+void OptionHandler::SwitchVsync()
+{
+	vsync = !vsync;
+}
+
+void OptionHandler::HandleSlider(float pointed, Sint32 mouse_x)
+{
+	int width = optionsRef["ResolutionWidth"];
+	float startPos = (width / 20.0f) * 12.0f;
+	float endPos = (width / 20.0f) * 16.0f;
+	float calcValue = (static_cast<float>(mouse_x) - startPos) / (width / 2.0f);
+
+	if (calcValue > 0 && mouse_x < endPos) {
+		if (pointed == 106) musSliderTransX = calcValue;
+		else if (pointed == 107) sfxSliderTransX = calcValue;
+	}
+	else if (calcValue < 0) {
+		if (pointed == 106) musSliderTransX = 0.0f;
+		else if (pointed == 107) sfxSliderTransX = 0.0f;
+	}
+	else if (mouse_x > endPos) {
+		if (pointed == 106) musSliderTransX = 0.4f;
+		else if (pointed == 107) sfxSliderTransX = 0.4f;
+	}
+}
+
+void OptionHandler::UpdateVolume()
+{
+	Mix_VolumeMusic(static_cast<int>((musSliderTransX * 128) / 0.4f));
+	Mix_Volume(-1, static_cast<int>((sfxSliderTransX * 128) / 0.4f));
+}
+
+void OptionHandler::ApplySettings(SDL_Window* window)
+{
+	if (!fullscreen) {
+		SDL_SetWindowFullscreen(window, 0);
+		SDL_SetWindowSize(window, displayModeIndex->first, displayModeIndex->second);
+	}
+	else {
+		SDL_DisplayMode target = {0, displayModeIndex->first, displayModeIndex->second, 0, 0};
+		SDL_DisplayMode closest;
+		SDL_GetClosestDisplayMode(0, &target, &closest);
+		//std::cout << SDL_BITSPERPIXEL(closest.format) << "bpp " << closest.w << 'x' << closest.h << ' ' << closest.refresh_rate << "Hz" << std::endl;
+
+		SDL_SetWindowDisplayMode(window, &closest);
+		SDL_SetWindowSize(window, closest.w, closest.h); //EZ BUGOS AZ SDL-be|Megkell hívni most Fullscreennél is
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	}
+
+	SDL_GL_SetSwapInterval(vsync);
+
+	optionsRef["ResolutionWidth"] = displayModeIndex->first;
+	optionsRef["ResolutionHeight"] = displayModeIndex->second;
+	optionsRef["Fullscreen"] = fullscreen;
+	optionsRef["Vsync"] = vsync;
+	optionsRef["MusicVolume"] = Mix_VolumeMusic(-1);
+	optionsRef["SfxVolume"] = Mix_Volume(1, -1);
+
+	std::fstream optionsFile("Resources/options.cfg", std::ios::out);
+	for (std::map<std::string, int>::const_iterator iter = optionsRef.cbegin(); iter != optionsRef.cend(); ++iter) {
+	optionsFile << iter->first << '=' << iter->second << '\n';
+	}
+	optionsFile.close();
+}
+
+void OptionHandler::CancelSettings()
+{
+	displayModeIndex = std::find(displayModes.begin(), displayModes.end(), std::pair<int, int>(optionsRef["ResolutionWidth"], optionsRef["ResolutionHeight"]));
+	decoratorTextures.back() = menuRenderer->RenderTextShaded(std::string(std::to_string(displayModeIndex->first) + 'x' + std::to_string(displayModeIndex->second)).c_str());
+
+	fullscreen = optionsRef["Fullscreen"];
+	vsync = optionsRef["Vsync"];
+	musSliderTransX = 0.4f * optionsRef["MusicVolume"] / 128.0f;
+	sfxSliderTransX = 0.4f * optionsRef["SfxVolume"] / 128.0f;
+	UpdateVolume();
 }

@@ -395,7 +395,7 @@ int TorpedoJatekClient::StartMainMenu()
 				mainMenu->KeyboardUp(sdlEvent->key);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				if (mainMenu->MouseDown(sdlEvent->button))
+				if (mainMenu->MouseDown(sdlEvent->button, gameWindow))
 				{
 					quit = true;
 					return 1;

@@ -10,7 +10,6 @@ SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE(EZ FELVESZI A MOZGÁSZ WINDOWO
 SDL_WINDOWEVENT_CLOSE kezeli az ablak bezárást(consolet nem)
 
 DLL-ek másik mappába legyenek?? EZ NEHÉZ(WIN API KELL) ÉS NEM IS AJÁNLOTT(DLL Hell)
-Megoldani,hogy az opciók változtatást csináljanak
 Opció Resolutionbeolvasásnál jobban lekorlátozni ha teljes képernyõs
 SDL_ShowSimpleMessageBox()-al kezelni az összes error-t,mer nem lesz console majd.
 virtual-al megoldani a polimorfizmust OptionHandlernél

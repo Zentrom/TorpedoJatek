@@ -6,6 +6,8 @@ MainMenu::MainMenu(const TorpedoVersion& version, std::map<std::string, int>& op
 		+ std::to_string(version.alphaVersion) + version.experimentalVersion);
 	versionString.append(u8" made by Negrut Ákos");
 
+	Mix_VolumeMusic(options["MusicVolume"]);
+	Mix_Volume(-1, options["SfxVolume"]);
 	optionsState = new OptionHandler(options);
 
 	mousePointedData = new float[4];
@@ -24,6 +26,9 @@ MainMenu::~MainMenu()
 
 	vb_fbo.Clean();
 	sh_default.Clean();
+
+	Mix_FreeMusic(menuMusic);
+	Mix_FreeChunk(clickSound);
 
 	for (GLuint& texture : bgTextures) {
 		glDeleteTextures(1, &texture);
@@ -109,9 +114,19 @@ bool MainMenu::Init()
 	optionsState->AddDecoratorTexture(0.4f, 0.15f, 0.2f, 0.01f, logoTexture);
 	optionsState->AddDecoratorTexture(0.4f,-0.05f, 0.2f, 0.01f, logoTexture);
 	optionsState->AddClickableOptions();
-	optionsState->AddButton(-0.4f, -0.4f, u8"Cancel");
+	optionsState->AddButton(-0.4f, -0.4f, u8"Back");
 	optionsState->AddButton(0.4f, -0.4f, u8"Apply");
 	optionsState->BuildLayout();
+
+	menuMusic = Mix_LoadMUS("Resources/Audio/menuMusic.ogg");
+	if (!menuMusic) {
+		printf("Mix_LoadMUS(\"menuMusic.ogg\"): %s\n", Mix_GetError());
+	}
+	clickSound = Mix_LoadWAV("Resources/Audio/menuClick.wav");
+	if (!clickSound) {
+		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
+	}
+	Mix_PlayMusic(menuMusic, 10);
 
 	return true;
 }
@@ -223,11 +238,20 @@ void MainMenu::MouseMove(SDL_MouseMotionEvent& mouse)
 {
 	mouseX = mouse.x;
 	mouseY = mouse.y;
+
+	if (pCurrentState == optionsState) {
+		if (mouse.state == SDL_BUTTON_LMASK 
+			&& (mousePointedData[3] == 106 || mousePointedData[3] == 107)) {
+			optionsState->HandleSlider(mousePointedData[3], mouseX);
+		}
+	}
 }
 
 //True-val tér vissza ha be akarjuk zárni a programot magasabb szintrõl
-bool MainMenu::MouseDown(SDL_MouseButtonEvent& mouse)
+bool MainMenu::MouseDown(SDL_MouseButtonEvent& mouse, SDL_Window* window)
 {
+	//std::cout << mouseX << " " << mouseY << std::endl;
+
 	if (pCurrentState == initialState) {
 		if (mousePointedData[3] == 100) {
 			pCurrentState = connectState;
@@ -276,11 +300,12 @@ bool MainMenu::MouseDown(SDL_MouseButtonEvent& mouse)
 		{
 		case 100:
 			//Back gomb
+			optionsState->CancelSettings();
 			pCurrentState = initialState;
 			break;
 		case 101:
 			//Apply gomb
-			pCurrentState = initialState;
+			optionsState->ApplySettings(window);
 			break;
 		case 102:
 			//Bal nyíl
@@ -289,6 +314,14 @@ bool MainMenu::MouseDown(SDL_MouseButtonEvent& mouse)
 		case 103:
 			//Jobb nyíl
 			optionsState->SwitchResolution(true);
+			break;
+		case 104:
+			//Fullscreen
+			optionsState->SwitchFullscreen();
+			break;
+		case 105:
+			//Vsync
+			optionsState->SwitchVsync();
 			break;
 		default:
 			break;
@@ -299,6 +332,11 @@ bool MainMenu::MouseDown(SDL_MouseButtonEvent& mouse)
 
 void MainMenu::MouseUp(SDL_MouseButtonEvent& mouse)
 {
+	Mix_PlayChannel(1, clickSound, 0);
+
+	if (pCurrentState == optionsState) {
+		optionsState->UpdateVolume();
+	}
 }
 
 void MainMenu::MouseWheel(SDL_MouseWheelEvent& wheel)
