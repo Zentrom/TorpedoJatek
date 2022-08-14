@@ -1,7 +1,4 @@
-v0.0.7c-Options Menu
+v0.0.7d-Nemtom
 -----------------------------------------------------------------------------------------
--Created working Options Menu which saves options in a .cfg file.
--Missing or corrupted .cfg file creates a new one with default options.
--Added Menu music and clicking sound.
--Made menu Buttons look better.
--The game window is not resizeable anymore by window dragging.
+-Added the missing Menu images.
+-

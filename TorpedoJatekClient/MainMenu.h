@@ -5,6 +5,7 @@
 #include "Utility/gShaderProgram.h"
 #include "Utility/gVertexBuffer.h"
 #include "Utility/GLUtils.h"
+#include "Source/Globals.hpp"
 
 #include <GL/glew.h>
 #include <SDL.h>
@@ -26,13 +27,13 @@ public:
 
 	bool Init();
 
-	bool Update();
+	void Update();
 	void Render();
 
 	void KeyboardDown(SDL_KeyboardEvent& key);
 	void KeyboardUp(SDL_KeyboardEvent& key);
 	void MouseMove(SDL_MouseMotionEvent& mouse);
-	bool MouseDown(SDL_MouseButtonEvent& mouse, SDL_Window* window);
+	MenuSignal MouseDown(SDL_MouseButtonEvent& mouse, SDL_Window* window);
 	void MouseUp(SDL_MouseButtonEvent& mouse);
 	void MouseWheel(SDL_MouseWheelEvent& wheel);
 	void Resize(int width, int height);
@@ -71,8 +72,9 @@ private:
 		GLUtils::TextureFromFile("Resources/Textures/Menu/bg3.bmp"),
 		GLUtils::TextureFromFile("Resources/Textures/Menu/bg2.bmp")
 	};
-	GLuint logoTexture = GLUtils::TextureFromFile("Resources/Textures/suzanne_texture.bmp"); //Játék logó textúrája
-	GLuint elementsBg = GLUtils::TextureFromFile("Resources/Textures/top_texture.bmp"); //Menüelemeket körbefoglaló háttér
+	GLuint logoTexture = GLUtils::TextureFromFile("Resources/Textures/Menu/logo.bmp"); //Játék logó textúrája
+	GLuint elementsBg = GLUtils::TextureFromFile("Resources/Textures/Menu/elementsBg.bmp"); //Menüelemeket körbefoglaló háttér
+	GLuint menuRail = GLUtils::TextureFromFile("Resources/Textures/Menu/rail.bmp");
 	std::string versionString; //Verzió szövegesen
 
 	const float bgAnimTime = 4.0f; //Háttér animáció ideje
@@ -89,7 +91,8 @@ private:
 
 	std::string connectIP; //IPhez gyûjtõ
 	std::string connectPort; //Porthoz gyûjtõ
-	bool connectSignal = false; //Connect gombot megnyomtuk-e
+	//bool connectSignal = false; //Connect gombot megnyomtuk-e
+	//bool debugSignal = false; //Debug gombot megnyomtuk-e
 
 	int viewportWidth; //Ablak canvaszának szélessége
 	int viewportHeight; //Ablak canvaszának magassága

@@ -20,3 +20,11 @@ enum GameState {
 	CHECKING_VICTORY_CONDITION,
 	MATCH_ENDING,
 };
+
+//Menü milyen signalt küld a kezelõ osztálynak
+enum MenuSignal {
+	CONTINUE = 1,
+	CONNECT,
+	DEBUG,
+	QUIT,
+};

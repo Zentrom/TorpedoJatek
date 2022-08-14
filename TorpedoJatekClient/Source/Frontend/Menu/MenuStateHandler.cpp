@@ -90,10 +90,10 @@ void MenuStateHandler::AddDecoratorTexture(float ndc_x, float ndc_y, float size_
 }
 
 //Nem clickelhetõ szöveget helyez el a menübe
-void MenuStateHandler::AddDecoratorString(float ndc_x, float ndc_y, float size_x, const char* text)
+void MenuStateHandler::AddDecoratorString(float ndc_x, float ndc_y, float size_x, const char* text, float up_y)
 {
-	vb_decorator.AddData(0, ndc_x + (1.0f * size_x), ndc_y);
-	vb_decorator.AddData(0, ndc_x - (1.0f * size_x), ndc_y);
+	vb_decorator.AddData(0, ndc_x + (1.0f * size_x), ndc_y + up_y);
+	vb_decorator.AddData(0, ndc_x - (1.0f * size_x), ndc_y + up_y);
 	vb_decorator.AddData(0, ndc_x - (1.0f * size_x), ndc_y - 0.1f);
 	vb_decorator.AddData(0, ndc_x + (1.0f * size_x), ndc_y - 0.1f);
 	vb_decorator.AddData(2, 1, 0);

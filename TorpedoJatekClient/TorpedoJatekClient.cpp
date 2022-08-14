@@ -212,7 +212,7 @@ int TorpedoJatekClient::CreateGameWindow()
 	window_title << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
 		<< "." << clientVersion->alphaVersion << clientVersion->experimentalVersion;
 
-	if (fullscreen) flagsWindow |= SDL_WINDOW_FULLSCREEN;
+	if (options["Fullscreen"]) flagsWindow |= SDL_WINDOW_FULLSCREEN;
 	gameWindow = SDL_CreateWindow(window_title.str().c_str(),
 		rightOffset, downOffset, options["ResolutionWidth"], options["ResolutionHeight"], flagsWindow);
 
@@ -250,70 +250,6 @@ int TorpedoJatekClient::CreateGameWindow()
 		return 1;
 	}
 	sdlEvent = new SDL_Event();
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//SDL_DisplayMode current;
-	//// Get current display mode of all displays.
-	//for (int i = 0; i < SDL_GetNumVideoDisplays(); ++i) {
-	//
-	//	int should_be_zero = SDL_GetCurrentDisplayMode(i, &current);
-	//
-	//	if (should_be_zero != 0)
-	//		// In case of error...
-	//		SDL_Log("Could not get display mode for video display #%d: %s", i, SDL_GetError());
-	//
-	//	else
-	//	{
-	//		// On success, print the current display mode.
-	//		SDL_Log("Display #%d: current display mode is %dx%dpx @ %dhz.", i, current.w, current.h, current.refresh_rate);
-	//		std::cout << "DisplayName: " << SDL_GetDisplayName(i) << std::endl;
-	//		std::cout << "GetNumDisplayModes: " << SDL_GetNumDisplayModes(0) << std::endl; //Ez a fõ monitor a 0
-	//		std::cout << "GetNumVideoDisplays: " << SDL_GetNumVideoDisplays() << std::endl;
-	//	}
-	//}
-	/////
-	//int display_count = 0, display_index = 0, mode_index = 0;
-	//SDL_DisplayMode mode = { SDL_PIXELFORMAT_UNKNOWN, 0, 0, 0, 0 };
-	//
-	//if ((display_count = SDL_GetNumVideoDisplays()) < 1) {
-	//	SDL_Log("SDL_GetNumVideoDisplays returned: %i", display_count);
-	//	return 1;
-	//}
-	//
-	//if (SDL_GetDisplayMode(display_index, mode_index, &mode) != 0) {
-	//	SDL_Log("SDL_GetDisplayMode failed: %s", SDL_GetError());
-	//	return 1;
-	//}
-	//SDL_Log("SDL_GetDisplayMode(0, 0, &mode):\t\t%i bpp\t%i x %i",SDL_BITSPERPIXEL(mode.format), mode.w, mode.h);
-	/////
-	//SDL_DisplayMode vlmi;
-	//if (!SDL_GetWindowDisplayMode(gameWindow, &vlmi)) {
-	//	SDL_Log("SDL_GetWindowDisplayMode: %i bpp\t%i x %i", SDL_BITSPERPIXEL(vlmi.format), vlmi.w, vlmi.h);
-	//}
-	//else {
-	//	std::cout << "SDL_GetWindowDisplayModeERROR: " << SDL_GetError() << std::endl;
-	//}
-	////
-	//for (int i = 0; i < SDL_GetNumDisplayModes(0); ++i) {
-	//	if (SDL_GetDisplayMode(0, i, &mode) != 0) {
-	//		SDL_Log("SDL_GetDisplayMode failed: %s", SDL_GetError());
-	//		return 1;
-	//	}
-	//	SDL_Log("SDL_GetALLDisplayMode(0, i, &mode): %i bpp\t%i x %i - %i HZ", SDL_BITSPERPIXEL(mode.format), mode.w, mode.h, mode.refresh_rate);
-	//}
-	////
-	//int wid = 0; 
-	//int hig = 0;
-	//SDL_GetWindowSize(gameWindow, &wid, &hig);
-	//std::cout << "SDL_GetWindowSize: " << wid << " x " << hig << std::endl;
-
-	//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "title", "message", NULL);
-	//SDL_SetWindowGrab(gameWindow, SDL_TRUE); //focust ad
-
-	//SDL_RaiseWindow(gameWindow); //Raise a window above other windows and set the input focus.
-	//int SDL_SetWindowDisplayMode(SDL_Window * window, const SDL_DisplayMode * mode); //Set the display mode to use when a window is visible at fullscreen.
-	//int SDL_SetWindowFullscreen(SDL_Window * window,Uint32 flags); //Fullscreen state
-	//void SDL_SetWindowSize(SDL_Window * window, int w, int h); //Non-Fullscreen
 
 	return 0;
 }
@@ -355,11 +291,7 @@ int TorpedoJatekClient::StartMainMenu()
 			}
 		}
 		else {
-			if (mainMenu->Update()) {
-				connectionIP = mainMenu->getIP();
-				connectionPort = mainMenu->getPort();
-				quit = true;
-			}
+			mainMenu->Update();
 			mainMenu->Render();
 			SDL_GL_SwapWindow(gameWindow);
 			++frame_count;
@@ -395,8 +327,18 @@ int TorpedoJatekClient::StartMainMenu()
 				mainMenu->KeyboardUp(sdlEvent->key);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				if (mainMenu->MouseDown(sdlEvent->button, gameWindow))
-				{
+				switch (mainMenu->MouseDown(sdlEvent->button, gameWindow)) {
+				case MenuSignal::CONTINUE:
+					break;
+				case MenuSignal::CONNECT:
+					connectionIP = mainMenu->getIP();
+					connectionPort = mainMenu->getPort();
+					quit = true;
+					break;
+				case MenuSignal::DEBUG:
+					quit = true;
+					break;
+				case MenuSignal::QUIT:
 					quit = true;
 					return 1;
 				}

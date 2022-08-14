@@ -30,6 +30,9 @@ MainMenu::~MainMenu()
 	Mix_FreeMusic(menuMusic);
 	Mix_FreeChunk(clickSound);
 
+	glDeleteTextures(1, &logoTexture);
+	glDeleteTextures(1, &elementsBg);
+	glDeleteTextures(1, &menuRail);
 	for (GLuint& texture : bgTextures) {
 		glDeleteTextures(1, &texture);
 	}
@@ -90,29 +93,31 @@ bool MainMenu::Init()
 	initialState->AddDecoratorTexture(0.0f, 0.7f, 0.6f, 0.2f, logoTexture);
 	initialState->AddDecoratorString(0.5f, -0.8f, 0.4f, versionString.c_str());
 	initialState->AddButton(0, 0, u8"Play");
+	initialState->AddButton(0, 0, u8"Debug");
 	initialState->AddButton(0, 0, u8"Options");
 	initialState->AddButton(0, 0, u8"Quit");
 	initialState->BuildLayout();
 
+	connectState->AddDecoratorTexture(0.0f, 0.1f, 0.6f, 0.4f, elementsBg);
 	connectState->AddDecoratorString(-0.4f, 0.4f, 0.1f, u8"IP:");
 	connectState->AddDecoratorString(-0.4f, 0.2f, 0.1f, u8"Port:");
 	connectState->AddInputBox(nullptr); //ip
 	connectState->AddInputBox(nullptr); //port
-	connectState->AddButton(0, 0, u8"Connect");
-	connectState->AddButton(-0.2f, -0.4f, u8"Back");
+	connectState->AddButton(0.3f, 0.01f, u8"Connect");
+	connectState->AddButton(-0.3f, 0.01f, u8"Back");
 	connectState->BuildLayout();
 
 	optionsState->AddDecoratorTexture(0.0f, 0.0f, 0.7f, 0.6f, elementsBg);
-	optionsState->AddDecoratorString(-0.3f, 0.4f, 0.2f, u8"Video");
+	optionsState->AddDecoratorString(-0.3f, 0.4f, 0.2f, u8"Video", 0.1f);
 	optionsState->AddDecoratorString(-0.5f, 0.2f, 0.1f, u8"Resolution:");
 	optionsState->AddDecoratorString(-0.5f, 0.0f, 0.1f, u8"Fullscreen:");
 	optionsState->AddDecoratorString(-0.5f,-0.2f, 0.1f, u8"Vsync:");
-	optionsState->AddDecoratorString(0.3f, 0.4f, 0.2f, u8"Audio");
-	optionsState->AddDecoratorString(0.1f, 0.2f, 0.1f, u8"Music:");
-	optionsState->AddDecoratorString(0.1f, 0.0f, 0.1f, u8"Sfx:");
-	optionsState->AddDecoratorTexture(0.0f, 0.0f, 0.01f, 0.5f, logoTexture);
-	optionsState->AddDecoratorTexture(0.4f, 0.15f, 0.2f, 0.01f, logoTexture);
-	optionsState->AddDecoratorTexture(0.4f,-0.05f, 0.2f, 0.01f, logoTexture);
+	optionsState->AddDecoratorString(0.3f, 0.4f, 0.2f, u8"Audio", 0.1f);
+	optionsState->AddDecoratorString(0.1f, 0.2f, 0.08f, u8"Music:");
+	optionsState->AddDecoratorString(0.1f, 0.0f, 0.08f, u8"Sfx:");
+	optionsState->AddDecoratorTexture(0.0f, 0.0f, 0.01f, 0.5f, menuRail);
+	optionsState->AddDecoratorTexture(0.4f, 0.15f, 0.2f, 0.01f, menuRail);
+	optionsState->AddDecoratorTexture(0.4f,-0.05f, 0.2f, 0.01f, menuRail);
 	optionsState->AddClickableOptions();
 	optionsState->AddButton(-0.4f, -0.4f, u8"Back");
 	optionsState->AddButton(0.4f, -0.4f, u8"Apply");
@@ -132,7 +137,7 @@ bool MainMenu::Init()
 }
 
 //Ha true akkor csatlakozást jelzünk
-bool MainMenu::Update()
+void MainMenu::Update()
 {
 	static Uint32 lastTime = SDL_GetTicks();
 	float deltaTime = (SDL_GetTicks() - lastTime) / 1000.0f;
@@ -155,11 +160,6 @@ bool MainMenu::Update()
 		}
 		bgAnimElapsed = 0.0f;
 	}
-
-	if (connectSignal) {
-		return true;
-	}
-	return false;
 }
 
 //Rajzolási hívás
@@ -248,20 +248,26 @@ void MainMenu::MouseMove(SDL_MouseMotionEvent& mouse)
 }
 
 //True-val tér vissza ha be akarjuk zárni a programot magasabb szintrõl
-bool MainMenu::MouseDown(SDL_MouseButtonEvent& mouse, SDL_Window* window)
+MenuSignal MainMenu::MouseDown(SDL_MouseButtonEvent& mouse, SDL_Window* window)
 {
 	//std::cout << mouseX << " " << mouseY << std::endl;
 
 	if (pCurrentState == initialState) {
 		if (mousePointedData[3] == 100) {
+			//Play
 			pCurrentState = connectState;
 		}
 		else if (mousePointedData[3] == 101) {
+			//Debug
+			return MenuSignal::DEBUG;
+		}
+		else if (mousePointedData[3] == 102) {
+			//Options
 			pCurrentState = optionsState;
 		}
-		else if(mousePointedData[3] == 102)
-		{
-			return true;
+		else if(mousePointedData[3] == 103) {
+			//Quit
+			return MenuSignal::QUIT;
 		}
 	}
 	else if (pCurrentState == connectState) {
@@ -284,12 +290,12 @@ bool MainMenu::MouseDown(SDL_MouseButtonEvent& mouse, SDL_Window* window)
 				ipAndPort = connectState->getInputStrings(2);
 				connectIP = ipAndPort.at(0);
 				connectPort = ipAndPort.at(1);
-				connectSignal = true;
-				break;
+				return MenuSignal::CONNECT;
 			case 103:
 				//Back gomb
 				//connectState->Clean();
 				pCurrentState = initialState;
+				break;
 			default:
 				break;
 			}
@@ -327,7 +333,7 @@ bool MainMenu::MouseDown(SDL_MouseButtonEvent& mouse, SDL_Window* window)
 			break;
 		}
 	}
-	return false;
+	return MenuSignal::CONTINUE;
 }
 
 void MainMenu::MouseUp(SDL_MouseButtonEvent& mouse)

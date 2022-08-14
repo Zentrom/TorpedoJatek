@@ -160,7 +160,7 @@ void OptionHandler::AddClickableOptions()
 
 	//Felbontás - Balnyíl
 	vb_clickables.AddData(0, -0.3f, 0.2f);
-	vb_clickables.AddData(0, -0.4f, 0.15f);
+	vb_clickables.AddData(0, -0.35f, 0.15f);
 	vb_clickables.AddData(0, -0.3f, 0.1f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
@@ -169,7 +169,7 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(2, 1.0f, 1.0f);
 	vb_clickables.AddData(2, 1.0f, 1.0f);
 	//Felbontás - Jobbnyíl
-	vb_clickables.AddData(0, 0, 0.15f);
+	vb_clickables.AddData(0, -0.05f, 0.15f);
 	vb_clickables.AddData(0, -0.1f, 0.2f);
 	vb_clickables.AddData(0, -0.1f, 0.1f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
@@ -220,18 +220,18 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(2, 1.0f, 1.0f);
 
 	//Music Volume
-	vb_clickables.AddData(0, 0.25f, 0.2f);
-	vb_clickables.AddData(0, 0.15f, 0.2f);
-	vb_clickables.AddData(0, 0.15f, 0.1f);
+	vb_clickables.AddData(0, 0.23f, 0.18f);
+	vb_clickables.AddData(0, 0.17f, 0.18f);
+	vb_clickables.AddData(0, 0.17f, 0.12f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(2, 1.0f, 0);
 	vb_clickables.AddData(2, 0, 0);
 	vb_clickables.AddData(2, 0, 1.0f);
-	vb_clickables.AddData(0, 0.25f, 0.2f);
-	vb_clickables.AddData(0, 0.15f, 0.1f);
-	vb_clickables.AddData(0, 0.25f, 0.1f);
+	vb_clickables.AddData(0, 0.23f, 0.18f);
+	vb_clickables.AddData(0, 0.17f, 0.12f);
+	vb_clickables.AddData(0, 0.23f, 0.12f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
@@ -240,18 +240,18 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(2, 1.0f, 1.0f);
 
 	//Sfx volume
-	vb_clickables.AddData(0, 0.25f, 0);
-	vb_clickables.AddData(0, 0.15f, 0);
-	vb_clickables.AddData(0, 0.15f, -0.1f);
+	vb_clickables.AddData(0, 0.23f, -0.02f);
+	vb_clickables.AddData(0, 0.17f, -0.02f);
+	vb_clickables.AddData(0, 0.17f, -0.08f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(2, 1.0f, 0);
 	vb_clickables.AddData(2, 0, 0);
 	vb_clickables.AddData(2, 0, 1.0f);
-	vb_clickables.AddData(0, 0.25f, 0);
-	vb_clickables.AddData(0, 0.15f, -0.1f);
-	vb_clickables.AddData(0, 0.25f, -0.1f);
+	vb_clickables.AddData(0, 0.23f, -0.02f);
+	vb_clickables.AddData(0, 0.17f, -0.08f);
+	vb_clickables.AddData(0, 0.23f, -0.08f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_clickables.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);

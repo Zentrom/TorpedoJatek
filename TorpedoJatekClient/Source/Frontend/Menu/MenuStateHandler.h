@@ -20,7 +20,7 @@ public:
 	void Render(float pointed_element);
 
 	void AddDecoratorTexture(float ndc_x, float ndc_y, float size_x, float size_y, GLuint texture);
-	void AddDecoratorString(float ndc_x, float ndc_y, float size_x, const char* text);
+	void AddDecoratorString(float ndc_x, float ndc_y, float size_x, const char* text, float up_y = 0.0f);
 	void AddButton(float ndc_x, float ndc_y, const char* name);
 	void AddInputBox(const char* name);
 	void BuildLayout();
