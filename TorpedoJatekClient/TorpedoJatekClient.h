@@ -47,8 +47,8 @@ private:
 
 	const int rightOffset = 10; //Ablak Jobbra mozgazás
 	const int downOffset = 30; //Ablak le mozgatás
-	const int widthWindow = 640; //ablak szélesség - DEFAULT érték
-	const int heightWindow = 480; //ablak magasság - DEFAULT érték
+	const int widthWindow = 800; //ablak szélesség - DEFAULT érték
+	const int heightWindow = 600; //ablak magasság - DEFAULT érték
 	const int fullscreen = 0; //Teljes képernyõ - DEFAULT érték
 	const int musicVolume = 128; //Zene hangerõ - DEFAULT érték
 	const int sfxVolume = 128; //Hangok hangerõ - DEFAULT érték

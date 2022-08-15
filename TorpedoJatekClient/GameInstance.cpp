@@ -245,7 +245,7 @@ void GameInstance::Render()
 	vb_fbo.Off();
 	sh_default.Off();
 
-	textHandler->Render();
+	if(showText) textHandler->Render();
 
 }
 
@@ -269,6 +269,10 @@ bool GameInstance::KeyboardDown(SDL_KeyboardEvent& key)
 	//Hang némítása
 	if (key.keysym.sym == SDLK_m) {
 		eventHandler->SwitchVolume();
+	}
+	//Szöveg megjelenítés
+	if (key.keysym.sym == SDLK_t) {
+		showText = !showText;
 	}
 	//Kiválasztjuk hogy mekkora hajót készülünk lerakni
 	if (gameState == GameState::SHIP_SIZE_INPUT) {
@@ -339,6 +343,11 @@ void GameInstance::MouseMove(SDL_MouseMotionEvent& mouse)
 
 void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 {
+	if (mouse.button == SDL_BUTTON_RIGHT) {
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+		beforeRotationX = mouse.x;
+		beforeRotationY = mouse.y;
+	}
 	if (mouse.button == SDL_BUTTON_LEFT) {
 		//Hajót teszünk mi le
 		if (gameState == GameState::PLACING_SHIP) {
@@ -375,8 +384,12 @@ void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 	}
 }
 
-void GameInstance::MouseUp(SDL_MouseButtonEvent& mouse)
+void GameInstance::MouseUp(SDL_MouseButtonEvent& mouse,SDL_Window* window)
 {
+	if (mouse.button == SDL_BUTTON_RIGHT) {
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+		SDL_WarpMouseInWindow(window, beforeRotationX, beforeRotationY);
+	}
 }
 
 void GameInstance::MouseWheel(SDL_MouseWheelEvent& wheel)

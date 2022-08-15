@@ -1,15 +1,11 @@
 Mountaint dispacement mappinggel vagy valami profibb módon.
 Megoldani egy tényleges visszakapcsolódást a serverre,lementett állapottal, 60sec timeout.
-
 Particle - Cylindrical Billboaring -> Spherical
 Beta után Particleeknek legyen mozgása + transparency/szín változása
 Mix_Position() Positional audiot ujrapróbálni esetleg. Béta+
+
 std::exit()-ektõl lehetõleg megszabadulni. Beta verziónál.
 std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
-SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE(EZ FELVESZI A MOZGÁSZ WINDOWON KIVÜL) window flagek betánál. SDL_SetRelativeMouseMode()(EZT KAMERAFORGÁSNÁL KÉNE KAPCSOLNI KI-BE)
-SDL_WINDOWEVENT_CLOSE kezeli az ablak bezárást(consolet nem)
 
-DLL-ek másik mappába legyenek?? EZ NEHÉZ(WIN API KELL) ÉS NEM IS AJÁNLOTT(DLL Hell)
-Opció Resolutionbeolvasásnál jobban lekorlátozni ha teljes képernyõs
 SDL_ShowSimpleMessageBox()-al kezelni az összes error-t,mer nem lesz console majd.
 virtual-al megoldani a polimorfizmust OptionHandlernél

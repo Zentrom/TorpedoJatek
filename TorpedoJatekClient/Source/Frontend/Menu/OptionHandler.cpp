@@ -156,7 +156,7 @@ void OptionHandler::AddClickableOptions()
 	vb_decorator.AddIndex(0 + indexCount, 1 + indexCount, 2 + indexCount);
 	vb_decorator.AddIndex(0 + indexCount, 2 + indexCount, 3 + indexCount);
 	std::string resolution = std::string(std::to_string(optionsRef["ResolutionWidth"]) + " x " + std::to_string(optionsRef["ResolutionHeight"]));
-	decoratorTextures.push_back(menuRenderer->RenderTextShaded(resolution.c_str()));
+	decoratorTextures.push_back(menuRenderer->RenderTextSolid(resolution.c_str()));
 
 	//Felbontás - Balnyíl
 	vb_clickables.AddData(0, -0.3f, 0.2f);
@@ -268,14 +268,14 @@ void OptionHandler::SwitchResolution(bool forward)
 		if (displayModeIndex != displayModes.begin())
 		{
 			--displayModeIndex;
-			decoratorTextures.back() = menuRenderer->RenderTextShaded(std::string(std::to_string(displayModeIndex->first) + 'x' + std::to_string(displayModeIndex->second)).c_str());
+			decoratorTextures.back() = menuRenderer->RenderTextSolid(std::string(std::to_string(displayModeIndex->first) + 'x' + std::to_string(displayModeIndex->second)).c_str());
 		}
 	}
 	else {
 		++displayModeIndex;
 		if (displayModeIndex != displayModes.end())
 		{
-			decoratorTextures.back() = menuRenderer->RenderTextShaded(std::string(std::to_string(displayModeIndex->first) + 'x' + std::to_string(displayModeIndex->second)).c_str());
+			decoratorTextures.back() = menuRenderer->RenderTextSolid(std::string(std::to_string(displayModeIndex->first) + 'x' + std::to_string(displayModeIndex->second)).c_str());
 		}
 		else --displayModeIndex;
 	}
@@ -354,7 +354,7 @@ void OptionHandler::ApplySettings(SDL_Window* window)
 void OptionHandler::CancelSettings()
 {
 	displayModeIndex = std::find(displayModes.begin(), displayModes.end(), std::pair<int, int>(optionsRef["ResolutionWidth"], optionsRef["ResolutionHeight"]));
-	decoratorTextures.back() = menuRenderer->RenderTextShaded(std::string(std::to_string(displayModeIndex->first) + 'x' + std::to_string(displayModeIndex->second)).c_str());
+	decoratorTextures.back() = menuRenderer->RenderTextSolid(std::string(std::to_string(displayModeIndex->first) + 'x' + std::to_string(displayModeIndex->second)).c_str());
 
 	fullscreen = optionsRef["Fullscreen"];
 	vsync = optionsRef["Vsync"];

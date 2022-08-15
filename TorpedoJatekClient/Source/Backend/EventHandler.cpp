@@ -1,12 +1,12 @@
 #include "EventHandler.h"
 
-EventHandler::EventHandler()
+EventHandler::EventHandler() : musicVolume(Mix_VolumeMusic(-1) / 2), sfxVolume(Mix_Volume(1, -1))
 {
 	music = Mix_LoadMUS("Resources/Audio/mainMusic.ogg");
 	if (!music) {
 		printf("Mix_LoadMUS(\"mainMusic.ogg\"): %s\n", Mix_GetError());
 	}
-	
+
 	hitSound = Mix_LoadWAV("Resources/Audio/hitSound.wav");
 	if (!hitSound) {
 		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
@@ -108,7 +108,7 @@ void EventHandler::SwitchVolume()
 	}
 	else {
 		Mix_VolumeMusic(musicVolume);
-		Mix_Volume(-1, MIX_MAX_VOLUME);
+		Mix_Volume(-1, sfxVolume);
 		isMuted = false;
 	}
 }

@@ -1,4 +1,9 @@
-v0.0.7d-Nemtom
+v0.0.7d-Overall Fixing
 -----------------------------------------------------------------------------------------
 -Added the missing Menu images.
--
+-Added possibility to remove the text display in-game.
+-Debug mode can now be launched from the menu.
+-Controls are now shown in the client.
+-Rotating the Camera now locks mouse position.
+-Fixed the audio options not affecting the in-game volume levels.
+-Fixed cfg file corruption possibility.

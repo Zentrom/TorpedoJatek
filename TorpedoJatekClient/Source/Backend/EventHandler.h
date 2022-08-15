@@ -31,11 +31,9 @@ private:
 
 	bool isMuted = false; //Némítás
 
-	//A hangforrások hangját szabályozza(végén channel hangerõvel mixelõdik)
-	const int musicVolume = MIX_MAX_VOLUME / 4;
-	const int hitVolume = MIX_MAX_VOLUME;
-	const int missVolume = MIX_MAX_VOLUME / 2;
-	const int cannonFireVolume = MIX_MAX_VOLUME / 2;
+	//const int hitVolume = MIX_MAX_VOLUME;
+	//const int missVolume = MIX_MAX_VOLUME / 2;
+	//const int cannonFireVolume = MIX_MAX_VOLUME / 2;
 	float soundScanDistance = 40.0f; //Mekkora távolságon belül interpoláljuk a hangerõt
 	const int musicFadeInTimeMs = 5000; //Zene fade-in effectje millisecben
 
@@ -44,4 +42,7 @@ private:
 	float camEyeX; //Kamera pos X tengelyen
 	float camEyeZ; //Kamera pos Z tengelyen
 	
+	//A hangforrások hangját szabályozza(végén channel hangerõvel mixelõdik)
+	const int musicVolume;// = MIX_MAX_VOLUME / 2;
+	const int sfxVolume;
 };

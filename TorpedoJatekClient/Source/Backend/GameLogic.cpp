@@ -44,7 +44,8 @@ void GameLogic::Init(std::string ip, std::string port)
 	if (TorpedoGLOBAL::Debug) {
 		std::cout << "Disclamer: You are currently running the DEBUG version of the game,\nwhich is only good for graphics testing." << std::endl;
 		if (pTextHandler) {
-			*pTextHandler < u8"Disclamer: You are currently running the DEBUG version of the game,\nwhich is only good for graphics testing.";
+			*pTextHandler < u8"Disclamer: You are currently running the DEBUG version of the game,\nwhich is only good for graphics testing.\n \
+Extra controls: F - Fire | G - Sink";
 		}
 		PlaceShipsINDEBUG();
 		SetTilesINDEBUG();

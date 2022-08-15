@@ -38,7 +38,7 @@ public:
 	void KeyboardUp(SDL_KeyboardEvent& key);
 	void MouseMove(SDL_MouseMotionEvent& mouse);
 	void MouseDown(SDL_MouseButtonEvent& mouse);
-	void MouseUp(SDL_MouseButtonEvent& mouse);
+	void MouseUp(SDL_MouseButtonEvent& mouse, SDL_Window* window);
 	void MouseWheel(SDL_MouseWheelEvent& wheel);
 	void Resize(int width, int height);
 private:
@@ -70,6 +70,7 @@ private:
 	const float cameraRestraintXZ = 6.0f; //Földterület hányadáig mehet a lockolt kamera
 	const float cameraRestraintY = 4.0f; //Hegymagasság hányszorosára mehet felfele a kamera
 
+	bool showText = true; //Szöveget megjelenítjük-e
 	bool isError = false; //van-e error a jelenlegi állapotban
 	bool outputWritten = false; //kiirtuk-e már az üzenetet
 	bool stopOutput = false; //Játék végén már ne írjunk ki
@@ -79,6 +80,8 @@ private:
 	bool shotSent = false; //Küldtünk-e már lövést
 	int shipSizeInput = 0; //Mekkora hajót készülünk lerakni
 	int winnerPlayerNum = 0; //Nyertes játékos+boolként is mûködik ha senki nem nyert még
+	Sint32 beforeRotationX = 0; //Forgatás elõtti X koord
+	Sint32 beforeRotationY = 0; //Forgatás elõtti Y koord
 
 	int viewportWidth; //Ablak canvaszának szélessége
 	int viewportHeight; //Ablak canvaszának magassága

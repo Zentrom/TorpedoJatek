@@ -1,6 +1,8 @@
 
 #include "TorpedoJatekClient.h"
 
+bool TorpedoGLOBAL::Debug = false;
+
 TorpedoJatekClient::TorpedoJatekClient()
 {
 	clientVersion = new TorpedoVersion();
@@ -109,6 +111,7 @@ int TorpedoJatekClient::ReadOptions()
 {
 	std::fstream optionsFile(pathToOptions, std::ios::in);
 	if (!optionsFile.is_open()) {
+		//Hiányzó fájl
 		std::cout << "[ReadOptions] Config file missing! Resetting defaults." << std::endl;
 		optionsFile.clear();
 		optionsFile.open(pathToOptions, std::ios::out);
@@ -118,6 +121,7 @@ int TorpedoJatekClient::ReadOptions()
 		optionsFile.close();
 	}
 	else {
+		//Fájl szöveg ellenõrzése
 		std::string line;
 		int findIndex = 0;
 		bool corrupted = false;
@@ -131,6 +135,7 @@ int TorpedoJatekClient::ReadOptions()
 		}
 		optionsFile.close();
 		if (corrupted) {
+			//Hibás fájl
 			std::cout << "[ReadOptions] Config file corrupted! Resetting defaults." << std::endl;
 			optionsFile.open(pathToOptions, std::ios::out|std::ios::trunc);
 			for (std::map<std::string, int>::const_iterator iter = options.cbegin(); iter != options.cend(); ++iter) {
@@ -139,6 +144,7 @@ int TorpedoJatekClient::ReadOptions()
 			optionsFile.close();
 		}
 		else {
+			//Jó fájl
 			optionsFile.open(pathToOptions, std::ios::in);
 			while (std::getline(optionsFile, line)) {
 				findIndex = line.find('=', 0);
@@ -154,6 +160,7 @@ int TorpedoJatekClient::ReadOptions()
 			optionsFile.close();
 
 			if (!CheckOptionsIntegrity()) {
+				//Rossz adatok a fájlban
 				std::cout << "[CheckOptionsIntegrity] Config file corrupted! Fixing with defaults." << std::endl;
 				optionsFile.open(pathToOptions, std::ios::out | std::ios::trunc);
 				for (std::map<std::string, int>::const_iterator iter = options.cbegin(); iter != options.cend(); ++iter) {
@@ -161,14 +168,6 @@ int TorpedoJatekClient::ReadOptions()
 				}
 				optionsFile.close();
 			}
-			//else {
-			//	widthWindow = std::stoi(options["ResolutionWidth"]);
-			//	heightWindow = std::stoi(options["ResolutionHeight"]);
-			//	fullscreen = std::stoi(options["Fullscreen"]);
-			//	enableVsync = std::stoi(options["Vsync"]);
-			//	musicVolume = std::stoi(options["MusicVolume"]);
-			//	sfxVolume = std::stoi(options["SfxVolume"]);
-			//}
 		}
 	}
 
@@ -178,31 +177,51 @@ int TorpedoJatekClient::ReadOptions()
 //Leellenõrzi hogy a beállítások határon belül vannak-e
 bool TorpedoJatekClient::CheckOptionsIntegrity()
 {
-	if (options["ResolutionWidth"] < 0 || options["ResolutionWidth"]>1920) {
+	bool foundError = false;
+	//if (options["ResolutionWidth"] < 0 || options["ResolutionWidth"]>1920) {
+	//	options["ResolutionWidth"] = widthWindow;
+	//	foundError = true;
+	//}
+	//if (options["ResolutionHeight"] < 0 || options["ResolutionHeight"]>1080) {
+	//	options["ResolutionHeight"] = heightWindow;
+	//	foundError = true;
+	//}
+	SDL_DisplayMode mode;
+	bool foundResolution = false;
+	for (int i = 0; i < SDL_GetNumDisplayModes(0); ++i) {
+		if (SDL_GetDisplayMode(0, i, &mode) != 0) {
+			std::cout << "[OptionHandler] SDL_GetDisplayMode failed: " << SDL_GetError() << std::endl;
+		}
+		else {
+			if (mode.w == options["ResolutionWidth"] && mode.h == options["ResolutionHeight"]) {
+				foundResolution = true;
+				break;
+			}
+		}
+	}
+	if (!foundResolution) {
 		options["ResolutionWidth"] = widthWindow;
-		return false;
-	}
-	if (options["ResolutionHeight"] < 0 || options["ResolutionHeight"]>1080) {
 		options["ResolutionHeight"] = heightWindow;
-		return false;
+		foundError = true;
 	}
+
 	if (options["Fullscreen"] != 0 && options["Fullscreen"] != 1) {
 		options["Fullscreen"] = fullscreen;
-		return false;
+		foundError = true;
 	}
 	if (options["Vsync"] != 0 && options["Vsync"] != 1) {
 		options["Vsync"] = enableVsync;
-		return false;
+		foundError = true;
 	}
 	if (options["MusicVolume"] < 0 || options["MusicVolume"] > 128) {
 		options["MusicVolume"] = musicVolume;
-		return false;
+		foundError = true;
 	}
 	if (options["SfxVolume"] < 0 || options["SfxVolume"] > 128) {
 		options["SfxVolume"] = sfxVolume;
-		return false;
+		foundError = true;
 	}
-
+	if (foundError) return false;
 	return true;
 }
 
@@ -336,6 +355,7 @@ int TorpedoJatekClient::StartMainMenu()
 					quit = true;
 					break;
 				case MenuSignal::DEBUG:
+					TorpedoGLOBAL::Debug = true;
 					quit = true;
 					break;
 				case MenuSignal::QUIT:
@@ -443,7 +463,7 @@ int TorpedoJatekClient::StartGameInstance()
 				gameInstance->MouseDown(sdlEvent->button);
 				break;
 			case SDL_MOUSEBUTTONUP:
-				gameInstance->MouseUp(sdlEvent->button);
+				gameInstance->MouseUp(sdlEvent->button, gameWindow);
 				break;
 			case SDL_MOUSEWHEEL:
 				gameInstance->MouseWheel(sdlEvent->wheel);

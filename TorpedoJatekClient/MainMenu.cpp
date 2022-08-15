@@ -99,6 +99,16 @@ bool MainMenu::Init()
 	initialState->BuildLayout();
 
 	connectState->AddDecoratorTexture(0.0f, 0.1f, 0.6f, 0.4f, elementsBg);
+	connectState->AddDecoratorString(-0.2f, -0.8f, 0.4f, 
+		u8"Controls\n \
+WASD - Camera Movement\n \
+Hold Shift - Faster Movement\n \
+LMB - Interact\n \
+Hold RMB - Rotate Camera\n \
+1234 - Choose Ship Size\n \
+T - Show/Hide Text\n \
+M - Mute/Unmute Audio\n \
+ESC - Quit", 0.5f);
 	connectState->AddDecoratorString(-0.4f, 0.4f, 0.1f, u8"IP:");
 	connectState->AddDecoratorString(-0.4f, 0.2f, 0.1f, u8"Port:");
 	connectState->AddInputBox(nullptr); //ip

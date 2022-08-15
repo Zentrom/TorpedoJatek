@@ -50,3 +50,7 @@ x86-os buildelésnél memory limit van 1-2GB.
 Polygon draw mode:
 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE(EZ FELVESZI A MOZGÁST WINDOWON KIVÜL) window flagek betánál. SDL_SetRelativeMouseMode()
+SDL_WINDOWEVENT_CLOSE kezeli az ablak bezárást(consolet nem)
+DLL-ek másik mappába legyenek?? EZ NEHÉZ(WIN API KELL) ÉS NEM IS AJÁNLOTT(DLL Hell)
