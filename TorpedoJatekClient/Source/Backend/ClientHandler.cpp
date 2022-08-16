@@ -61,7 +61,7 @@ void ClientHandler::SendFleet(const std::vector<std::vector<std::pair<char, int>
 		data.first = 'v';
 		data.second = shipSize;
 		SendBinary(mySocket, &data, sizeof(std::pair<char, int>));
-		for (int i = 0; i < sh.size(); ++i) {
+		for (unsigned int i = 0; i < sh.size(); ++i) {
 			SendBinary(mySocket, &sh.at(i), sizeof(std::pair<char, int>));
 		}
 	}
@@ -102,7 +102,6 @@ int ClientHandler::GetPlayerNum()
 	else {
 		std::cout << "You are player number " << playerNum << std::endl;
 		std::string mBoxText = std::string("You are player number ").append(std::to_string(playerNum));
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Info", mBoxText.c_str(), nullptr);
 	}
 	return playerNum;
 }
@@ -163,7 +162,6 @@ void ClientHandler::QuitGame()
 	SendBinary(mySocket, &sentMessageType, sizeof(MessageType));
 	CloseConnection();
 	std::cout << "You left the game!" << std::endl;
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Info", "You left the game!", nullptr);
 }
 
 void ClientHandler::CloseConnection() 

@@ -317,9 +317,6 @@
     <Text Include="..\Bstuff\Info\changelog.txt">
       <Filter>Utility\Info</Filter>
     </Text>
-    <Text Include="..\Bstuff\Info\controlsAlpha.txt">
-      <Filter>Utility\Info</Filter>
-    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icon\icon.ico">

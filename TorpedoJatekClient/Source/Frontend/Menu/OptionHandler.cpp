@@ -37,8 +37,8 @@ OptionHandler::OptionHandler(std::map<std::string, int>& options) : optionsRef(o
 	}
 
 	displayModeIndex = std::find(displayModes.begin(), displayModes.end(), std::pair<int, int>(options["ResolutionWidth"], options["ResolutionHeight"]));
-	fullscreen = options["Fullscreen"];
-	vsync = options["Vsync"];
+	fullscreen = (options["Fullscreen"] ? true : false);
+	vsync = (options["Vsync"] ? true : false);
 	musSliderTransX = 0.4f * options["MusicVolume"] / 128.0f;
 	sfxSliderTransX = 0.4f * options["SfxVolume"] / 128.0f;
 
@@ -63,7 +63,7 @@ void OptionHandler::PreProcess()
 	sh_menu.SetUniform("is_PreProcess", true);
 	int pickingIndex = preProcessOffset;
 	vb_button.On();
-	for (int i = 0; i < buttonTextures.size(); ++i) {
+	for (unsigned int i = 0; i < buttonTextures.size(); ++i) {
 		sh_menu.SetUniform("clickableIndex", pickingIndex++);
 		vb_button.DrawIndexed(GL_TRIANGLES, i * 12, 12);
 	}
@@ -96,7 +96,7 @@ void OptionHandler::Render(float pointed_element)
 	sh_menu.On();
 	sh_menu.SetUniform("is_Decorator", true);
 	vb_decorator.On();
-	for (int i = 0; i < decoratorTextures.size(); ++i) {
+	for (unsigned int i = 0; i < decoratorTextures.size(); ++i) {
 		sh_menu.SetTexture("textTexture", 0, decoratorTextures.at(i));
 		vb_decorator.DrawIndexed(GL_TRIANGLES, i * 6, 6);
 	}
@@ -106,7 +106,7 @@ void OptionHandler::Render(float pointed_element)
 	int pickingIndex = preProcessOffset;
 	sh_menu.SetUniform("read_index", static_cast<int>(pointed_element));
 	vb_button.On();
-	for (int i = 0; i < buttonTextures.size(); ++i) {
+	for (unsigned int i = 0; i < buttonTextures.size(); ++i) {
 		sh_menu.SetTexture("textTexture", 0, buttonTextures.at(i).second);
 		sh_menu.SetUniform("clickableIndex", pickingIndex++);
 		vb_button.DrawIndexed(GL_TRIANGLES, i * 12, 12);
@@ -367,8 +367,8 @@ void OptionHandler::CancelSettings()
 	displayModeIndex = std::find(displayModes.begin(), displayModes.end(), std::pair<int, int>(optionsRef["ResolutionWidth"], optionsRef["ResolutionHeight"]));
 	decoratorTextures.back() = menuRenderer->RenderTextSolid(std::string(std::to_string(displayModeIndex->first) + 'x' + std::to_string(displayModeIndex->second)).c_str());
 
-	fullscreen = optionsRef["Fullscreen"];
-	vsync = optionsRef["Vsync"];
+	fullscreen = (optionsRef["Fullscreen"] ? true : false);
+	vsync = (optionsRef["Vsync"] ? true : false);
 	musSliderTransX = 0.4f * optionsRef["MusicVolume"] / 128.0f;
 	sfxSliderTransX = 0.4f * optionsRef["SfxVolume"] / 128.0f;
 	UpdateVolume();

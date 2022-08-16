@@ -1,10 +1,10 @@
 INDEBUG+VSyncOff:
-[RAM Usage] 80 MB [VRAM Usage] 88 MB [FPS] 248
+[RAM Usage] 85 MB [VRAM Usage] 88 MB [FPS] 258
 ---------------------------------------
--Ha debugolni akarsz szerverkapcsolódás nélkül,akkor Globals.h-ba a TorpedoGlobal::Debug-ot true-ra kell tenni.
+-Debug mód a menübõl indítható. Ilyenkor nem csatlakozunk szerverre, csak megjelenítés teszt.
 -Debug módba: 
 	'F'-el lehet lövés animációt tesztelni.
 	'G'-vel lehet hajó elsüllyedést tesztelni.
--Framelimiter mûködik rendesen.
+-Framelimiter mûködik rendesen. Csak kódból kapcsolható be.
 -Lehet tobbszor ugyanoda lõni.
 -SeaTileRow now affects the map area, while terrainScale affects the ground tile amount on that area.

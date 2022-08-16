@@ -105,7 +105,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Bstuff\Info\changelog.txt" />
-    <Text Include="..\Bstuff\Info\controlsAlpha.txt" />
     <Text Include="Utility\Logs\latestChanges.txt" />
     <Text Include="Utility\Logs\solutionDilemmas.txt" />
     <Text Include="Utility\Logs\temp.txt" />

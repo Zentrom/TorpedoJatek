@@ -420,8 +420,8 @@ ResponseState TorpedoJatekServer::ProcessTiles(Client &client)
 	ResponseState resultState = ResponseState::CONTINUE_MATCH;
 
 	bool found = false;
-	for (int i = 0; i < client.ships.size(); ++i) {
-		for (int j = 0; j < client.ships.at(i).size(); ++j) {
+	for (unsigned int i = 0; i < client.ships.size(); ++i) {
+		for (unsigned int j = 0; j < client.ships.at(i).size(); ++j) {
 			if (targetTile == client.ships.at(i).at(j).tileCoord) {
 				client.ships.at(i).at(j).isIntact = false;
 				resultState = ResponseState::HIT_ENEMY_SHIP;
@@ -433,8 +433,8 @@ ResponseState TorpedoJatekServer::ProcessTiles(Client &client)
 	}
 	//Keres még élõ hajót a lövés után
 	bool allZeros = true;
-	for (int i = 0; i < client.ships.size(); ++i) {
-		for (int j = 0; j < client.ships.at(i).size(); ++j) {
+	for (unsigned int i = 0; i < client.ships.size(); ++i) {
+		for (unsigned int j = 0; j < client.ships.at(i).size(); ++j) {
 			if (client.ships.at(i).at(j).isIntact) {
 				allZeros = false;
 				break;
@@ -468,11 +468,11 @@ void TorpedoJatekServer::SendShipsToLoser(Client& client)
 
 	int sentSize = 0;
 	std::pair<char, int> data;
-	for (int i = 0; i < pWinner->ships.size(); ++i) {
+	for (unsigned int i = 0; i < pWinner->ships.size(); ++i) {
 		//Megnézi él-e a hajó
 		bool isAlive = false;
 		int aliveIndex = 0;
-		for (int j = 0; j < pWinner->ships.at(i).size(); ++j) {
+		for (unsigned int j = 0; j < pWinner->ships.at(i).size(); ++j) {
 			if (pWinner->ships.at(i).at(j).isIntact) {
 				isAlive = true;
 				aliveIndex = i;
@@ -485,7 +485,7 @@ void TorpedoJatekServer::SendShipsToLoser(Client& client)
 			data.first = 'v';
 			data.second = sentSize;
 			ServerHandler::SendBinary(client.socket, &data, sizeof(std::pair<char, int>));
-			for (int j = 0; j < pWinner->ships.at(aliveIndex).size(); ++j) {
+			for (unsigned int j = 0; j < pWinner->ships.at(aliveIndex).size(); ++j) {
 				data.first = pWinner->ships.at(aliveIndex).at(j).tileCoord.first;
 				data.second = pWinner->ships.at(aliveIndex).at(j).tileCoord.second;
 				ServerHandler::SendBinary(client.socket, &data, sizeof(std::pair<char, int>));
