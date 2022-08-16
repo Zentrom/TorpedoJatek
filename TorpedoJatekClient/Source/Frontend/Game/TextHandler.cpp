@@ -6,10 +6,12 @@ TextHandler::TextHandler()
 	comicSans = TTF_OpenFont("Resources/comic.ttf", 72);
 	if (!comicSans) {
 		std::cout << "[TTF_OpenFont] Failed to load font: Comic Sans" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[TTF_OpenFont]", "Failed to load font: Comic Sans", nullptr);
 	}
 	candara = TTF_OpenFont("Resources/candara.ttf", 72);
 	if (!candara) {
 		std::cout << "[TTF_OpenFont] Failed to load font: Candara" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[TTF_OpenFont]", "Failed to load font: Candara", nullptr);
 	}
 
 	//TTF_SetFontWrappedAlign(comicSans, TTF_WRAPPED_ALIGN_CENTER);
@@ -40,6 +42,7 @@ TextHandler::TextHandler()
 	sh_text.BindAttribLoc(1, "vs_in_tex");
 	if (!sh_text.LinkProgram()) {
 		std::cout << "[Shader_Link]Error during Shader compilation: sh_text" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Shader_Link]", "Error during Shader compilation: sh_text", nullptr);
 	}
 }
 
@@ -165,6 +168,7 @@ GLuint TextHandler::RenderTextSolid(const char* text)
 
 	if (!(textSurface = TTF_RenderUTF8_Solid_Wrapped(comicSans, text, fgColor, 0))) {
 		std::cout << "[RenderText_Solid] TTF Rendered text is NULL: " << SDL_GetError() << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[RenderText_Solid]", SDL_GetError(), nullptr);
 	}
 
 	//std::cout << "texturesize: " << textSurface->w << " " << textSurface->h << std::endl;
@@ -204,6 +208,7 @@ GLuint TextHandler::RenderTextShaded(const char* text)
 
 	if (!(textSurface = TTF_RenderUTF8_Shaded_Wrapped(comicSans, text, fgColor, bgColor, 0))) {
 		std::cout << "[RenderText_Shaded] TTF Rendered text is NULL: " << SDL_GetError() << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[RenderText_Shaded]", SDL_GetError(), nullptr);
 	}
 	
 	//std::cout << "texturesize " << textSurface->w << " " << textSurface->h << std::endl;

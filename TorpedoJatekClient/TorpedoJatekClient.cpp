@@ -52,6 +52,7 @@ int TorpedoJatekClient::Init()
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1)
 	{
 		std::cout << "[SDL_Init]Error during SDL Video and Audio Init: " << SDL_GetError() << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[SDL_Init]", SDL_GetError(), nullptr);
 		return 1;
 	}
 
@@ -74,6 +75,7 @@ int TorpedoJatekClient::Init()
 	//Mixer API inicializálása
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
 		printf("Mix_OpenAudio error: %s\n", SDL_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[Mix_OpenAudio]", SDL_GetError(), nullptr);
 		return 1;
 	}
 
@@ -81,18 +83,20 @@ int TorpedoJatekClient::Init()
 	int audioFormats = MIX_INIT_MP3 | MIX_INIT_OGG;
 	if ((Mix_Init(audioFormats) & audioFormats) != audioFormats) {
 		std::cout << "[Mix_Init]Failed to init required Ogg and Mp3 support: " << SDL_GetError() << std::endl;
-		//return 1;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Mix_Init]", SDL_GetError(), nullptr);
 	}
 
 	//JPG és PNG formátumok támogatásának a betöltése
 	int imageFormats = IMG_INIT_JPG | IMG_INIT_PNG;
 	if ((IMG_Init(imageFormats) & imageFormats) != imageFormats) {
 		std::cout << "[IMG_Init]Failed to init required JPG and PNG support: " << SDL_GetError() << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[IMG_Init]", SDL_GetError(), nullptr);
 		return 1;
 	}
 
 	if (TTF_Init() != 0) {
 		std::cout << "[TTF_Init]Failed to init TrueType Font support: " << SDL_GetError() << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[TTF_Init]", SDL_GetError(), nullptr);
 		return 1;
 	}
 
@@ -113,6 +117,7 @@ int TorpedoJatekClient::ReadOptions()
 	if (!optionsFile.is_open()) {
 		//Hiányzó fájl
 		std::cout << "[ReadOptions] Config file missing! Resetting defaults." << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "[ReadOptions]", "Config file missing.\nResetting defaults.", nullptr);
 		optionsFile.clear();
 		optionsFile.open(pathToOptions, std::ios::out);
 		for (std::map<std::string, int>::const_iterator iter = options.cbegin(); iter != options.cend(); ++iter) {
@@ -137,6 +142,7 @@ int TorpedoJatekClient::ReadOptions()
 		if (corrupted) {
 			//Hibás fájl
 			std::cout << "[ReadOptions] Config file corrupted! Resetting defaults." << std::endl;
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[ReadOptions]", "Config file corrupted!\nResetting defaults.", nullptr);
 			optionsFile.open(pathToOptions, std::ios::out|std::ios::trunc);
 			for (std::map<std::string, int>::const_iterator iter = options.cbegin(); iter != options.cend(); ++iter) {
 				optionsFile << iter->first << '=' << iter->second << '\n';
@@ -153,7 +159,6 @@ int TorpedoJatekClient::ReadOptions()
 				if (it != options.end()) {
 					it->second = std::stoi(line.substr(findIndex + 1));
 				}
-
 				//std::cout << line.substr(0, findIndex) << std::endl << "-------" << std::endl;
 				//std::cout << line.substr(findIndex + 1) << std::endl;
 			}
@@ -162,6 +167,7 @@ int TorpedoJatekClient::ReadOptions()
 			if (!CheckOptionsIntegrity()) {
 				//Rossz adatok a fájlban
 				std::cout << "[CheckOptionsIntegrity] Config file corrupted! Fixing with defaults." << std::endl;
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[CheckOptionsIntegrity]", "Config file corrupted!\nFixing with defaults.", nullptr);
 				optionsFile.open(pathToOptions, std::ios::out | std::ios::trunc);
 				for (std::map<std::string, int>::const_iterator iter = options.cbegin(); iter != options.cend(); ++iter) {
 					optionsFile << iter->first << '=' << iter->second << '\n';
@@ -178,19 +184,12 @@ int TorpedoJatekClient::ReadOptions()
 bool TorpedoJatekClient::CheckOptionsIntegrity()
 {
 	bool foundError = false;
-	//if (options["ResolutionWidth"] < 0 || options["ResolutionWidth"]>1920) {
-	//	options["ResolutionWidth"] = widthWindow;
-	//	foundError = true;
-	//}
-	//if (options["ResolutionHeight"] < 0 || options["ResolutionHeight"]>1080) {
-	//	options["ResolutionHeight"] = heightWindow;
-	//	foundError = true;
-	//}
 	SDL_DisplayMode mode;
 	bool foundResolution = false;
 	for (int i = 0; i < SDL_GetNumDisplayModes(0); ++i) {
 		if (SDL_GetDisplayMode(0, i, &mode) != 0) {
 			std::cout << "[OptionHandler] SDL_GetDisplayMode failed: " << SDL_GetError() << std::endl;
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[OptionHandler]", SDL_GetError(), nullptr);
 		}
 		else {
 			if (mode.w == options["ResolutionWidth"] && mode.h == options["ResolutionHeight"]) {
@@ -238,6 +237,7 @@ int TorpedoJatekClient::CreateGameWindow()
 	if (gameWindow == nullptr)
 	{
 		std::cout << "[SDL_CreateWindow]Failed to create window: " << SDL_GetError() << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[SDL_CreateWindow]", SDL_GetError(), nullptr);
 		return 1;
 	}
 
@@ -246,6 +246,7 @@ int TorpedoJatekClient::CreateGameWindow()
 	if (glContext == 0)
 	{
 		std::cout << "[SDL_GL_CreateContext]Failed to create GLcontext: " << SDL_GetError() << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[SDL_GL_CreateContext]", SDL_GetError(), nullptr);
 		return 1;
 	}
 
@@ -255,6 +256,7 @@ int TorpedoJatekClient::CreateGameWindow()
 	if (glewInit() != GLEW_OK)
 	{
 		std::cout << "[glewInit]Failed to init glew!" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[glewInit]", "Failed to init glew!", nullptr);
 		return 1;
 	}
 
@@ -266,6 +268,7 @@ int TorpedoJatekClient::CreateGameWindow()
 	if (glVersion[0] == -1 && glVersion[1] == -1)
 	{
 		std::cout << "[OGLcontext]Error creating OpenGL context! One of the SDL_GL_SetAttribute(...) calls might be wrong." << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[OGLcontext]", "Error creating OpenGL context! One of the SDL_GL_SetAttribute(...) calls might be wrong.", nullptr);
 		return 1;
 	}
 	sdlEvent = new SDL_Event();
@@ -280,18 +283,19 @@ int TorpedoJatekClient::StartMainMenu()
 	if (!mainMenu->Init())
 	{
 		std::cout << "[mainMenu_Init] Main menu inicialization failed!" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[mainMenu_Init]", "Main menu inicialization failed!", nullptr);
 		return 1;
 	}
-
+	
 	int frame_count = 0;
 	int last_time = SDL_GetTicks();
 	int last_render_time = SDL_GetTicks();
 	int time_diff = 0;
 	int ftime_diff = 0;
-
+	
 	float frmtime = 1000.0f / fpsLimit;
 	float frmMod = 0;
-
+	
 	//Fõ event ciklus
 	bool quit = false;
 	while (!quit)
@@ -299,7 +303,7 @@ int TorpedoJatekClient::StartMainMenu()
 		//FPS limiter
 		if (!options["Vsync"] && enableFpsLimit) {
 			ftime_diff = SDL_GetTicks() - last_render_time;
-
+	
 			if (ftime_diff + frmMod >= frmtime) {
 				mainMenu->Update();
 				mainMenu->Render();
@@ -315,7 +319,7 @@ int TorpedoJatekClient::StartMainMenu()
 			SDL_GL_SwapWindow(gameWindow);
 			++frame_count;
 		}
-
+	
 		//FPS kiirása
 		time_diff = SDL_GetTicks() - last_time;
 		if (time_diff >= 1000)
@@ -325,12 +329,12 @@ int TorpedoJatekClient::StartMainMenu()
 				<< "." << clientVersion->alphaVersion << clientVersion->experimentalVersion
 				<< " | FPS:" << frame_count;
 			SDL_SetWindowTitle(gameWindow, window_title.str().c_str());
-
+	
 			last_time = SDL_GetTicks();
 			time_diff = 0;
 			frame_count = 0;
 		}
-
+	
 		while (SDL_PollEvent(sdlEvent))
 		{
 			switch (sdlEvent->type)
@@ -380,7 +384,7 @@ int TorpedoJatekClient::StartMainMenu()
 				break;
 			}
 		}
-
+	
 	}
 
 	return 0;
@@ -392,7 +396,8 @@ int TorpedoJatekClient::StartGameInstance()
 	gameInstance = new GameInstance(options["ResolutionWidth"], options["ResolutionHeight"]);
 	if (!gameInstance->Init(connectionIP, connectionPort))
 	{
-		std::cout << "[GameInstance_Init] Game instance inicialization failed!" << std::endl;
+		std::cout << "[GameInstance_Init] Game instance initialization failed!" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[GameInstance_Init]", "Game instance initialization failed!", nullptr);
 		return 1;
 	}
 

@@ -1,9 +1,5 @@
-v0.0.7d-Overall Fixing
+v0.0.7e-Errors MessageBox
 -----------------------------------------------------------------------------------------
--Added the missing Menu images.
--Added possibility to remove the text display in-game.
--Debug mode can now be launched from the menu.
--Controls are now shown in the client.
--Rotating the Camera now locks mouse position.
--Fixed the audio options not affecting the in-game volume levels.
--Fixed cfg file corruption possibility.
+-Errors are now displayed using MessageBoxes.
+-The console is not shown anymore when compiled in Release.
+-Fixed trying to connect while ip-port fields are empty.

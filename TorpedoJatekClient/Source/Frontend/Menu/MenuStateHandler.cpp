@@ -3,15 +3,14 @@
 
 MenuStateHandler::MenuStateHandler()
 {
+	//Decorator elemek
 	vb_decorator.AddAttribute(0, 2); //pozíció
 	vb_decorator.AddAttribute(2, 2); //textcoord
-
-	//vb_clickable.AddAttribute(0, 2); //pozíció
-	//vb_clickable.AddAttribute(1, 2); //textcoord
+	//Gomb
 	vb_button.AddAttribute(0, 2);
 	vb_button.AddAttribute(1, 4);
 	vb_button.AddAttribute(2, 2);
-
+	//Inputmezõ
 	vb_inputbox.AddAttribute(0, 2);
 	vb_inputbox.AddAttribute(2, 2);
 
@@ -22,24 +21,21 @@ MenuStateHandler::MenuStateHandler()
 	sh_menu.BindAttribLoc(2, "vs_in_tex");
 	if (!sh_menu.LinkProgram()) {
 		std::cout << "[Shader_Link]Error during Shader compilation: sh_menu" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Shader_Link]", "Error during Shader compilation: sh_menu", nullptr);
 	}
 }
 
 MenuStateHandler::~MenuStateHandler()
 {
 	vb_decorator.Clean();
-	//vb_clickable.Clean();
 	vb_button.Clean();
 	vb_inputbox.Clean();
 	sh_menu.Clean();
-
+	
 	delete menuRenderer;
 	for (GLuint& texture : decoratorTextures) {
 		glDeleteTextures(1, &texture);
 	}
-	//for (std::pair<std::string, GLuint> &texture : clickableTextures) {
-	//	glDeleteTextures(1, &texture.second);
-	//}
 	for (std::pair<std::string, GLuint>& texture : buttonTextures) {
 		glDeleteTextures(1, &texture.second);
 	}
@@ -52,13 +48,9 @@ MenuStateHandler::~MenuStateHandler()
 void MenuStateHandler::Clean()
 {
 	vb_decorator.Clean();
-	//vb_clickable.Clean();
 	vb_button.Clean();
 	vb_inputbox.Clean();
-	//for (std::pair<std::string, GLuint>& texture : clickableTextures) {
-	//	glDeleteTextures(1, &texture.second);
-	//}
-	//clickableTextures.clear();
+
 	for (std::pair<std::string, GLuint>& texture : buttonTextures) {
 		glDeleteTextures(1, &texture.second);
 	}
@@ -171,12 +163,11 @@ void MenuStateHandler::AddInputBox(const char* name)
 }
 
 //Ha már nem akarunk berakni több elemet akkor ezt meghívjuk
-void MenuStateHandler::BuildLayout()
+void MenuStateHandler::BuildLayout(bool has_inputBox)
 {
 	vb_decorator.InitBuffers();
-	//vb_clickable.InitBuffers();
 	vb_button.InitBuffers();
-	vb_inputbox.InitBuffers();
+	if (has_inputBox) vb_inputbox.InitBuffers();
 }
 
 //InputBox-ot frissíti
@@ -189,6 +180,8 @@ void MenuStateHandler::UpdateInputBox(int id, const char* next_char, bool is_del
 		if (firstSpace != std::string::npos) {
 			if (next_char) {
 				inputBoxTextures.at(index).first.replace(firstSpace, 1, next_char);
+				//std::cout << inputBoxTextures.at(index).first << std::endl;
+				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "inputBox", inputBoxTextures.at(index).first.c_str(), nullptr);
 				++firstSpace;
 			}
 			glDeleteTextures(1, &inputBoxTextures.at(index).second);
@@ -202,7 +195,7 @@ void MenuStateHandler::UpdateInputBox(int id, const char* next_char, bool is_del
 		if (firstSpace == std::string::npos) {
 			inputBoxTextures.at(index).first.back() = ' ';
 		}
-		if (firstSpace != 0) {
+		else if (firstSpace != 0) {
 			inputBoxTextures.at(index).first[firstSpace - 1] = ' ';
 		}
 	}
@@ -220,13 +213,13 @@ void MenuStateHandler::PreProcess()
 	sh_menu.On();
 	sh_menu.SetUniform("is_PreProcess", true);
 	vb_inputbox.On();
-	for (int i = 0; i < inputBoxTextures.size(); ++i) {
+	for (unsigned int i = 0; i < inputBoxTextures.size(); ++i) {
 		sh_menu.SetUniform("clickableIndex", pickingIndex++);
 		vb_inputbox.DrawIndexed(GL_TRIANGLES, i * 6, 6);
 	}
 	vb_inputbox.Off();
 	vb_button.On();
-	for (int i = 0; i < buttonTextures.size(); ++i) {
+	for (unsigned int i = 0; i < buttonTextures.size(); ++i) {
 		sh_menu.SetUniform("clickableIndex", pickingIndex++);
 		vb_button.DrawIndexed(GL_TRIANGLES, i * 12, 12);
 	}
@@ -243,7 +236,7 @@ void MenuStateHandler::Render(float pointed_element)
 
 	sh_menu.SetUniform("is_Decorator", true);
 	vb_decorator.On();
-	for (int i = 0; i < decoratorTextures.size(); ++i) {
+	for (unsigned int i = 0; i < decoratorTextures.size(); ++i) {
 		sh_menu.SetTexture("textTexture", 0, decoratorTextures.at(i));
 		vb_decorator.DrawIndexed(GL_TRIANGLES, i * 6, 6);
 	}
@@ -253,14 +246,14 @@ void MenuStateHandler::Render(float pointed_element)
 	int pickingIndex = preProcessOffset;
 	sh_menu.SetUniform("read_index", static_cast<int>(pointed_element));
 	vb_inputbox.On();
-	for (int i = 0; i < inputBoxTextures.size(); ++i) {
+	for (unsigned int i = 0; i < inputBoxTextures.size(); ++i) {
 		sh_menu.SetTexture("textTexture", 0, inputBoxTextures.at(i).second);
 		sh_menu.SetUniform("clickableIndex", pickingIndex++);
 		vb_inputbox.DrawIndexed(GL_TRIANGLES, i * 6, 6);
 	}
 	vb_inputbox.Off();
 	vb_button.On();
-	for (int i = 0; i < buttonTextures.size(); ++i) {
+	for (unsigned int i = 0; i < buttonTextures.size(); ++i) {
 		sh_menu.SetTexture("textTexture", 0, buttonTextures.at(i).second);
 		sh_menu.SetUniform("clickableIndex", pickingIndex++);
 		vb_button.DrawIndexed(GL_TRIANGLES, i * 12, 12);

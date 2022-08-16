@@ -329,6 +329,7 @@ PlayTile* GameLogic::GetShoot()
 
 		if (shootCoord.first == '0') {
 			std::cout << "The enemy left the game!" << std::endl;
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Info", "The enemy left the game!", nullptr);
 		}
 		else {
 			pEnemyTarget = &pMyFleet->getTile(shootCoord);

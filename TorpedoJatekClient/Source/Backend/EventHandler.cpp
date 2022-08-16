@@ -5,19 +5,23 @@ EventHandler::EventHandler() : musicVolume(Mix_VolumeMusic(-1) / 2), sfxVolume(M
 	music = Mix_LoadMUS("Resources/Audio/mainMusic.ogg");
 	if (!music) {
 		printf("Mix_LoadMUS(\"mainMusic.ogg\"): %s\n", Mix_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Mix_LoadMUS(\"mainMusic.ogg\")", SDL_GetError(), nullptr);
 	}
 
 	hitSound = Mix_LoadWAV("Resources/Audio/hitSound.wav");
 	if (!hitSound) {
 		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Mix_LoadWAV error", SDL_GetError(), nullptr);
 	}
 	missSound = Mix_LoadWAV("Resources/Audio/missSound.wav");
 	if (!missSound) {
 		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Mix_LoadWAV error", SDL_GetError(), nullptr);
 	}
 	cannonFireSound = Mix_LoadWAV("Resources/Audio/cannonFire.wav");
 	if (!cannonFireSound) {
 		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Mix_LoadWAV error", SDL_GetError(), nullptr);
 	}
 	//Ez hogy az elején be lehessen állítani a headerbe
 	isMuted = !isMuted;

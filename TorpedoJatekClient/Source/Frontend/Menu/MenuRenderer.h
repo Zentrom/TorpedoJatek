@@ -9,7 +9,7 @@
 #include <vector>
 #include <iostream>
 
-//Menü kirajzoló osztálya
+//Menü szövegének kirajzoló osztálya
 class MenuRenderer {
 public:
 	MenuRenderer();

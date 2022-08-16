@@ -28,18 +28,18 @@ private:
 	gVertexBuffer vb_clickables; //Beállítások clickelhetõ elemei
 	gShaderProgram sh_options; //Beállítások shadere
 	GLuint resolutionTexture; //Felbontás szövege
-	GLuint checkBoxOffTexture = GLUtils::TextureFromFile("Resources/Textures/Menu/checkBoxOff.bmp");
-	GLuint checkBoxOnTexture = GLUtils::TextureFromFile("Resources/Textures/Menu/checkBoxOn.bmp");
-	std::vector<std::pair<int, int>> displayModes;
+	GLuint checkBoxOffTexture = GLUtils::TextureFromFile("Resources/Textures/Menu/checkBoxOff.bmp"); //Kikapcsolt checkbox textúrája
+	GLuint checkBoxOnTexture = GLUtils::TextureFromFile("Resources/Textures/Menu/checkBoxOn.bmp"); //Bekapcsolt checkbox textúrája
+	std::vector<std::pair<int, int>> displayModes; //Felbontásokat nyilvántartó gyûjtõ
 
-	float musSliderTransX = 0.0f;
-	float sfxSliderTransX = 0.0f;
+	float musSliderTransX = 0.0f; //Zenehangerõ csúszkájának az elmozatási értéke
+	float sfxSliderTransX = 0.0f; //Hangok hangerejének csúszkájának az elmozgatási értéke
 
-	std::vector<std::pair<int, int>>::iterator displayModeIndex;
-	bool fullscreen;
-	bool vsync;
-	float music;
-	float sound;
+	std::vector<std::pair<int, int>>::iterator displayModeIndex; //Éppen melyik felbontás páros van kiválasztva
+	bool fullscreen; //Teljes képernyõ kivan-e jelölve
+	bool vsync; //Vsync beállítás kivan-e jelölve
+	float music; //Zene hangerõ értéke
+	float sound; //Hangok hangereje
 
-	std::map<std::string, int>& optionsRef;
+	std::map<std::string, int>& optionsRef; //Eltárolt beállítások mapje
 };

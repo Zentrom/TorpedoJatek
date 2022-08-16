@@ -36,6 +36,7 @@ void Sea::Init(int map_size, float pt_center_offset)
 	sh_ptOutline.BindAttribLoc(1, "vs_in_col");
 	if (!sh_ptOutline.LinkProgram()) {
 		std::cout << "[Shader_Link]Error during Shader compilation: sh_ptOutline" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Shader_Link]", "Error during Shader compilation: sh_ptOutline", nullptr);
 	}
 
 	sh_seaTile.AttachShader(GL_VERTEX_SHADER, "Shaders/seatile.vert");
@@ -47,6 +48,7 @@ void Sea::Init(int map_size, float pt_center_offset)
 	if (!sh_seaTile.LinkProgram())
 	{
 		std::cout << "[Shader_Link]Error during Shader compilation: sh_seaTile" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Shader_Link]", "Error during Shader compilation: sh_seaTile", nullptr);
 	}
 
 	seaTileTextureID = GLUtils::TextureFromFile("Resources/Textures/seaTexture.bmp");
@@ -124,6 +126,7 @@ void Sea::InitSeaTiles()
 	if (foundCount != playTileCount * 2) {
 		std::cout << "[Init_SeaTiles] Error while removing extra SeaTiles: " << foundCount
 			<< " != " << playTileCount << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Init_SeaTiles]", "Error while removing extra SeaTiles!", nullptr);
 	}
 
 	vb_seatiles.InitBuffers();
@@ -300,6 +303,7 @@ PlayTile& Sea::getTileByIndex(int index, bool ally)
 		}
 	}
 	std::cout << "[Sea_getTileByIndex] No tile found to return! Returning myTiles[0]!" << std::endl;
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Sea_getTileByIndex]", "No tile found to return! Returning myTiles[0]!", nullptr);
 	return *myTiles.at(0);
 }
 

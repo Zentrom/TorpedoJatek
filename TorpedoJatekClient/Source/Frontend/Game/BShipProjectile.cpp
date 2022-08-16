@@ -58,6 +58,7 @@ void BShipProjectile::Init()
 	sh_projectile.BindAttribLoc(1, "vs_in_col");
 	if (!sh_projectile.LinkProgram()) {
 		std::cout << "[Shader_Link]Error during Shader compilation: sh_projectile" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Shader_Link]", "Error during Shader compilation: sh_projectile", nullptr);
 	}
 }
 

@@ -23,7 +23,7 @@ public:
 	void AddDecoratorString(float ndc_x, float ndc_y, float size_x, const char* text, float up_y = 0.0f);
 	void AddButton(float ndc_x, float ndc_y, const char* name);
 	void AddInputBox(const char* name);
-	void BuildLayout();
+	void BuildLayout(bool has_inputBox);
 	void UpdateInputBox(int id, const char* next_char, bool is_delete, bool is_cursor);
 
 	std::vector<std::string> getInputStrings(int count);
@@ -31,12 +31,10 @@ protected:
 
 	MenuRenderer* menuRenderer = new MenuRenderer(); //Szövegek textúrába rajzolása
 	gVertexBuffer vb_decorator; //Nem klikkelhetõk modell adatok
-	///gVertexBuffer vb_clickable; //Klikkelhetõ modell adatok
 	gVertexBuffer vb_button; //Gomb modell adatai
 	gVertexBuffer vb_inputbox; //InputBox modell adatai
 	gShaderProgram sh_menu; //Menü shadere
 	std::vector<GLuint> decoratorTextures; //Nem klikkelhetõ objektumok textúrája
-	//std::vector<std::pair<std::string, GLuint>> clickableTextures; //Klikkelhetõ objektumok szövege és textúrája
 	std::vector<std::pair<std::string, GLuint>> buttonTextures; //Gombok szövege és textúrája
 	std::vector<std::pair<std::string, GLuint>> inputBoxTextures; //InputBoxok szövege és textúrája
 

@@ -88,6 +88,7 @@ bool GameInstance::Init(std::string ip, std::string port)
 	sh_default.BindAttribLoc(1, "vs_in_tex");
 	if (!sh_default.LinkProgram()) {
 		std::cout << "[Shader_Link]Error during Shader compilation: sh_default" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Shader_Link]", "Error during Shader compilation: sh_default", nullptr);
 		return false;
 	}
 
@@ -100,6 +101,7 @@ bool GameInstance::Init(std::string ip, std::string port)
 	if (!sh_dirLight.LinkProgram())
 	{
 		std::cout << "[Shader_Link]Error during Shader compilation: sh_dirLight" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Shader_Link]", "Error during Shader compilation: sh_dirLight", nullptr);
 		return false;
 	}
 
@@ -351,9 +353,6 @@ void GameInstance::MouseDown(SDL_MouseButtonEvent& mouse)
 	if (mouse.button == SDL_BUTTON_LEFT) {
 		//Hajót teszünk mi le
 		if (gameState == GameState::PLACING_SHIP) {
-			//	if (SDL_GetRelativeMouseMode() == SDL_bool(false)) {
-			//		SDL_SetRelativeMouseMode(SDL_bool(true));
-			//	}
 			if (gameLogic->PlaceAllyShip(static_cast<int>(mousePointedData[3]), shipSizeInput)) {
 				if (gameLogic->CheckAnyUnplacedShipLeft()) {
 					gameState = GameState::INITIAL;
@@ -431,7 +430,8 @@ void GameInstance::CreateFrameBuffer(int width, int height)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, dirL_colorBuffer, 0);
 	if (glGetError() != GL_NO_ERROR)
 	{
-		std::cout << "[Create_FBO]Error creating color attachment" << std::endl;
+		std::cout << "[Create_FBO]Error creating color attachment!" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[Create_FBO]", "Error creating color attachment!", nullptr);
 		char ch; std::cin >> ch;
 		exit(1);
 	}
@@ -443,6 +443,7 @@ void GameInstance::CreateFrameBuffer(int width, int height)
 	if (glGetError() != GL_NO_ERROR)
 	{
 		std::cout << "[Create_FBO]Error creating depth/stencil attachment" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[Create_FBO]", "Error creating depth/stencil attachment!", nullptr);
 		char ch;
 		std::cin >> ch;
 		exit(1);
@@ -464,6 +465,7 @@ void GameInstance::CreateFrameBuffer(int width, int height)
 			break;
 		}
 		std::cout << ")" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[Create_FBO]", "Incomplete Framebuffer!", nullptr);
 		char ch;
 		std::cin >> ch;
 		exit(1);

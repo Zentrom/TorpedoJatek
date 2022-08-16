@@ -9,7 +9,6 @@
 
 #include <GL/glew.h>
 #include <SDL.h>
-//#include <SDL_opengl.h>
 #include <SDL_mixer.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -87,12 +86,9 @@ private:
 	float* mousePointedData; //Egér melyik objektumra mutat 3D picking
 	int typingInInput = 0; //Ebbe az indexû inputboxba írunk
 	bool dirL_frameBufferCreated = false;
-	//float sliderTranslationPixels = 0.0f;
 
 	std::string connectIP; //IPhez gyûjtõ
 	std::string connectPort; //Porthoz gyûjtõ
-	//bool connectSignal = false; //Connect gombot megnyomtuk-e
-	//bool debugSignal = false; //Debug gombot megnyomtuk-e
 
 	int viewportWidth; //Ablak canvaszának szélessége
 	int viewportHeight; //Ablak canvaszának magassága

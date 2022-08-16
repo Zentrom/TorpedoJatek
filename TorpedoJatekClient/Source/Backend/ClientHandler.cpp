@@ -55,9 +55,6 @@ void ClientHandler::SendFleet(const std::vector<std::vector<std::pair<char, int>
 {
 	std::cout << "Sending ships..." << std::endl;
 	SendBinary(mySocket, &sentMessageType, sizeof(MessageType));
-	//for (const std::pair<char, int> &activeTilePos : activeTilePositions) {
-	//	SendBinary(mySocket, &activeTilePos, sizeof(std::pair<char, int>));
-	//}
 	std::pair<char, int> data;
 	for (const std::vector<std::pair<char, int>> &sh : ship_positions) {
 		int shipSize = static_cast<int>(sh.size());
@@ -100,9 +97,12 @@ int ClientHandler::GetPlayerNum()
 	ReceiveBinary(mySocket, &playerNum, sizeof(int));
 	if (playerNum > 2) {
 		std::cout << "Server is FULL!!\n" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning", "Server is Full!", nullptr);
 	}
 	else {
 		std::cout << "You are player number " << playerNum << std::endl;
+		std::string mBoxText = std::string("You are player number ").append(std::to_string(playerNum));
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Info", mBoxText.c_str(), nullptr);
 	}
 	return playerNum;
 }
@@ -163,6 +163,7 @@ void ClientHandler::QuitGame()
 	SendBinary(mySocket, &sentMessageType, sizeof(MessageType));
 	CloseConnection();
 	std::cout << "You left the game!" << std::endl;
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Info", "You left the game!", nullptr);
 }
 
 void ClientHandler::CloseConnection() 

@@ -71,14 +71,10 @@ void Terrain::CalcGroundTileTransformations()
 	glm::vec3 groundResult = glm::vec3(0.0f);
 	for (int i = 0; i < terrainSizeXZ; ++i) {
 		ground_transX = ((i % terrainScale) * groundScaleXZ)
-			//+ AZÉRT VAN HOGY CENTEREZVE LEGYEN CSAK MIÉRT ENNYIVEL PONT?? Ahányszor nagyobb a seatile
+			//+ AZÉRT VAN HOGY CENTEREZVE LEGYEN. Ahányszor nagyobb a seatile
 			- (groundScaleXZ * terrainScale / 2.0f) + (groundScaleXZ / 4.0f);
 		ground_transZ = ((i / terrainScale) * groundScaleXZ)
 			- (groundScaleXZ * terrainScale / 2.0f) + (groundScaleXZ / 4.0f);
-
-		//if (i == 0) {
-		//	std::cout << "Ground: " << ground_transX << " " << ground_transZ << std::endl;
-		//}
 
 		groundResult += glm::vec3(ground_transX, groundMountainY, ground_transZ);
 		//std::cout << ground_transX << " ts "  << terrainScale << " gr " << groundScaleXZ << " ";

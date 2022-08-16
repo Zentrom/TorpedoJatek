@@ -14,11 +14,13 @@ OptionHandler::OptionHandler(std::map<std::string, int>& options) : optionsRef(o
 	sh_options.BindAttribLoc(2, "vs_in_tex");
 	if (!sh_options.LinkProgram()) {
 		std::cout << "[Shader_Link]Error during Shader compilation: sh_options" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Shader_Link]", "Error during Shader compilation: sh_options", nullptr);
 	}
 	SDL_DisplayMode mode;
 	for (int i = 0; i < SDL_GetNumDisplayModes(0); ++i) {
 		if (SDL_GetDisplayMode(0, i, &mode) != 0) {
 			std::cout << "[OptionHandler] SDL_GetDisplayMode failed: " << SDL_GetError() << std::endl;
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[SDL_GetDisplayMode]", SDL_GetError(), nullptr);
 		}
 		else {
 			//std::cout << "SDL_GetALLDisplayMode: " << SDL_BITSPERPIXEL(mode.format) << " bpp " << mode.w << 'x' << mode.h << ' ' << mode.refresh_rate << "Hz" << std::endl;
@@ -43,7 +45,6 @@ OptionHandler::OptionHandler(std::map<std::string, int>& options) : optionsRef(o
 	//for (std::pair<int, int>& dismode : displayModes) {
 	//	std::cout << dismode.first << " x " << dismode.second << std::endl;
 	//}
-
 }
 
 OptionHandler::~OptionHandler()
@@ -55,6 +56,7 @@ OptionHandler::~OptionHandler()
 	glDeleteTextures(2, &checkBoxOnTexture);
 }
 
+//3D pickinghez elõfeldolgozás,hogy felépítse a clickelhetõ elemek indexét
 void OptionHandler::PreProcess()
 {
 	sh_menu.On();
@@ -88,6 +90,7 @@ void OptionHandler::PreProcess()
 	sh_menu.Off();
 }
 
+//Kirajzolás
 void OptionHandler::Render(float pointed_element)
 {
 	sh_menu.On();
@@ -141,6 +144,7 @@ void OptionHandler::Render(float pointed_element)
 	sh_options.Off();
 }
 
+//Clickelhetõ elemek hozzáadása a beállítás menühöz
 void OptionHandler::AddClickableOptions()
 {
 	//Felbontás
@@ -262,6 +266,7 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.InitBuffers();
 }
 
+//Felbontás változtatása
 void OptionHandler::SwitchResolution(bool forward)
 {
 	if (forward) {
@@ -281,16 +286,19 @@ void OptionHandler::SwitchResolution(bool forward)
 	}
 }
 
+//Teljes képernyõ változtatása
 void OptionHandler::SwitchFullscreen()
 {
 	fullscreen = !fullscreen;
 }
 
+//Vsync változtatása
 void OptionHandler::SwitchVsync()
 {
 	vsync = !vsync;
 }
 
+//Csúszkamozgatás backend lekezelése
 void OptionHandler::HandleSlider(float pointed, Sint32 mouse_x)
 {
 	int width = optionsRef["ResolutionWidth"];
@@ -312,12 +320,14 @@ void OptionHandler::HandleSlider(float pointed, Sint32 mouse_x)
 	}
 }
 
+//Elmozgatott csúszkából kiszámítja az új hangerõ értéket
 void OptionHandler::UpdateVolume()
 {
 	Mix_VolumeMusic(static_cast<int>((musSliderTransX * 128) / 0.4f));
 	Mix_Volume(-1, static_cast<int>((sfxSliderTransX * 128) / 0.4f));
 }
 
+//Beállítások érvényesítése és fájlba mentése
 void OptionHandler::ApplySettings(SDL_Window* window)
 {
 	if (!fullscreen) {
@@ -351,6 +361,7 @@ void OptionHandler::ApplySettings(SDL_Window* window)
 	optionsFile.close();
 }
 
+//Beállítások elvetése
 void OptionHandler::CancelSettings()
 {
 	displayModeIndex = std::find(displayModes.begin(), displayModes.end(), std::pair<int, int>(optionsRef["ResolutionWidth"], optionsRef["ResolutionHeight"]));

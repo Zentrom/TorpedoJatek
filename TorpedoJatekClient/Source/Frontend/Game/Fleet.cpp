@@ -195,6 +195,7 @@ void Fleet::PlaceShip(PlayTile *front, PlayTile *back)
 		else if (front->getPos().first != back->getPos().first) {
 			if (front->getPos().second != back->getPos().second) {
 				std::cout << "[Fleet_PlaceShip]Error while placing ship: Input column and row both mismatch!" << std::endl;
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Fleet_PlaceShip]", "Error while placing ship: Input column and row both mismatch!", nullptr);
 				return;
 			}
 			else {

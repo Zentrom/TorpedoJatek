@@ -65,7 +65,8 @@ void PlayTile::setState(int new_state)
 {
 	isStateChanged = true;
 	if (new_state == 2) {
-		//if (state == HIT) {             EZ AZ UJRASZINEZÉS HA MÁR LÖTTÜNK ODA???
+		//EZ AZ UJRASZINEZÉS HA MÁR LÖTTÜNK ODA???
+		//if (state == HIT) {
 			state = MISS;
 		//}
 	}
@@ -74,7 +75,7 @@ void PlayTile::setState(int new_state)
 		isStateChanged = false;
 	}
 	else {
-		//EZ LEHET SZAR HA NAGYOBB JÖN BE MINT AZ ENUMHATÁR
+		//EZ LEHET ELROMLIK HA NAGYOBB JÖN BE MINT AZ ENUMHATÁR
 		state = static_cast<TileState>(new_state);
 	}
 

@@ -21,15 +21,15 @@ MainMenu::~MainMenu()
 	delete initialState;
 	delete connectState;
 	delete optionsState;
-
+	
 	vb_background.Clean();
-
+	
 	vb_fbo.Clean();
 	sh_default.Clean();
-
+	
 	Mix_FreeMusic(menuMusic);
 	Mix_FreeChunk(clickSound);
-
+	
 	glDeleteTextures(1, &logoTexture);
 	glDeleteTextures(1, &elementsBg);
 	glDeleteTextures(1, &menuRail);
@@ -60,43 +60,44 @@ bool MainMenu::Init()
 	vb_fbo.AddData(0, 1, -1);
 	vb_fbo.AddData(0, -1, 1);
 	vb_fbo.AddData(0, 1, 1);
-
+	
 	vb_fbo.AddData(1, 0, 0);
 	vb_fbo.AddData(1, 1, 0);
 	vb_fbo.AddData(1, 0, 1);
 	vb_fbo.AddData(1, 1, 1);
 	vb_fbo.InitBuffers();
-
+	
 	vb_background.AddAttribute(0, 2); //position
 	vb_background.AddAttribute(1, 2); //textcoord
-
+	
 	vb_background.AddData(0, -1, -1);
 	vb_background.AddData(0, 1, -1);
 	vb_background.AddData(0, -1, 1);
 	vb_background.AddData(0, 1, 1);
-
+	
 	vb_background.AddData(1, 0, 1);
 	vb_background.AddData(1, 1, 1);
 	vb_background.AddData(1, 0, 0);
 	vb_background.AddData(1, 1, 0);
 	vb_background.InitBuffers();
-
+	
 	sh_default.AttachShader(GL_VERTEX_SHADER, "Shaders/default.vert");
 	sh_default.AttachShader(GL_FRAGMENT_SHADER, "Shaders/default.frag");
 	sh_default.BindAttribLoc(0, "vs_in_pos");
 	sh_default.BindAttribLoc(1, "vs_in_tex");
 	if (!sh_default.LinkProgram()) {
 		std::cout << "[Shader_Link]Error during Shader compilation: sh_default" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Shader_Link]", "Error during Shader compilation: sh_default", nullptr);
 		return false;
 	}
-
+	
 	initialState->AddDecoratorTexture(0.0f, 0.7f, 0.6f, 0.2f, logoTexture);
 	initialState->AddDecoratorString(0.5f, -0.8f, 0.4f, versionString.c_str());
 	initialState->AddButton(0, 0, u8"Play");
 	initialState->AddButton(0, 0, u8"Debug");
 	initialState->AddButton(0, 0, u8"Options");
 	initialState->AddButton(0, 0, u8"Quit");
-	initialState->BuildLayout();
+	initialState->BuildLayout(false);
 
 	connectState->AddDecoratorTexture(0.0f, 0.1f, 0.6f, 0.4f, elementsBg);
 	connectState->AddDecoratorString(-0.2f, -0.8f, 0.4f, 
@@ -115,7 +116,7 @@ ESC - Quit", 0.5f);
 	connectState->AddInputBox(nullptr); //port
 	connectState->AddButton(0.3f, 0.01f, u8"Connect");
 	connectState->AddButton(-0.3f, 0.01f, u8"Back");
-	connectState->BuildLayout();
+	connectState->BuildLayout(true);
 
 	optionsState->AddDecoratorTexture(0.0f, 0.0f, 0.7f, 0.6f, elementsBg);
 	optionsState->AddDecoratorString(-0.3f, 0.4f, 0.2f, u8"Video", 0.1f);
@@ -131,15 +132,17 @@ ESC - Quit", 0.5f);
 	optionsState->AddClickableOptions();
 	optionsState->AddButton(-0.4f, -0.4f, u8"Back");
 	optionsState->AddButton(0.4f, -0.4f, u8"Apply");
-	optionsState->BuildLayout();
+	optionsState->BuildLayout(false);
 
 	menuMusic = Mix_LoadMUS("Resources/Audio/menuMusic.ogg");
 	if (!menuMusic) {
 		printf("Mix_LoadMUS(\"menuMusic.ogg\"): %s\n", Mix_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Mix_LoadMUS]", Mix_GetError(), nullptr);
 	}
 	clickSound = Mix_LoadWAV("Resources/Audio/menuClick.wav");
 	if (!clickSound) {
 		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Mix_LoadWAV]", SDL_GetError(), nullptr);
 	}
 	Mix_PlayMusic(menuMusic, 10);
 
@@ -298,6 +301,17 @@ MenuSignal MainMenu::MouseDown(SDL_MouseButtonEvent& mouse, SDL_Window* window)
 			case 102:
 				//connect gomb
 				ipAndPort = connectState->getInputStrings(2);
+				try {
+					std::stoi(ipAndPort.at(1));
+				}
+				catch (std::invalid_argument) {
+					SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning", "Port must be a number!", nullptr);
+					return MenuSignal::CONTINUE;
+				}
+				catch (std::out_of_range) {
+					SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning", "Port number too big!", nullptr);
+					return MenuSignal::CONTINUE;
+				}
 				connectIP = ipAndPort.at(0);
 				connectPort = ipAndPort.at(1);
 				return MenuSignal::CONNECT;
@@ -393,7 +407,8 @@ void MainMenu::CreateFrameBuffer(int width, int height)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, dirL_colorBuffer, 0);
 	if (glGetError() != GL_NO_ERROR)
 	{
-		std::cout << "[Create_FBO]Error creating color attachment" << std::endl;
+		std::cout << "[Create_FBO]Error creating color attachment!" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[Create_FBO]", "Error creating color attachment!", nullptr);
 		char ch; std::cin >> ch;
 		exit(1);
 	}
@@ -426,6 +441,7 @@ void MainMenu::CreateFrameBuffer(int width, int height)
 			break;
 		}
 		std::cout << ")" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[Create_FBO]", "Incomplete Framebuffer!", nullptr);
 		char ch;
 		std::cin >> ch;
 		exit(1);

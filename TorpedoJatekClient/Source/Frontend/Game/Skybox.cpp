@@ -51,6 +51,7 @@ void Skybox::Init()
 	sh_skybox.BindAttribLoc(0, "vs_in_pos");
 	if (!sh_skybox.LinkProgram()) {
 		std::cout << "[Shader_Link]Error during Shader compilation: sh_skybox" << std::endl;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Shader_Link]", "Error during Shader compilation: sh_skybox", nullptr);
 	}
 	else {
 		sh_skybox.On();
@@ -72,6 +73,7 @@ void Skybox::CreateCubeMap()
 		if (!loaded_img) {
 			std::cout << "[IMG_Load]Couldn't load skybox face from path: " << facePaths[i] << '\n';
 			std::cout << IMG_GetError() << std::endl;
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Skybox_CreateCubeMap]", IMG_GetError(), nullptr);
 			continue;
 		}
 		if (loaded_img->format->BytesPerPixel == 4) {
