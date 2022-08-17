@@ -91,6 +91,26 @@ bool MainMenu::Init()
 		return false;
 	}
 	
+	CreateElements();
+
+	menuMusic = Mix_LoadMUS("Resources/Audio/menuMusic.ogg");
+	if (!menuMusic) {
+		printf("Mix_LoadMUS(\"menuMusic.ogg\"): %s\n", Mix_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Mix_LoadMUS]", Mix_GetError(), nullptr);
+	}
+	clickSound = Mix_LoadWAV("Resources/Audio/menuClick.wav");
+	if (!clickSound) {
+		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Mix_LoadWAV]", SDL_GetError(), nullptr);
+	}
+	Mix_PlayMusic(menuMusic, 10);
+
+	return true;
+}
+
+//Menü elemeit építi fel
+void MainMenu::CreateElements()
+{
 	initialState->AddDecoratorTexture(0.0f, 0.7f, 0.6f, 0.2f, logoTexture);
 	initialState->AddDecoratorString(0.5f, -0.8f, 0.4f, versionString.c_str());
 	initialState->AddButton(0, 0, u8"Play");
@@ -100,7 +120,7 @@ bool MainMenu::Init()
 	initialState->BuildLayout(false);
 
 	connectState->AddDecoratorTexture(0.0f, 0.1f, 0.6f, 0.4f, elementsBg);
-	connectState->AddDecoratorString(-0.2f, -0.8f, 0.4f, 
+	connectState->AddDecoratorString(-0.2f, -0.8f, 0.4f,
 		u8"Controls\n \
 WASD - Camera Movement\n \
 Hold Shift - Faster Movement\n \
@@ -122,31 +142,17 @@ ESC - Quit", 0.5f);
 	optionsState->AddDecoratorString(-0.3f, 0.4f, 0.2f, u8"Video", 0.1f);
 	optionsState->AddDecoratorString(-0.5f, 0.2f, 0.1f, u8"Resolution:");
 	optionsState->AddDecoratorString(-0.5f, 0.0f, 0.1f, u8"Fullscreen:");
-	optionsState->AddDecoratorString(-0.5f,-0.2f, 0.1f, u8"Vsync:");
+	optionsState->AddDecoratorString(-0.5f, -0.2f, 0.1f, u8"Vsync:");
 	optionsState->AddDecoratorString(0.3f, 0.4f, 0.2f, u8"Audio", 0.1f);
 	optionsState->AddDecoratorString(0.1f, 0.2f, 0.08f, u8"Music:");
 	optionsState->AddDecoratorString(0.1f, 0.0f, 0.08f, u8"Sfx:");
 	optionsState->AddDecoratorTexture(0.0f, 0.0f, 0.01f, 0.5f, menuRail);
 	optionsState->AddDecoratorTexture(0.4f, 0.15f, 0.2f, 0.01f, menuRail);
-	optionsState->AddDecoratorTexture(0.4f,-0.05f, 0.2f, 0.01f, menuRail);
+	optionsState->AddDecoratorTexture(0.4f, -0.05f, 0.2f, 0.01f, menuRail);
 	optionsState->AddClickableOptions();
 	optionsState->AddButton(-0.4f, -0.4f, u8"Back");
 	optionsState->AddButton(0.4f, -0.4f, u8"Apply");
 	optionsState->BuildLayout(false);
-
-	menuMusic = Mix_LoadMUS("Resources/Audio/menuMusic.ogg");
-	if (!menuMusic) {
-		printf("Mix_LoadMUS(\"menuMusic.ogg\"): %s\n", Mix_GetError());
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Mix_LoadMUS]", Mix_GetError(), nullptr);
-	}
-	clickSound = Mix_LoadWAV("Resources/Audio/menuClick.wav");
-	if (!clickSound) {
-		printf("Mix_LoadWAV error: %s\n", SDL_GetError());
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[Mix_LoadWAV]", SDL_GetError(), nullptr);
-	}
-	Mix_PlayMusic(menuMusic, 10);
-
-	return true;
 }
 
 //Ha true akkor csatlakozást jelzünk
@@ -156,6 +162,7 @@ void MainMenu::Update()
 	float deltaTime = (SDL_GetTicks() - lastTime) / 1000.0f;
 	lastTime = SDL_GetTicks();
 
+	//Kurzor animáció
 	if (menuState == MenuState::TYPING) {
 		typingAnimElapsed += deltaTime;
 		if (typingAnimElapsed > typingAnimTime) {
@@ -165,6 +172,7 @@ void MainMenu::Update()
 		}
 	}
 
+	//Háttér animáció
 	bgAnimElapsed += deltaTime;
 	if (bgAnimElapsed > bgAnimTime)
 	{
@@ -181,6 +189,7 @@ void MainMenu::Render()
 	glBindFramebuffer(GL_FRAMEBUFFER, dirL_frameBuffer);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+	//Ezt nem lehet jobban,mert optionstate uj függvényeket tartalmaz
 	if (pCurrentState == optionsState) {
 		optionsState->PreProcess();
 	}
@@ -199,7 +208,7 @@ void MainMenu::Render()
 	sh_default.Off();
 
 	if (menuState == MenuState::TYPING) {
-		pCurrentState->Render(66.0f);
+		pCurrentState->Render(66.0f); //Placeholder érték
 	}
 	else {
 		if (pCurrentState == optionsState) {
@@ -225,7 +234,6 @@ void MainMenu::KeyboardDown(SDL_KeyboardEvent& key)
 {
 	if (menuState == MenuState::TYPING) {
 		if ((key.keysym.sym >= SDLK_0 && key.keysym.sym <= SDLK_9)
-			|| (key.keysym.sym >= SDLK_a && key.keysym.sym <= SDLK_z)
 			|| key.keysym.sym == SDLK_PERIOD) 
 		{
 			pCurrentState->UpdateInputBox(typingInInput, SDL_GetKeyName(key.keysym.sym), false, cursorShown);
@@ -254,7 +262,7 @@ void MainMenu::MouseMove(SDL_MouseMotionEvent& mouse)
 
 	if (pCurrentState == optionsState) {
 		if (mouse.state == SDL_BUTTON_LMASK 
-			&& (mousePointedData[3] == 106 || mousePointedData[3] == 107)) {
+			&& (mousePointedData[3] == optionsState->getElementId("MusicVolume") || mousePointedData[3] == optionsState->getElementId("SfxVolume"))) {
 			optionsState->HandleSlider(mousePointedData[3], mouseX);
 		}
 	}
@@ -263,43 +271,32 @@ void MainMenu::MouseMove(SDL_MouseMotionEvent& mouse)
 //True-val tér vissza ha be akarjuk zárni a programot magasabb szintrõl
 MenuSignal MainMenu::MouseDown(SDL_MouseButtonEvent& mouse, SDL_Window* window)
 {
-	//std::cout << mouseX << " " << mouseY << std::endl;
-
 	if (pCurrentState == initialState) {
-		if (mousePointedData[3] == 100) {
-			//Play
+		if (mousePointedData[3] == initialState->getElementId("Play")) {
 			pCurrentState = connectState;
 		}
-		else if (mousePointedData[3] == 101) {
-			//Debug
+		else if (mousePointedData[3] == initialState->getElementId("Debug")) {
 			return MenuSignal::DEBUG;
 		}
-		else if (mousePointedData[3] == 102) {
-			//Options
+		else if (mousePointedData[3] == initialState->getElementId("Options")) {
 			pCurrentState = optionsState;
 		}
-		else if(mousePointedData[3] == 103) {
-			//Quit
+		else if(mousePointedData[3] == initialState->getElementId("Quit")) {
 			return MenuSignal::QUIT;
 		}
 	}
 	else if (pCurrentState == connectState) {
 		if (menuState == MenuState::CLICKING) {
 			std::vector<std::string> ipAndPort;
-			switch (static_cast<int>(mousePointedData[3]))
-			{
-			case 100:
-				//ip input
+			if (mousePointedData[3] == connectState->getElementId("InputBox0")) {
 				menuState = MenuState::TYPING;
-				typingInInput = 100;
-				break;
-			case 101:
-				//port input
+				typingInInput = connectState->getElementId("InputBox0");
+			}
+			else if (mousePointedData[3] == connectState->getElementId("InputBox1")) {
 				menuState = MenuState::TYPING;
-				typingInInput = 101;
-				break;
-			case 102:
-				//connect gomb
+				typingInInput = connectState->getElementId("InputBox1");
+			}
+			else if (mousePointedData[3] == connectState->getElementId("Connect")) {
 				ipAndPort = connectState->getInputStrings(2);
 				try {
 					std::stoi(ipAndPort.at(1));
@@ -315,46 +312,31 @@ MenuSignal MainMenu::MouseDown(SDL_MouseButtonEvent& mouse, SDL_Window* window)
 				connectIP = ipAndPort.at(0);
 				connectPort = ipAndPort.at(1);
 				return MenuSignal::CONNECT;
-			case 103:
-				//Back gomb
-				//connectState->Clean();
+			}
+			else if (mousePointedData[3] == connectState->getElementId("Back")) {
 				pCurrentState = initialState;
-				break;
-			default:
-				break;
 			}
 		}
 	}
 	else if (pCurrentState == optionsState) {
-		switch (static_cast<int>(mousePointedData[3]))
-		{
-		case 100:
-			//Back gomb
+		if (mousePointedData[3] == optionsState->getElementId("Back")) {
 			optionsState->CancelSettings();
 			pCurrentState = initialState;
-			break;
-		case 101:
-			//Apply gomb
+		}
+		else if (mousePointedData[3] == optionsState->getElementId("Apply")) {
 			optionsState->ApplySettings(window);
-			break;
-		case 102:
-			//Bal nyíl
+		}
+		else if (mousePointedData[3] == optionsState->getElementId("LeftArrow")) {
 			optionsState->SwitchResolution(false);
-			break;
-		case 103:
-			//Jobb nyíl
+		}
+		else if (mousePointedData[3] == optionsState->getElementId("RightArrow")) {
 			optionsState->SwitchResolution(true);
-			break;
-		case 104:
-			//Fullscreen
+		}
+		else if (mousePointedData[3] == optionsState->getElementId("Fullscreen")) {
 			optionsState->SwitchFullscreen();
-			break;
-		case 105:
-			//Vsync
+		}
+		else if (mousePointedData[3] == optionsState->getElementId("Vsync")) {
 			optionsState->SwitchVsync();
-			break;
-		default:
-			break;
 		}
 	}
 	return MenuSignal::CONTINUE;

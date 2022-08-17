@@ -134,6 +134,7 @@ void MenuStateHandler::AddButton(float ndc_x, float ndc_y, const char* name)
 	vb_button.AddIndex(5 + indexCount, 0 + indexCount, 3 + indexCount);
 
 	buttonTextures.push_back(std::pair<std::string, GLuint>(std::string(name), menuRenderer->RenderTextSolid(name)));
+	clickableIds[name] = preProcessOffset + clickableIds.size();
 
 	if(!ndc_y) nextElementY -= 0.2f;
 }
@@ -159,6 +160,9 @@ void MenuStateHandler::AddInputBox(const char* name)
 	inputString.append(inputSizeLimit - inputString.size(), ' ');
 	inputBoxTextures.push_back(std::pair<std::string, GLuint>(inputString, menuRenderer->RenderTextSolid(inputString.c_str())));
 
+	std::string idName("InputBox" + std::to_string(inputBoxCount++));
+	clickableIds[idName] = preProcessOffset + clickableIds.size();
+
 	nextElementY -= 0.2f;
 }
 
@@ -179,19 +183,29 @@ void MenuStateHandler::UpdateInputBox(int id, const char* next_char, bool is_del
 	if (!is_delete) {
 		if (firstSpace != std::string::npos) {
 			if (next_char) {
+				//Új karakter
 				inputBoxTextures.at(index).first.replace(firstSpace, 1, next_char);
-				//std::cout << inputBoxTextures.at(index).first << std::endl;
-				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "inputBox", inputBoxTextures.at(index).first.c_str(), nullptr);
-				++firstSpace;
+				firstSpace = inputBoxTextures.at(index).first.find(' ');
 			}
+			//Kurzor update
 			glDeleteTextures(1, &inputBoxTextures.at(index).second);
 			std::string renderableString = std::string(inputBoxTextures.at(index).first);
-			renderableString[firstSpace] = cursorChar;
+			if (firstSpace != std::string::npos) {
+				renderableString[firstSpace] = cursorChar;
+			}
+			else renderableString.append(1, cursorChar);
+			inputBoxTextures.at(index).second = menuRenderer->RenderTextSolid(renderableString.c_str());
+		}
+		else if (!next_char) {
+			//Teli szöveg kurzor update
+			glDeleteTextures(1, &inputBoxTextures.at(index).second);
+			std::string renderableString = std::string(inputBoxTextures.at(index).first + cursorChar);
 			inputBoxTextures.at(index).second = menuRenderer->RenderTextSolid(renderableString.c_str());
 		}
 		return;
 	}
 	else {
+		//Törlések
 		if (firstSpace == std::string::npos) {
 			inputBoxTextures.at(index).first.back() = ' ';
 		}
@@ -271,4 +285,16 @@ std::vector<std::string> MenuStateHandler::getInputStrings(int count)
 		result.push_back(inputBoxTextures.at(i).first);
 	}
 	return result;
+}
+
+//Element 3D pickinges indexét adja vissza
+int MenuStateHandler::getElementId(const char* name)
+{
+	try {
+		int result = clickableIds.at(name);
+		return result;
+	}
+	catch (std::out_of_range) {
+		return preProcessOffset; //Hiba esetén elsõ idt adja vissza
+	}
 }

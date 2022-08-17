@@ -12,4 +12,5 @@ public:
 
 private:
 
+	static void ReportErrorAndExit(char function_name[] = "Undefined", int exit_code = 99);
 };

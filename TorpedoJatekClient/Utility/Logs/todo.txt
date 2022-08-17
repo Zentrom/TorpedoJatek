@@ -3,11 +3,4 @@ Megoldani egy tényleges visszakapcsolódást a serverre,lementett állapottal, 60se
 Particle - Cylindrical Billboaring -> Spherical
 Beta után Particleeknek legyen mozgása + transparency/szín változása
 Mix_Position() Positional audiot ujrapróbálni esetleg. Béta+
-
 std::exit()-ektõl lehetõleg megszabadulni. Beta verziónál.
-std::cin.get()-el még mindig vannak problémák. Ezt beta megoldja.
-
-virtual-al megoldani a polimorfizmust OptionHandlernél
-Van ujraszinezás ha már löttünk oda? Nincs,de kéne
-Server is a ConnectionHandlernél kirak messageboxot,ez nemjo igy
-Inputboxba ha irunk akkor garbage value is lehet néha

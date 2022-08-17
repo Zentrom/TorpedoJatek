@@ -30,3 +30,14 @@ MessageType ServerHandler::ReceiveMessageType(TCPsocket& socket)
 	}
 	return MessageType::QUIT;
 }
+
+//Nagyobb hiba esetén kiirjuk és kilépünk
+void ServerHandler::ReportErrorAndExit(char function_name[], int exit_code)
+{
+	std::cerr << "[ERROR] [" << function_name << "] " << SDLNet_GetError() << '\n'
+		<< "Press enter to exit...\n";
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	std::cin.get();
+	std::exit(exit_code);
+}

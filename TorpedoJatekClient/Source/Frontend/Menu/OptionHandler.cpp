@@ -61,26 +61,26 @@ void OptionHandler::PreProcess()
 {
 	sh_menu.On();
 	sh_menu.SetUniform("is_PreProcess", true);
-	int pickingIndex = preProcessOffset;
+
 	vb_button.On();
 	for (unsigned int i = 0; i < buttonTextures.size(); ++i) {
-		sh_menu.SetUniform("clickableIndex", pickingIndex++);
+		sh_menu.SetUniform("clickableIndex", (clickableIds["Back"] + static_cast<int>(i)));
 		vb_button.DrawIndexed(GL_TRIANGLES, i * 12, 12);
 	}
 	vb_button.Off();
 	vb_clickables.On();
-	sh_menu.SetUniform("clickableIndex", pickingIndex++);
+	sh_menu.SetUniform("clickableIndex", clickableIds["LeftArrow"]);
 	vb_clickables.Draw(GL_TRIANGLES, 0, 3); //nyil
-	sh_menu.SetUniform("clickableIndex", pickingIndex++);
+	sh_menu.SetUniform("clickableIndex", clickableIds["RightArrow"]);
 	vb_clickables.Draw(GL_TRIANGLES, 3, 3); //nyil
-	sh_menu.SetUniform("clickableIndex", pickingIndex++);
+	sh_menu.SetUniform("clickableIndex", clickableIds["Fullscreen"]);
 	vb_clickables.Draw(GL_TRIANGLES, 6, 6); //fullscreen
-	sh_menu.SetUniform("clickableIndex", pickingIndex++);
+	sh_menu.SetUniform("clickableIndex", clickableIds["Vsync"]);
 	vb_clickables.Draw(GL_TRIANGLES, 12, 6); //vsync
-	sh_menu.SetUniform("clickableIndex", pickingIndex++);
+	sh_menu.SetUniform("clickableIndex", clickableIds["MusicVolume"]);
 	sh_menu.SetUniform("translation", musSliderTransX);
 	vb_clickables.Draw(GL_TRIANGLES, 18, 6); //musicslider
-	sh_menu.SetUniform("clickableIndex", pickingIndex++);
+	sh_menu.SetUniform("clickableIndex", clickableIds["SfxVolume"]);
 	sh_menu.SetUniform("translation", sfxSliderTransX);
 	vb_clickables.Draw(GL_TRIANGLES, 24, 6); //audioslider
 	vb_clickables.Off();
@@ -103,12 +103,11 @@ void OptionHandler::Render(float pointed_element)
 	vb_decorator.Off();
 	sh_menu.SetUniform("is_Decorator", false);
 
-	int pickingIndex = preProcessOffset;
 	sh_menu.SetUniform("read_index", static_cast<int>(pointed_element));
 	vb_button.On();
 	for (unsigned int i = 0; i < buttonTextures.size(); ++i) {
 		sh_menu.SetTexture("textTexture", 0, buttonTextures.at(i).second);
-		sh_menu.SetUniform("clickableIndex", pickingIndex++);
+		sh_menu.SetUniform("clickableIndex", clickableIds["Back"] + static_cast<int>(i));
 		vb_button.DrawIndexed(GL_TRIANGLES, i * 12, 12);
 	}
 	vb_button.Off();
@@ -117,25 +116,25 @@ void OptionHandler::Render(float pointed_element)
 	sh_options.On();
 	sh_options.SetUniform("read_index", static_cast<int>(pointed_element));
 	vb_clickables.On();
-	sh_options.SetUniform("clickableIndex", pickingIndex++);
+	sh_options.SetUniform("clickableIndex", clickableIds["LeftArrow"]);
 	vb_clickables.Draw(GL_TRIANGLES, 0, 3); //nyil
-	sh_options.SetUniform("clickableIndex", pickingIndex++);
+	sh_options.SetUniform("clickableIndex", clickableIds["RightArrow"]);
 	vb_clickables.Draw(GL_TRIANGLES, 3, 3); //nyil
 	sh_options.SetUniform("has_Texture", true);
 	if (fullscreen) sh_options.SetTexture("optionTexture", 0, checkBoxOnTexture);
 	else sh_options.SetTexture("optionTexture", 0, checkBoxOffTexture);
-	sh_options.SetUniform("clickableIndex", pickingIndex++);
+	sh_options.SetUniform("clickableIndex", clickableIds["Fullscreen"]);
 	vb_clickables.Draw(GL_TRIANGLES, 6, 6); //fullscreen
 	if (vsync) sh_options.SetTexture("optionTexture", 0, checkBoxOnTexture);
 	else sh_options.SetTexture("optionTexture", 0, checkBoxOffTexture);
-	sh_options.SetUniform("clickableIndex", pickingIndex++);
+	sh_options.SetUniform("clickableIndex", clickableIds["Vsync"]);
 	vb_clickables.Draw(GL_TRIANGLES, 12, 6); //vsync
 	sh_options.SetTexture("optionTexture", 0, checkBoxOffTexture);
 	sh_options.SetUniform("translation", musSliderTransX);
-	sh_options.SetUniform("clickableIndex", pickingIndex++);
+	sh_options.SetUniform("clickableIndex", clickableIds["MusicVolume"]);
 	vb_clickables.Draw(GL_TRIANGLES, 18, 6); //audioslider
 	sh_options.SetUniform("translation", sfxSliderTransX);
-	sh_options.SetUniform("clickableIndex", pickingIndex++);
+	sh_options.SetUniform("clickableIndex", clickableIds["SfxVolume"]);
 	vb_clickables.Draw(GL_TRIANGLES, 24, 6); //audioslider
 	sh_options.SetUniform("has_Texture", false);
 	sh_options.SetUniform("translation", 0.0f);
@@ -172,6 +171,8 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(2, 1.0f, 1.0f);
 	vb_clickables.AddData(2, 1.0f, 1.0f);
 	vb_clickables.AddData(2, 1.0f, 1.0f);
+	clickableIds["LeftArrow"] = preProcessOffset + clickableIds.size();
+
 	//Felbontás - Jobbnyíl
 	vb_clickables.AddData(0, -0.05f, 0.15f);
 	vb_clickables.AddData(0, -0.1f, 0.2f);
@@ -182,6 +183,7 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(2, 1.0f, 1.0f);
 	vb_clickables.AddData(2, 1.0f, 1.0f);
 	vb_clickables.AddData(2, 1.0f, 1.0f);
+	clickableIds["RightArrow"] = preProcessOffset + clickableIds.size();
 
 	//Fullscreen
 	vb_clickables.AddData(0, -0.2f, 0);
@@ -202,6 +204,7 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(2, 1.0f, 0);
 	vb_clickables.AddData(2, 0, 1.0f);
 	vb_clickables.AddData(2, 1.0f, 1.0f);
+	clickableIds["Fullscreen"] = preProcessOffset + clickableIds.size();
 
 	//Vsync
 	vb_clickables.AddData(0, -0.2f, -0.2f);
@@ -222,6 +225,7 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(2, 1.0f, 0);
 	vb_clickables.AddData(2, 0, 1.0f);
 	vb_clickables.AddData(2, 1.0f, 1.0f);
+	clickableIds["Vsync"] = preProcessOffset + clickableIds.size();
 
 	//Music Volume
 	vb_clickables.AddData(0, 0.23f, 0.18f);
@@ -242,6 +246,7 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(2, 1.0f, 0);
 	vb_clickables.AddData(2, 0, 1.0f);
 	vb_clickables.AddData(2, 1.0f, 1.0f);
+	clickableIds["MusicVolume"] = preProcessOffset + clickableIds.size();
 
 	//Sfx volume
 	vb_clickables.AddData(0, 0.23f, -0.02f);
@@ -262,6 +267,7 @@ void OptionHandler::AddClickableOptions()
 	vb_clickables.AddData(2, 1.0f, 0);
 	vb_clickables.AddData(2, 0, 1.0f);
 	vb_clickables.AddData(2, 1.0f, 1.0f);
+	clickableIds["SfxVolume"] = preProcessOffset + clickableIds.size();
 
 	vb_clickables.InitBuffers();
 }
@@ -307,16 +313,16 @@ void OptionHandler::HandleSlider(float pointed, Sint32 mouse_x)
 	float calcValue = (static_cast<float>(mouse_x) - startPos) / (width / 2.0f);
 
 	if (calcValue > 0 && mouse_x < endPos) {
-		if (pointed == 106) musSliderTransX = calcValue;
-		else if (pointed == 107) sfxSliderTransX = calcValue;
+		if (pointed == getElementId("MusicVolume")) musSliderTransX = calcValue;
+		else if (pointed == getElementId("SfxVolume")) sfxSliderTransX = calcValue;
 	}
 	else if (calcValue < 0) {
-		if (pointed == 106) musSliderTransX = 0.0f;
-		else if (pointed == 107) sfxSliderTransX = 0.0f;
+		if (pointed == getElementId("MusicVolume")) musSliderTransX = 0.0f;
+		else if (pointed == getElementId("SfxVolume")) sfxSliderTransX = 0.0f;
 	}
 	else if (mouse_x > endPos) {
-		if (pointed == 106) musSliderTransX = 0.4f;
-		else if (pointed == 107) sfxSliderTransX = 0.4f;
+		if (pointed == getElementId("MusicVolume")) musSliderTransX = 0.4f;
+		else if (pointed == getElementId("SfxVolume")) sfxSliderTransX = 0.4f;
 	}
 }
 

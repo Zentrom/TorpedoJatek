@@ -37,8 +37,8 @@ int TorpedoJatekClient::Run()
 	if (CreateGameWindow()) {
 		return 1;
 	}
-	bool quit = false;
-	if (!StartMainMenu()) {
+
+	while (!StartMainMenu()) {
 		if (StartGameInstance()) {
 			return 1;
 		}
@@ -128,7 +128,7 @@ int TorpedoJatekClient::ReadOptions()
 	else {
 		//Fájl szöveg ellenõrzése
 		std::string line;
-		int findIndex = 0;
+		unsigned int findIndex = 0;
 		bool corrupted = false;
 		for (std::map<std::string, int>::const_iterator iter = options.cbegin(); iter != options.cend(); ++iter) {
 			std::getline(optionsFile, line);

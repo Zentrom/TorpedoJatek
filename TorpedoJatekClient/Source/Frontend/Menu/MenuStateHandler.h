@@ -27,6 +27,7 @@ public:
 	void UpdateInputBox(int id, const char* next_char, bool is_delete, bool is_cursor);
 
 	std::vector<std::string> getInputStrings(int count);
+	int getElementId(const char* name);
 protected:
 
 	MenuRenderer* menuRenderer = new MenuRenderer(); //Szövegek textúrába rajzolása
@@ -37,9 +38,11 @@ protected:
 	std::vector<GLuint> decoratorTextures; //Nem klikkelhetõ objektumok textúrája
 	std::vector<std::pair<std::string, GLuint>> buttonTextures; //Gombok szövege és textúrája
 	std::vector<std::pair<std::string, GLuint>> inputBoxTextures; //InputBoxok szövege és textúrája
+	std::map<std::string, int> clickableIds; //Clickelhetõ elemek 3D picking-es indexe
 
 	const size_t inputSizeLimit = 16; //Inputboxba maximum hány karaktert lehet írni
 	const int preProcessOffset = 100; //3D pickinghez offset hogy ne 0-tól induljon
+	int inputBoxCount = 0; //Hány inputbox van a menüállapotban
 
 	float nextElementY = 0.4f; //Menü kövi elemét Y tengelyen hova rakjuk
 };

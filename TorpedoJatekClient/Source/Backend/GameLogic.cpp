@@ -18,11 +18,11 @@ GameLogic::~GameLogic()
 }
 
 //Inicializálja a játékkal kapcsolatos háttéradatokat
-void GameLogic::Init(std::string ip, std::string port)
+void GameLogic::Init(std::string ip_num, std::string port_num)
 {
 	if (!TorpedoGLOBAL::Debug) {
-		this->ip = ip;
-		this->port = std::stoi(port);
+		ip = ip_num;
+		port = std::stoi(port_num);
 
 		//Lekezeli ha teli szerverre kapcsolódtunk
 		do {
@@ -64,10 +64,6 @@ void GameLogic::ConnectionSetup()
 		std::cout << "Server ip: " << ip << std::endl;
 		std::cout << "Server port: " << port << std::endl;
 
-		//std::cout << "Server ip: ";
-		//std::cin >> ip;
-		//std::cout << "Server port: ";
-		//std::cin >> port;
 	} while (!clientHandler->Init(ip, port));
 }
 
@@ -114,9 +110,9 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 			const std::string shootPos = ProcessTile(pEnemyTarget->getPos());
 			pEnemyTarget->setStateColor();
 			std::cout << "Enemy's shot to " << shootPos << " was a "
-				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "game decider!!")) << std::endl;
 			(*pTextHandler < "Enemy's shot to ") << shootPos.c_str() << " was a "
-				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << '\n';
+				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "game decider!!")) << '\n';
 		}
 		std::cout << "\nIt's your turn! Shoot at an enemy tile!(with LeftMouseButton)" <<
 			"\n(ESC - Quit)" << std::endl;
@@ -129,9 +125,9 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 			const std::string shootPos = ProcessTile(pMyTarget->getPos());
 			pMyTarget->setStateColor();
 			std::cout << "Your shot to " << shootPos << " was a "
-				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "game decider!!")) << std::endl;
 			(*pTextHandler < "Your shot to ") << shootPos.c_str() << " was a "
-				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << '\n';
+				<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "game decider!!")) << '\n';
 		}
 		std::cout << "\nWaiting for enemy to shoot..." <<
 			"\n(ESC - Quit)" << std::endl;
@@ -144,9 +140,9 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 				const std::string shootPos = ProcessTile(pMyTarget->getPos());
 				pMyTarget->setStateColor();
 				std::cout << "Your shot to " << shootPos << " was a "
-					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "game decider!!")) << std::endl;
 				(*pTextHandler < "Your shot to ") << shootPos.c_str() << " was a "
-					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!"));
+					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "game decider!!"));
 			}
 			pEnemyFleet->getBattleShip().setDestroyed(true);
 			std::cout << "You've won the match!\n(ESC-Quit)" << std::endl;
@@ -157,9 +153,9 @@ void GameLogic::DisplayMessage(GameState gameState, int related_data)
 				const std::string shootPos = ProcessTile(pEnemyTarget->getPos());
 				pEnemyTarget->setStateColor();
 				std::cout << "Enemy's shot to " << shootPos << " was a "
-					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!")) << std::endl;
+					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "game decider!!")) << std::endl;
 				(*pTextHandler < "Enemy's shot to ") << shootPos.c_str() << " was a "
-					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "banger!!"));
+					<< (matchState == ResponseState::CONTINUE_MATCH ? "miss." : (matchState == ResponseState::HIT_ENEMY_SHIP ? "hit!" : "game decider!!"));
 				//Vesztés esetén kirajzoljuk a nyertes hajóit
 				PlaceShipsIfLost();
 			}

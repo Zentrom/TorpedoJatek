@@ -12,7 +12,6 @@ UDP:https://www.libsdl.org/projects/SDL_net/docs/SDL_net_25.html#SEC25
 Saját pair osztály std::pair-bõl örökölve?
 operator<< overloading? Más operátort esetleg?
 
-Capture the cursor in beta!
 SeaTile and Ground generation with geometry shader?
 Exception propagation? Try-catch lassítja a progit,ami játék esetében nem a legjobb. Állítólag -25% perf.
 SeaTile és Ground Instancing/Deferred shading? Instance akkor kéne max ha animálva lenne a modell.
@@ -22,8 +21,6 @@ Time measureing with chrono?
 Try-catch exception handling with stack unwinding?
 Move-asignments?
 std::optional-t használni ha kell
-std::cin-el kapcsolatos dolgok learnCpp jegyzetben.
-SDL_GetTicks64() hogy tovább futhasson?
 
 3D positional audio legyen-e egyáltalán vagy marad a distance? OpenAL esetleg?
 
@@ -54,3 +51,9 @@ glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 SDL_WINDOW_MOUSE_FOCUS és SDL_WINDOW_MOUSE_CAPTURE(EZ FELVESZI A MOZGÁST WINDOWON KIVÜL) window flagek betánál. SDL_SetRelativeMouseMode()
 SDL_WINDOWEVENT_CLOSE kezeli az ablak bezárást(consolet nem)
 DLL-ek másik mappába legyenek?? EZ NEHÉZ(WIN API KELL) ÉS NEM IS AJÁNLOTT(DLL Hell)
+
+
+
+
+
+

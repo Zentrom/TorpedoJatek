@@ -65,10 +65,7 @@ void PlayTile::setState(int new_state)
 {
 	isStateChanged = true;
 	if (new_state == 2) {
-		//EZ AZ UJRASZINEZÉS HA MÁR LÖTTÜNK ODA???
-		//if (state == HIT) {
-			state = MISS;
-		//}
+		state = MISS;
 	}
 	else if (new_state == 3) {
 		state = static_cast<TileState>(new_state);

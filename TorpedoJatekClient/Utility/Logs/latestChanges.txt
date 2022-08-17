@@ -1,19 +1,7 @@
-v0.1.0<=>Beta Release
+v0.1.0a-Restarting
 -----------------------------------------------------------------------------------------
-[FEATURES]
--Created a Menu for the game.
--Added animated Menu backgrounds, Menu decorators and clickable elements.
--Added ability to connect to the Server using only the Menu UI.
--Created working Options Menu which saves options in a ".cfg" file.
--The Game window is not resizeable anymore by window dragging.
--Removed the Console window.
--Errors are now displayed using MessageBoxes.
--Focused clickable element is drawn differently.
--Debug mode can now be launched from the menu.
--Added Menu music and clicking sound.
--Added possibility to remove the text display in-game.
--Game controls are now shown in the game window.(Play menu)
-[FIXES]
--Rotating the Camera now locks mouse position.
--Fixed SDL_ttf static lib missing the newest functions.
--Fixed indexed drawing.
+-Made the game restartable(memory leak needs fixing).
+-Removed the possibility of the IP containing letters.
+-Fixed end of InputBox sometimes getting garbage value.
+-Server shouldn't show MessageBoxes anymore.
+-Cleaned hardcoded values regarding 3D picking in the Menu.

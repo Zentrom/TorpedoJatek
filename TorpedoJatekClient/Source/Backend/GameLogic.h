@@ -27,7 +27,7 @@ public:
 	GameLogic(Fleet& player, Fleet& enemy, Sea& sea, TextHandler& text_handler);
 	~GameLogic();
 
-	void Init(std::string ip, std::string port);
+	void Init(std::string ip_num, std::string port_num);
 	void ConnectionSetup();
 	void DisplayMessage(GameState gameState, int related_data);
 	void DisplayError(GameState gameState, int related_data);

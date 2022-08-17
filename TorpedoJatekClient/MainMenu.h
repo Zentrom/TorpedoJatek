@@ -44,6 +44,7 @@ private:
 		CLICKING = 1,
 		TYPING,
 	};
+	void CreateElements();
 	void CreateFrameBuffer(int width, int height);
 
 	MenuState menuState = MenuState::CLICKING; //jelenlegi menüállapot

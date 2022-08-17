@@ -40,7 +40,7 @@ TCPsocket ConnectionHandler::TCP_Open(IPaddress* ip)
 	ReportErrorAndExit("SDLNet_TCP_Open", ErrorCode::OPEN);
 
 	std::cout << "[WARNING] [SDLNet_TCP_Open] Undefined behaviour!! Returning NULL serverSocket!" << std::endl;
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[SDLNet_TCP_Open]", "Undefined behaviour!! Returning NULL serverSocket!", nullptr);
+	//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "[SDLNet_TCP_Open]", "Undefined behaviour!! Returning NULL serverSocket!", nullptr);
 	return serverSocket;
 }
 
@@ -61,7 +61,7 @@ void ConnectionHandler::TCP_AddSocket(SDLNet_SocketSet& set, TCPsocket& socket)
 {
 	if (SDLNet_TCP_AddSocket(set, socket) == -1) {
 		std::cerr << "[ERROR] SDLNet_TCP_AddSocket" << SDLNet_GetError() << std::endl;
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[SDLNet_TCP_AddSocket]", SDLNet_GetError(), nullptr);
+		//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[SDLNet_TCP_AddSocket]", SDLNet_GetError(), nullptr);
 	}
 }
 
@@ -132,7 +132,18 @@ void ConnectionHandler::ReportErrorAndExit(char function_name[], int exit_code)
 {
 	std::cerr << "[ERROR] [" << function_name << "] " << SDLNet_GetError() << '\n'
 		<< "Press enter to exit...\n";
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, function_name, SDLNet_GetError(), nullptr);
+	if (exit_code == ErrorCode::RESOLVE_HOST) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[SDLNet_ResolveHost]", "Couldn't find remote host!", nullptr);
+	}
+	else if (exit_code == ErrorCode::RECEIVE) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[SDLNet_Receive]", "Error while receiving data!", nullptr);
+	}
+	else if (exit_code == ErrorCode::SEND) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[SDLNet_Send]", "Error while sending data!", nullptr);
+	}
+	else {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, function_name, SDLNet_GetError(), nullptr);
+	}
 	std::cin.clear();
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	std::cin.get();
