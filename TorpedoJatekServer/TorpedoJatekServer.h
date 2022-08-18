@@ -21,7 +21,7 @@ public:
 	TorpedoJatekServer();
 	~TorpedoJatekServer();
 
-	int Run();
+	bool Run();
 
 private:
 	//Melyik szerveropció

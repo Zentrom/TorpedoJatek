@@ -36,6 +36,9 @@ bool ClientHandler::Init(std::string ipString, int portNr)
 	ReceiveBinary(mySocket, text, textLength); //char = 1byte
 	text[textLength] = '\0';
 	std::cout << text << std::endl;
+	if (!responseVersionCheck) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "[VersionCheck]", text, nullptr);
+	}
 
 	return responseVersionCheck;
 }

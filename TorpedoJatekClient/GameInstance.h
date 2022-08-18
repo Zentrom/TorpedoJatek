@@ -48,13 +48,13 @@ private:
 	GameState gameState; //jelenlegi játékállapot
 	Skybox* skybox = new Skybox(); //Pályát körülvevõ skybox
 	Mountain* mountain = new Mountain(); //Hegy
-	Terrain* terrain; //Föld
+	Terrain* terrain = nullptr; //Föld
 	Fleet* playerFleet = new Fleet(true); //Játékos hajói
 	Fleet* enemyFleet = new Fleet(false); //Ellenfél hajói
 	Sea* sea = new Sea(); //Játék és tengermezõk
-	GameLogic* gameLogic; //Háttérlogika
-	EventHandler* eventHandler; //Eseménykezelés
-	TextHandler* textHandler; //Szövegkezelõ
+	GameLogic* gameLogic = nullptr; //Háttérlogika
+	EventHandler* eventHandler = nullptr; //Eseménykezelés
+	TextHandler* textHandler = nullptr; //Szövegkezelõ
 
 	gVertexBuffer vb_fbo; //Custom Quad Framebufferbe rajzolandó négyzet adata
 	gShaderProgram sh_default; //Alap shader+postprocess
@@ -75,7 +75,7 @@ private:
 	bool outputWritten = false; //kiirtuk-e már az üzenetet
 	bool stopOutput = false; //Játék végén már ne írjunk ki
 	bool dirL_frameBufferCreated = false;
-	float* mousePointedData; //Melyik játékmezõre mutat az egér
+	float* mousePointedData = nullptr; //Melyik játékmezõre mutat az egér
 	bool shotReceived = false; //Küldött-e már lövést a szerver nekünk
 	bool shotSent = false; //Küldtünk-e már lövést
 	int shipSizeInput = 0; //Mekkora hajót készülünk lerakni

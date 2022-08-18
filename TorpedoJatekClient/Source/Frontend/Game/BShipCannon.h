@@ -24,7 +24,7 @@ public:
 private:
 	void Init();
 
-	BShipProjectile* projectile; //Lövedék pointer
+	BShipProjectile* projectile = nullptr; //Lövedék pointer
 	gVertexBuffer	vb_cannon; //Ágyú grafikai modell adatai
 	GLuint cannonTextureID; //Ágyú textúra azonosítója
 

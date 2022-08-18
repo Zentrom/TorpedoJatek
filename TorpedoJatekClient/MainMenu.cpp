@@ -120,6 +120,7 @@ void MainMenu::CreateElements()
 	initialState->BuildLayout(false);
 
 	connectState->AddDecoratorTexture(0.0f, 0.1f, 0.6f, 0.4f, elementsBg);
+	connectState->AddDecoratorTexture(-0.2f,-0.6f, 0.4f, 0.3f, elementsBg);
 	connectState->AddDecoratorString(-0.2f, -0.8f, 0.4f,
 		u8"Controls\n \
 WASD - Camera Movement\n \

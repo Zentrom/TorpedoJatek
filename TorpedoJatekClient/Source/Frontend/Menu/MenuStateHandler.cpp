@@ -12,6 +12,7 @@ MenuStateHandler::MenuStateHandler()
 	vb_button.AddAttribute(2, 2);
 	//Inputmezõ
 	vb_inputbox.AddAttribute(0, 2);
+	vb_inputbox.AddAttribute(1, 4);
 	vb_inputbox.AddAttribute(2, 2);
 
 	sh_menu.AttachShader(GL_VERTEX_SHADER, "Shaders/menu.vert");
@@ -146,6 +147,10 @@ void MenuStateHandler::AddInputBox(const char* name)
 	vb_inputbox.AddData(0, -0.2f, nextElementY);
 	vb_inputbox.AddData(0, -0.2f, nextElementY - 0.1f);
 	vb_inputbox.AddData(0, 0.4f, nextElementY - 0.1f);
+	vb_inputbox.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
+	vb_inputbox.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
+	vb_inputbox.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
+	vb_inputbox.AddData(1, 0.5f, 0.5f, 0.5f, 1.0f);
 	vb_inputbox.AddData(2, 1, 0);
 	vb_inputbox.AddData(2, 0, 0);
 	vb_inputbox.AddData(2, 0, 1);

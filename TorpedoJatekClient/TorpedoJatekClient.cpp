@@ -39,9 +39,13 @@ int TorpedoJatekClient::Run()
 	}
 
 	while (!StartMainMenu()) {
+		delete mainMenu;
+		mainMenu = nullptr;
 		if (StartGameInstance()) {
 			return 1;
 		}
+		delete gameInstance;
+		gameInstance = nullptr;
 	}
 	return 0;
 }

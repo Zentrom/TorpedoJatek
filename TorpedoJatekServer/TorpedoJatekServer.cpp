@@ -32,8 +32,8 @@ void TorpedoJatekServer::DisplaySettings() {
 	currentSettings << "Port used: " << port << '\n';
 }
 
-//Elindítja a szervert
-int TorpedoJatekServer::Run() {
+//Elindítja a szervert - Ha igazat ad vissza kilépünk
+bool TorpedoJatekServer::Run() {
 
 	SetupOptions setupOption = SetupOptions::DUMMY_OPTION;
 	while (setupOption != SetupOptions::CLOSE_PROGRAM && setupOption != SetupOptions::START_SERVER) {
@@ -83,9 +83,10 @@ int TorpedoJatekServer::Run() {
 		Init();
 		PrepareMatch();
 		StartMatch();
+		return false;
 	}
 
-	return 0;
+	return true;
 }
 
 //Szerver létrehozása
@@ -205,9 +206,6 @@ void TorpedoJatekServer::HandleClientState(Client& client)
 		receivedType = ServerHandler::ReceiveMessageType(client.socket);
 		//Ha elvárt adat jött, a hajó pozíciók
 		if (receivedType == MessageType::ESTIMATED) {
-			//for (int i = 0; i < activeTileCount; ++i) {
-			//	ServerHandler::ReceiveBinary(client.socket, &client.activeTiles.at(i), sizeof(std::pair<char, int>));
-			//}
 			int sentSize = 0;
 			std::pair<char, int> data;
 			while (client.unreadTiles > 0) {

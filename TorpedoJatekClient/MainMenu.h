@@ -61,8 +61,8 @@ private:
 	//GLuint dirL_depthStencilBuffer; //Custom Framebuffer mélység-stencil buffere
 	GLuint dirL_colorBuffer; //Custom Framebuffer színbuffere
 	GLuint dirL_frameBuffer; //Custom Framebuffer azonosító
-	Mix_Music* menuMusic; //Menü zene adat
-	Mix_Chunk* clickSound; //Gombkattintás hang adat
+	Mix_Music* menuMusic = nullptr; //Menü zene adat
+	Mix_Chunk* clickSound = nullptr; //Gombkattintás hang adat
 	Sint32 mouseX; //Egér relatív X koord
 	Sint32 mouseY; //Egér relatív Y koord
 	gVertexBuffer vb_background; //Háttérnek a modell adat

@@ -58,13 +58,11 @@ Extra controls: F - Fire | G - Sink";
 //Kapcsolatot létesít egy szerverrel
 void GameLogic::ConnectionSetup()
 {
-	do {
-		std::cout << "Establishing connection." << std::endl;
-		
-		std::cout << "Server ip: " << ip << std::endl;
-		std::cout << "Server port: " << port << std::endl;
+	std::cout << "Establishing connection." << std::endl;
+	std::cout << "Server ip: " << ip << std::endl;
+	std::cout << "Server port: " << port << std::endl;
 
-	} while (!clientHandler->Init(ip, port));
+	clientHandler->Init(ip, port);
 }
 
 //Üzenet kiirása

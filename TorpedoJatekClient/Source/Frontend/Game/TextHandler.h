@@ -29,15 +29,15 @@ private:
 	GLuint RenderTextShaded(const char* text);
 	void CalcMetrics();
 
-	TTF_Font* comicSans; //Betûtípus adat
-	TTF_Font* candara; //Betûtípus adat
+	TTF_Font* comicSans = nullptr; //Betûtípus adat
+	TTF_Font* candara = nullptr; //Betûtípus adat
 	gShaderProgram sh_text; //Szöveg shadere
 	gVertexBuffer vb_message; //Alap üzenetmezõ modell adatok
 
 	const float textLengthDivisor = 200.0f; //Szövegmezõt mennyire sûrítjük
 	const float lineHeightDivisor = 1.5f; //Magasság sûrítése
 
-	SDL_PixelFormat* pixelFormat; //Pixelformátum amelybe konvertáljuk az SDL Surface-t,hogy OPENGL ismerje
+	SDL_PixelFormat* pixelFormat = nullptr; //Pixelformátum amelybe konvertáljuk az SDL Surface-t,hogy OPENGL ismerje
 	SDL_Surface* textSurface = nullptr; //SDL_ttf ebbe a felületbe tudja a szöveget kirajzolni
 	GLuint textTexture = 0; //Szövegmezõ OPENGL-es textúrája
 	SDL_Color fgColor = {255, 255, 255}; //Szöveg színe

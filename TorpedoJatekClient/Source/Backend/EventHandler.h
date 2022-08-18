@@ -22,12 +22,12 @@ private:
 	BShipProjectile* pAnimatedProjectile = nullptr; //Az éppen animált lövedék
 	BShipProjectile* pLastAnimatedProjectile = nullptr; //Elõzõleg animált lövedék
 	PlayTile* pShotTile = nullptr; //Éppen lött mezõ
-	Mix_Music* music; //Zeneadatra mutató pointer
+	Mix_Music* music = nullptr; //Zeneadatra mutató pointer
 	//1-es Mixer channelen: (8 channel allokált alapból)
-	Mix_Chunk* hitSound; //Találat hangadatra mutató pointer
-	Mix_Chunk* missSound; //Mellé-lövés hangadatra mutató pointer
+	Mix_Chunk* hitSound = nullptr; //Találat hangadatra mutató pointer
+	Mix_Chunk* missSound = nullptr; //Mellé-lövés hangadatra mutató pointer
 	//2-es channel:
-	Mix_Chunk* cannonFireSound; //Ágyúlövés hangadatra mutató pointer
+	Mix_Chunk* cannonFireSound = nullptr; //Ágyúlövés hangadatra mutató pointer
 
 	bool isMuted = false; //Némítás
 

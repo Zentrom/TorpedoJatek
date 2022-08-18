@@ -1,7 +1,8 @@
-v0.1.0a-Restarting
+v0.1.0b-Fixes
 -----------------------------------------------------------------------------------------
--Made the game restartable(memory leak needs fixing).
--Removed the possibility of the IP containing letters.
--Fixed end of InputBox sometimes getting garbage value.
--Server shouldn't show MessageBoxes anymore.
--Cleaned hardcoded values regarding 3D picking in the Menu.
+-The Server now restarts at the end of a match.
+-Added background to the controls display.
+-Fixed memory leak caused by restarting the client.
+-Fixed inputBox having inconsistent colors.
+-Fixed version checking on client side.
+-Initialized pointers as nullpointers.

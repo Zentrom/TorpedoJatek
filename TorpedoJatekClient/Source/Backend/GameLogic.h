@@ -54,9 +54,9 @@ private:
 
 	ClientHandler* clientHandler = new ClientHandler();	//A hálózati kapcsolat kliens-oldali vezérlõje
 	std::array<int, 4> unplacedShips; //Hány hajó nincs még lerakva(külön méretekben)
-	Fleet *pMyFleet; //Pointer a mi hajóseregünkre
-	Fleet *pEnemyFleet; //Pointer az ellenfél hajóseregére
-	Sea *pSea;	//Pointer a tengerre
+	Fleet *pMyFleet = nullptr; //Pointer a mi hajóseregünkre
+	Fleet *pEnemyFleet = nullptr; //Pointer az ellenfél hajóseregére
+	Sea *pSea = nullptr;	//Pointer a tengerre
 	ResponseState matchState = ResponseState::START_OF_GAME; //Szerverrel való kommunikáció fázisa
 	PlayTile* pMyTarget = nullptr; //Játékos által célzott mezõ
 	PlayTile* pEnemyTarget = nullptr; //Ellenfél által célzott mezõ
@@ -69,8 +69,8 @@ private:
 	int mapSize = 7; //Tárolt pályaméret - Alapérték DEBUG módhoz
 	int playerNum = 0; //Ha 1 akkor mi kezdünk,ha 2 akkor nem
 	//PlaceAllyShiphez kell hogy megjegyezze,ne töröld
-	PlayTile* pShipFront;
-	PlayTile* pShipBack;
+	PlayTile* pShipFront = nullptr;
+	PlayTile* pShipBack = nullptr;
 	bool shipFrontPlaced = false; //Hajó elejét már leraktuk-e
 	std::array<PlayTile*, 4> freeChoices; //Hajó hátaknak megfelelõ pos
 

@@ -41,7 +41,7 @@ private:
 	SDL_Window* gameWindow = 0; //Windows ablak
 	Uint32 flagsWindow = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN; //win ablakhoz tartozó SDL flagek.
 	SDL_GLContext glContext; //OpenGL beállítási állapot - ez már void* típusu
-	SDL_Event* sdlEvent;  //SDL esemény kezelõje
+	SDL_Event* sdlEvent = nullptr;  //SDL esemény kezelõje
 	GameInstance* gameInstance = nullptr; //A tényleges torpedo játékmenet
 	MainMenu* mainMenu = nullptr; //Fõmenü
 

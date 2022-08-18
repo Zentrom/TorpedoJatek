@@ -54,6 +54,6 @@ private:
 
 	const glm::vec3 startPos; //Lövedék kiinduló pos
 	const bool isAlly; //Mi lövedékünk-e
-	ParticleGroup* const projectileParticle; //Részecskecsoport
+	ParticleGroup* const projectileParticle = nullptr; //Részecskecsoport
 	const float postAnimParticleTime; //Animáció befejeztével meddig folytatjuk a füstanimációt
 };

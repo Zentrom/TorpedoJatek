@@ -14,5 +14,5 @@ public:
 	void ResetForDEBUG();
 	const BShipCannon& getCannon() const;
 private:
-	BShipCannon* cannon; //Ágyú
+	BShipCannon* cannon = nullptr; //Ágyú
 };

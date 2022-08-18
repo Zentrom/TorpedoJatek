@@ -2,5 +2,6 @@ Mountaint dispacement mappinggel vagy valami profibb módon.
 Megoldani egy tényleges visszakapcsolódást a serverre,lementett állapottal, 60sec timeout.
 Particle - Cylindrical Billboaring -> Spherical
 Beta után Particleeknek legyen mozgása + transparency/szín változása
+Fog szimuláció ha víz alatt van a kamera.
 Mix_Position() Positional audiot ujrapróbálni esetleg. Béta+
 std::exit()-ektõl lehetõleg megszabadulni. Beta verziónál.
