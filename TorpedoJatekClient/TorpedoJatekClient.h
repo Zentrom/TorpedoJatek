@@ -58,7 +58,7 @@ private:
 	const std::string pathToOptions = std::string("Resources/options.cfg"); //Path a beállításokat tartalmazó fájlhoz
 	std::map <std::string, int> options;
 
-	std::stringstream window_title;	//Ablak szöveg a címsorban
+	std::stringstream windowTitle;	//Ablak szöveg a címsorban
 	std::string connectionIP;
 	std::string connectionPort;
 };

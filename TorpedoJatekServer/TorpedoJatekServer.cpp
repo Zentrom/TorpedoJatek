@@ -360,10 +360,7 @@ void TorpedoJatekServer::StartMatch() {
 	SDLNet_TCP_Close(server);
 
 	std::cout << "--------------------------------------------------------------" << std::endl;
-	std::cout << "Press enter to exit..." << std::endl;
-	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	std::cin.get();
+	std::cout << "Restarting Server..." << std::endl;
 }
 
 //Egy lövés lekezelése

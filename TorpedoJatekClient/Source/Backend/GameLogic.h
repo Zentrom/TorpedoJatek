@@ -6,10 +6,6 @@
 #include "../Frontend/Game/TextHandler.h"
 #include "../Globals.hpp"
 
-#include "../../Utility/gVertexBuffer.h"
-#include "../../Utility/gShaderProgram.h"
-#include "../../Utility/gCamera.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
@@ -27,7 +23,7 @@ public:
 	GameLogic(Fleet& player, Fleet& enemy, Sea& sea, TextHandler& text_handler);
 	~GameLogic();
 
-	void Init(std::string ip_num, std::string port_num);
+	bool Init(std::string ip_num, std::string port_num);
 	void ConnectionSetup();
 	void DisplayMessage(GameState gameState, int related_data);
 	void DisplayError(GameState gameState, int related_data);

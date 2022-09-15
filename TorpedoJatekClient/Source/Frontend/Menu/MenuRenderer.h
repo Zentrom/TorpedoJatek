@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../../Utility/gVertexBuffer.h"
-#include "../../../Utility/gShaderProgram.h"
-
 #include <SDL_ttf.h>
 #include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
 
 #include <vector>
 #include <iostream>

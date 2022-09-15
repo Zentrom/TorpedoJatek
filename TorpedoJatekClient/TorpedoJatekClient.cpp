@@ -46,6 +46,7 @@ int TorpedoJatekClient::Run()
 		}
 		delete gameInstance;
 		gameInstance = nullptr;
+		TorpedoGLOBAL::Debug = false;
 	}
 	return 0;
 }
@@ -231,11 +232,11 @@ bool TorpedoJatekClient::CheckOptionsIntegrity()
 //SDL-el lekér egy ablakot a Windowstól
 int TorpedoJatekClient::CreateGameWindow()
 {
-	window_title << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
+	windowTitle << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
 		<< "." << clientVersion->alphaVersion << clientVersion->experimentalVersion;
 
 	if (options["Fullscreen"]) flagsWindow |= SDL_WINDOW_FULLSCREEN;
-	gameWindow = SDL_CreateWindow(window_title.str().c_str(),
+	gameWindow = SDL_CreateWindow(windowTitle.str().c_str(),
 		rightOffset, downOffset, options["ResolutionWidth"], options["ResolutionHeight"], flagsWindow);
 
 	if (gameWindow == nullptr)
@@ -328,11 +329,11 @@ int TorpedoJatekClient::StartMainMenu()
 		time_diff = SDL_GetTicks() - last_time;
 		if (time_diff >= 1000)
 		{
-			window_title.str(std::string());
-			window_title << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
+			windowTitle.str(std::string());
+			windowTitle << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
 				<< "." << clientVersion->alphaVersion << clientVersion->experimentalVersion
 				<< " | FPS:" << frame_count;
-			SDL_SetWindowTitle(gameWindow, window_title.str().c_str());
+			SDL_SetWindowTitle(gameWindow, windowTitle.str().c_str());
 	
 			last_time = SDL_GetTicks();
 			time_diff = 0;
@@ -442,11 +443,11 @@ int TorpedoJatekClient::StartGameInstance()
 		time_diff = SDL_GetTicks() - last_time;
 		if (time_diff >= 1000)
 		{
-			window_title.str(std::string());
-			window_title << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
+			windowTitle.str(std::string());
+			windowTitle << "TorpedoJatek v" << clientVersion->majorVersion << "." << clientVersion->betaVersion
 				<< "." << clientVersion->alphaVersion << clientVersion->experimentalVersion
 				<< " | FPS:" << frame_count;
-			SDL_SetWindowTitle(gameWindow, window_title.str().c_str());
+			SDL_SetWindowTitle(gameWindow, windowTitle.str().c_str());
 
 			last_time = SDL_GetTicks();
 			time_diff = 0;

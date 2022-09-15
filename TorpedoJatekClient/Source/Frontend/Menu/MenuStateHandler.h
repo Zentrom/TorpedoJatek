@@ -3,6 +3,7 @@
 #include "MenuRenderer.h"
 
 #include "../../../Utility/gVertexBuffer.h"
+#include "../../../Utility/gShaderProgram.h"
 #include <GL/glew.h>
 
 #include <vector>

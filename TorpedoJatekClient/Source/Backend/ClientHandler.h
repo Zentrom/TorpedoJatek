@@ -34,7 +34,7 @@ public:
 
 	ResponseState getRecShotState();
 
-protected:
+private:
 	IPaddress ip;	//ip-cím
 	TCPsocket mySocket;	//kliens oldali socket
 	SDLNet_SocketSet socketSet = nullptr; //socket csoport

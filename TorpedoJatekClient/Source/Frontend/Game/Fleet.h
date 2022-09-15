@@ -44,7 +44,7 @@ private:
 	const std::array<int, 4> *pUnplacedShipCount; //1x1,2x2,stb. méretû hajókból még hányat NEM raktunk le
 	std::vector<Ship*> ships; //Játékos hajói
 	std::vector<PlayTile*> *pPlayTiles; //Játékos oldalán lévõ játékmezõk
-	BattleShip* battleShip;	//Játékos hajója amit nem lehet kilõni,hanem ez lõ majd.
+	BattleShip* battleShip = nullptr;	//Játékos hajója amit nem lehet kilõni,hanem ez lõ majd.
 
 	const float bShipPlayZoneOffset = 1.0f; //Csatahajó távolsága a játéktér végétõl
 

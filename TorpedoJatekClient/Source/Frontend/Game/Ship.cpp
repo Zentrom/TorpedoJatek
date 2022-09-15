@@ -6,7 +6,7 @@ Ship::Ship(bool ally) : isAlly(ally)
 {
 }
 
-Ship::Ship(const std::vector<PlayTile*> &tiles, bool ally) : playTiles(tiles), isAlly(ally)
+Ship::Ship(const std::vector<PlayTile*> &tiles, bool ally) : pPlayTiles(tiles), isAlly(ally)
 {
 	if (tiles.at(0)) {
 		glm::vec3 frontTranslation = tiles.at(0)->getTranslate();
@@ -100,7 +100,7 @@ void Ship::Draw(const gCamera& camera, gShaderProgram& sh_program, const gVertex
 
 std::vector<PlayTile*>& Ship::getPlayTiles()
 {
-	return playTiles;
+	return pPlayTiles;
 }
 
 bool Ship::isDestroyed() const

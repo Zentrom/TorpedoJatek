@@ -51,7 +51,7 @@ bool GameInstance::Init(std::string ip, std::string port)
 {
 	textHandler = new TextHandler();
 	gameLogic = new GameLogic(*playerFleet, *enemyFleet, *sea, *textHandler);
-	gameLogic->Init(ip, port);
+	if (!gameLogic->Init(ip, port)) return false;
 	eventHandler = new EventHandler();
 
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);

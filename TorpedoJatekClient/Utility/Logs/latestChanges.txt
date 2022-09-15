@@ -1,8 +1,6 @@
-v0.1.0b-Fixes
+v0.1.0c-Fixes Nr.2
 -----------------------------------------------------------------------------------------
--The Server now restarts at the end of a match.
--Added background to the controls display.
--Fixed memory leak caused by restarting the client.
--Fixed inputBox having inconsistent colors.
--Fixed version checking on client side.
--Initialized pointers as nullpointers.
+-Fixed the problem when exiting from Debug mode, the Menu would always launch the GameInstance in Debug mode.
+-Fixed infinite connection attempts for the 3rd player trying to connect to the Server.
+-Fixed the need of pressing 'Enter' in order to restart the Server.
+-Removed unused files.

@@ -18,17 +18,16 @@ GameLogic::~GameLogic()
 }
 
 //Inicializálja a játékkal kapcsolatos háttéradatokat
-void GameLogic::Init(std::string ip_num, std::string port_num)
+bool GameLogic::Init(std::string ip_num, std::string port_num)
 {
 	if (!TorpedoGLOBAL::Debug) {
 		ip = ip_num;
 		port = std::stoi(port_num);
 
 		//Lekezeli ha teli szerverre kapcsolódtunk
-		do {
-			ConnectionSetup();
-			playerNum = clientHandler->GetPlayerNum();
-		} while (playerNum > 2);
+		ConnectionSetup();
+		playerNum = clientHandler->GetPlayerNum();
+		if (playerNum > 2) return false;
 
 		mapSize = clientHandler->GetMapSize();
 	}
@@ -53,6 +52,7 @@ Extra controls: F - Fire | G - Sink";
 	else {
 		unplacedShips = *pMyFleet->getUnplacedShipCount();
 	}
+	return true;
 }
 
 //Kapcsolatot létesít egy szerverrel
@@ -383,13 +383,13 @@ void GameLogic::PlaceShipsIfLost()
 //Ha a játék DEBUG módba indítjuk,akkor beégetetten lerak nekünk néhány hajót
 void GameLogic::PlaceShipsINDEBUG() 
 {
-	pMyFleet->PlaceShip(&pMyFleet->getTile(std::pair<char, int>('a', 1)), nullptr);
+	pMyFleet->PlaceShip(&pMyFleet->getTile(std::pair<char, int>('g', 1)), nullptr);
 	pMyFleet->PlaceShip(&pMyFleet->getTile(std::pair<char, int>('g', 5)),
 		&pMyFleet->getTile(std::pair<char, int>('g', 7)));
 	pMyFleet->PlaceShip(&pMyFleet->getTile(std::pair<char, int>('d', 4)),
 		&pMyFleet->getTile(std::pair<char, int>('d', 6)));
 
-	pEnemyFleet->PlaceShip(&pEnemyFleet->getTile(std::pair<char, int>('a', 1)), nullptr);
+	pEnemyFleet->PlaceShip(&pEnemyFleet->getTile(std::pair<char, int>('e', 1)), nullptr);
 	pEnemyFleet->PlaceShip(&pEnemyFleet->getTile(std::pair<char, int>('c', 2)),
 		&pEnemyFleet->getTile(std::pair<char, int>('c', 3)));
 }
@@ -400,7 +400,7 @@ void GameLogic::SetTilesINDEBUG()
 	pSea->getTileByIndex(0, true).setState(1);
 	pSea->getTileByIndex(1, true).setState(2);
 	pSea->getTileByIndex(11, true).setState(1);
-	pSea->getTileByIndex(14, true).setState(1);
+	pSea->getTileByIndex(25, true).setState(1);
 	pSea->getTileByIndex(7, true).setState(1);
 
 	pSea->getTileByIndex(0, false).setState(1);

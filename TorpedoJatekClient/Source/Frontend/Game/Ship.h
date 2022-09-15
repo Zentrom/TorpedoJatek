@@ -53,7 +53,7 @@ protected:
 	float preSinkElapsed = 0.0f; //Lövedékanimból mennyi telt el - Boolként is ez lesz hogy kivan-e lõve
 	float sinkElapsed = 0.0f; //Eltelt idõ süllyedésnél
 
-	std::vector<PlayTile*> playTiles;	//Mely játékmezõkön van a hajó
+	std::vector<PlayTile*> pPlayTiles;	//Mely játékmezõkön van a hajó
 	bool isAlly; //Kliens szempontjából mi hajónk-e
 
 };
