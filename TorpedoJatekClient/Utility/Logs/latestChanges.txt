@@ -1,6 +1,13 @@
-v0.1.0c-Fixes Nr.2
+v0.1.1<->Thesis Version
 -----------------------------------------------------------------------------------------
+[FEATURES]
+-Made the Client and Server restartable.
+-Removed the possibility of the IP containing letters.
+-Added background to the controls display.
+[FIXES]
+-Fixed end of InputBox sometimes getting garbage value.
+-Server shouldn't show MessageBoxes anymore.
+-Fixed inputBox having inconsistent colors.
+-Fixed version checking on client side.
 -Fixed the problem when exiting from Debug mode, the Menu would always launch the GameInstance in Debug mode.
--Fixed infinite connection attempts for the 3rd player trying to connect to the Server.
--Fixed the need of pressing 'Enter' in order to restart the Server.
--Removed unused files.
+-Fixed infinite connection attempts when a 3rd player is trying to connect to the Server.

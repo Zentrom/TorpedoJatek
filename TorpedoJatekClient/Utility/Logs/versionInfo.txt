@@ -1,5 +1,5 @@
 INDEBUG+VSyncOff:
-[RAM Usage] 85 MB [VRAM Usage] 88 MB [FPS] 258
+[RAM Usage] 87 MB [VRAM Usage] 92 MB [FPS] 256
 ---------------------------------------
 -Debug mód a menübõl indítható. Ilyenkor nem csatlakozunk szerverre, csak megjelenítés teszt.
 -Debug módba: 
